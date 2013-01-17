@@ -188,10 +188,13 @@ public class MatrixBuddy
 	clickCoord[1][0] = y;
 	clickCoord[2][0] = 1.0f;
 
-	Constants.dump2DFloatArrayToFile("clickCoords_MatrixBuddy", clickCoord);
+	// Added by Gary for debugging purposes
+	//Constants.dump2DFloatArrayToFile("clickCoords_MatrixBuddy", clickCoord);
 	float[] ff = new float[9];
 	matrix.getValues(ff);
-	Constants.dump1DFloatArrayToFile("matrix_MatrixBuddy", ff);
+	
+	// Added by Gary for debugging purposes
+	//Constants.dump1DFloatArrayToFile("matrix_MatrixBuddy", ff);
 	
 	// Copy the matrix to a new matrix I. This is a deep copy
 	Matrix I = new Matrix();
@@ -203,17 +206,22 @@ public class MatrixBuddy
 
 	float[] ii = new float[9];
 	I.getValues(ii);
-	Constants.dump1DFloatArrayToFile("I_MatrixBuddy", ii);
+	
+	// Added by Gary for debugging purposes
+	//Constants.dump1DFloatArrayToFile("I_MatrixBuddy", ii);
 
 	// Make a copy of the inverted matrix
 	float val[] = new float[9];
 	I.getValues(val);
-	Constants.dump1DFloatArrayToFile("val_MatrixBuddy", val);
+	
+	// Added by Gary for debugging purposes
+	//Constants.dump1DFloatArrayToFile("val_MatrixBuddy", val);
 	
 	// NOTE: oneDto2D converts the 9 element linear matrix returned from getValues() back to a 3x3 matrix 
 	clickCoord = MatrixBuddy.multiplyMatrices(MatrixBuddy.oneDto2D(val), clickCoord);	
 	
-	Constants.dump2DFloatArrayToFile("returned_clickCoords_MatrixBuddy", clickCoord);
+	// Added by Gary for debugging purposes
+	//Constants.dump2DFloatArrayToFile("returned_clickCoords_MatrixBuddy", clickCoord);
 	
 	return clickCoord;
 

@@ -182,7 +182,9 @@ public class DisplayView extends ImageView implements OnDoubleTapListener
 
 		float[] floatMatrix = new float[9];
 		matrix.getValues(floatMatrix);
-		Constants.dump1DFloatArrayToFile("matrixDisplayView_onTouchEvent_ACTION_DOWN", floatMatrix);
+		
+		// Added by Gary for debugging purposes
+		//Constants.dump1DFloatArrayToFile("matrixDisplayView_onTouchEvent_ACTION_DOWN", floatMatrix);
 
 		savedMatrix.set(matrix);
 		start.set(event.getX(), event.getY());
@@ -424,8 +426,10 @@ public class DisplayView extends ImageView implements OnDoubleTapListener
 
 	    float[] floatMatrix = new float[9];
 	    matrix.getValues(floatMatrix);
-	    Constants.dump1DFloatArrayToFile("matrix_From_onDoubleTap", floatMatrix);
-	    Constants.dump2DFloatArrayToFile("clickCoord_From_onDoubleTap", clickCoord);
+	    
+	    // Added by Gary for debugging purposes
+	    //Constants.dump1DFloatArrayToFile("matrix_From_onDoubleTap", floatMatrix);
+	    //Constants.dump2DFloatArrayToFile("clickCoord_From_onDoubleTap", clickCoord);
 
 	    int y = (int) (clickCoord[0][0] / res);
 	    int x = (int) (clickCoord[1][0] / res);
