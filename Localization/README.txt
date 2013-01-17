@@ -7,15 +7,9 @@ How to set up development environment:
 The generated javadoc documentation can be found in "doc/index.html"
 
 Description of the Projects:
-AndroidDataCollector - Used for logging all sensor data from a phone during an experiment (signal strengths, accelerometer, magnetometer, etc.)
-HumanRobotInterface - Visual display of location tracking, also used to hook in to trading system to bid on and recieve tasks
 LocalizationLibrary - Contains the main research components, including the pedestrian localization algorithms and particle filter implementation.
-LogProcessor - Has many desktop programs for analysis of log data, including a particle filter visualizer and several programs to extract particular data streams from a log for further analysis in Matlab
-Matlab - Matlab code primarily for analysis of Wifi and GSM data
 
 Main Entry Points:
-AndroidDataCollector
-	-DataCollector.java: The activity that does all the logging
 HumanRobotInterface
 	-MapActivity.java: The screen the user interacts with 95% of the time
 LocalizationLibrary
