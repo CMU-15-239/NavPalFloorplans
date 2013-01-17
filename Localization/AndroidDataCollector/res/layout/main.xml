@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <Button android:layout_gravity="bottom" android:layout_height="wrap_content" android:id="@+id/tag_state" android:layout_width="match_parent" android:text="@string/tag_state"></Button>
+
+<TextView
+    android:id="@+id/connectionStatus"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="connectionStatus" />
+
+    <TextView
+        android:id="@+id/gsmStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="gsmStatus" />
+
+    <TextView
+        android:id="@+id/wifiStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="wifiStatus" />
+
+    <TextView
+        android:id="@+id/gpsStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="gpsStatus" />
+
+    <TextView
+        android:id="@+id/magStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="magStatus" />
+
+    <TextView
+        android:id="@+id/accelStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="accelStatus" />
+
+    <TextView
+        android:id="@+id/gyroStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="gyroStatus" />
+
+    <TextView
+        android:id="@+id/gpsPosition"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="gpsPosition" />
+
+    <TextView
+        android:id="@+id/stepPosition"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="stepPosition" />
+
+        <TextView
+            android:id="@+id/stepStatus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="stepStatus" />
+
+    <TextView
+        android:id="@+id/stdDevPosition"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="stdDevPosition" />
+
+        <TextView
+            android:id="@+id/stdDevStatus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="stdDevStatus" />
+
+    <TextView
+        android:id="@+id/margPosition"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="margPosition" />
+
+        <TextView
+            android:id="@+id/margStatus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="margStatus" />
+
+        <TextView
+            android:id="@+id/orientationAccuracy"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="orientationAccuracy" />
+
+     <TextView
+         android:id="@+id/lightStatus"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:text="lightStatus" />
+
+     <TextView
+         android:id="@+id/proximityStatus"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:text="proximityStatus" />
+
+   	<TextView
+   	    android:id="@+id/triggerStatus"
+   	    android:layout_width="fill_parent"
+   	    android:layout_height="wrap_content"
+   	    android:text="triggerStatus" />
+
+</LinearLayout>

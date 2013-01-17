@@ -1,0 +1,80 @@
+else if (opt == 2) {//read from a text file
+            try {
+                //int restraints[] = new int[10];//user parameters to determine grid traversablilty
+                H = readFile(fileID);
+
+                s = H.findStartNode();//starting node
+                t = H.findGoalNode();//ending node
+                s.dist = 0;//distance from s to s
+            } catch (Exception e) {//The start and end points are undefined, no biggie
+            }
+
+
+/**/
+
+
+
+
+    public Graph readFile(int fileID) throws IOException {
+        Graph G = null;
+
+        int charcount = 0;
+        int maxchar = 0;
+        int linecount = 1;
+        Resources myResources = getResources();
+
+        InputStream fis = null;
+
+        //checks the size of the grid
+        //fis = assetManager.open("/res/raw/file2");
+
+        try {
+            //fis =myResources.openRawResource(R.raw.file2); works!!
+
+            fis = myResources.openRawResource(fileID);
+            System.out.println("PRINTING A GRAPH\n");
+            char current;
+            while (fis.available() > 0) {
+                charcount++;
+                current = (char) fis.read();
+                if (current == '\n') {
+                    linecount++;
+                    if (charcount > maxchar) {
+                        maxchar = charcount;
+                    }
+                    charcount = 0;
+                }
+               // System.out.print(current);
+            }
+
+        } catch (Exception e) {
+            System.out.print("FILE NOT FOUND\n");
+        }
+
+        System.out.printf("\n\nDimensions: %d %d\n", linecount, maxchar);
+        G = new Graph(linecount, maxchar);
+        G.initialize();
+        char readChar;//temp variable
+
+        //resets the input stream and copies the data into the Graph
+        fis.reset();
+               
+        for (int j = 0; j < linecount; j++) {
+            //System.out.println("\n" + j + " ");
+            for (int i = 0; i < maxchar; i++) {
+                readChar = (char) fis.read();
+
+                if (readChar == '\n') {//accounts
+                    readChar = (char) fis.read();
+
+                }
+                System.out.println(""+i+" "+j+" "+(char) fis.read());
+                    G.getNode(j, i).set = readChar;
+                }
+            }
+        
+        G.print(0);
+
+
+return G;
+    }

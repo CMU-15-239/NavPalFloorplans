@@ -1,0 +1,17 @@
+
+edu.cmu
+edu.cmu.future
+edu.cmu.mdp
+edu.cmu.recognizer
+edu.cmu.ri.rcommerce
+edu.cmu.ri.rcommerce.AndroidOfflinePF
+edu.cmu.ri.rcommerce.AndroidOnlinePF
+edu.cmu.ri.rcommerce.CompassTest
+edu.cmu.ri.rcommerce.DataCollector
+edu.cmu.ri.rcommerce.ServiceTester
+edu.cmu.ri.rcommerce.WiFiGSMCollector
+edu.cmu.ri.rcommerce.filter
+edu.cmu.ri.rcommerce.particleFilter
+edu.cmu.ri.rcommerce.render
+edu.cmu.ri.rcommerce.sensor
+edu.cmu.userplan

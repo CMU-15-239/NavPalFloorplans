@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AbsoluteLayout
+android:id="@+id/widget37"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+xmlns:android="http://schemas.android.com/apk/res/android"
+
+>
+    <TextView
+android:id="@+id/widget38"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Name"
+android:layout_x="7px"
+android:layout_y="5px"
+>
+    </TextView>
+    <EditText
+android:id="@+id/shortDes"
+android:layout_width="275px"
+android:layout_height="40px"
+android:text=""
+android:textSize="18sp"
+android:layout_x="2px"
+android:layout_y="27px"
+>
+    </EditText>
+    <TextView
+android:id="@+id/widget32"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Details"
+android:layout_x="5px"
+android:layout_y="63px"
+>
+    </TextView>
+    <EditText
+android:id="@+id/longDes"
+android:layout_width="275px"
+android:layout_height="110px"
+android:text=""
+android:textSize="18sp"
+android:layout_x="2px"
+android:layout_y="84px"
+>
+    </EditText>
+    <Button
+android:id="@+id/acceptButton"
+android:layout_width="95px"
+android:layout_height="35px"
+android:text="Accept"
+android:layout_x="0px"
+android:layout_y="195px"
+>
+    </Button>
+    <Button
+android:id="@+id/clearButton"
+android:layout_width="95px"
+android:layout_height="35px"
+android:text="Clear All"
+android:layout_x="100px"
+android:layout_y="195px"
+>
+    </Button>
+    <Button
+android:id="@+id/cancelButton"
+android:layout_width="95px"
+android:layout_height="35px"
+android:text="Cancel"
+android:layout_x="200px"
+android:layout_y="195px"
+>
+    </Button>
+</AbsoluteLayout>
+

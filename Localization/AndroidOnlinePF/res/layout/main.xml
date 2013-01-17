@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    >
+    <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/loadData" android:text="@string/loadData"></Button>
+    <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/startPF" android:text="@string/startPF"></Button>
+    <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/stopPF" android:text="@string/stop_PF"></Button>
+    <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/tag_state" android:id="@+id/tag_state"></Button>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/disp" android:text="@string/hello"></TextView>
+
+
+</LinearLayout>

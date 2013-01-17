@@ -1,0 +1,14 @@
+Path
+
+
+/*returns the length of the path in steps*/
+int pathLength(){}
+
+/*clears the path*/
+void clear(){}
+
+/*prints the path*/
+void printPath(){}
+
+/*returns a LinkedList of Nodes containing the path 
+LinkedList<Node> getPath(){}
