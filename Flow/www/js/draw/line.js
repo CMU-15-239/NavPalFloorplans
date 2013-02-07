@@ -8,6 +8,12 @@
 function Line(p1, p2) {
 	this.p1 = p1;
 	this.p2 = p2;
+	
+	// Put line in form ax + by + c = 0
+	this.a = p2.x - p1.x;
+	this.b = p1.y - p2.y;
+	this.c = p1.x * (p2.y - p1.y) - p1.y * (p2.x - p1.x);
+	this.distConst = Math.sqrt(a * a + b * b);
 }
 
 /**
@@ -40,4 +46,7 @@ Line.prototype.draw = function (drawPoints) {
 Line.prototype.setPoints = function(p1, p2) {
 	this.p1 = p1;
 	this.p2 = p2;
+	
+Line.prototype.distanceToPoint = function(point) {
+	return Math.abs(this.a * point.x + this.b * point.y + this.c) / this.distConst;
 }
