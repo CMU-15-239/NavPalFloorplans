@@ -23,8 +23,8 @@ function Line(p1, p2) {
  * 		of each other.
 **/
 Line.prototype.equals = function (l) {
-	var isSameLine = (this.p1 == l.p1 && this.p2 == l.p2);
-	var isFlippedLine = (this.p2 == l.p1 && this.p1 == l.p2);
+	var isSameLine = (this.p1.equals(l.p1) && this.p2.equals(l.p2));
+	var isFlippedLine = (this.p2.equals(l.p1) && this.p1.equals(l.p2));
 	return isSameLine || isFlippedLine;
 }
 

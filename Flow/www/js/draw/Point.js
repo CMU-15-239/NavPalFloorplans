@@ -46,6 +46,10 @@ Point.prototype.setXY = function(x,y) {
 	this.y = y;
 }
 
+Point.prototype.equals = function(p) {
+	return (this.x == p.x && this.y == p.y);
+}
+
 Point.prototype.distance = function(p) {
 	var dx = Math.abs(this.x - p.x);
 	var dy = Math.abs(this.y - p.y);
