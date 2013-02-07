@@ -13,6 +13,11 @@ function isClosedRoom(lines) {
 		}
 	}
 	
+	// A room must have at least two lines
+	if (lines.length <= 2) {
+		return false;
+	}
+	
 	var pointCount = {};
 	
 	// Initialize all points to 0
@@ -29,14 +34,12 @@ function isClosedRoom(lines) {
 	
 	// Check if every point appeared twice
 	for point in pointCount {
+		if (pointCount[point] > 2) {
+			return new Exception("Degree too high");
+		}
 		if (pointCount[point] != 2) {
 			return false;
 		}
-	}
-	
-	// A room must have at least two lines
-	if (lines.length <= 2) {
-		return false;
 	}
 	
 	return true;
