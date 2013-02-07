@@ -24,6 +24,7 @@ function mouseMoved(event) {
 			CUR_POINT.x = p.x;
 			CUR_POINT.y = p.y;
 			p.setSnap(true);
+			break; // Only snap to a single point
 		}
 	}
 	
