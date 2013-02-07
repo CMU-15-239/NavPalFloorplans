@@ -1,4 +1,18 @@
+
+// Naive room closed algorithm. Requires that all the edges are drawn each
+// time for every room.
 function isClosedRoom(lines) {
+
+	// Check for duplicate lines
+	for (var i = 0; i < lines.length; i += 1) {
+		var line = lines[i];
+		for (var j = i + 1; j < lines.length; j += 1) {
+			if (line == lines[j]) { // Duplicate found
+				return new Exception("Duplicate Wall");
+			}
+		}
+	}
+	
 	var pointCount = {};
 	
 	// Initialize all points to 0
@@ -25,8 +39,7 @@ function isClosedRoom(lines) {
 		return false;
 	}
 	
-	// TODO:
-	
 	return true;
 }
+
 
