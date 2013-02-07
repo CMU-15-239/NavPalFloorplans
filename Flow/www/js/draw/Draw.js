@@ -39,6 +39,8 @@ function mouseClicked(event) {
 		//console.log("p1: (" + CUR_LINE.p1.x + ", " + CUR_LINE.p1.y + ")    p2: (" + CUR_LINE.p2.x + ", " + CUR_LINE.p2.y + ")");
 		ACTIVE_SPACE.addWall(CUR_LINE);
 	}
+	
+	console.log(isClosedRoom(ACTIVE_SPACE.walls));
 	LAST_POINT = new Point(CUR_POINT.x, CUR_POINT.y);
 	
 	ACTIVE_SPACE.draw();

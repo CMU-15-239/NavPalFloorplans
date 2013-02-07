@@ -21,19 +21,22 @@ function isClosedRoom(lines) {
 	var pointCount = {};
 	
 	// Initialize all points to 0
-	for line in lines {
+	for (var i = 0; i < lines.length; i += 1) {
+		line = lines[i];
+		console.log(lines.length);
 		pointCount[line.p1.toString()] = 0;
 		pointCount[line.p2.toString()] = 0;
 	}
 	
 	// Count the number of times each point appears
-	for line in lines {
+	for (var i = 0; i < lines.length; i += 1) {
+		line = lines[i];
 		pointCount[line.p1.toString()] += 1;
 		pointCount[line.p2.toString()] += 1;
 	}
 	
 	// Check if every point appeared twice
-	for point in pointCount {
+	for (point in pointCount) {
 		if (pointCount[point] > 2) {
 			return new Exception("Degree too high");
 		}
