@@ -7,7 +7,7 @@ function isClosedRoom(lines) {
 	for (var i = 0; i < lines.length; i += 1) {
 		var line = lines[i];
 		for (var j = i + 1; j < lines.length; j += 1) {
-			if (line == lines[j]) { // Duplicate found
+			if (line.equals(lines[j])) { // Duplicate found
 				return new Exception("Duplicate Wall");
 			}
 		}
@@ -37,9 +37,12 @@ function isClosedRoom(lines) {
 	
 	// Check if every point appeared twice
 	for (point in pointCount) {
+		// If the user created something that is not a room, give exception
 		if (pointCount[point] > 2) {
-			return new Exception("Degree too high");
+			return new Exception("Degree too high"); 
 		}
+	}
+	for (point in pointCount) {
 		if (pointCount[point] != 2) {
 			return false;
 		}
