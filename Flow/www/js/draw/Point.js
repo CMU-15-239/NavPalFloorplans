@@ -8,6 +8,7 @@
 function Point(x, y) {
 	this.x = x;
 	this.y = y;
+	this.isSnap = false;
 }
 
 /**
@@ -15,8 +16,40 @@ function Point(x, y) {
  * Parameters: p: The Point to check against.
  * Returns: true iff p and this have the same x and y coordinates.
 **/
-Point.prototype.equals = function(Point p) {
+Point.prototype.equals = function(p) {
 	return (this.x == p.x && this.y = p.y); 
-};
+}
+
+Point.prototype.draw = function(isSnapped) {
+	CANVAS.fillStyle = POINT_COLOR;
+	CANVAS.beginPath();
+    CANVAS.arc(this.x, this.y, POINT_SIZE, 0, 2*Math.PI, false);
+    CANVAS.fill();
+	if (this.isSnap == true) {
+		CANVAS.beginPath();
+		CANVAS.arc(this.x, this.y, SNAP_RADIUS, 0, 2*Math.PI, false);
+		CANVAS.lineWidth = WALL_WIDTH;
+		CANVAS.stroke();
+	}
+}
+
+Point.prototype.setSnap = function(snap) {
+	this.isSnap = snap;
+}
+
+Point.prototype.toString = function() {
+	return this.x + "," + this.y;
+}
+
+Point.prototype.setXY = function(x,y) {
+	this.x = x;
+	this.y = y;
+}
+
+Point.prototype.distance = function(p) {
+	var dx = Math.abs(this.x - p.x);
+	var dy = Math.abs(this.y - p.y);
+	return Math.sqrt(dx*dx + dy*dy);
+}
 
 

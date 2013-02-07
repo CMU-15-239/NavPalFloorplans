@@ -8,6 +8,7 @@ function Space() {
 	//this.anchor = {x: px, y: py};
 	this.doors = [];
 	this.walls = [];
+	this.points = [];
 	this.type = ""; //"room" or "hallway"
 	this.label = ""; //room number
 	this.isClosed = false;
@@ -26,8 +27,24 @@ Space.prototype.isHallway = function() {
  * Paremters: l: The line to add.
  * Returns: undefined
 **/
-Space.addWall(Line l) {
-	this.doors.push(l);
+Space.prototype.addWall = function(l) {
+	this.walls.push(l);
 }
+
+Space.prototype.addPoint = function(p) {
+	this.points.push(p);
+}
+
+Space.prototype.draw = function() {
+	for (var i = 0; i < this.walls.length; i++) {
+		this.walls[i].draw(true);
+	}
+	
+	/*for (var j = 0; j < this.points.length; j++) {
+		this.points[j].draw();
+	}*/
+}
+
+
 
 
