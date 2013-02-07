@@ -19,4 +19,8 @@ Point.prototype.equals = function(Point p) {
 	return (this.x == p.x && this.y = p.y); 
 };
 
-
+function distance(point) {
+	var dx = Math.abs(this.x - point.x);
+	var dy = Math.abs(this.y - point.y);
+	return Math.sqrt(dx * dx + dy * dy);
+}
