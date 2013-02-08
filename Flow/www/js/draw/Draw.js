@@ -24,7 +24,7 @@ function lineToolAction(cursorX, cursorY) {
 
 	for (var i = 0; i < ALL_WALLS.length; i++) {
 		var line = ALL_WALLS[i];
-		console.log(line.distanceToPoint(CUR_POINT));
+		//console.log(line.distanceToPoint(CUR_POINT));
 		if (line.distanceToPoint(CUR_POINT) < SNAP_RADIUS) {
 			line.snapToLine(CUR_POINT);
 		}
