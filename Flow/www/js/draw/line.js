@@ -30,8 +30,8 @@ Line.prototype.equals = function (l) {
 
 Line.prototype.draw = function (drawPoints) {
 	if (drawPoints === true) {
-		this.p1.draw();
-		this.p2.draw();
+		//this.p1.draw();
+		//this.p2.draw();
 	}
 	
 	//console.log("p1: (" + this.p1.x + ", " + this.p1.y + ")    p2: (" + this.p2.x + ", " + this.p2.y + ")");

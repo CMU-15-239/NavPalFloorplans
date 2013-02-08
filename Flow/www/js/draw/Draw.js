@@ -9,16 +9,11 @@ var CUR_LINE;
 function mouseMoved(event) {
 	redraw();
 	CUR_POINT = new Point(event.pageX, event.pageY);
-	
-	if (LAST_POINT !== undefined) {
-		CUR_LINE = new Line(LAST_POINT, CUR_POINT);
-		CUR_LINE.draw(true);
-	}
-	
+
 	//console.log(ACTIVE_SPACE.points[0]);
 	for (var i = 0; i < ACTIVE_SPACE.points.length - 1; i++) {
 		var p = ACTIVE_SPACE.points[i];
-		p.setSnap(false);
+		//p.setSnap(false); // TODO: this does not suffice, must set ALL snaps to false
 		// If a point is close enough, SNAP it
 		if (CUR_POINT.distance(p) <= SNAP_RADIUS) {
 			CUR_POINT.x = p.x;
@@ -26,6 +21,11 @@ function mouseMoved(event) {
 			p.setSnap(true);
 			break; // Only snap to a single point
 		}
+	}
+	
+	if (LAST_POINT !== undefined) {
+		CUR_LINE = new Line(LAST_POINT, CUR_POINT);
+		CUR_LINE.draw(true);
 	}
 	
 	CUR_POINT.draw();

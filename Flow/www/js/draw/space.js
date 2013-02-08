@@ -40,9 +40,9 @@ Space.prototype.draw = function() {
 		this.walls[i].draw(true);
 	}
 	
-	/*for (var j = 0; j < this.points.length; j++) {
+	for (var j = 0; j < this.points.length; j++) {
 		this.points[j].draw();
-	}*/
+	}
 }
 
 
