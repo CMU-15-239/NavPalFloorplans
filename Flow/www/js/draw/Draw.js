@@ -10,7 +10,17 @@ function mouseMoved(event) {
 	redraw();
 	CUR_POINT = new Point(event.pageX, event.pageY);
 
+	for (var i = 0; i < ACTIVE_SPACE.walls.length; i++) {
+		var line = ACTIVE_SPACE.walls[i];
+		console.log(line.distanceToPoint(CUR_POINT));
+		if (line.distanceToPoint(CUR_POINT) < SNAP_RADIUS) {
+			line.snapToLine(CUR_POINT);
+		}
+	}
+	
 	//console.log(ACTIVE_SPACE.points[0]);
+	
+	// Don't snap to most recent point
 	for (var i = 0; i < ACTIVE_SPACE.points.length - 1; i++) {
 		var p = ACTIVE_SPACE.points[i];
 		//p.setSnap(false); // TODO: this does not suffice, must set ALL snaps to false

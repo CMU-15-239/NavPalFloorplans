@@ -10,8 +10,8 @@ function Line(p1, p2) {
 	this.p2 = p2;
 	
 	// Put line in form ax + by + c = 0
-	this.a = p2.x - p1.x;
-	this.b = p1.y - p2.y;
+	this.a = p1.y - p2.y;
+	this.b = p2.x - p1.x;
 	this.c = p1.x * (p2.y - p1.y) - p1.y * (p2.x - p1.x);
 	this.distConst = Math.sqrt(this.a * this.a + this.b * this.b);
 }
@@ -48,6 +48,39 @@ Line.prototype.setPoints = function(p1, p2) {
 	this.p2 = p2;
 }
 	
+Line.prototype.signPointToLine = function(point) {
+	return this.a * point.x + this.b * point.y + this.c;
+}
+
 Line.prototype.distanceToPoint = function(point) {
-	return Math.abs(this.a * point.x + this.b * point.y + this.c) / this.distConst;
+	return Math.abs(this.signPointToLine(point)) / this.distConst;
+}
+
+Line.prototype.snapToLine = function(point) {
+	var d = this.distanceToPoint(point);
+	var ratio = d / this.distConst;
+	var dx = ratio * this.a;
+	var dy = ratio * this.b;
+	if (this.signPointToLine(point) > 0) {
+		dx *= -1;
+		dy *= -1;
+	} 
+	
+	var newX = point.x + dx;
+	var newY = point.y + dy;
+	
+	//point.x = newX;
+	//point.y = newY;
+	
+	//console.log("new " + newX + "," + newY + "  and points:" + this.
+	// Check that the new x,y coordinates are along the line segment
+	if (((this.p1.x >= newX && newX >= this.p2.x) ||
+		 (this.p1.x <= newX && newX <= this.p2.x)) &&
+		 ((this.p1.y >= newY && newY >= this.p2.y) ||
+		 (this.p1.y <= newY && newY <= this.p2.y))) {
+			console.log("ON SEGMENT");
+			point.x = newX;
+			point.y = newY;
+		 }
+	
 }
