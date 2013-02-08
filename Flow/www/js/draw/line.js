@@ -83,3 +83,9 @@ Line.prototype.snapToLine = function(point) {
 		 }
 	
 }
+
+Line.prototype.breakIntoTwo = function(p) {
+	var newLine1 = new Line(this.p1, p);
+	var newLine2 = new Line(this.p2, p);
+	return {l1: newLine1, l2: newLine2};
+}

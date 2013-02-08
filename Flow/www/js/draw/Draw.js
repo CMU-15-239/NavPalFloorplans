@@ -4,9 +4,11 @@ var CUR_POINT;
 
 var CUR_LINE;
 
+var SNAPPED_TO_LINE;
+
 var CAN_SNAP_TO_LAST = false;
 
-var ABOUT_TO_SNAP = false;
+var ABOUT_TO_SNAP_TO_POINT = false;
 
 var DISPLAY_DOT = true;
 
@@ -27,7 +29,10 @@ function lineToolAction(cursorX, cursorY) {
 		//console.log(line.distanceToPoint(CUR_POINT));
 		if (line.distanceToPoint(CUR_POINT) < SNAP_RADIUS) {
 			line.snapToLine(CUR_POINT);
+			SNAPPED_TO_LINE = line;
+			break;
 		}
+		SNAPPED_TO_LINE = undefined;
 	}
 	
 	var lastSnapIndex = ALL_POINTS.length - 1;
@@ -43,10 +48,10 @@ function lineToolAction(cursorX, cursorY) {
 			CUR_POINT.x = p.x;
 			CUR_POINT.y = p.y;
 			p.setSnap(true);
-			ABOUT_TO_SNAP = true;
+			ABOUT_TO_SNAP_TO_POINT = true;
 			break; // Only snap to a single point
 		}
-		ABOUT_TO_SNAP = false;
+		ABOUT_TO_SNAP_TO_POINT = false;
 	}
 	
 	if (LAST_POINT !== undefined) {
@@ -60,9 +65,16 @@ function lineToolAction(cursorX, cursorY) {
 function mouseClicked(event) {
 	redraw();
 	if (STATE === "line_tool") {
-		if (ABOUT_TO_SNAP === false) {
+		if (ABOUT_TO_SNAP_TO_POINT === false) {
 			//Now we know that the current point will be permanent on the drawn floor plan.
 			ALL_POINTS.push(CUR_POINT);
+		}
+		if (SNAPPED_TO_LINE !== undefined) {
+			//break line into two based on current point
+			var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
+			ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
+			ALL_WALLS.push(twoNewLines.l1);
+			ALL_WALLS.push(twoNewLines.l2);
 		}
 		if (LAST_POINT !== undefined) {
 			//console.log("p1: (" + CUR_LINE.p1.x + ", " + CUR_LINE.p1.y + ")    p2: (" + CUR_LINE.p2.x + ", " + CUR_LINE.p2.y + ")");
