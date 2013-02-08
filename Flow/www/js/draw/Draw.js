@@ -105,7 +105,7 @@ function keyPressed(event) {
 	if (keyCode === 13 || keyCode === 32) {
 		redraw();
 		if (STATE === "line_tool") {
-			STATE = "select";
+			STATE = "select_tool";
 			resetLineGlobals();
 			CAN_SNAP_TO_LAST = true;
 		}

@@ -29,4 +29,11 @@ $(document).ready(function ()
 		return false;
 	}); 
 	
+	$(".tool").click(function() {
+		$(".tool").removeClass("active");
+		$(this).addClass("active");
+		
+		STATE = $(this).attr("id");
+	});
+	
 });
