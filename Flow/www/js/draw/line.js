@@ -78,7 +78,6 @@ Line.prototype.snapToLine = function(point) {
 		 (this.p1.x <= newX && newX <= this.p2.x)) &&
 		 ((this.p1.y >= newY && newY >= this.p2.y) ||
 		 (this.p1.y <= newY && newY <= this.p2.y))) {
-			console.log("ON SEGMENT");
 			point.x = newX;
 			point.y = newY;
 		 }
