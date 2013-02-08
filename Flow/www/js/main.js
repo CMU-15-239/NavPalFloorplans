@@ -15,6 +15,18 @@ $(document).ready(function ()
     can.addEventListener("mousemove", mouseMoved);
     /*CANVAS.addEventListener("mouseout", mouseOut);
     CANVAS.addEventListener("mouseover", mouseIn); */
-    can.addEventListener("click", mouseClicked);        
+    can.addEventListener("click", mouseClicked);    
+	//can.addEventListener("keypress", keyPressed);
+	
+	// Add tab index to ensure the canvas retains focus
+	$("#canvas").attr("tabindex", "0");
+	$("#canvas").keypress(function(event) {
+		keyPressed(event);
+	});
+    // Mouse down override to prevent default browser controls from appearing
+    $("canvas").mousedown(function(){
+		$(this).focus(); 
+		return false;
+	}); 
 	
 });

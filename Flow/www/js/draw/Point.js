@@ -23,6 +23,10 @@ Point.prototype.equals = function(p) {
 Point.prototype.draw = function(isSnapped) {
 	CANVAS.fillStyle = POINT_COLOR;
 	if (this.isSnap) {
+		CANVAS.beginPath();
+		CANVAS.arc(this.x, this.y, SNAP_RADIUS, 0, 2*Math.PI, false);
+		CANVAS.lineWidth = WALL_WIDTH;
+		CANVAS.stroke();
 		CANVAS.fillStyle = "rgb(0,255,0)";
 		this.isSnap = false;
 	}

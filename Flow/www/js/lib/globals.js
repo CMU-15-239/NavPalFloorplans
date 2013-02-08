@@ -5,6 +5,12 @@
 //Store all of the closed rooms.
 var ALL_CLOSED_ROOMS = [];
 
+//The array that stores all the walls drawn in the floorplan.
+var ALL_WALLS = []
+
+//The array that stores all the points in the floorplans.
+var ALL_POINTS = [];
+
 //The canvas instantiation.
 var CANVAS;
 
@@ -25,3 +31,7 @@ var WALL_WIDTH = 3;
 
 //The radius of the snap circle (in pixels).
 var SNAP_RADIUS = 15;
+
+//The current state of the canvas.
+var STATE = "line_tool";
+
