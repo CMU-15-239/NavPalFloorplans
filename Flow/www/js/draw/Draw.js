@@ -86,9 +86,16 @@ function drawWalls() {
 	}
 }
 
+function drawFloorPlan() {
+	if (window.FLOOR_PLAN != null) {
+		ctx.drawImage(FLOOR_PLAN,0,0);
+	}
+}
+
 
 function redraw() {
     CANVAS.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    drawFloorPlan();
 	drawWalls();
 }
 
