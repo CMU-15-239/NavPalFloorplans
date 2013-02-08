@@ -78,9 +78,14 @@ Line.prototype.snapToLine = function(point) {
 		 (this.p1.x <= newX && newX <= this.p2.x)) &&
 		 ((this.p1.y >= newY && newY >= this.p2.y) ||
 		 (this.p1.y <= newY && newY <= this.p2.y))) {
-			//console.log("ON SEGMENT");
 			point.x = newX;
 			point.y = newY;
 		 }
 	
+}
+
+Line.prototype.breakIntoTwo = function(p) {
+	var newLine1 = new Line(this.p1, p);
+	var newLine2 = new Line(this.p2, p);
+	return {l1: newLine1, l2: newLine2};
 }
