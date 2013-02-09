@@ -8,6 +8,7 @@
 function Line(p1, p2) {
 	this.p1 = p1;
 	this.p2 = p2;
+	this.isSelected = false;
 	
 	// Put line in form ax + by + c = 0
 	this.a = p1.y - p2.y;
