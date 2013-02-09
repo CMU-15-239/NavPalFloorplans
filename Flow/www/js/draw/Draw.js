@@ -66,6 +66,10 @@ function selectToolMouseMoved(cursorX, cursorY) {
 			p.x -= dx;
 			p.y -= dy;
 		}
+		for (var i = 0; i < ALL_WALLS.length; i++) {
+			var line = ALL_WALLS[i];
+			line.calculateForm(line.p1, line.p2);
+		}
 		PREVPOINT.x = cursorX;
 		PREVPOINT.y = cursorY;
 	}
@@ -81,7 +85,7 @@ function lineToolAction(cursorX, cursorY) {
 		if (line.distanceToPoint(CUR_POINT) < SNAP_RADIUS) {
 			line.snapToLine(CUR_POINT);
 			SNAPPED_TO_LINE = line;
-			break;
+			//break;
 		}
 	}
 	SNAPPED_TO_LINE = undefined;
@@ -122,15 +126,18 @@ function mouseClicked(event) {
 		}
 		else {
 			CUR_LINE.p2 = ABOUT_TO_SNAP_TO_POINT;
+			//CUR_POINT = new Point(ABOUT_TO_SNAP_TO_POINT.x, ABOUT_TO_SNAP_TO.y);
+			CUR_POINT = ABOUT_TO_SNAP_TO_POINT;
 			ABOUT_TO_SNAP_TO_POINT = false;
-		}
+			
+		} /*
 		if (SNAPPED_TO_LINE !== undefined) {
 			//break line into two based on current point
 			var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
 			ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
 			ALL_WALLS.push(twoNewLines.l1);
 			ALL_WALLS.push(twoNewLines.l2);
-		}
+		} */
 		if (LAST_POINT !== undefined) {
 			//console.log("p1: (" + CUR_LINE.p1.x + ", " + CUR_LINE.p1.y + ")    p2: (" + CUR_LINE.p2.x + ", " + CUR_LINE.p2.y + ")");
 			ALL_WALLS.push(CUR_LINE);
@@ -139,6 +146,8 @@ function mouseClicked(event) {
 		//console.log(isClosedRoom(ACTIVE_SPACE.walls));
 		LAST_POINT = CUR_POINT;//new Point(CUR_POINT.x, CUR_POINT.y);
 		CAN_SNAP_TO_LAST = false;
+		
+		
 	}
 	
 	drawWalls();

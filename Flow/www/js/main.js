@@ -38,7 +38,9 @@ $(document).ready(function ()
 		
 		STATE = $(this).attr("id");
 		if (STATE === "select_tool") {
-			
+			CUR_POINT = undefined;
+			LAST_POINT = undefined;
+			//resetLineGlobals();
 		}
 	});
 	
