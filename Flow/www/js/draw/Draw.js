@@ -24,15 +24,32 @@ function mouseDown(event) {
 		PREVPOINT.y = event.pageY;
 		
 		var pointsClicked = 0;
+		var mouseNearSelectedPoint = false;
 		for (var i = 0; i < ALL_POINTS.length; i ++) {
 			var p = ALL_POINTS[i];
 			if (PREVPOINT.distance(p) <= SNAP_RADIUS) {
-				if (p.isSelected === false) p.isSelected = true;
 				pointsClicked += 1;
+				if (p.isSelected === false) {
+					p.isSelected = true;
+					//If the user sets the mouse down near a selected point, just move
+					//around the selected points when they move.
+					mouseNearSelectedPoint = true;
+				}
+				else {
+					if (CNTRL_DOWN) {
+						p.isSelected = false;
+					}
+					else mouseNearSelectedPoint = true;
+				}
 			}
-			else {
-				//When the control key is held, we can select multiple points
-				if (!CNTRL_DOWN) {
+		}
+		//We need to loop through them all again because we can't be sure when 
+		//mouseNearSelectedPoint was set. We want to enable the user to move all the selected
+		//points if they click and drag near a selected point.
+		for (var i = 0; i < ALL_POINTS.length; i++) {
+			var p = ALL_POINTS[i];
+			if (PREVPOINT.distance(p) > SNAP_RADIUS) {
+				if (!CNTRL_DOWN && !mouseNearSelectedPoint) {
 					p.isSelected = false;
 				}
 			}
