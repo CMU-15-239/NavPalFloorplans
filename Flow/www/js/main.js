@@ -26,6 +26,12 @@ $(document).ready(function ()
 	$("#canvas").keypress(function(event) {
 		keyPressed(event);
 	});
+	$("canvas").keydown(function(event) {
+		keyDown(event);
+	});
+	$("canvas").keyup(function(event) {
+		keyUp(event);
+	});
     // Mouse down override to prevent default browser controls from appearing
     $("canvas").mousedown(function(){
 		$(this).focus(); 
@@ -42,6 +48,7 @@ $(document).ready(function ()
 			resetLineGlobals();
 			CAN_SNAP_TO_LAST = true;
 		}
+		selectToolInit();
 	});
 	
 });

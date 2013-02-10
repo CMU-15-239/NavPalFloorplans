@@ -10,6 +10,7 @@ function Point(x, y) {
 	this.y = y;
 	this.isSnap = false;
 	this.isSelected = false;
+	this.degree = 0;
 }
 
 /**
@@ -18,7 +19,8 @@ function Point(x, y) {
  * Returns: true iff p and this have the same x and y coordinates.
 **/
 Point.prototype.equals = function(p) {
-	return (this.x == p.x && this.y = p.y); 
+	if (p === undefined) return false;
+	else return (this.x === p.x && this.y === p.y); 
 }
 
 Point.prototype.draw = function(isSnapped) {

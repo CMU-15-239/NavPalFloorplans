@@ -13,7 +13,9 @@ var ABOUT_TO_SNAP_TO_POINT = false;
 var DISPLAY_DOT = true;
 
 var MOUSEDOWN = false;
+var CNTRL_DOWN = false;
 var PREVPOINT = new Point(0,0);
+var SELECT_RECT = {shouldDraw : false, p1: undefined, p2: undefined}
 
 function mouseDown(event) {
 	if (STATE === "select_tool") {
@@ -21,11 +23,25 @@ function mouseDown(event) {
 		PREVPOINT.x = event.pageX;
 		PREVPOINT.y = event.pageY;
 		
+		var pointsClicked = 0;
 		for (var i = 0; i < ALL_POINTS.length; i ++) {
 			var p = ALL_POINTS[i];
 			if (PREVPOINT.distance(p) <= SNAP_RADIUS) {
-				p.isSelected = !p.isSelected;
+				if (p.isSelected === false) p.isSelected = true;
+				pointsClicked += 1;
 			}
+			else {
+				//When the control key is held, we can select multiple points
+				if (!CNTRL_DOWN) {
+					p.isSelected = false;
+				}
+			}
+		}
+		//We can start drawing a selection rectangle.
+		if (pointsClicked === 0) {
+			SELECT_RECT.shouldDraw = true;
+			SELECT_RECT.p1 = new Point(event.pageX, event.pageY);
+			SELECT_RECT.p2 = SELECT_RECT.p1;
 		}
 	}
 }
@@ -33,10 +49,13 @@ function mouseDown(event) {
 function mouseUp(event) {
 	if (STATE === "select_tool") {
 		MOUSEDOWN = false;
+		//Update the ax + by = c form for each line.
 		for (var i = 0; i < ALL_WALLS.length; i++) {
 			var line = ALL_WALLS[i];
 			line.calculateForm(line.p1, line.p2);
 		}
+		
+		SELECT_RECT.shouldDraw = false;
 	}
 }
 
@@ -60,6 +79,7 @@ function selectToolInit() {
 	for (var i = 0; i < ALL_WALLS.length; i ++) {
 		ALL_WALLS[i].isSelected = false;
 	}
+	redraw();
 }
 
 function selectToolMouseMoved(cursorX, cursorY) {
@@ -67,16 +87,34 @@ function selectToolMouseMoved(cursorX, cursorY) {
 	if (MOUSEDOWN) {
 		var dx = PREVPOINT.x - cursorX;
 		var dy = PREVPOINT.y - cursorY;
-		for (var i = 0; i < ALL_POINTS.length; i ++) {
-			var p = ALL_POINTS[i];
-			if (p.isSelected) {
-				p.x -= dx;
-				p.y -= dy;
+		if (SELECT_RECT.shouldDraw === false) {
+			for (var i = 0; i < ALL_POINTS.length; i ++) {
+				var p = ALL_POINTS[i];
+				if (p.isSelected) {
+					p.x -= dx;
+					p.y -= dy;
+				}
 			}
 		}
 		
 		PREVPOINT.x = cursorX;
 		PREVPOINT.y = cursorY;
+		
+		if (SELECT_RECT.shouldDraw) {
+			SELECT_RECT.p2 = new Point(cursorX, cursorY);
+			var p1 = SELECT_RECT.p1;
+			var p2 = SELECT_RECT.p2;
+			for (var i = 0; i < ALL_POINTS.length; i ++) {
+				var p = ALL_POINTS[i];
+				if (((p.x >= p1.x && p.x <= p2.x) || (p.x <= p1.x && p.x >= p2.x)) &&
+					((p.y >= p1.y && p.y <= p2.y) || (p.y <= p1.y && p.y >= p2.y))) {
+					p.isSelected = true;
+				}
+				else {
+					p.isSelected = false;
+				}
+			}
+		}
 	}
 	
 }
@@ -150,6 +188,7 @@ function mouseClicked(event) {
 		if (SNAPPED_TO_LINE !== undefined && SNAPPED_TO_LINE !== true && ABOUT_TO_SNAP_TO_POINT === false) {
 			//break line into two based on current point
 			var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
+			CUR_POINT.degree += 2;
 			ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
 			ALL_WALLS.push(twoNewLines.l1);
 			ALL_WALLS.push(twoNewLines.l2);
@@ -157,6 +196,8 @@ function mouseClicked(event) {
 		if (LAST_POINT !== undefined && CUR_LINE !== undefined) {
 			//console.log("p1: (" + CUR_LINE.p1.x + ", " + CUR_LINE.p1.y + ")    p2: (" + CUR_LINE.p2.x + ", " + CUR_LINE.p2.y + ")");
 			ALL_WALLS.push(CUR_LINE);
+			CUR_LINE.p1.degree += 1;
+			CUR_LINE.p2.degree += 1;
 		}
 		//LAST_POINT = new Point(CUR_POINT.x, CUR_POINT.y);
 		LAST_POINT = CUR_POINT;
@@ -187,6 +228,16 @@ function redraw() {
     CANVAS.clearRect(0, 0, CANVAS.width, CANVAS.height);
     drawFloorPlan();
 	drawWalls();
+	if (SELECT_RECT.shouldDraw && !SELECT_RECT.p1.equals(SELECT_RECT.p2)) {
+		var p1 = SELECT_RECT.p1;
+		var p2 = SELECT_RECT.p2;
+		var width = p2.x - p1.x;
+		var height = p2.y - p1.y;
+		CANVAS.beginPath();
+		CANVAS.rect(p1.x, p1.y, width, height);
+		CANVAS.fillStyle = 'rgba(51,153,255,.5)';
+		CANVAS.fill();
+	}
 }
 
 function keyPressed(event) {
@@ -205,6 +256,77 @@ function keyPressed(event) {
 		}
 	}
 }
+
+function keyDown(event) {
+	var keyCode = event.keyCode;
+	//Ctrl key
+	if (keyCode === 17) {
+		CNTRL_DOWN = true;
+	}
+}
+
+function keyUp(event) {
+	var keyCode = event.keyCode;
+	//Ctrl key
+	if (keyCode === 17) {
+		CNTRL_DOWN = false;
+	}
+	//Delete key
+	else if (keyCode === 46) {
+		//Delete all the selected points and walls
+		if (STATE === "select_tool") {
+			var pointsToDelete = [];
+			for (var i = 0; i < ALL_POINTS.length; i++) {
+				var p = ALL_POINTS[i];
+				if (p.isSelected) {
+					pointsToDelete.push(p);
+					//Remove the point from the points array.
+					ALL_POINTS.splice(i, 1);
+					//Note that the point array size just changed
+					i -= 1;
+				}
+			}
+			//Now delete all the walls that contain a point to delete.
+			var numDeletedWalls = 0;
+			for (var j = 0; j < ALL_WALLS.length; j++) {
+				var l = ALL_WALLS[j];
+				for (var m = 0; m < pointsToDelete.length; m++) {
+					var p = pointsToDelete[m];
+					if (l.p1.equals(p) || l.p2.equals(p)) {
+						ALL_WALLS[j] = false;
+						numDeletedWalls += 1;
+						l.p1.degree -= 1;
+						l.p2.degree -= 1;
+						break;
+					}
+				}
+			}
+			//Now we actually have to splice out the walls we want to remove.
+			var index = 0;
+			while (numDeletedWalls > 0) {
+				var l = ALL_WALLS[index];
+				if (l === false) {
+					ALL_WALLS.splice(index, 1);
+					numDeletedWalls -= 1;
+					index -= 1;
+				}
+				index += 1;
+			}
+			
+			//Delete the point because it's not connected to any line
+			for (var i = 0; i < ALL_POINTS.length; i++) {
+				var p = ALL_POINTS[i];
+				if (p.degree <= 0) {
+					//Remove the point from the points array.
+					ALL_POINTS.splice(i, 1);
+					i -= 1;
+				}
+			}
+			redraw();
+		}
+	}
+}
+		
 
 function unselectAll() {
 	for (var i = 0; i < ALL_WALLS.length; i++) {
