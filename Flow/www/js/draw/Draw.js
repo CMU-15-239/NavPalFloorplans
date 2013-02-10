@@ -12,14 +12,69 @@ var ABOUT_TO_SNAP_TO_POINT = false;
 
 var DISPLAY_DOT = true;
 
+var MOUSEDOWN = false;
+var PREVPOINT = new Point(0,0);
+
+function mouseDown(event) {
+	if (STATE === "select_tool") {
+		MOUSEDOWN = true;
+		PREVPOINT.x = event.pageX;
+		PREVPOINT.y = event.pageY;
+		
+		for (var i = 0; i < ALL_POINTS.length; i ++) {
+			var p = ALL_POINTS[i];
+			
+		}
+	}
+}
+
+function mouseUp(event) {
+	if (STATE === "select_tool") {
+		MOUSEDOWN = false;
+	}
+}
+
 function mouseMoved(event) {
 	redraw();
 	if (STATE === "line_tool") {
 		lineToolAction(event.pageX, event.pageY);
 	}
+	if (STATE === "select_tool") {
+		selectToolMouseMoved(event.pageX, event.pageY);
+	}
 	drawWalls();
 }
 	
+// Unselect everything when the user switches to the select tool
+function selectToolInit() {
+	for (var i = 0; i < ALL_POINTS.length; i ++) {
+		ALL_POINTS[i].isSelected = false;
+	}
+	
+	for (var i = 0; i < ALL_WALLS.length; i ++) {
+		ALL_WALLS[i].isSelected = false;
+	}
+}
+
+function selectToolMouseMoved(cursorX, cursorY) {
+	
+	if (MOUSEDOWN) {
+		var dx = PREVPOINT.x - cursorX;
+		var dy = PREVPOINT.y - cursorY;
+		for (var i = 0; i < ALL_POINTS.length; i ++) {
+			var p = ALL_POINTS[i];
+			p.x -= dx;
+			p.y -= dy;
+		}
+		for (var i = 0; i < ALL_WALLS.length; i++) {
+			var line = ALL_WALLS[i];
+			line.calculateForm(line.p1, line.p2);
+		}
+		PREVPOINT.x = cursorX;
+		PREVPOINT.y = cursorY;
+	}
+	
+}
 	
 function lineToolAction(cursorX, cursorY) {
 	CUR_POINT = new Point(cursorX, cursorY);
@@ -52,8 +107,7 @@ function lineToolAction(cursorX, cursorY) {
 			CUR_POINT.x = p.x;
 			CUR_POINT.y = p.y;
 			p.setSnap(true);
-			ABOUT_TO_SNAP_TO_POINT = true;
-			//SNAPPED_TO_LINE = undefined;
+			ABOUT_TO_SNAP_TO_POINT = p;
 			break; // Only snap to a single point
 		}
 		ABOUT_TO_SNAP_TO_POINT = false;
@@ -74,6 +128,13 @@ function mouseClicked(event) {
 			//Now we know that the current point will be permanent on the drawn floor plan.
 			ALL_POINTS.push(CUR_POINT);
 		}
+		else {
+			CUR_LINE.p2 = ABOUT_TO_SNAP_TO_POINT;
+			//CUR_POINT = new Point(ABOUT_TO_SNAP_TO_POINT.x, ABOUT_TO_SNAP_TO.y);
+			CUR_POINT = ABOUT_TO_SNAP_TO_POINT;
+			ABOUT_TO_SNAP_TO_POINT = false;
+			
+		} 
 		if (SNAPPED_TO_LINE !== undefined && SNAPPED_TO_LINE !== true && ABOUT_TO_SNAP_TO_POINT === false) {
 			//break line into two based on current point
 			var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
@@ -85,8 +146,6 @@ function mouseClicked(event) {
 			//console.log("p1: (" + CUR_LINE.p1.x + ", " + CUR_LINE.p1.y + ")    p2: (" + CUR_LINE.p2.x + ", " + CUR_LINE.p2.y + ")");
 			ALL_WALLS.push(CUR_LINE);
 		}
-		
-		//console.log(isClosedRoom(ACTIVE_SPACE.walls));
 		//LAST_POINT = new Point(CUR_POINT.x, CUR_POINT.y);
 		LAST_POINT = CUR_POINT;
 		CAN_SNAP_TO_LAST = false;

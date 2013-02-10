@@ -15,7 +15,10 @@ $(document).ready(function ()
     can.addEventListener("mousemove", mouseMoved);
     /*CANVAS.addEventListener("mouseout", mouseOut);
     CANVAS.addEventListener("mouseover", mouseIn); */
-    can.addEventListener("click", mouseClicked);    
+    can.addEventListener("click", mouseClicked); 
+	
+    can.addEventListener('mousedown', mouseDown);
+    can.addEventListener('mouseup', mouseUp);	
 	//can.addEventListener("keypress", keyPressed);
 	
 	// Add tab index to ensure the canvas retains focus
@@ -34,6 +37,11 @@ $(document).ready(function ()
 		$(this).addClass("active");
 		
 		STATE = $(this).attr("id");
+		if (STATE === "select_tool") {
+			CUR_POINT = undefined;
+			LAST_POINT = undefined;
+			//resetLineGlobals();
+		}
 	});
 	
 });

@@ -9,6 +9,7 @@ function Point(x, y) {
 	this.x = x;
 	this.y = y;
 	this.isSnap = false;
+	this.isSelected = false;
 }
 
 /**

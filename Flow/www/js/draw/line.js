@@ -8,7 +8,16 @@
 function Line(p1, p2) {
 	this.p1 = p1;
 	this.p2 = p2;
+	this.isSelected = false;
 	
+	this.calculateForm(p1, p2);
+}
+
+Line.prototype.calculateForm = function(p1, p2) {
+
+	if (p1 === undefined || p2 === undefined) {
+		return;
+	}
 	// Put line in form ax + by + c = 0
 	this.a = p1.y - p2.y;
 	this.b = p2.x - p1.x;
