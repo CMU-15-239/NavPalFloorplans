@@ -84,16 +84,20 @@ function selectToolMouseMoved(cursorX, cursorY) {
 function lineToolAction(cursorX, cursorY) {
 	CUR_POINT = new Point(cursorX, cursorY);
 
+	var snapFound = false;
 	for (var i = 0; i < ALL_WALLS.length; i++) {
 		var line = ALL_WALLS[i];
 		//console.log(line.distanceToPoint(CUR_POINT));
-		if (line.distanceToPoint(CUR_POINT) < SNAP_RADIUS) {
-			line.snapToLine(CUR_POINT);
-			SNAPPED_TO_LINE = line;
-			//break;
+		if (line.distanceToPoint(CUR_POINT) <= SNAP_RADIUS) {
+			if (line.snapToLine(CUR_POINT)) {
+				SNAPPED_TO_LINE = line;
+				snapFound = true;
+			}
 		}
 	}
-	SNAPPED_TO_LINE = undefined;
+	if (!snapFound) {
+		SNAPPED_TO_LINE = undefined;
+	}
 	
 	var lastSnapIndex = ALL_POINTS.length - 1;
 	//If the user is allowed to snap to the most recently drawn point, accommodate that
@@ -142,24 +146,22 @@ function mouseClicked(event) {
 				CUR_POINT = ABOUT_TO_SNAP_TO_POINT;
 			}
 			
-		} /*
-		if (SNAPPED_TO_LINE !== undefined) {
+		} 
+		if (SNAPPED_TO_LINE !== undefined && SNAPPED_TO_LINE !== true && ABOUT_TO_SNAP_TO_POINT === false) {
 			//break line into two based on current point
 			var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
 			ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
 			ALL_WALLS.push(twoNewLines.l1);
 			ALL_WALLS.push(twoNewLines.l2);
-		} */
+		}
 		if (LAST_POINT !== undefined && CUR_LINE !== undefined) {
 			//console.log("p1: (" + CUR_LINE.p1.x + ", " + CUR_LINE.p1.y + ")    p2: (" + CUR_LINE.p2.x + ", " + CUR_LINE.p2.y + ")");
 			ALL_WALLS.push(CUR_LINE);
 		}
-		
-		//console.log(isClosedRoom(ACTIVE_SPACE.walls));
-		LAST_POINT = CUR_POINT;//new Point(CUR_POINT.x, CUR_POINT.y);
+		//LAST_POINT = new Point(CUR_POINT.x, CUR_POINT.y);
+		LAST_POINT = CUR_POINT;
 		CAN_SNAP_TO_LAST = false;
-		
-		
+		SNAPPED_TO_LINE = true;
 	}
 	
 	drawWalls();

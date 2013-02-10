@@ -89,7 +89,9 @@ Line.prototype.snapToLine = function(point) {
 		 (this.p1.y <= newY && newY <= this.p2.y))) {
 			point.x = newX;
 			point.y = newY;
+			return true;
 		 }
+	return false;
 	
 }
 
