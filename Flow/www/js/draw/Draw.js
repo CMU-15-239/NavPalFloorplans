@@ -31,6 +31,10 @@ function mouseDown(event) {
 function mouseUp(event) {
 	if (STATE === "select_tool") {
 		MOUSEDOWN = false;
+		for (var i = 0; i < ALL_WALLS.length; i++) {
+			var line = ALL_WALLS[i];
+			line.calculateForm(line.p1, line.p2);
+		}
 	}
 }
 
@@ -66,10 +70,7 @@ function selectToolMouseMoved(cursorX, cursorY) {
 			p.x -= dx;
 			p.y -= dy;
 		}
-		for (var i = 0; i < ALL_WALLS.length; i++) {
-			var line = ALL_WALLS[i];
-			line.calculateForm(line.p1, line.p2);
-		}
+		
 		PREVPOINT.x = cursorX;
 		PREVPOINT.y = cursorY;
 	}
@@ -120,15 +121,23 @@ function lineToolAction(cursorX, cursorY) {
 function mouseClicked(event) {
 	redraw();
 	if (STATE === "line_tool") {
-		if (ABOUT_TO_SNAP_TO_POINT === false) {
+		if (ABOUT_TO_SNAP_TO_POINT === false && CUR_POINT !== undefined) {
 			//Now we know that the current point will be permanent on the drawn floor plan.
 			ALL_POINTS.push(CUR_POINT);
 		}
 		else {
-			CUR_LINE.p2 = ABOUT_TO_SNAP_TO_POINT;
-			//CUR_POINT = new Point(ABOUT_TO_SNAP_TO_POINT.x, ABOUT_TO_SNAP_TO.y);
-			CUR_POINT = ABOUT_TO_SNAP_TO_POINT;
-			ABOUT_TO_SNAP_TO_POINT = false;
+			if (CUR_LINE !== undefined) {
+				CUR_LINE.p2 = ABOUT_TO_SNAP_TO_POINT;
+				//CUR_POINT = new Point(ABOUT_TO_SNAP_TO_POINT.x, ABOUT_TO_SNAP_TO.y);
+				CUR_POINT = ABOUT_TO_SNAP_TO_POINT;
+				ABOUT_TO_SNAP_TO_POINT = false;
+			}
+			// This solves a bug where right after switching to the
+			// line tool, you select the most recent point placed on the map
+			else {
+				console.log("ANCHORED!!! FUKKKKKKK");
+				CUR_POINT = ABOUT_TO_SNAP_TO_POINT;
+			}
 			
 		} /*
 		if (SNAPPED_TO_LINE !== undefined) {
@@ -138,7 +147,7 @@ function mouseClicked(event) {
 			ALL_WALLS.push(twoNewLines.l1);
 			ALL_WALLS.push(twoNewLines.l2);
 		} */
-		if (LAST_POINT !== undefined) {
+		if (LAST_POINT !== undefined && CUR_LINE !== undefined) {
 			//console.log("p1: (" + CUR_LINE.p1.x + ", " + CUR_LINE.p1.y + ")    p2: (" + CUR_LINE.p2.x + ", " + CUR_LINE.p2.y + ")");
 			ALL_WALLS.push(CUR_LINE);
 		}
