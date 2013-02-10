@@ -32,7 +32,6 @@ Point.prototype.draw = function(isSnapped) {
 		this.isSnap = false;
 	}
 	if (this.isSelected) {
-		console.log("selected");
 		CANVAS.fillStyle = "rgb(255,0,0)";
 	}
 	CANVAS.beginPath();

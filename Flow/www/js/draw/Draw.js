@@ -24,9 +24,7 @@ function mouseDown(event) {
 		for (var i = 0; i < ALL_POINTS.length; i ++) {
 			var p = ALL_POINTS[i];
 			if (PREVPOINT.distance(p) <= SNAP_RADIUS) {
-				console.log("In range");
-				if (p.isSelected) p.isSelected = false;
-				else p.isSelected = true;
+				p.isSelected = !p.isSelected;
 			}
 		}
 	}
@@ -200,7 +198,20 @@ function keyPressed(event) {
 			resetLineGlobals();
 			CAN_SNAP_TO_LAST = true;
 		}
+		if (STATE === "select_tool") {
+			unselectAll();
+		}
 	}
+}
+
+function unselectAll() {
+	for (var i = 0; i < ALL_WALLS.length; i++) {
+		ALL_WALLS[i].isSelected = false;
+	}
+	for (var j = 0; j < ALL_POINTS.length; j++) {
+		ALL_POINTS[j].isSelected = false;
+	}
+	redraw();
 }
 
 function resetLineGlobals() {
