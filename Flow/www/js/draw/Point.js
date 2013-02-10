@@ -31,9 +31,13 @@ Point.prototype.draw = function(isSnapped) {
 		CANVAS.fillStyle = "rgb(0,255,0)";
 		this.isSnap = false;
 	}
+	if (this.isSelected) {
+		CANVAS.fillStyle = "rgb(255,0,0)";
+	}
 	CANVAS.beginPath();
     CANVAS.arc(this.x, this.y, POINT_SIZE, 0, 2*Math.PI, false);
     CANVAS.fill();
+
 	CANVAS.fillStyle = POINT_COLOR;
 	
 	/*
