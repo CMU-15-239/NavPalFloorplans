@@ -23,7 +23,11 @@ function mouseDown(event) {
 		
 		for (var i = 0; i < ALL_POINTS.length; i ++) {
 			var p = ALL_POINTS[i];
-			
+			if (PREVPOINT.distance(p) <= SNAP_RADIUS) {
+				console.log("In range");
+				if (p.isSelected) p.isSelected = false;
+				else p.isSelected = true;
+			}
 		}
 	}
 }
@@ -67,8 +71,10 @@ function selectToolMouseMoved(cursorX, cursorY) {
 		var dy = PREVPOINT.y - cursorY;
 		for (var i = 0; i < ALL_POINTS.length; i ++) {
 			var p = ALL_POINTS[i];
-			p.x -= dx;
-			p.y -= dy;
+			if (p.isSelected) {
+				p.x -= dx;
+				p.y -= dy;
+			}
 		}
 		
 		PREVPOINT.x = cursorX;
@@ -135,7 +141,6 @@ function mouseClicked(event) {
 			// This solves a bug where right after switching to the
 			// line tool, you select the most recent point placed on the map
 			else {
-				console.log("ANCHORED!!! FUKKKKKKK");
 				CUR_POINT = ABOUT_TO_SNAP_TO_POINT;
 			}
 			
