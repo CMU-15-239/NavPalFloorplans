@@ -133,7 +133,7 @@ hr.soften {
 
 /* Upload button */
 .masthead .btn {
-  margin-top: 50px;
+  margin-top: 40px;
   padding: 19px 24px;
   font-size: 24px;
   font-weight: 200;
@@ -199,6 +199,7 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
   font-size: 80px;
   line-height: 1;
   letter-spacing: -2px;
+      margin-bottom: 20px;
 }
 .masthead p {
   font-size: 36px;
@@ -929,6 +930,8 @@ form.bs-docs-example {
   }
   .masthead h1 {
     font-size: 90px;
+        margin-bottom: 20px;
+
   }
   .masthead p,
   .masthead .btn {
@@ -1072,12 +1075,6 @@ body {
   font-size: 13px;
   line-height: 18px;
   color: #333333;
-}
-
-
-.masthead h1 {
-font-size: 80px;
-letter-spacing: -2px;
 }
 
 h1, h2, h3, h4, h5, h6 {
