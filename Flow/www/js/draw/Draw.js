@@ -236,7 +236,7 @@ function drawWalls() {
 
 function drawFloorPlan() {
 	if (window.FLOOR_PLAN != null) {
-		ctx.drawImage(FLOOR_PLAN,0,0, CANVAS.width, CANVAS.height);
+		CANVAS.drawImage(FLOOR_PLAN,0,0, CANVAS.width, CANVAS.height);
 	}
 }
 

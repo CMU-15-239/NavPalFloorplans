@@ -1,11 +1,16 @@
 #canvas {
 	border: 2px solid black;
-	/*position: relative;*/
+	/*width: inherit;*/
+	position: relative;
+}
+
+#canvasRow {
+	margin-top: 50px;
 }
 
 #buttons {
-	height: 504px;
-	width: 200px;
+	height: inherit;
+	width: inherit;
 	background-color: blue;
 }
 
