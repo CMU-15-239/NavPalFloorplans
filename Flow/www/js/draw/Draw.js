@@ -18,6 +18,7 @@ var PREVPOINT = new Point(0,0);
 var SELECT_RECT = {shouldDraw : false, p1: undefined, p2: undefined}
 
 function mouseDown(event) {
+	var newlySelectedPoints = [];
 	if (STATE === "select_tool") {
 		MOUSEDOWN = true;
 		PREVPOINT.x = event.pageX - CANVAS.x;
@@ -25,22 +26,44 @@ function mouseDown(event) {
 		
 		var pointsClicked = 0;
 		var mouseNearSelectedPoint = false;
+		//Select points
 		for (var i = 0; i < ALL_POINTS.length; i ++) {
 			var p = ALL_POINTS[i];
 			if (PREVPOINT.distance(p) <= SNAP_RADIUS) {
 				pointsClicked += 1;
 				if (p.isSelected === false) {
 					p.isSelected = true;
-					//If the user sets the mouse down near a selected point, just move
-					//around the selected points when they move.
-					mouseNearSelectedPoint = true;
+					newlySelectedPoints.push(p);
 				}
 				else {
 					if (CNTRL_DOWN) {
 						p.isSelected = false;
 					}
-					else mouseNearSelectedPoint = true;
+					else {
+						//If the user sets the mouse down near a selected point, just move
+						//around the selected points when they move.
+						mouseNearSelectedPoint = true;
+					}
 				}
+			}
+		}
+		//Select lines
+		for (var i = 0; i < ALL_WALLS.length; i++) {
+			var line = ALL_WALLS[i];
+			if (line.distanceToPoint(PREVPOINT) <= SNAP_RADIUS) {
+				if (CNTRL_DOWN && line.isSelected) line.isSelected = false;
+				else line.isSelected = true;
+				//Only select the line if neither of its vertices were clicked immediately before it.
+				for (var j = 0; j < newlySelectedPoints.length; j++) {
+					var curP = newlySelectedPoints[j];
+					if (line.p1.equals(curP) || line.p2.equals(curP)) {
+						line.isSelected = false;
+						break;
+					}
+				}
+			}
+			else {
+				if (!CNTRL_DOWN) line.isSelected = false;
 			}
 		}
 		//We need to loop through them all again because we can't be sure when 
@@ -121,19 +144,31 @@ function selectToolMouseMoved(cursorX, cursorY) {
 			SELECT_RECT.p2 = new Point(cursorX, cursorY);
 			var p1 = SELECT_RECT.p1;
 			var p2 = SELECT_RECT.p2;
+			//Select points
 			for (var i = 0; i < ALL_POINTS.length; i ++) {
 				var p = ALL_POINTS[i];
-				if (((p.x >= p1.x && p.x <= p2.x) || (p.x <= p1.x && p.x >= p2.x)) &&
-					((p.y >= p1.y && p.y <= p2.y) || (p.y <= p1.y && p.y >= p2.y))) {
+				if (pointInRect(p, p1, p2)) {
 					p.isSelected = true;
 				}
 				else {
 					p.isSelected = false;
 				}
 			}
+			//Select walls
+			for (var i = 0; i < ALL_WALLS.length; i++) {
+				var w = ALL_WALLS[i];
+				if (pointInRect(w.p1, p1, p2) && pointInRect(w.p2, p1, p2)) {
+					w.isSelected = true;
+				}
+				else w.isSelected = false;
+			}
 		}
 	}
-	
+}
+
+function pointInRect(pointToCheck, boundingP1, boundingP2) {
+	return (((pointToCheck.x >= boundingP1.x && pointToCheck.x <= boundingP2.x) || (pointToCheck.x <= boundingP1.x && pointToCheck.x >= boundingP2.x)) &&
+	((pointToCheck.y >= boundingP1.y && pointToCheck.y <= boundingP2.y) || (pointToCheck.y <= boundingP1.y && pointToCheck.y >= boundingP2.y)));
 }
 	
 function lineToolAction(cursorX, cursorY) {
@@ -344,7 +379,6 @@ function keyUp(event) {
 	}
 }
 		
-
 function unselectAll() {
 	for (var i = 0; i < ALL_WALLS.length; i++) {
 		ALL_WALLS[i].isSelected = false;
@@ -359,4 +393,18 @@ function resetLineGlobals() {
 	LAST_POINT = undefined;
 	//CUR_POINT = undefined;
 	CUR_LINE = undefined;
+}
+
+// Make the 'Add Room' button active.
+function enableAddRoom() {
+	$("#add_room").removeAttr("disabled");
+}
+
+// Make the 'Add Room' button inactive.
+function disableAddRoom() {
+	$("#add_room").attr("disabled");
+}
+
+// This will be called when the 'Add Room' button is active and clicked.
+function addRoomClicked() {
 }
