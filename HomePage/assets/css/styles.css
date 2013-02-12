@@ -1,0 +1,26 @@
+#canvas {
+	border: 2px solid black;
+	/*position: relative;*/
+}
+
+#buttons {
+	height: 504px;
+	width: 200px;
+	background-color: blue;
+}
+
+.tool {
+	margin: 15px auto;
+	width: 40px;
+	background-color: orange;
+	padding: 20px 20px;
+}
+
+.tool:hover {
+	cursor: pointer;
+}
+
+#buttons .active {
+	background-color: yellow;
+}
+
