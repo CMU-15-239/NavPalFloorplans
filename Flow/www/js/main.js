@@ -12,6 +12,8 @@ $(document).ready(function ()
 
 	CANVAS.width = CANVAS_WIDTH;
 	CANVAS.height = CANVAS_HEIGHT;
+	CANVAS.x = can.offsetLeft;
+	CANVAS.y = can.offsetTop;
     can.addEventListener("mousemove", mouseMoved);
     /*CANVAS.addEventListener("mouseout", mouseOut);
     CANVAS.addEventListener("mouseover", mouseIn); */

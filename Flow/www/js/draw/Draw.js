@@ -20,8 +20,8 @@ var SELECT_RECT = {shouldDraw : false, p1: undefined, p2: undefined}
 function mouseDown(event) {
 	if (STATE === "select_tool") {
 		MOUSEDOWN = true;
-		PREVPOINT.x = event.pageX;
-		PREVPOINT.y = event.pageY;
+		PREVPOINT.x = event.pageX - CANVAS.x;
+		PREVPOINT.y = event.pageY - CANVAS.y;
 		
 		var pointsClicked = 0;
 		var mouseNearSelectedPoint = false;
@@ -57,7 +57,7 @@ function mouseDown(event) {
 		//We can start drawing a selection rectangle.
 		if (pointsClicked === 0) {
 			SELECT_RECT.shouldDraw = true;
-			SELECT_RECT.p1 = new Point(event.pageX, event.pageY);
+			SELECT_RECT.p1 = new Point(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 			SELECT_RECT.p2 = SELECT_RECT.p1;
 		}
 	}
@@ -79,10 +79,10 @@ function mouseUp(event) {
 function mouseMoved(event) {
 	redraw();
 	if (STATE === "line_tool") {
-		lineToolAction(event.pageX, event.pageY);
+		lineToolAction(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 	}
 	if (STATE === "select_tool") {
-		selectToolMouseMoved(event.pageX, event.pageY);
+		selectToolMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 	}
 	drawWalls();
 }
