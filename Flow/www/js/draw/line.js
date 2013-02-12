@@ -43,13 +43,17 @@ Line.prototype.draw = function (drawPoints) {
 		//this.p2.draw();
 	}
 	
-	//console.log("p1: (" + this.p1.x + ", " + this.p1.y + ")    p2: (" + this.p2.x + ", " + this.p2.y + ")");
-	
+	var oldStroke = CANVAS.strokeStyle;
+	if (this.isSelected === true) {
+		CANVAS.strokeStyle = "yellow";
+	}
 	CANVAS.lineWidth = WALL_WIDTH;
 	CANVAS.beginPath();
 	CANVAS.moveTo(this.p1.x,this.p1.y);
 	CANVAS.lineTo(this.p2.x,this.p2.y);
 	CANVAS.stroke();
+	//Reset the stroke style
+	CANVAS.strokeStyle = oldStroke;
 }
 
 Line.prototype.setPoints = function(p1, p2) {
@@ -63,6 +67,16 @@ Line.prototype.signPointToLine = function(point) {
 
 Line.prototype.distanceToPoint = function(point) {
 	return Math.abs(this.signPointToLine(point)) / this.distConst;
+}
+
+Line.prototype.pointNearLine = function(point, radius) {
+	var close = (Math.abs(this.signPointToLine(point)) / this.distConst) <= radius;
+	var onLine = ((this.p1.x >= point.x && point.x >= this.p2.x) ||
+		 (this.p1.x <= point.x && point.x <= this.p2.x)) &&
+		 ((this.p1.y >= point.y && point.y >= this.p2.y) ||
+		 (this.p1.y <= point.y && point.y <= this.p2.y));
+		 
+	return close && onLine;
 }
 
 Line.prototype.snapToLine = function(point) {

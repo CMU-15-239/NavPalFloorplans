@@ -49,8 +49,16 @@ $(document).ready(function ()
 			CUR_POINT = undefined;
 			resetLineGlobals();
 			CAN_SNAP_TO_LAST = true;
+			$("#add_room").css("display", "block");
+		}
+		else if (STATE === "line_tool") {
+			$("#add_room").css("display", "none");
 		}
 		selectToolInit();
+	});
+	
+	$('#add_room').click(function () {
+		addRoomClicked();
 	});
 	
 });
