@@ -45,7 +45,7 @@ Line.prototype.draw = function (drawPoints) {
 	
 	var oldStroke = CANVAS.strokeStyle;
 	if (this.isSelected === true) {
-		CANVAS.strokeStyle = "rgb(255,0,0)";
+		CANVAS.strokeStyle = "yellow";
 	}
 	CANVAS.lineWidth = WALL_WIDTH;
 	CANVAS.beginPath();
@@ -67,6 +67,16 @@ Line.prototype.signPointToLine = function(point) {
 
 Line.prototype.distanceToPoint = function(point) {
 	return Math.abs(this.signPointToLine(point)) / this.distConst;
+}
+
+Line.prototype.pointNearLine = function(point, radius) {
+	var close = (Math.abs(this.signPointToLine(point)) / this.distConst) <= radius;
+	var onLine = ((this.p1.x >= point.x && point.x >= this.p2.x) ||
+		 (this.p1.x <= point.x && point.x <= this.p2.x)) &&
+		 ((this.p1.y >= point.y && point.y >= this.p2.y) ||
+		 (this.p1.y <= point.y && point.y <= this.p2.y));
+		 
+	return close && onLine;
 }
 
 Line.prototype.snapToLine = function(point) {

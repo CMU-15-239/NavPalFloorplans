@@ -25,7 +25,9 @@ function mouseDown(event) {
 		PREVPOINT.y = event.pageY - CANVAS.y;
 		
 		var pointsClicked = 0;
+		var linesClicked = 0;
 		var mouseNearSelectedPoint = false;
+		var mouseNearSelectedLine = false;
 		//Select points
 		for (var i = 0; i < ALL_POINTS.length; i ++) {
 			var p = ALL_POINTS[i];
@@ -50,8 +52,10 @@ function mouseDown(event) {
 		//Select lines
 		for (var i = 0; i < ALL_WALLS.length; i++) {
 			var line = ALL_WALLS[i];
-			if (line.distanceToPoint(PREVPOINT) <= SNAP_RADIUS) {
+			if (line.pointNearLine(PREVPOINT, SNAP_RADIUS)) {
+				linesClicked += 1;
 				if (CNTRL_DOWN && line.isSelected) line.isSelected = false;
+				else if (!CNTRL_DOWN && line.isSelected) mouseNearSelectedLine = true;
 				else line.isSelected = true;
 				//Only select the line if neither of its vertices were clicked immediately before it.
 				for (var j = 0; j < newlySelectedPoints.length; j++) {
@@ -77,8 +81,16 @@ function mouseDown(event) {
 				}
 			}
 		}
+		for (var i = 0; i < ALL_WALLS.length; i++) {
+			var l = ALL_WALLS[i];
+			if (!l.pointNearLine(PREVPOINT, SNAP_RADIUS)) {
+				if (!CNTRL_DOWN && !mouseNearSelectedLine) {
+					l.isSelected = false;
+				}
+			}
+		}
 		//We can start drawing a selection rectangle.
-		if (pointsClicked === 0) {
+		if (pointsClicked === 0 && linesClicked === 0) {
 			SELECT_RECT.shouldDraw = true;
 			SELECT_RECT.p1 = new Point(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 			SELECT_RECT.p2 = SELECT_RECT.p1;
@@ -133,6 +145,15 @@ function selectToolMouseMoved(cursorX, cursorY) {
 				if (p.isSelected) {
 					p.x -= dx;
 					p.y -= dy;
+				}
+			}
+			for (var i = 0; i < ALL_WALLS.length; i++) {
+				var l = ALL_WALLS[i];
+				if (l.isSelected) {
+					l.p1.x -= dx;
+					l.p2.x -= dx;
+					l.p1.y -= dy;
+					l.p2.y -= dy;
 				}
 			}
 		}
@@ -342,6 +363,13 @@ function keyUp(event) {
 			var numDeletedWalls = 0;
 			for (var j = 0; j < ALL_WALLS.length; j++) {
 				var l = ALL_WALLS[j];
+				if (l.isSelected) {
+					ALL_WALLS[j] = false;
+					numDeletedWalls += 1;
+					l.p1.degree -= 1;
+					l.p2.degree -= 1;
+					continue;
+				}
 				for (var m = 0; m < pointsToDelete.length; m++) {
 					var p = pointsToDelete[m];
 					if (l.p1.equals(p) || l.p2.equals(p)) {
