@@ -15,7 +15,7 @@ var ALL_POINTS = [];
 var CANVAS;
 
 //The width of the canvas (in pixels).
-var CANVAS_WIDTH = 500;
+var CANVAS_WIDTH = 780;
 
 //The height of the canvas (in pixels).
 var CANVAS_HEIGHT = 500;

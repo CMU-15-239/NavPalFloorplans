@@ -300,6 +300,7 @@ function mouseClicked(event) {
 	drawWalls();
 }
 
+//Draw the walls
 function drawWalls() {
 	for (var i = 0; i < ALL_WALLS.length; i++) {
 		ALL_WALLS[i].draw();
