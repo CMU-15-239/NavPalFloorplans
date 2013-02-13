@@ -13,10 +13,14 @@ function isClosedRoom(lines) {
 		}
 	}
 	
+	console.log("entered");
+	
 	// A room must have at least two lines
 	if (lines.length <= 2) {
+		console.log(lines.length + " not enough lines");
 		return false;
 	}
+	//console.log("at least two lines");
 	
 	var pointCount = {};
 	
@@ -39,9 +43,11 @@ function isClosedRoom(lines) {
 	for (point in pointCount) {
 		// If the user created something that is not a room, give exception
 		if (pointCount[point] > 2) {
+			//console.log("point: " + point.toString);
 			return new Exception("Degree too high"); 
 		}
 	}
+	//console.log("no degree too high");
 	for (point in pointCount) {
 		if (pointCount[point] != 2) {
 			return false;
