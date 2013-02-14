@@ -6,18 +6,43 @@ function uploadImage(e){
     reader.onload = function(event){
         window.FLOOR_PLAN = new Image();
         FLOOR_PLAN.onload = function() {
-	        var orgWidth = this.width;
-	        var orgHeight = this.height;
-	        var ratio = CANVAS_WIDTH/orgWidth;
-	        this.width = CANVAS_WIDTH;
-	        this.height = orgHeight * ratio;
-	        CANVAS_HEIGHT = orgHeight * ratio;
-	        $('#canvas').height(CANVAS_HEIGHT)
-	        $('#buttons').height(CANVAS_HEIGHT)
-	        $('#canvas').width(CANVAS_WIDTH)
-	        console.log(this.height);
+	        $('#canvas').height(this.height)
+	        $('#buttons').height(this.height)
+	        $('#canvas').width(this.width)
+	        can.width = this.width;
+			can.height = this.height;
+			CANVAS.width = this.width;
+			CANVAS.height = this.height;
+			CANVAS.x = can.offsetLeft;
+			CANVAS.y = can.offsetTop;
 	    }
 	    FLOOR_PLAN.src = event.target.result;
     }
     reader.readAsDataURL(e.target.files[0]);     
 }
+
+// function uploadImage(e){
+//     var reader = new FileReader();
+//     reader.onload = function(event){
+//         window.FLOOR_PLAN = new Image();
+//         FLOOR_PLAN.onload = function() {
+// 	        var orgWidth = this.width;
+// 	        var orgHeight = this.height;
+// 	        var ratio = CANVAS_WIDTH/orgWidth;
+// 	        this.width = CANVAS_WIDTH;
+// 	        this.height = orgHeight * ratio;
+// 	        CANVAS_HEIGHT = orgHeight * ratio;
+// 	        $('#canvas').height(CANVAS_HEIGHT)
+// 	        $('#buttons').height(CANVAS_HEIGHT)
+// 	        $('#canvas').width(CANVAS_WIDTH)
+// 	        can.width = CANVAS_WIDTH;
+// 			can.height = CANVAS_HEIGHT;
+// 			CANVAS.width = CANVAS_WIDTH;
+// 			CANVAS.height = CANVAS_HEIGHT;
+// 			CANVAS.x = can.offsetLeft;
+// 			CANVAS.y = can.offsetTop;
+// 	    }
+// 	    FLOOR_PLAN.src = event.target.result;
+//     }
+//     reader.readAsDataURL(e.target.files[0]);     
+// }
