@@ -11,8 +11,8 @@ function Graph(spaces) {
 
 Graph.prototype.getPswNodeByLine = function(line) {
 	for(var p = 0; p < this.pswNodes.length; p++) {
-		if(this.pwsNodes[p].lineRep.equals(line)) {
-			return this.pwsNodes[p]
+		if(this.pswNodes[p].lineRep.equals(line)) {
+			return this.pswNodes[p]
 		}
 	}
 	return null;

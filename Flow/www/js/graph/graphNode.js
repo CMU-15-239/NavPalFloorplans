@@ -12,3 +12,7 @@ function GraphNode(type, edges, prefix) {
 GraphNode.prototype.newId = function(prefix) {
 	this.id = prefix+"_"+JSON.stringify(this).hashCode();
 };
+
+GraphNode.prototype.test = function() {
+	console.log("in graphNode");
+};
