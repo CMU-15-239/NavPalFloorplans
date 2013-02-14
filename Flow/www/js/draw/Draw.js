@@ -108,6 +108,25 @@ function mouseUp(event) {
 		}
 		
 		SELECT_RECT.shouldDraw = false;
+		
+		var selectedLines = [];
+		// Figure out if the selected lines define a valid room
+		for (var i = 0; i < ALL_WALLS.length; i++) {
+			var line = ALL_WALLS[i];
+			if (line.isSelected) {
+				console.log("line selected " + i);
+				selectedLines.push(line);
+			}
+		}
+		console.log(selectedLines.length + " entered lines");
+		if (isClosedRoom(selectedLines) == true) {
+			console.log("VALID room");
+			enableAddRoom();
+		}
+		else {
+			console.log("INVALID room");
+			disableAddRoom();
+		}
 	}
 }
 
@@ -281,6 +300,7 @@ function mouseClicked(event) {
 	drawWalls();
 }
 
+//Draw the walls
 function drawWalls() {
 	for (var i = 0; i < ALL_WALLS.length; i++) {
 		ALL_WALLS[i].draw();
@@ -430,9 +450,10 @@ function enableAddRoom() {
 
 // Make the 'Add Room' button inactive.
 function disableAddRoom() {
-	$("#add_room").attr("disabled");
+	$("#add_room").attr("disabled", "true");
 }
 
 // This will be called when the 'Add Room' button is active and clicked.
 function addRoomClicked() {
+	console.log("CLICKED ADD ROOM");
 }
