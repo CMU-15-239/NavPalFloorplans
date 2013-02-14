@@ -15,11 +15,11 @@ function Space() {
 }
 
 Space.prototype.isRoom = function() {
-	return this.classification === "room";
+	return this.type === "room";
 };
 
 Space.prototype.isHallway = function() {
-	return this.classification === "hallway";
+	return this.type === "hallway";
 };
 
 /**

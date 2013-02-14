@@ -13,6 +13,13 @@ function Line(p1, p2) {
 	this.calculateForm(p1, p2);
 }
 
+Line.prototype.toOutput = function() {
+	return {
+		p1: {x: this.p1.x, y: this.p1.y},
+		p2: {x: this.p1.x, y: this.p1.y}
+	};
+}
+
 Line.prototype.calculateForm = function(p1, p2) {
 
 	if (p1 === undefined || p2 === undefined) {
