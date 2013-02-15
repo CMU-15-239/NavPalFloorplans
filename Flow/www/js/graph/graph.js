@@ -1,12 +1,14 @@
 //graph.js
 
-function Graph(spaces) {
+function Graph(spaces, callback, callbackVars) {
 	this.spaceNodes = [];
 	this.pswNodes = [];
 	
 	for(var s = 0; s < spaces.length; s++) {
 		this.addGraphNode(spaces[s]);
 	}
+	
+	if(util.exists(callback)) {callback.apply(callbackVars);}
 }
 
 Graph.prototype.getPswNodeByLine = function(line) {
@@ -50,14 +52,14 @@ Graph.prototype.addGraphNode = function(space) {
 Graph.prototype.getGraphNodeById = function(id) {
 	var searchArr = [];
 	if(id.indexOf("psw_") === 0) {
-		searchArr = this.doorNodes;
+		searchArr = this.pswNodes;
 	}
 	else if(id.indexOf("space_") === 0) {
 		searchArr = this.spaceNodes;
 	}
 	
 	for(var n = 0; n < searchArr.length; n++) {
-		if(searchArr[n].id === space) {
+		if(searchArr[n].id === id) {
 			return searchArr[n];
 		}
 	}
