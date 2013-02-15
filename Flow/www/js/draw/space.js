@@ -4,14 +4,17 @@
 //create once you have an enclosed space and have all the data for it
 //px and py be the pixel point where the user clicks to classify the room
 //and this is probably needed for graphNode
-function Space() {
+function Space(walls) {
 	//this.anchor = {x: px, y: py};
 	this.doors = [];
-	this.walls = [];
+	this.walls = walls;
 	this.points = [];
 	this.type = ""; //"room" or "hallway"
 	this.label = ""; //room number
 	this.isClosed = false;
+	//A polygon that appears when the user selects the space.
+	this.selectPoly = new Polygon(this.walls);
+	this.drawPoly = false;
 }
 
 Space.prototype.isRoom = function() {
@@ -36,13 +39,7 @@ Space.prototype.addPoint = function(p) {
 }
 
 Space.prototype.draw = function() {
-	for (var i = 0; i < this.walls.length; i++) {
-		this.walls[i].draw(true);
-	}
-	
-	for (var j = 0; j < this.points.length; j++) {
-		this.points[j].draw();
-	}
+	if (this.drawPoly) this.selectPoly.draw();
 }
 
 
