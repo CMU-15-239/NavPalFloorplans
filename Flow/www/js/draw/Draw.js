@@ -12,6 +12,8 @@ var ABOUT_TO_SNAP_TO_POINT = false;
 
 var DISPLAY_DOT = true;
 
+var SELECTED_LINES = [];
+
 var MOUSEDOWN = false;
 var CNTRL_DOWN = false;
 var PREVPOINT = new Point(0,0);
@@ -110,17 +112,17 @@ function mouseUp(event) {
 		
 		SELECT_RECT.shouldDraw = false;
 		
-		var selectedLines = [];
+		SELECTED_LINES = [];
 		// Figure out if the selected lines define a valid room
 		for (var i = 0; i < ALL_WALLS.length; i++) {
 			var line = ALL_WALLS[i];
 			if (line.isSelected) {
 				//console.log("line selected " + i);
-				selectedLines.push(line);
+				SELECTED_LINES.push(line);
 			}
 		}
 		//console.log(selectedLines.length + " entered lines");
-		if (isClosedRoom(selectedLines) == true) {
+		if (isClosedRoom(SELECTED_LINES) == true) {
 			//console.log("VALID room");
 			enableAddRoom();
 		}
@@ -336,6 +338,7 @@ function redraw() {
 		CANVAS.fillStyle = 'rgba(51,153,255,.5)';
 		CANVAS.fill();
 	}
+	if (NEW_POLY !== undefined) NEW_POLY.draw();
 }
 
 function keyPressed(event) {
@@ -458,7 +461,10 @@ function disableAddRoom() {
 	$("#add_room").attr("disabled", "true");
 }
 
+
+var NEW_POLY = undefined;
 // This will be called when the 'Add Room' button is active and clicked.
 function addRoomClicked() {
-	console.log("CLICKED ADD ROOM");
+	NEW_POLY = new Polygon(SELECTED_LINES);
+	redraw();
 }
