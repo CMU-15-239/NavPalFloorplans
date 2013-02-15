@@ -98,6 +98,7 @@ function mouseDown(event) {
 	}
 }
 
+/* NOTE TO PAUL: I think I fixed the bug with the phantom 0-length wall */
 function mouseUp(event) {
 	if (STATE === "select_tool") {
 		MOUSEDOWN = false;
@@ -114,17 +115,17 @@ function mouseUp(event) {
 		for (var i = 0; i < ALL_WALLS.length; i++) {
 			var line = ALL_WALLS[i];
 			if (line.isSelected) {
-				console.log("line selected " + i);
+				//console.log("line selected " + i);
 				selectedLines.push(line);
 			}
 		}
-		console.log(selectedLines.length + " entered lines");
+		//console.log(selectedLines.length + " entered lines");
 		if (isClosedRoom(selectedLines) == true) {
-			console.log("VALID room");
+			//console.log("VALID room");
 			enableAddRoom();
 		}
 		else {
-			console.log("INVALID room");
+			//console.log("INVALID room");
 			disableAddRoom();
 		}
 	}
@@ -279,11 +280,15 @@ function mouseClicked(event) {
 		} 
 		if (SNAPPED_TO_LINE !== undefined && SNAPPED_TO_LINE !== true && ABOUT_TO_SNAP_TO_POINT === false) {
 			//break line into two based on current point
-			var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
-			CUR_POINT.degree += 2;
-			ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
-			ALL_WALLS.push(twoNewLines.l1);
-			ALL_WALLS.push(twoNewLines.l2);
+			//Don't break up if the one of the new lines we'd create has length of 0.
+			if (!SNAPPED_TO_LINE.p1.equals(CUR_POINT) && !SNAPPED_TO_LINE.p2.equals(CUR_POINT)) {
+				console.log("\n\nHERE\n\n");
+				var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
+				CUR_POINT.degree += 2;
+				ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
+				ALL_WALLS.push(twoNewLines.l1);
+				ALL_WALLS.push(twoNewLines.l2);
+			}
 		}
 		if (LAST_POINT !== undefined && CUR_LINE !== undefined) {
 			//console.log("p1: (" + CUR_LINE.p1.x + ", " + CUR_LINE.p1.y + ")    p2: (" + CUR_LINE.p2.x + ", " + CUR_LINE.p2.y + ")");
