@@ -284,7 +284,6 @@ function mouseClicked(event) {
 			//break line into two based on current point
 			//Don't break up if the one of the new lines we'd create has length of 0.
 			if (!SNAPPED_TO_LINE.p1.equals(CUR_POINT) && !SNAPPED_TO_LINE.p2.equals(CUR_POINT)) {
-				console.log("\n\nHERE\n\n");
 				var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
 				CUR_POINT.degree += 2;
 				ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
@@ -323,11 +322,17 @@ function drawFloorPlan() {
 	}
 }
 
+function drawSpaces() {
+	for (var i = 0; i < ALL_CLOSED_ROOMS.length; i++) {
+		ALL_CLOSED_ROOMS[i].draw();
+	}
+}
 
 function redraw() {
     CANVAS.clearRect(0, 0, CANVAS.width, CANVAS.height);
     drawFloorPlan();
 	drawWalls();
+	drawSpaces();
 	if (SELECT_RECT.shouldDraw && !SELECT_RECT.p1.equals(SELECT_RECT.p2)) {
 		var p1 = SELECT_RECT.p1;
 		var p2 = SELECT_RECT.p2;
@@ -338,7 +343,6 @@ function redraw() {
 		CANVAS.fillStyle = 'rgba(51,153,255,.5)';
 		CANVAS.fill();
 	}
-	if (NEW_POLY !== undefined) NEW_POLY.draw();
 }
 
 function keyPressed(event) {
@@ -461,10 +465,13 @@ function disableAddRoom() {
 	$("#add_room").attr("disabled", "true");
 }
 
-
-var NEW_POLY = undefined;
 // This will be called when the 'Add Room' button is active and clicked.
 function addRoomClicked() {
-	NEW_POLY = new Polygon(SELECTED_LINES);
+	var newSpace = new Space(SELECTED_LINES);
+	ALL_CLOSED_ROOMS.push(newSpace);
+	for (var i = 1; i <= ALL_CLOSED_ROOMS.length; i++) {
+		if (i === ALL_CLOSED_ROOMS.length) ALL_CLOSED_ROOMS[i-1].drawPoly = true;
+		else ALL_CLOSED_ROOMS[i-1].drawPoly = false;
+	}
 	redraw();
 }
