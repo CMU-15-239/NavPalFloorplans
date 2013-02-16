@@ -9,3 +9,13 @@ function PswNode(pswType, edges, lineRep) {
 
 PswNode.prototype = new GraphNode();
 PswNode.prototype.constructor = PswNode;
+
+PswNode.prototype.toOutput = function() {
+	return {
+		type: this.type,
+		edges: this.edges,
+		id: this.id,
+		pswType: this.pswType,
+		lineRep: this.lineRep.toOutput()
+	};
+};

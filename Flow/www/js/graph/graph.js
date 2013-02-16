@@ -11,6 +11,23 @@ function Graph(spaces, callback, callbackVars) {
 	if(util.exists(callback)) {callback.apply(callbackVars);}
 }
 
+Graph.prototype.toOutput = function() {
+	var outSpaceNodes = [];
+	for(var s = 0; s < this.spaceNodes.length; s++) {
+		outSpaceNodes.push(this.spaceNodes[s].toOutput());
+	}
+	
+	var outPswNodes = [];
+	for(var p = 0; p < this.pswNodes.length; p++) {
+		outPswNodes.push(this.pswNodes[p].toOutput());
+	}
+	
+	return {
+		spaceNodes: outSpaceNodes,
+		pswNodes: outPswNodes
+	};
+};
+
 Graph.prototype.getPswNodeByLine = function(line) {
 	for(var p = 0; p < this.pswNodes.length; p++) {
 		if(this.pswNodes[p].lineRep.equals(line)) {

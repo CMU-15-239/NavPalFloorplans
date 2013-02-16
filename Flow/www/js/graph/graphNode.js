@@ -9,6 +9,14 @@ function GraphNode(type, edges, prefix) {
 	this.newId(prefix);
 }
 
+GraphNode.prototype.toOutput = function() {
+	return {
+		type: this.type,
+		edges: this.edges,
+		id: this.id
+	};
+};
+
 GraphNode.prototype.newId = function(prefix) {
 	this.id = prefix+"_"+JSON.stringify(this).hashCode();
 };
