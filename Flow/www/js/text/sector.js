@@ -11,24 +11,29 @@ function pointOnLines(point, lines) {
 }
 
 function pointInShape(point, lines, width, height) {
-	var inShapeSegments = [];
 	if(!pointOnLines(point, lines)) {
+		var inShapeSegments = [];
 		var currP1 = null;
 		for(var rx = 0; rx < width; rx++) {
 			var currRayPt = {x: rx, y: point.y};
+			console.log("checkingPt: "+JSON.stringify(currRayPt));
 			if(pointOnLines(currRayPt, lines)) {
+				console.log("found intersection pt: "+JSON.stringify(currRayPt));
 				if(util.exists(currP1)) {
-					inShapeSegments.push(new Line(currP1, new Point(currRayPt.x, currRayPt.y)));
+					inShapeSegments.push(new Line(new Point(currP1.x, currP1.y), new Point(currRayPt.x, currRayPt.y)));
 					currP1 = null;
 				}
 				else {
-					currP1 = new Point(currRayPt.x, currRayPt.y);
+					currP1 = currRayPt;
+					console.log("p1: "+JSON.stringify(currP1));
 				}
 			}
 		}
+		console.log(inShapeSegments);
+		return pointOnLines(point, inShapeSegments);
 	}
-	
-	return pointOnLines(point, inShapeSegments);
+	console.log("pt on wall");
+	return false;
 }
 
 function findPointInShape(lines, width, height) {
@@ -57,16 +62,20 @@ function findPointInShape(lines, width, height) {
 		}
 	}
 	console.log(checkedVertices);
+	return null;
 }
 
 function floodFillShape(sector, lines, point, fillVal, emptyVal) {
 	var checkPts = [{x: point.x-1, y: point.y}, {x: point.x+1, y: point.y},
 					{x: point.x, y: point.y-1}, {x: point.x, y: point.y+1}];
 	
+	console.log("flood filling: "+JSON.stringify(point));
 	for(var cp = 0; cp < checkPts.length; cp++) {
 		var fPoint = checkPts[cp];
-		if(0 <= fPoint.x && fPoint.x <= sector[0].length
-			&& 0 <= fPoint.y && fPoint.y <= sector.length
+		//console.log("checkingPt: "+JSON.stringify(fPoint)+" sectorVal: "+sector[fPoint.y][fPoint.x]
+		//			+"pointOnLines: "+pointOnLines(fPoint, lines));
+		if(0 <= fPoint.x && fPoint.x < sector[0].length
+			&& 0 <= fPoint.y && fPoint.y < sector.length
 			&& sector[fPoint.y][fPoint.x] === emptyVal) {
 			sector[fPoint.y][fPoint.x] = fillVal;
 			if(!pointOnLines(fPoint, lines)) {
@@ -74,29 +83,39 @@ function floodFillShape(sector, lines, point, fillVal, emptyVal) {
 			}
 		}
 	}
-					
+	return sector;			
 }
 
 function fillSector(sector, lines, fillVal, emptyVal) {
 	var point = findPointInShape(lines, sector[0].length, sector.length);
-	floodFillShape(sector, lines, point, fillVal, emptyVal);
+	sector[point.y][point.x] = fillVal;
+	if(util.exists(point) && util.exists(point.x) && util.exists(point.y)) {
+		return floodFillShape(sector, lines, point, fillVal, emptyVal);
+	}
+	else {
+		alert("did not draw shape with lines: "+JSON.stringify(lines));
+		return sector;
+	}
 }
 
 
 function sector(spaces, width, height) {
 	var sector = [];
 	var emptyChar = '-1';
-	for (var row=0; row < width; row++) {
+	//x = col, y = row
+	for (var row=0; row < height; row++) {
 		sectorRow = [];
-		for (var col=0; col < height; col++) {
+		for (var col=0; col < width; col++) {
 			sectorRow.push(emptyChar);
 		}
 		sector.push(sectorRow);
 	}
 	
 	for(var s = 0; s < spaces.length; s++) {
-		fillSector(sector, spaces[s].walls, sector, ""+s, emptyChar)
+		console.log(spaces[s]);
+		sector = fillSector(sector, spaces[s].walls, ""+s, emptyChar)
 	}
 	
+	console.log(JSON.stringify(sector));
 	return sector;
 }
