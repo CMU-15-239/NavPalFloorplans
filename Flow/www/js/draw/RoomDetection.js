@@ -4,7 +4,7 @@ var visitedPoints = {};
 
 // Given a set of lines, return a set of rooms
 function detectRooms(lines) {
-	
+	//alert();
 	for (i = 0; i < lines.length; i++) {
 		console.log("Is line : " + i + " part of a room");
 		searchRoom(lines[i]);
@@ -19,6 +19,7 @@ function searchRoom(line) {
 	visitedPoints = {}
 	if (followWalls(true, line.p1, line, route)) {
 		console.log("FOUND ROOM");
+		//var room = makeRoom(route);
 	}
 	
 	//followWalls(false, line.p1, line, route);
@@ -39,9 +40,9 @@ function followWalls(counterClock, point, line, route) {
 	}	
 	
 	
-	var edges = getNeighbors(point, line);
+	var edges = getEdgeNeighbors(point, line);
 	//console.log("Edge count " + edges.length);
-	sortEdges(counterClock, edges); // does nothing currently
+	sortEdges(counterClock, edges, point, line);
 	
 	for (var i = 0; i < edges.length; i ++) {
 		var newLine = edges[i];
@@ -81,7 +82,7 @@ function followWalls(counterClock, point, line, route) {
 }
 
 // This can be more efficient some day...
-function getNeighbors(point, includedLine) {
+function getEdgeNeighbors(point, includedLine) {
 	var edges = [];
 	
 	for (var i = 0; i < ALL_WALLS.length; i++) {
@@ -96,7 +97,94 @@ function getNeighbors(point, includedLine) {
 	return edges;
 }
 
-function sortEdges(counterClock, edges) {
-	return;
-}
+function sortEdges(counterClock, edges, point, line) {
+	if (edges.length == 0) {
+		return;
+	}
 	
+	var orderedEdges = [];
+	// Selection sort
+	for (var count = 0; count < edges.length; count++) {
+		var closestLine = undefined;
+		var index = 0;
+		for (var i = 0; i < edges.length; i ++) {
+			var edge = edges[i];
+			
+			// True if edge < closestLine
+			if (shorterRotation(counterClock, point, line, edge, closestLine)) {
+				closestLine = edge;
+				index = count;
+			}
+		}
+		
+		orderedEdges.push(closestLine);
+		// at position index, remove 1 element
+		edges = edges.splice(index, 1);
+		
+	}
+	
+	
+	return orderedEdges;
+}
+
+// returns true if a is closer to line than b, moving cw, or ccw
+function shorterRotation(counterClock, point, line, a, b) {
+
+	// Assume we are going ccw, and return counterClock if a is closer	
+	var pc = point;
+	var p0 = line.otherPoint(point);
+	var pa = a.otherPoint(point);
+	var pb = b.otherPoint(point);
+	
+	// Determine which quadrant each line is in
+	var q0 = determineQuad(pc, p0);
+	var qa = determineQuad(pc, pa);
+	var qb = determineQuad(pc, pb);
+	
+	// Case 1: all three same quad
+	
+	// Case 2: all three all diff quad
+	
+	// Case 3: a and b same quad
+	
+	// Case 4: a and line same quad
+	
+	// Case 5: b and line same quad
+	
+}
+
+// Return which quadrant the line lies in 
+// (round to lower quad, if lines on axis)
+function determineQuad(pc, p) {
+	
+	// Quad 1 or 4
+	if (pc.x < p.x) {
+		if (pc.y <= p.y) { // Tie goes to q1
+			return 1;
+		}
+		else { 
+			return 4;
+		}
+	}
+	// Quad 2 or 3
+	else if (pc.x > p.x) {
+		if (pc.y <= p.y) { // Tie goes to q2
+			return 1;
+		}
+		else {
+			return 3;
+		}	
+	}
+	// Y axis
+	else { 
+		if (pc.y < p.y) { // round towards lower quad
+			return 1;
+		}
+		return 3;
+	}
+}
+
+function closerToZeroAngle(quad, a, b) {
+	
+}
+

@@ -130,3 +130,20 @@ Line.prototype.getSlope = function() {
 	var b = 0.0000001 
 	return -1.0 * this.a / b;
 }
+
+// Assume that point is on this line, return the other point
+Line.prototype.otherPoint = function(point) {
+	if (point.equals(this.p1)) {
+		return this.p2;
+	}
+	else {
+		return this.p1;
+	}
+}
+
+Line.prototype.magnitutde = function() {
+	var dx = Math.abs(this.p1.x - this.p2.x);
+	var dy = Math.abs(this.p1.y - this.p2.y);
+	return Math.sqrt(dx * dx + dy * dy);
+}
+
