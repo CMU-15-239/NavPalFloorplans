@@ -1,20 +1,26 @@
 //graphNode.js
 //a node in the graph structure
 
-function GraphNode(px, py, type, label, vertices, connections) {
-	this.anchor = {x: px, y: py};
+function GraphNode(type, edges, prefix) {
 	this.type = type;
-	this.label = label;
-	this.vertices = [];
-	this.connections = []; //refernces to other GraphNodes
-	if(Util.exists(vertices)) {this.vertices = vertices;}
-	if(Util.exists(connections)) {this.connections = connections;}
+	if(util.exists(edges)) {this.edges = edges;}
+	else {this.edges = [];}
+	this.id;
+	this.newId(prefix);
 }
 
-GraphNode.prototype.addVertice = function(px, py) {
-	this.vertices.push({x: px, y: py});
+GraphNode.prototype.toOutput = function() {
+	return {
+		type: this.type,
+		edges: this.edges,
+		id: this.id
+	};
 };
 
-GraphNode.prototype.addConnection = function(conn) {
-	this.connection.push(conn);
+GraphNode.prototype.newId = function(prefix) {
+	this.id = prefix+"_"+JSON.stringify(this).hashCode();
+};
+
+GraphNode.prototype.test = function() {
+	console.log("in graphNode");
 };

@@ -12,6 +12,8 @@ var ABOUT_TO_SNAP_TO_POINT = false;
 
 var DISPLAY_DOT = true;
 
+var SELECTED_LINES = [];
+
 var MOUSEDOWN = false;
 var CNTRL_DOWN = false;
 var PREVPOINT = new Point(0,0);
@@ -98,6 +100,7 @@ function mouseDown(event) {
 	}
 }
 
+/* NOTE TO PAUL: I think I fixed the bug with the phantom 0-length wall */
 function mouseUp(event) {
 	if (STATE === "select_tool") {
 		MOUSEDOWN = false;
@@ -109,22 +112,22 @@ function mouseUp(event) {
 		
 		SELECT_RECT.shouldDraw = false;
 		
-		var selectedLines = [];
+		SELECTED_LINES = [];
 		// Figure out if the selected lines define a valid room
 		for (var i = 0; i < ALL_WALLS.length; i++) {
 			var line = ALL_WALLS[i];
 			if (line.isSelected) {
-				console.log("line selected " + i);
-				selectedLines.push(line);
+				//console.log("line selected " + i);
+				SELECTED_LINES.push(line);
 			}
 		}
-		console.log(selectedLines.length + " entered lines");
-		if (isClosedRoom(selectedLines) == true) {
-			console.log("VALID room");
+		//console.log(selectedLines.length + " entered lines");
+		if (isClosedRoom(SELECTED_LINES) == true) {
+			//console.log("VALID room");
 			enableAddRoom();
 		}
 		else {
-			console.log("INVALID room");
+			//console.log("INVALID room");
 			disableAddRoom();
 		}
 	}
@@ -279,11 +282,14 @@ function mouseClicked(event) {
 		} 
 		if (SNAPPED_TO_LINE !== undefined && SNAPPED_TO_LINE !== true && ABOUT_TO_SNAP_TO_POINT === false) {
 			//break line into two based on current point
-			var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
-			CUR_POINT.degree += 2;
-			ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
-			ALL_WALLS.push(twoNewLines.l1);
-			ALL_WALLS.push(twoNewLines.l2);
+			//Don't break up if the one of the new lines we'd create has length of 0.
+			if (!SNAPPED_TO_LINE.p1.equals(CUR_POINT) && !SNAPPED_TO_LINE.p2.equals(CUR_POINT)) {
+				var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
+				CUR_POINT.degree += 2;
+				ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
+				ALL_WALLS.push(twoNewLines.l1);
+				ALL_WALLS.push(twoNewLines.l2);
+			}
 		}
 		if (LAST_POINT !== undefined && CUR_LINE !== undefined) {
 			//console.log("p1: (" + CUR_LINE.p1.x + ", " + CUR_LINE.p1.y + ")    p2: (" + CUR_LINE.p2.x + ", " + CUR_LINE.p2.y + ")");
@@ -316,11 +322,17 @@ function drawFloorPlan() {
 	}
 }
 
+function drawSpaces() {
+	for (var i = 0; i < ALL_CLOSED_ROOMS.length; i++) {
+		ALL_CLOSED_ROOMS[i].draw();
+	}
+}
 
 function redraw() {
     CANVAS.clearRect(0, 0, CANVAS.width, CANVAS.height);
     drawFloorPlan();
 	drawWalls();
+	drawSpaces();
 	if (SELECT_RECT.shouldDraw && !SELECT_RECT.p1.equals(SELECT_RECT.p2)) {
 		var p1 = SELECT_RECT.p1;
 		var p2 = SELECT_RECT.p2;
@@ -455,5 +467,11 @@ function disableAddRoom() {
 
 // This will be called when the 'Add Room' button is active and clicked.
 function addRoomClicked() {
-	console.log("CLICKED ADD ROOM");
+	var newSpace = new Space(SELECTED_LINES);
+	ALL_CLOSED_ROOMS.push(newSpace);
+	for (var i = 1; i <= ALL_CLOSED_ROOMS.length; i++) {
+		if (i === ALL_CLOSED_ROOMS.length) ALL_CLOSED_ROOMS[i-1].drawPoly = true;
+		else ALL_CLOSED_ROOMS[i-1].drawPoly = false;
+	}
+	redraw();
 }
