@@ -469,6 +469,9 @@ function disableAddRoom() {
 function addRoomClicked() {
 	var newSpace = new Space(SELECTED_LINES);
 	ALL_CLOSED_ROOMS.push(newSpace);
+	/*for (var j = 0; j < newSpace.walls.length; j++) {
+		console.log("Wall # " + (j+1) + " in room: " + newSpace.walls[j]);
+	}*/
 	for (var i = 1; i <= ALL_CLOSED_ROOMS.length; i++) {
 		if (i === ALL_CLOSED_ROOMS.length) ALL_CLOSED_ROOMS[i-1].drawPoly = true;
 		else ALL_CLOSED_ROOMS[i-1].drawPoly = false;

@@ -9,11 +9,11 @@ $(document).ready(function ()
 	can.width = CANVAS_WIDTH;
 	can.height = CANVAS_HEIGHT;
     CANVAS = can.getContext("2d");
-
 	CANVAS.width = CANVAS_WIDTH;
 	CANVAS.height = CANVAS_HEIGHT;
 	CANVAS.x = can.offsetLeft;
 	CANVAS.y = can.offsetTop;
+
     can.addEventListener("mousemove", mouseMoved);
     /*CANVAS.addEventListener("mouseout", mouseOut);
     CANVAS.addEventListener("mouseover", mouseIn); */
@@ -59,6 +59,10 @@ $(document).ready(function ()
 	
 	$('#add_room').click(function () {
 		addRoomClicked();
+	});
+	
+	$("#polyMap area").hover(function() {
+		alert("poop");
 	});
 	
 });

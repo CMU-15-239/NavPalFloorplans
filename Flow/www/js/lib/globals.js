@@ -35,3 +35,4 @@ var SNAP_RADIUS = 15;
 //The current state of the canvas.
 var STATE = "line_tool";
 
+

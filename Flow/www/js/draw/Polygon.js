@@ -6,7 +6,19 @@ var POLYGON_COLOR = 'rgba(51,153,255,.5)';
  * Returns: undefined.
 **/
 function Polygon(lines) {
-	this.points = polySort(lines);
+	var copyLines = [];
+	for (var i = 0; i < lines.length; i++) {
+		var curLine = lines[i];
+		copyLines.push(new Line(new Point(curLine.p1.x, curLine.p1.y), new Point(curLine.p2.x, curLine.p2.y)));
+	}
+	this.points = polySort(copyLines);
+	var mapCoords = "";
+	for (var i = 0; i < this.points.length; i++) {
+		var curP = this.points[i];
+		mapCoords += curP.x.toString() + ", " + curP.y.toString() + ", ";
+	}
+	mapCoords = mapCoords.substring(0, mapCoords.length - 2);
+	$("#changer").attr("coords", mapCoords);
 	this.color = POLYGON_COLOR;
 }
 
@@ -54,9 +66,9 @@ function polySort(lines) {
 	var lastPoint = orderedPoints[initLinesLength - 2];
 	if (curLine.p1.equals(lastPoint)) orderedPoints.push(curLine.p2);
 	else orderedPoints.push(curLine.p1);
-	for (var j = 0; j < orderedPoints.length; j++) {
+	/*for (var j = 0; j < orderedPoints.length; j++) {
 		var cur = orderedPoints[j];
 		console.log("Point " + (j+1) + ": (" + cur.x + ", " + cur.y + ")");
-	}
+	}*/
 	return orderedPoints;
 }
