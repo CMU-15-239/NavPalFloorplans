@@ -46,6 +46,7 @@ $(document).ready(function ()
 		
 		STATE = $(this).attr("id");
 		if (STATE === "select_tool") {
+			detectRooms(ALL_WALLS); // find closed off rooms
 			CUR_POINT = undefined;
 			resetLineGlobals();
 			CAN_SNAP_TO_LAST = true;
