@@ -24,6 +24,7 @@
 <script src="js/graph/graphNode.js"></script>
 <script src="js/graph/spaceNode.js"></script>
 <script src="js/graph/pswNode.js"></script>
+<script src="js/text/room.js"></script>
 
 <script>
 function newTestSpace(walls, doors, type, label) {
@@ -133,6 +134,10 @@ spaces2[10] = newTestSpace([lines2[16], lines2[18], lines2[20], lines2[22], line
 			[doors2[0], doors2[1], doors2[2], doors2[3], doors2[4], doors2[6], doors2[8], doors2[9]], "hallway", "2504");
 alert("asdlkfdsaf");
 var g2 = new Graph(spaces2);
+
+var roomInfo2 = room(spaces2);
+console.log(roomInfo2, "\n");
+
 </script>
 
 

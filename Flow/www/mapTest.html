@@ -25,6 +25,7 @@
 <script src="js/graph/spaceNode.js"></script>
 <script src="js/graph/pswNode.js"></script>
 <script src="js/text/map.js"></script>
+<script src="js/text/room.js"></script>
 
 <script>
 function newTestSpace(walls, doors, type, label) {
@@ -46,12 +47,13 @@ lines1.push(new Line(new Point(10,10), new Point(20,30)));
 
 var doors1 = [new Line(new Point(10,1), new Point(10,5))];
 
-var s1 = new Space([lines1[0], lines1[1], lines1[2], lines1[3]], doors1, "room", "s1");
+alert("Adsf");
 
-var s2 = new Space([lines1[3], lines1[4], lines1[5], lines1[6]], doors1, "room", "s2");
+var s1 = newTestSpace([lines1[0], lines1[1], lines1[2], lines1[3]], doors1, "room", "s1");
+
+var s2 = newTestSpace([lines1[3], lines1[4], lines1[5], lines1[6]], doors1, "room", "s2");
 
 var spaces1 = [s1, s2];
-
 
 
 var lines2 = [];
@@ -139,6 +141,9 @@ for (var row=0; row<m2.length; row++) {
 	}
 	$("#test").append(text + '<br>');
 }
+//console.log(room(spaces2));
+
+
 </script>
 
 
