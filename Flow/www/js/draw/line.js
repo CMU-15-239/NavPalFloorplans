@@ -121,3 +121,12 @@ Line.prototype.breakIntoTwo = function(p) {
 	var newLine2 = new Line(this.p2, p);
 	return {l1: newLine1, l2: newLine2};
 }
+
+Line.prototype.getSlope = function() {
+	if (this.b != 0) { // Avoid division by 0
+		return -1.0 * this.a / this.b;
+	}
+	
+	var b = 0.0000001 
+	return -1.0 * this.a / b;
+}
