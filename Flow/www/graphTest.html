@@ -24,7 +24,8 @@
 <script src="js/graph/graphNode.js"></script>
 <script src="js/graph/spaceNode.js"></script>
 <script src="js/graph/pswNode.js"></script>
-<script src="js/text/room.js"></script>
+<!--<script src="js/text/room.js"></script>-->
+<script src="js/text/sector.js"></script>
 
 <script>
 function newTestSpace(walls, doors, type, label) {
@@ -114,7 +115,6 @@ doors2[7] = (new Line(new Point(27,15), new Point(29,15)));
 doors2[8] = (new Line(new Point(25,23), new Point(25,25)));
 doors2[9] = (new Line(new Point(15,25), new Point(17,15)));
 
-alert("asdf");
 
 //function newTestSpace(walls, doors, type, label)
 var spaces2 = [];
@@ -132,11 +132,11 @@ spaces2[9] = newTestSpace([lines2[33], lines2[32], lines2[31], lines2[7]], [door
 
 spaces2[10] = newTestSpace([lines2[16], lines2[18], lines2[20], lines2[22], lines2[24], lines2[6], lines2[33], lines2[32], lines2[29], lines2[27], lines2[34], lines2[25], lines2[14]],
 			[doors2[0], doors2[1], doors2[2], doors2[3], doors2[4], doors2[6], doors2[8], doors2[9]], "hallway", "2504");
-alert("asdlkfdsaf");
+
 var g2 = new Graph(spaces2);
 
-var roomInfo2 = room(spaces2);
-console.log(roomInfo2, "\n");
+//var roomInfo2 = room(spaces2);
+//console.log(roomInfo2, "\n");
 
 </script>
 
