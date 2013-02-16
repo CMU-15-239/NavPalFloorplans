@@ -18,6 +18,10 @@ function Point(x, y) {
  * Parameters: p: The Point to check against.
  * Returns: true iff p and this have the same x and y coordinates.
 **/
+Point.prototype.toOutput = function() {
+	return {x: this.x, y: this.y};
+}
+
 Point.prototype.equals = function(p) {
 	if (p === undefined) return false;
 	else return (this.x === p.x && this.y === p.y); 

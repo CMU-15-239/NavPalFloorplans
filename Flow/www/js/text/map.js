@@ -91,7 +91,7 @@ function map(spaces) {
 	for (var row=0; row<rows; row++) {
 		mapRow = [];
 		for (var col=0; col<cols; col++) {
-			mapRow.push("_");
+			mapRow.push(doorChar);
 		}
 		map.push(mapRow);
 	}

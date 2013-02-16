@@ -15,8 +15,8 @@ function Line(p1, p2) {
 
 Line.prototype.toOutput = function() {
 	return {
-		p1: {x: this.p1.x, y: this.p1.y},
-		p2: {x: this.p1.x, y: this.p1.y}
+		p1: this.p1.toOutput(),
+		p2: this.p2.toOutput()
 	};
 }
 
