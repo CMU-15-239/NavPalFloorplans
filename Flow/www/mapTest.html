@@ -2,9 +2,9 @@
 <html>
 <head>
 </head>
-<body\>
+<body>
+	<div id="test"></div>
 </body>
-
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script src="js/lib/Util.js"></script>
@@ -24,6 +24,7 @@
 <script src="js/graph/graphNode.js"></script>
 <script src="js/graph/spaceNode.js"></script>
 <script src="js/graph/pswNode.js"></script>
+<script src="js/text/map.js"></script>
 
 <script>
 function newTestSpace(walls, doors, type, label) {
@@ -41,7 +42,7 @@ lines1.push(new Line(new Point(0,0), new Point(10,0)));
 lines1.push(new Line(new Point(10,0), new Point(10,10)));
 lines1.push(new Line(new Point(10,0), new Point(20,0)));
 lines1.push(new Line(new Point(20,0), new Point(20,20)));
-lines1.push(new Line(new Point(10,10), new Point(20,20)));
+lines1.push(new Line(new Point(10,10), new Point(20,30)));
 
 var doors1 = [new Line(new Point(10,1), new Point(10,5))];
 
@@ -50,7 +51,7 @@ var s1 = new Space([lines1[0], lines1[1], lines1[2], lines1[3]], doors1, "room",
 var s2 = new Space([lines1[3], lines1[4], lines1[5], lines1[6]], doors1, "room", "s2");
 
 var spaces1 = [s1, s2];
-var g1 = new Graph(spaces1);
+
 
 
 var lines2 = [];
@@ -111,9 +112,8 @@ doors2[5] = (new Line(new Point(28,10), new Point(30,10)));
 doors2[6] = (new Line(new Point(25,10), new Point(25,12)));
 doors2[7] = (new Line(new Point(27,15), new Point(29,15)));
 doors2[8] = (new Line(new Point(25,23), new Point(25,25)));
-doors2[9] = (new Line(new Point(15,25), new Point(17,15)));
+doors2[9] = (new Line(new Point(15,25), new Point(17,25)));
 
-alert("asdf");
 
 //function newTestSpace(walls, doors, type, label)
 var spaces2 = [];
@@ -131,8 +131,14 @@ spaces2[9] = newTestSpace([lines2[33], lines2[32], lines2[31], lines2[7]], [door
 
 spaces2[10] = newTestSpace([lines2[16], lines2[18], lines2[20], lines2[22], lines2[24], lines2[6], lines2[33], lines2[32], lines2[29], lines2[27], lines2[34], lines2[25], lines2[14]],
 			[doors2[0], doors2[1], doors2[2], doors2[3], doors2[4], doors2[6], doors2[8], doors2[9]], "hallway", "2504");
-alert("asdlkfdsaf");
-var g2 = new Graph(spaces2);
+var m2 = map(spaces2);
+for (var row=0; row<m2.length; row++) {
+	var text = "";
+	for (var col=0; col<m2[row].length; col++) {
+		text = text + m2[row][col] + " "
+	}
+	$("#test").append(text + '<br>');
+}
 </script>
 
 
