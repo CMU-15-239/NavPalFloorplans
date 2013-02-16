@@ -69,7 +69,7 @@ function floodFillShape(sector, lines, point, fillVal, emptyVal) {
 	var checkPts = [{x: point.x-1, y: point.y}, {x: point.x+1, y: point.y},
 					{x: point.x, y: point.y-1}, {x: point.x, y: point.y+1}];
 	
-	console.log("flood filling: "+JSON.stringify(point));
+	//console.log("flood filling: "+JSON.stringify(point));
 	for(var cp = 0; cp < checkPts.length; cp++) {
 		var fPoint = checkPts[cp];
 		//console.log("checkingPt: "+JSON.stringify(fPoint)+" sectorVal: "+sector[fPoint.y][fPoint.x]
@@ -86,7 +86,22 @@ function floodFillShape(sector, lines, point, fillVal, emptyVal) {
 	return sector;			
 }
 
+function fillVertices(sector, lines, fillVal, emptyVal) {
+	for(var l = 0; l < lines.length; l++) {
+		var endPts = [lines[l].p1, lines[l].p2];
+		for(var ep = 0; ep < endPts.length; ep++) {
+			if(0 <= endPts[ep].x && endPts[ep].x < sector[0].length
+			&& 0 <= endPts[ep].y && endPts[ep].y < sector.length
+			&& sector[endPts[ep].y][endPts[ep].x] === emptyVal) {
+				sector[endPts[ep].y][endPts[ep].x] = fillVal;
+			}
+		}
+	}
+	return sector;
+}
+
 function fillSector(sector, lines, fillVal, emptyVal) {
+	sector = fillVertices(sector, lines, fillVal, emptyVal); //we need to do this because we do fill with 4pt connectivity
 	var point = findPointInShape(lines, sector[0].length, sector.length);
 	sector[point.y][point.x] = fillVal;
 	if(util.exists(point) && util.exists(point.x) && util.exists(point.y)) {
