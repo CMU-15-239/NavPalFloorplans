@@ -123,5 +123,10 @@ Line.prototype.breakIntoTwo = function(p) {
 }
 
 Line.prototype.getSlope = function() {
-	return -1.0 * this.a / this.b;
+	if (this.b != 0) { // Avoid division by 0
+		return -1.0 * this.a / this.b;
+	}
+	
+	var b = 0.0000001 
+	return -1.0 * this.a / b;
 }
