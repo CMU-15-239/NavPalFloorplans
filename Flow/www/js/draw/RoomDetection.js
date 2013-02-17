@@ -20,12 +20,21 @@ function searchRoom(line) {
 	var route = new Array();
 	visitedPoints = {}
 	if (followWalls(true, line.p1, line, route)) {
+		if (route.length == 0 || route === undefined) {
+			//console.log("something is wrong");
+		}
+		route.push(line);
 		var newRoom = new Space(route);
 		
 		console.log("FOUND ROOM");
 		
 		var found = false;
 		for (var i = 0; i < rooms.length; i ++) {
+			//console.log("Room " + i);
+			for( var j = 0; j < rooms[i].walls.length; j ++) {
+				//console.log(rooms[i].walls[j].toString());
+			}
+			
 			if (rooms[i].sameRoomWalls(newRoom)) {
 				found = true;
 				console.log("Not unique");
@@ -51,6 +60,10 @@ function followWalls(counterClock, point, line, route) {
 	visitedPoints[point.toString()] = true;
 	
 	// Base Case
+	if (point == false) {
+		console.log("point is false??");
+	}
+	//console.log(point);
 	if (point.equals(targetPoint)) {
 		return true;
 	}	

@@ -13,7 +13,7 @@ function Space(walls) {
 	this.label = ""; //room number
 	this.isClosed = false;
 	//A polygon that appears when the user selects the space.
-	this.selectPoly = new Polygon(this.walls);
+	//this.selectPoly = new Polygon(this.walls);
 	this.drawPoly = false;
 }
 
@@ -86,7 +86,7 @@ Space.prototype.sameLines = function(lines) {
 	
 	
 	for (var i = 0; i < this.walls.length; i++) {
-		var line = lines[i];
+		var line = this.walls[i];
 		seen[line.toString()] = 0;
 	}
 	
@@ -96,13 +96,13 @@ Space.prototype.sameLines = function(lines) {
 	}
 	
 	for (var i = 0; i < this.walls.length; i++) {
-		var line = lines[i];
+		var line = this.walls[i];
 		seen[line.toString()] -= 1;
 	}
 	
 	for (line in seen) {
 		if (seen[line] != 0) {
-			console.log(seen[line]);
+			//console.log("RETURNING FALSE these rooms are different");
 			return false;
 		}
 	}
