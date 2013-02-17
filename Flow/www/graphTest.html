@@ -11,23 +11,23 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script src="js/lib/Util.js"></script>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-<script src="js/lib/Util.js"></script>
 <script src="js/lib/kinetic.js"></script>
-<script src = "js/lib/globals.js"></script>
-<script src = "js/draw/Point.js"></script>
-<script src = "js/draw/line.js"></script>
-<script src = "js/draw/space.js"></script>
-<script src = "js/draw/Draw.js"></script>
-<script src = "js/draw/RoomClosed.js"></script>
+<script src="js/lib/globals.js"></script>
+<script src="js/draw/Point.js"></script>
+<script src="js/draw/line.js"></script>
+<script src="js/draw/space.js"></script>
+<script src="js/draw/Draw.js"></script>
+<script src="js/draw/RoomClosed.js"></script>
 <script src="js/draw/Polygon.js"></script>
-<script src = "js/draw/Exception.js"></script>
+<script src="js/draw/Exception.js"></script>
 <script src="js/graph/graph.js"></script>
 <script src="js/graph/graphNode.js"></script>
 <script src="js/graph/spaceNode.js"></script>
 <script src="js/graph/pswNode.js"></script>
-<!--<script src="js/text/room.js"></script>-->
+<script src="js/text/room.js"></script>
 <script src="js/text/sector.js"></script>
+<script src="js/text/map.js"></script>
+<script src="js/main.js"></script>
 
 <script>
 function newTestSpace(walls, doors, type, label) {
@@ -54,7 +54,7 @@ var s1 = newTestSpace([lines1[0], lines1[1], lines1[2], lines1[3]], doors1, "roo
 var s2 = newTestSpace([lines1[3], lines1[4], lines1[5], lines1[6]], doors1, "room", "s2");
 
 var spaces1 = [s1, s2];
-var g1 = new Graph(spaces1);
+//var g1 = new Graph(spaces1);
 
 
 var lines2 = [];
@@ -134,14 +134,14 @@ spaces2[9] = newTestSpace([lines2[33], lines2[32], lines2[31], lines2[7]], [door
 
 spaces2[10] = newTestSpace([lines2[16], lines2[18], lines2[20], lines2[22], lines2[24], lines2[6], lines2[33], lines2[32], lines2[29], lines2[27], lines2[34], lines2[25], lines2[14]],
 			[doors2[0], doors2[1], doors2[2], doors2[3], doors2[4], doors2[6], doors2[8], doors2[9]], "hallway", "2504");
-
+/*
 var g2 = new Graph(spaces2);
 var s2 = sector(spaces2, 31, 41);
 for (var row=0; row<s2.length; row++) {
 	var text = "";
 	for (var col=0; col<s2[row].length; col++) {
 		var val = s2[row][col];
-		if(val.length < 2) {val = "0"+val;}
+		//if(val.length < 2) {val = "0"+val;}
 		text +=  val + " "
 	}
 	$("#testOutput").append(text + '<br>');
@@ -149,7 +149,7 @@ for (var row=0; row<s2.length; row++) {
 
 //var roomInfo2 = room(spaces2);
 //console.log(roomInfo2, "\n");
-
+*/
 </script>
 
 

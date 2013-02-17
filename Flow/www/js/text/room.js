@@ -1,6 +1,6 @@
 //room.js
 
-function room(spaces, EOL) {
+function generateRoom(spaces, EOL) {
 	if(!util.exists(EOL)) {EOL = "";}
 	var info = "";
 	for(var s = 0; s < spaces.length; s++) {
