@@ -143,11 +143,14 @@ function mouseMoved(event) {
 	if (STATE === "select_tool") {
 		selectToolMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 	}
+	if (STATE === "room_detection_tool") {
+		roomSelectMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
+	}
 	drawWalls();
 }
 	
 // Unselect everything when the user switches to the select tool
-function selectToolInit() {
+function unselectAll() {
 	for (var i = 0; i < ALL_POINTS.length; i ++) {
 		ALL_POINTS[i].isSelected = false;
 	}

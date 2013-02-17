@@ -56,7 +56,6 @@ $(document).ready(function ()
 		
 		STATE = $(this).attr("id");
 		if (STATE === "select_tool") {
-			detectRooms(ALL_WALLS); // find closed off rooms
 			CUR_POINT = undefined;
 			resetLineGlobals();
 			CAN_SNAP_TO_LAST = true;
@@ -65,7 +64,17 @@ $(document).ready(function ()
 		else if (STATE === "line_tool") {
 			$("#add_room").css("display", "none");
 		}
-		selectToolInit();
+		unselectAll();
+	});
+	
+	$('#detectRooms').click(function() {
+		$(".tool").removeClass("active");
+		STATE = "room_detection_tool";
+		unselectAll();
+		CUR_POINT = undefined;
+		resetLineGlobals();
+		CAN_SNAP_TO_LAST = true;
+		detectRooms(ALL_WALLS); // find closed off rooms
 	});
 	
 	$('#add_room').click(function () {

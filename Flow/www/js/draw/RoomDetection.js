@@ -1,21 +1,22 @@
-var rooms = [];
+//var rooms = [];
 var targetPoint;
 var visitedPoints = {};
 
 // Given a set of lines, return a set of rooms
 function detectRooms(lines) {
 	//alert();
-	rooms = [];
+	var rooms = [];
 	
-	for (i = 0; i < lines.length; i++) {
+	for (var i = 0; i < lines.length; i++) {
         //console.log("Is line : " + i + " part of a room");
-		searchRoom(lines[i]);
-		
+		searchRoom(lines[i], rooms);
 	}
-
+	
+	ALL_CLOSED_ROOMS = rooms;
+	console.log(rooms.length + " rooms found!");
 }
 
-function searchRoom(line) {
+function searchRoom(line, rooms) {
 	targetPoint = line.p2;
 	var route = new Array();
 	visitedPoints = {}
@@ -26,7 +27,7 @@ function searchRoom(line) {
 		route.push(line);
 		var newRoom = new Space(route);
 		
-		console.log("FOUND ROOM");
+		//console.log("FOUND ROOM");
 		
 		var found = false;
 		for (var i = 0; i < rooms.length; i ++) {
@@ -37,7 +38,7 @@ function searchRoom(line) {
 			
 			if (rooms[i].sameRoomWalls(newRoom)) {
 				found = true;
-				console.log("Not unique");
+				//console.log("Not unique");
 			}
 		}
 		
