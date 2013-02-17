@@ -13,7 +13,7 @@ function Space(walls) {
 	this.label = ""; //room number
 	this.isClosed = false;
 	//A polygon that appears when the user selects the space.
-	//this.selectPoly = new Polygon(this.walls);
+	this.selectPoly = new Polygon(this.walls);
 	this.drawPoly = false;
 }
 

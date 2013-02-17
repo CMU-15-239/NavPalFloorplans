@@ -82,15 +82,13 @@ function addLines(space, map, wallChar) {
 	return map;
 }
 
-function map(spaces) {
-	var rows = 50;
-	var cols = 50;
+function generateMap(spaces, width, height) {
 	var map = [];
 	var doorChar = '0';
 	var wallChar = 'X';
-	for (var row=0; row<rows; row++) {
+	for (var row=0; row < height; row++) {
 		mapRow = [];
-		for (var col=0; col<cols; col++) {
+		for (var col=0; col < width; col++) {
 			mapRow.push(doorChar);
 		}
 		map.push(mapRow);

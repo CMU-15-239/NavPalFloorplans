@@ -16,23 +16,23 @@ function pointInShape(point, lines, width, height) {
 		var currP1 = null;
 		for(var rx = 0; rx < width; rx++) {
 			var currRayPt = {x: rx, y: point.y};
-			console.log("checkingPt: "+JSON.stringify(currRayPt));
+			//console.log("checkingPt: "+JSON.stringify(currRayPt));
 			if(pointOnLines(currRayPt, lines)) {
-				console.log("found intersection pt: "+JSON.stringify(currRayPt));
+				//console.log("found intersection pt: "+JSON.stringify(currRayPt));
 				if(util.exists(currP1)) {
 					inShapeSegments.push(new Line(new Point(currP1.x, currP1.y), new Point(currRayPt.x, currRayPt.y)));
 					currP1 = null;
 				}
 				else {
 					currP1 = currRayPt;
-					console.log("p1: "+JSON.stringify(currP1));
+					//console.log("p1: "+JSON.stringify(currP1));
 				}
 			}
 		}
-		console.log(inShapeSegments);
+		//console.log(inShapeSegments);
 		return pointOnLines(point, inShapeSegments);
 	}
-	console.log("pt on wall");
+	//console.log("pt on wall");
 	return false;
 }
 
@@ -108,13 +108,13 @@ function fillSector(sector, lines, fillVal, emptyVal) {
 		return floodFillShape(sector, lines, point, fillVal, emptyVal);
 	}
 	else {
-		alert("did not draw shape with lines: "+JSON.stringify(lines));
+		//alert("did not draw shape with lines: "+JSON.stringify(lines));
 		return sector;
 	}
 }
 
 
-function sector(spaces, width, height) {
+function generateSector(spaces, width, height) {
 	var sector = [];
 	var emptyChar = '-1';
 	//x = col, y = row
@@ -131,6 +131,6 @@ function sector(spaces, width, height) {
 		sector = fillSector(sector, spaces[s].walls, ""+s, emptyChar)
 	}
 	
-	console.log(JSON.stringify(sector));
+	//console.log(JSON.stringify(sector));
 	return sector;
 }
