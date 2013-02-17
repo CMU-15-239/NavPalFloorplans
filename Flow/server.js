@@ -65,7 +65,7 @@ app.post('/text', function (req, res) {
     if (map !== undefined): fs.writeFile('./www/text/map-' + id + '.txt', map);
     if (room !== undefined): fs.writeFile('./www/text/rooms-' + id + '.txt', rooms);
     if (sector !== undefined): fs.writeFile('./www/text/sector-' + id + '.txt', sector);
-    return res.send('sucess!');
+    return res.send('sucess!'); 
 });
 
 app.post('/graph', function (req, res) {
