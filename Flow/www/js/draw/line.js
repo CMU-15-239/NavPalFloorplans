@@ -32,6 +32,10 @@ Line.prototype.calculateForm = function(p1, p2) {
 	this.distConst = Math.sqrt(this.a * this.a + this.b * this.b);
 }
 
+Line.prototype.toString = function() {
+	return "<" + this.p1.toString() + "," + this.p2.toString() + ">";
+}
+
 /**
  * Summary: Checks whether the given line is equal to the current object.
  * Parameters: l: The line to check against.
@@ -127,6 +131,23 @@ Line.prototype.getSlope = function() {
 		return -1.0 * this.a / this.b;
 	}
 	
-	var b = 0.0000001 
+	var b = epsilon
 	return -1.0 * this.a / b;
 }
+
+// Assume that point is on this line, return the other point
+Line.prototype.otherPoint = function(point) {
+	if (point.equals(this.p1)) {
+		return this.p2;
+	}
+	else {
+		return this.p1;
+	}
+}
+
+Line.prototype.magnitutde = function() {
+	var dx = Math.abs(this.p1.x - this.p2.x);
+	var dy = Math.abs(this.p1.y - this.p2.y);
+	return Math.sqrt(dx * dx + dy * dy);
+}
+
