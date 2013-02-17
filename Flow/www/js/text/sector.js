@@ -61,7 +61,7 @@ function findPointInShape(lines, width, height) {
 			}
 		}
 	}
-	console.log(checkedVertices);
+	//console.log(checkedVertices);
 	return null;
 }
 
@@ -127,7 +127,7 @@ function generateSector(spaces, width, height) {
 	}
 	
 	for(var s = 0; s < spaces.length; s++) {
-		console.log(spaces[s]);
+		//console.log(spaces[s]);
 		sector = fillSector(sector, spaces[s].walls, ""+s, emptyChar)
 	}
 	

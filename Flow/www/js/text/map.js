@@ -41,7 +41,7 @@ function removeDoors(space, map, doorChar) {
 }
 
 function addLines(space, map, wallChar) {
-	console.log(map);
+	//console.log(map);
 	for (var w=0; w<space.walls.length; w++) {
 		var wall = space.walls[w];
 		var x1 = wall.p1.x
