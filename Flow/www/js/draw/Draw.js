@@ -19,6 +19,8 @@ var CNTRL_DOWN = false;
 var PREVPOINT = new Point(0,0);
 var SELECT_RECT = {shouldDraw : false, p1: undefined, p2: undefined}
 
+var epsilon = 0.0000001;
+
 function mouseDown(event) {
 	var newlySelectedPoints = [];
 	if (STATE === "select_tool") {
