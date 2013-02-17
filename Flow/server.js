@@ -58,13 +58,13 @@ app.post('/upload', function (req, res) {
 });
 
 app.post('/text', function (req, res) {
-    var map = "" + req.body.map;
-    var room = "" + req.body.rooms;
-    var sector = "" + req.body.sector;
+    var map = req.body.map;
+    var room = req.body.rooms;
+    var sector = req.body.sector;
     var id = req.body.id;
-    fs.writeFile('./www/text/map-' + id + '.txt', map);
-    fs.writeFile('./www/text/rooms-' + id + '.txt', rooms);
-    fs.writeFile('./www/text/sector-' + id + '.txt', sector);
+    if (map !== undefined): fs.writeFile('./www/text/map-' + id + '.txt', map);
+    if (room !== undefined): fs.writeFile('./www/text/rooms-' + id + '.txt', rooms);
+    if (sector !== undefined): fs.writeFile('./www/text/sector-' + id + '.txt', sector);
     return res.send('sucess!');
 });
 
