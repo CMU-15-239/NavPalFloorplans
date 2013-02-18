@@ -102,7 +102,6 @@ function mouseDown(event) {
 	}
 }
 
-/* NOTE TO PAUL: I think I fixed the bug with the phantom 0-length wall */
 function mouseUp(event) {
 	if (STATE === "select_tool") {
 		MOUSEDOWN = false;
