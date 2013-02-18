@@ -3,15 +3,16 @@
 
 function pointOnLines(point, lines) {
 	for(var l = 0; l < lines.length; l++) {
-		if(lines[l].pointNearLine(point, 0)) {
+		if(lines[l].pointNearLine(point)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-function pointInShape(point, lines, width, height) {
-	if(!pointOnLines(point, lines)) {
+function pointInShape(point, lines, width, height, linesInShape) {
+	if(pointOnLines(point, lines)) {return linesInShape;}
+	else{
 		var inShapeSegments = [];
 		var currP1 = null;
 		for(var rx = 0; rx < width; rx++) {
@@ -29,7 +30,7 @@ function pointInShape(point, lines, width, height) {
 				}
 			}
 		}
-		//console.log(inShapeSegments);
+		console.log(inShapeSegments);
 		return pointOnLines(point, inShapeSegments);
 	}
 	//console.log("pt on wall");
@@ -51,7 +52,7 @@ function findPointInShape(lines, width, height) {
 							var point = {x: vertex.x+dx, y: vertex.y+dy};
 							if(0 <= point.x && point.x < width
 								&& 0 <= point.y && point.y < height
-								&& pointInShape(point, lines, width, height)) {
+								&& pointInShape(point, lines, width, height, false)) {
 								return point;
 							}
 						//}
@@ -74,13 +75,10 @@ function floodFillShape(sector, lines, point, fillVal, emptyVal) {
 		var fPoint = checkPts[cp];
 		//console.log("checkingPt: "+JSON.stringify(fPoint)+" sectorVal: "+sector[fPoint.y][fPoint.x]
 		//			+"pointOnLines: "+pointOnLines(fPoint, lines));
-		if(0 <= fPoint.x && fPoint.x < sector[0].length
-			&& 0 <= fPoint.y && fPoint.y < sector.length
+		if(pointInShape(fPoint, lines, sector[0].length, sector.length, true)
 			&& sector[fPoint.y][fPoint.x] === emptyVal) {
 			sector[fPoint.y][fPoint.x] = fillVal;
-			if(!pointOnLines(fPoint, lines)) {
-				floodFillShape(sector, lines, fPoint, fillVal, emptyVal);
-			}
+			floodFillShape(sector, lines, fPoint, fillVal, emptyVal);
 		}
 	}
 	return sector;			
@@ -101,7 +99,7 @@ function fillVertices(sector, lines, fillVal, emptyVal) {
 }
 
 function fillSector(sector, lines, fillVal, emptyVal) {
-	sector = fillVertices(sector, lines, fillVal, emptyVal); //we need to do this because we do fill with 4pt connectivity
+	//sector = fillVertices(sector, lines, fillVal, emptyVal); //we need to do this because we do fill with 4pt connectivity
 	var point = findPointInShape(lines, sector[0].length, sector.length);
 	sector[point.y][point.x] = fillVal;
 	if(util.exists(point) && util.exists(point.x) && util.exists(point.y)) {

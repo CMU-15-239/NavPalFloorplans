@@ -62,16 +62,22 @@ app.post('/text', function (req, res) {
     var room = req.body.rooms;
     var sector = req.body.sector;
     var id = req.body.id;
-    if (map !== undefined): fs.writeFile('./www/text/map-' + id + '.txt', map);
-    if (room !== undefined): fs.writeFile('./www/text/rooms-' + id + '.txt', rooms);
-    if (sector !== undefined): fs.writeFile('./www/text/sector-' + id + '.txt', sector);
+    if (map !== undefined) {
+		fs.writeFile('./www/text/map-' + id + '.txt', map);
+	};
+    if (room !== undefined) {
+		fs.writeFile('./www/text/rooms-' + id + '.txt', rooms);
+	};
+    if (sector !== undefined) {
+		fs.writeFile('./www/text/sector-' + id + '.txt', sector);
+	};
     return res.send('sucess!'); 
 });
 
 app.post('/graph', function (req, res) {
     var graph = req.body.graph;
     var id = req.body.id;
-    fs.writeFile('./www/text/graph-'+ id + '.txt', graph);
+    fs.writeFile('./www/text/graph-'+ id + '.txt', JSON.stringify(graph));
     return res.send('sucess!');
 });
 

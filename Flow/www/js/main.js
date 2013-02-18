@@ -5,9 +5,8 @@
 $(document).ready(function () 
 {
 	var generateData = window.generateData = function(spaces, width, height) {
-		var graph = new Graph(spaces);
 		return {
-			graph: graph.toOutput(),
+			graph: (new Graph(spaces)).toOutput(),
 			map: generateMap(spaces, width, height),
 			sector: generateSector(spaces, width, height),
 			//room: generateRoom(spaces, '\n')
@@ -19,24 +18,26 @@ $(document).ready(function ()
 		var genDataId = JSON.stringify(genData).hashCode();
 		$.ajax({
 			type: "POST",
-			url: "128.237.234.187:8080/graph",
+			url: "/graph",
 			data: {id: genDataId, graph: genData.graph},
 			success: function() {console.log("posted graph to server!");}
 		});
 		
-		var mapStr = ""; var sectorStr = "";
-		for(var y = 0; y < height; y++) {
-			for(var x = 0; x < width; x++) {
-				mapStr += genData.map[y][x]+" ";
-				sectorStr += genData.sector[y][x]+" ";
+		if(util.exists(genData.map) && util.exists(genData.sector)) {
+			var mapStr = ""; var sectorStr = "";
+			for(var y = 0; y < height; y++) {
+				for(var x = 0; x < width; x++) {
+					mapStr += genData.map[y][x]+" ";
+					sectorStr += genData.sector[y][x]+" ";
+				}
+				mapStr += "\n";
+				sectorStr += "\n";
 			}
-			mapStr += "\n";
-			sectorStr += "\n";
 		}
 		
 		$.ajax({
 			type: 'POST',
-			url: "128.237.234.187:8080/text",
+			url: "/text",
 			data: {id: genDataId, map: mapStr, sector: sectorStr, room: genData.room},
 			success: function() {console.log("posted text data to server!");}
 		});
