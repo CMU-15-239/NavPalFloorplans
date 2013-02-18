@@ -45,37 +45,82 @@ Space.prototype.draw = function() {
 
 Space.prototype.pointOnLines = function(point, lines) {
 	for(var l = 0; l < lines.length; l++) {
-		if(lines[l].pointNearLine(point, 0)) {
+		if(lines[l].pointNearLine(point, 0.5)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-Space.prototype.pointInShape = function(point, lines, width, height) {
+Space.prototype.pointInSpace = function(point, width, height, includeLine) {
+	return this.pointInShape(point, this.walls, width, height, includeLine);
+}
+
+Space.prototype.pointInShape = function(point, lines, width, height, includeLine) {
+	
+	if (this.pointOnLines(point, lines)) {
+		return (includeLine === true);
+	}
+	
+	var linesHit = {};
+	
+	for (var x = 0; x <= point.x; x ++ ) {
+		for (var i = 0; i < lines.length; i ++) {
+			var line = lines[i];
+		
+			if (line.pointNearLine(new Point(x,point.y), 1)) {
+				linesHit[line.toString()] = 1;
+				break;
+			}
+		}
+		
+	}
+	
+	var intersectCount = 0;
+	for (e in linesHit) {
+		if (linesHit[e] === 1) {
+			intersectCount++;
+		}
+	}
+	/*
+	for (var i = 0; i < lines.length; i ++) {
+		var line = lines[i];
+		
+		for (var x = 0; x <= point.x; x ++ ) {
+			if (line.pointNearLine(new Point(x,point.y), 1)) {
+				intersectCount += 1;
+				break; // only count each line once
+			}
+		}
+	}
+	*/
+	//console.log((intersectCount % 2 == 1));
+	return (intersectCount % 2 == 1) // if intersect is odd, its in shape
+/*
 	if(!pointOnLines(point, lines)) {
 		var inShapeSegments = [];
 		var currP1 = null;
 		for(var rx = 0; rx < width; rx++) {
 			var currRayPt = {x: rx, y: point.y};
-			console.log("checkingPt: "+JSON.stringify(currRayPt));
+			//console.log("checkingPt: "+JSON.stringify(currRayPt));
 			if(pointOnLines(currRayPt, lines)) {
-				console.log("found intersection pt: "+JSON.stringify(currRayPt));
+				//console.log("found intersection pt: "+JSON.stringify(currRayPt));
 				if(util.exists(currP1)) {
 					inShapeSegments.push(new Line(new Point(currP1.x, currP1.y), new Point(currRayPt.x, currRayPt.y)));
 					currP1 = null;
 				}
 				else {
 					currP1 = currRayPt;
-					console.log("p1: "+JSON.stringify(currP1));
+					//console.log("p1: "+JSON.stringify(currP1));
 				}
 			}
 		}
 		console.log(inShapeSegments);
 		return pointOnLines(point, inShapeSegments);
 	}
-	console.log("pt on wall");
+	//console.log("pt on wall");
 	return false;
+	*/
 }
 
 Space.prototype.sameLines = function(lines) {
@@ -86,7 +131,7 @@ Space.prototype.sameLines = function(lines) {
 	
 	
 	for (var i = 0; i < this.walls.length; i++) {
-		var line = lines[i];
+		var line = this.walls[i];
 		seen[line.toString()] = 0;
 	}
 	
@@ -96,13 +141,13 @@ Space.prototype.sameLines = function(lines) {
 	}
 	
 	for (var i = 0; i < this.walls.length; i++) {
-		var line = lines[i];
+		var line = this.walls[i];
 		seen[line.toString()] -= 1;
 	}
 	
 	for (line in seen) {
 		if (seen[line] != 0) {
-			console.log(seen[line]);
+			//console.log("RETURNING FALSE these rooms are different");
 			return false;
 		}
 	}

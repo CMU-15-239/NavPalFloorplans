@@ -1,34 +1,44 @@
-var rooms = [];
+//var rooms = [];
 var targetPoint;
 var visitedPoints = {};
 
 // Given a set of lines, return a set of rooms
 function detectRooms(lines) {
 	//alert();
-	rooms = [];
+	var rooms = [];
 	
-	for (i = 0; i < lines.length; i++) {
+	for (var i = 0; i < lines.length; i++) {
         //console.log("Is line : " + i + " part of a room");
-		searchRoom(lines[i]);
-		
+		searchRoom(lines[i], rooms);
 	}
-
+	
+	ALL_CLOSED_ROOMS = rooms;
+	console.log(rooms.length + " rooms found!");
 }
 
-function searchRoom(line) {
+function searchRoom(line, rooms) {
 	targetPoint = line.p2;
 	var route = new Array();
 	visitedPoints = {}
 	if (followWalls(true, line.p1, line, route)) {
+		if (route.length == 0 || route === undefined) {
+			//console.log("something is wrong");
+		}
+		route.push(line);
 		var newRoom = new Space(route);
 		
-		console.log("FOUND ROOM");
+		//console.log("FOUND ROOM");
 		
 		var found = false;
 		for (var i = 0; i < rooms.length; i ++) {
+			//console.log("Room " + i);
+			for( var j = 0; j < rooms[i].walls.length; j ++) {
+				//console.log(rooms[i].walls[j].toString());
+			}
+			
 			if (rooms[i].sameRoomWalls(newRoom)) {
 				found = true;
-				console.log("Not unique");
+				//console.log("Not unique");
 			}
 		}
 		
@@ -51,6 +61,10 @@ function followWalls(counterClock, point, line, route) {
 	visitedPoints[point.toString()] = true;
 	
 	// Base Case
+	if (point == false) {
+		console.log("point is false??");
+	}
+	//console.log(point);
 	if (point.equals(targetPoint)) {
 		return true;
 	}	
