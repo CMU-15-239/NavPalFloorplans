@@ -31,6 +31,9 @@ def parse_input_file2(image_dir):
     img=Image.open(image_dir)
     #convert image to grayscale
     img=img.convert('L')
+    #destructively save the image
+    img.save(image_dir)
+
     #extract the pixels
     list_of_pixels=list(img.getdata())
     (width,height)=img.size
