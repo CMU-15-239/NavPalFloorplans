@@ -9,6 +9,8 @@ function Line(p1, p2) {
 	this.p1 = p1;
 	this.p2 = p2;
 	this.isSelected = false;
+	this.isDoor = false;
+	this.definesRoom = false;
 	
 	this.calculateForm(p1, p2);
 }
@@ -57,6 +59,9 @@ Line.prototype.draw = function (drawPoints) {
 	var oldStroke = CANVAS.strokeStyle;
 	if (this.isSelected === true) {
 		CANVAS.strokeStyle = "yellow";
+	}
+	if (this.definesRoom === true) {
+		CANVAS.strokeStyle = "red";
 	}
 	CANVAS.lineWidth = WALL_WIDTH;
 	CANVAS.beginPath();
@@ -145,7 +150,7 @@ Line.prototype.otherPoint = function(point) {
 	}
 }
 
-Line.prototype.magnitutde = function() {
+Line.prototype.getMagnitude = function() {
 	var dx = Math.abs(this.p1.x - this.p2.x);
 	var dy = Math.abs(this.p1.y - this.p2.y);
 	return Math.sqrt(dx * dx + dy * dy);
