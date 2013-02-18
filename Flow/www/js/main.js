@@ -4,6 +4,16 @@
 **/
 $(document).ready(function () 
 {
+	var generateData = window.generateData = function(spaces, width, height) {
+		var graph = new Graph(spaces);
+		return {
+			graph: graph.toOutput(),
+			mapArr: generateMap(spaces, width, height),
+			sectorArr: generateSector(spaces, width, height),
+			roomStr: generateRoom(spaces, '\n')
+		};
+	};
+
 	/* Initialize the canvas */
     can = document.getElementById("canvas");
 	can.width = CANVAS_WIDTH;
@@ -54,15 +64,20 @@ $(document).ready(function ()
 		else if (STATE === "line_tool") {
 			$("#add_room").css("display", "none");
 		}
-		selectToolInit();
+		unselectAll();
+	});
+	
+	$('#detectRooms').click(function() {
+		$(".tool").removeClass("active");
+		STATE = "room_detection_tool";
+		unselectAll();
+		CUR_POINT = undefined;
+		resetLineGlobals();
+		CAN_SNAP_TO_LAST = true;
+		detectRooms(ALL_WALLS); // find closed off rooms
 	});
 	
 	$('#add_room').click(function () {
 		addRoomClicked();
 	});
-	
-	$("#polyMap area").hover(function() {
-		alert("poop");
-	});
-	
 });

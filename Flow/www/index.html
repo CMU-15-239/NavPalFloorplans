@@ -13,11 +13,12 @@
 		<script src = "js/draw/space.js"></script>
 		<script src = "js/draw/Draw.js"></script>
 		<script src = "js/draw/RoomClosed.js"></script>
-		<script src="js/draw/Polygon.js"></script>
+		<script src = "js/draw/RoomDetection.js"></script>
+		<script src = "js/draw/RoomSelect.js"></script>
+		<script src = "js/draw/Polygon.js"></script>
 		<script src = "js/draw/Exception.js"></script>
 		<link rel="stylesheet" href="css/styles.css">
 
-		<script src="js/main.js"></script>
 	</head>
 	<body>
 		<canvas id="canvas"></canvas>
@@ -31,9 +32,22 @@
 			<div id="select_tool" class="tool">
 				<h1>Select</h1>
 			</div>
+			<button id="detectRooms">Detect Rooms</button>
 			<button id="add_room" disabled>Add Room</button>
 		</div>
 		<input type="file" id="imageLoader" name="imageLoader"/>
 		<script src = "js/image/upload.js"></script>
 	</body>
+	
+	
+	<!--Data Generation-->
+	<script src="js/graph/graph.js"></script>
+	<script src="js/graph/graphNode.js"></script>
+	<script src="js/graph/spaceNode.js"></script>
+	<script src="js/graph/pswNode.js"></script>
+	<script src="js/text/room.js"></script>
+	<script src="js/text/map.js"></script>
+	<script src="js/text/sector.js"></script>
+	
+	<script src="js/main.js"></script>
 </html>

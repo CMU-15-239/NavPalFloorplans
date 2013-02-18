@@ -17,7 +17,9 @@ function isClosedRoom(lines) {
 	
 	// A room must have at least two lines
 	if (lines.length <= 2) {
-	//	console.log(lines.length + " not enough lines");
+
+		//console.log(lines.length + " not enough lines");
+
 		return false;
 	}
 	//console.log("at least two lines");
@@ -27,7 +29,9 @@ function isClosedRoom(lines) {
 	// Initialize all points to 0
 	for (var i = 0; i < lines.length; i += 1) {
 		line = lines[i];
-	//	console.log(lines.length);
+
+		//console.log(lines.length);
+
 		pointCount[line.p1.toString()] = 0;
 		pointCount[line.p2.toString()] = 0;
 	}

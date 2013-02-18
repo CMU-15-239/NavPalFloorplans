@@ -15,8 +15,8 @@ function Line(p1, p2) {
 
 Line.prototype.toOutput = function() {
 	return {
-		p1: {x: this.p1.x, y: this.p1.y},
-		p2: {x: this.p1.x, y: this.p1.y}
+		p1: this.p1.toOutput(),
+		p2: this.p2.toOutput()
 	};
 }
 
@@ -30,6 +30,10 @@ Line.prototype.calculateForm = function(p1, p2) {
 	this.b = p2.x - p1.x;
 	this.c = p1.x * (p2.y - p1.y) - p1.y * (p2.x - p1.x);
 	this.distConst = Math.sqrt(this.a * this.a + this.b * this.b);
+}
+
+Line.prototype.toString = function() {
+	return "<" + this.p1.toString() + "," + this.p2.toString() + ">";
 }
 
 /**
@@ -121,3 +125,29 @@ Line.prototype.breakIntoTwo = function(p) {
 	var newLine2 = new Line(this.p2, p);
 	return {l1: newLine1, l2: newLine2};
 }
+
+Line.prototype.getSlope = function() {
+	if (this.b != 0) { // Avoid division by 0
+		return -1.0 * this.a / this.b;
+	}
+	
+	var b = epsilon
+	return -1.0 * this.a / b;
+}
+
+// Assume that point is on this line, return the other point
+Line.prototype.otherPoint = function(point) {
+	if (point.equals(this.p1)) {
+		return this.p2;
+	}
+	else {
+		return this.p1;
+	}
+}
+
+Line.prototype.magnitutde = function() {
+	var dx = Math.abs(this.p1.x - this.p2.x);
+	var dy = Math.abs(this.p1.y - this.p2.y);
+	return Math.sqrt(dx * dx + dy * dy);
+}
+

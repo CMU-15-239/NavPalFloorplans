@@ -19,6 +19,8 @@ var CNTRL_DOWN = false;
 var PREVPOINT = new Point(0,0);
 var SELECT_RECT = {shouldDraw : false, p1: undefined, p2: undefined}
 
+var epsilon = 0.0000001;
+
 function mouseDown(event) {
 	var newlySelectedPoints = [];
 	if (STATE === "select_tool") {
@@ -141,11 +143,14 @@ function mouseMoved(event) {
 	if (STATE === "select_tool") {
 		selectToolMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 	}
+	if (STATE === "room_detection_tool") {
+		roomSelectMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
+	}
 	drawWalls();
 }
 	
 // Unselect everything when the user switches to the select tool
-function selectToolInit() {
+function unselectAll() {
 	for (var i = 0; i < ALL_POINTS.length; i ++) {
 		ALL_POINTS[i].isSelected = false;
 	}
