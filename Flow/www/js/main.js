@@ -9,7 +9,7 @@ $(document).ready(function ()
 			graph: (new Graph(spaces)).toOutput(),
 			map: generateMap(spaces, width, height),
 			sector: generateSector(spaces, width, height),
-			//room: generateRoom(spaces, '\n')
+			room: generateRoom(spaces, '\n')
 		};
 	};
 	

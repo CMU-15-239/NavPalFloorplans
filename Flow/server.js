@@ -62,17 +62,17 @@ app.post('/upload', function (req, res) {
 
 app.post('/text', function (req, res) {
     var map = req.body.map;
-    var room = req.body.rooms;
+    var room = req.body.room;
     var sector = req.body.sector;
     var id = req.body.id;
     if (map !== undefined && map !== null) {
-        fs.writeFile('./www/text/map-' + id + '.txt', map);
+        fs.writeFile('./www/text/' + id + '_map.txt', map);
     }
     if (room !== undefined && room !== null) {
-        fs.writeFile('./www/text/rooms-' + id + '.txt', rooms);
+        fs.writeFile('./www/text/' + id + '_room.txt', room);
     }
     if (sector !== undefined && sector !== null) {
-        fs.writeFile('./www/text/sector-' + id + '.txt', sector);
+        fs.writeFile('./www/text/' + id + '_sector.txt', sector);
     }
     return res.send('sucess!'); 
 });
@@ -81,7 +81,7 @@ app.post('/graph', function (req, res) {
     var graph = req.body.graph;
     var id = req.body.id;
     if (graph !== undefined && graph !== null) {
-        fs.writeFile('./www/text/graph-'+ id + '.txt', graph);
+        fs.writeFile('./www/text/'+ id + '_graph.txt', JSON.stringify(graph));
     }
     return res.send('sucess!');
 });
