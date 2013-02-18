@@ -6,13 +6,11 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var child;
 
+// set up express server
 var app = express();
 var port = process.env.PORT || 3000;
 
-var imageID = 1;
-
 function init(){
-
     configureExpress(app);
     http.createServer(app).listen(port, function() {
         console.log("Express server listening on port %d", port);
@@ -21,7 +19,7 @@ function init(){
 
 init();
 
-
+// setup express for serving files and Access-Control workarounds
 function configureExpress(app){
     app.configure(function(){
 
@@ -47,14 +45,19 @@ function configureExpress(app){
 
 // =========== ROUTES ==========
 
+// upload an image for preprocessing.
+// REQUIRES: base64 represenation of floorplan image
+// ENSURES: list of lines is returned in JSON as well as link to greyscale image
 app.post('/upload', function (req, res) {
 	var base64Data = req.body.image;
-    var imagePath = './public/floorplans/fp' + imageID + '.jpg';
+    var id = req.body.id;
+    var imagePath = './public/floorplans/fp' + id + '.jpg';
     var index = base64Data.indexOf('base64,') + 'base64,'.length;
     base64Data = base64Data.substring(index, base64Data.length);
     fs.writeFile(imagePath, new Buffer(base64Data, "base64"));
     var lines = extractLines(imagePath);
-	return res.json('lines');
+    lines['image'] = imagePath;
+	return res.json(lines);
 });
 
 app.post('/text', function (req, res) {
@@ -62,22 +65,28 @@ app.post('/text', function (req, res) {
     var room = req.body.rooms;
     var sector = req.body.sector;
     var id = req.body.id;
-    if (map !== undefined) {
-		fs.writeFile('./www/text/map-' + id + '.txt', map);
-	};
-    if (room !== undefined) {
-		fs.writeFile('./www/text/rooms-' + id + '.txt', rooms);
-	};
-    if (sector !== undefined) {
-		fs.writeFile('./www/text/sector-' + id + '.txt', sector);
-	};
+    if (map !== undefined && map !== null) {
+        fs.writeFile('./www/text/map-' + id + '.txt', map);
+    }
+    if (room !== undefined && room !== null) {
+        fs.writeFile('./www/text/rooms-' + id + '.txt', rooms);
+    }
+    if (sector !== undefined && sector !== null) {
+        fs.writeFile('./www/text/sector-' + id + '.txt', sector);
+    }
     return res.send('sucess!'); 
 });
 
 app.post('/graph', function (req, res) {
     var graph = req.body.graph;
     var id = req.body.id;
+<<<<<<< HEAD
     fs.writeFile('./www/text/graph-'+ id + '.txt', JSON.stringify(graph));
+=======
+    if (graph !== undefined) {
+        fs.writeFile('./www/text/graph-'+ id + '.txt', graph);
+    }
+>>>>>>> ad5a3bc3dc1020f4575c207edd9f99dd22448c02
     return res.send('sucess!');
 });
 

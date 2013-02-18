@@ -41,8 +41,11 @@ Space.prototype.addPoint = function(p) {
 };
 
 Space.prototype.draw = function() {
-	if (this.drawPoly) this.selectPoly.draw();
-};
+	if (this.drawPoly) {
+		this.selectPoly = new Polygon(this.walls);
+		this.selectPoly.draw();
+	}
+}
 
 Space.prototype.pointOnWalls = function(point, radius) {
 	for(var w = 0; w < this.walls.length; w++) {
