@@ -2,6 +2,7 @@ var imageLoader = document.getElementById('imageLoader');
     imageLoader.addEventListener('change', uploadImage, false);;
 
 function uploadImage(e){
+	console.log("UPLOADING IMAGE");
     var reader = new FileReader();
     reader.onload = function(event){
 	    var base64Encoding = event.target.result;
@@ -13,7 +14,8 @@ function uploadImage(e){
                 	image: base64Encoding
                 }
         }).done(function(res) {
-        	console.log(res);
+        	//console.log(res);
+			importLines(res);
         }); 
     }
     reader.readAsDataURL(e.target.files[0]);     

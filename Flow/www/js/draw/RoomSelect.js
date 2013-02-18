@@ -8,8 +8,11 @@ function roomSelectMouseMoved(x, y) {
 			console.log("INSIDE A ROOM");
 			return; // only select one room
 		}
+		else {
+			room.drawPoly = false;
+		}
 		
 	}
 	
-	console.log("OUTSIDE A ROOM");
+	//console.log("OUTSIDE A ROOM");
 }

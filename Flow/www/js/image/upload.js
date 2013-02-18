@@ -2,6 +2,7 @@ var imageLoader = document.getElementById('imageLoader');
     imageLoader.addEventListener('change', uploadImage, false);;
 
 function uploadImage(e){
+	console.log("bad");
     var reader = new FileReader();
     reader.onload = function(event){
         window.FLOOR_PLAN = new Image();
