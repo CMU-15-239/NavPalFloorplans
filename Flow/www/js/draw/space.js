@@ -7,15 +7,17 @@
 function Space(walls) {
 	//this.anchor = {x: px, y: py};
 	this.doors = [];
-	this.walls = walls;
+	this.walls = $.extend([], walls);
 	this.points = [];
 	this.type = ""; //"room" or "hallway"
 	this.label = ""; //room number
 	this.isClosed = false;
+	
 	//A polygon that appears when the user selects the space.
-	//this.selectPoly = new Polygon(this.walls);
+	this.selectPoly = new Polygon(this.walls);
+	this.walls = walls;
 	this.drawPoly = false;
-}
+};
 
 Space.prototype.isRoom = function() {
 	return this.type === "room";
@@ -32,11 +34,11 @@ Space.prototype.isHallway = function() {
 **/
 Space.prototype.addWall = function(l) {
 	this.walls.push(l);
-}
+};
 
 Space.prototype.addPoint = function(p) {
 	this.points.push(p);
-}
+};
 
 Space.prototype.draw = function() {
 	if (this.drawPoly) {
@@ -45,86 +47,58 @@ Space.prototype.draw = function() {
 	}
 }
 
-
-Space.prototype.pointOnLines = function(point, lines) {
-	for(var l = 0; l < lines.length; l++) {
-		if(lines[l].pointNearLine(point, 0.5)) {
-			return true;
+Space.prototype.pointOnWalls = function(point, radius) {
+	for(var w = 0; w < this.walls.length; w++) {
+		if(this.walls[w].pointNearLine(point, radius)) {
+			return this.walls[w];
 		}
 	}
-	return false;
-}
+	return null;
+};
 
-Space.prototype.pointInSpace = function(point, width, height, includeLine) {
-	return this.pointInShape(point, this.walls, width, height, includeLine);
-}
-
-Space.prototype.pointInShape = function(point, lines, width, height, includeLine) {
-	
-	if (this.pointOnLines(point, lines)) {
+Space.prototype.pointInSpace = function(point, width, includeLine) {
+	//console.log("params: "+JSON.stringify(point)+" width: "+width+" includeLine: "+includeLine);
+	if (util.exists(this.pointOnWalls(point, 0.5))) {
 		return (includeLine === true);
 	}
-	
-	var linesHit = {};
-	
-	for (var x = 0; x <= point.x; x ++ ) {
-		for (var i = 0; i < lines.length; i ++) {
-			var line = lines[i];
-		
-			if (line.pointNearLine(new Point(x,point.y), 1)) {
-				linesHit[line.toString()] = 1;
-				break;
-			}
-		}
-		
-	}
-	
-	var intersectCount = 0;
-	for (e in linesHit) {
-		if (linesHit[e] === 1) {
-			intersectCount++;
-		}
-	}
-	/*
-	for (var i = 0; i < lines.length; i ++) {
-		var line = lines[i];
-		
-		for (var x = 0; x <= point.x; x ++ ) {
-			if (line.pointNearLine(new Point(x,point.y), 1)) {
-				intersectCount += 1;
-				break; // only count each line once
-			}
-		}
-	}
-	*/
-	//console.log((intersectCount % 2 == 1));
-	return (intersectCount % 2 == 1) // if intersect is odd, its in shape
-/*
-	if(!pointOnLines(point, lines)) {
+	else {
+		//console.log("jere");
+		//compile intersecting lines
 		var inShapeSegments = [];
+		var lastLineIntersected = null;
 		var currP1 = null;
-		for(var rx = 0; rx < width; rx++) {
-			var currRayPt = {x: rx, y: point.y};
+		for(var xr = 0; xr < width; xr++) {
+			var currRayPt = {x: xr, y: point.y};
 			//console.log("checkingPt: "+JSON.stringify(currRayPt));
-			if(pointOnLines(currRayPt, lines)) {
+			var intersectLine = this.pointOnWalls(currRayPt, 0.5);
+			if(util.exists(intersectLine)) {
 				//console.log("found intersection pt: "+JSON.stringify(currRayPt));
-				if(util.exists(currP1)) {
-					inShapeSegments.push(new Line(new Point(currP1.x, currP1.y), new Point(currRayPt.x, currRayPt.y)));
-					currP1 = null;
-				}
-				else {
-					currP1 = currRayPt;
-					//console.log("p1: "+JSON.stringify(currP1));
+				if(!intersectLine.equals(lastLineIntersected)) {
+					lastLineIntersected = intersectLine;
+					if(util.exists(currP1)) {
+						//deep cpy
+						inShapeSegments.push(new Line(new Point(currP1.x, currP1.y) , new Point(currRayPt.x, currRayPt.y)));
+						currP1 = null;
+						//console.log("interLine: "+JSON.stringify(inShapeSegments[inShapeSegments.length-1]));
+					}
+					else {
+						currP1 = {x:currRayPt.x, y:currRayPt.y};
+						//console.log("p1: "+JSON.stringify(currP1))
+					}
 				}
 			}
 		}
-		console.log(inShapeSegments);
-		return pointOnLines(point, inShapeSegments);
+		
+		//console.log(inShapeSegments);
+		//determine if point is on one of these intersected lines
+		for(var s = 0; s < inShapeSegments.length; s++) {
+			if(inShapeSegments[s].pointNearLine(point, 0)) {
+				return true;
+			}
+		}
+		return false;
 	}
-	//console.log("pt on wall");
-	return false;
-	*/
-}
+};
 
 Space.prototype.sameLines = function(lines) {
 	var seen = {}
@@ -156,9 +130,9 @@ Space.prototype.sameLines = function(lines) {
 	}
 	
 	return true;
-}
+};
 
 Space.prototype.sameRoomWalls = function(room) {
 	return this.sameLines(room.walls);
-}
+};
 

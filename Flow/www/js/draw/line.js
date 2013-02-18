@@ -43,10 +43,13 @@ Line.prototype.toString = function() {
  * 		of each other.
 **/
 Line.prototype.equals = function (l) {
-	var isSameLine = (this.p1.equals(l.p1) && this.p2.equals(l.p2));
-	var isFlippedLine = (this.p2.equals(l.p1) && this.p1.equals(l.p2));
-	return isSameLine || isFlippedLine;
-}
+	if(util.exists(l)) {
+		var isSameLine = (this.p1.equals(l.p1) && this.p2.equals(l.p2));
+		var isFlippedLine = (this.p2.equals(l.p1) && this.p1.equals(l.p2));
+		return isSameLine || isFlippedLine;
+	}
+	return false;
+};
 
 Line.prototype.draw = function (drawPoints) {
 	if (drawPoints === true) {
@@ -65,22 +68,33 @@ Line.prototype.draw = function (drawPoints) {
 	CANVAS.stroke();
 	//Reset the stroke style
 	CANVAS.strokeStyle = oldStroke;
-}
+};
 
 Line.prototype.setPoints = function(p1, p2) {
 	this.p1 = p1;
 	this.p2 = p2;
-}
+};
 	
 Line.prototype.signPointToLine = function(point) {
 	return this.a * point.x + this.b * point.y + this.c;
-}
+};
 
 Line.prototype.distanceToPoint = function(point) {
 	return Math.abs(this.signPointToLine(point)) / this.distConst;
-}
+};
+
+/*
+Line.prototype.pointOnLine = function(point) {
+	var lineLenSq = util.distance(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
+	var p1ToPointSq = util.distance(this.p1.x, this.p1.y, point.x, point.y);
+	var p2ToPointSq = util.distance(this.p2.x, this.p2.y, point.x, point.y);
+	return lineLenSq === p1ToPointSq + p2ToPointSq;
+};
+*/
 
 Line.prototype.pointNearLine = function(point, radius) {
+	//if(radius <= 0) {return this.pointOnLine(point);} //why doesnt this work?
+	
 	var close = (Math.abs(this.signPointToLine(point)) / this.distConst) <= radius;
 	var onLine = ((this.p1.x >= point.x && point.x >= this.p2.x) ||
 		 (this.p1.x <= point.x && point.x <= this.p2.x)) &&
@@ -118,13 +132,13 @@ Line.prototype.snapToLine = function(point) {
 		 }
 	return false;
 	
-}
+};
 
 Line.prototype.breakIntoTwo = function(p) {
 	var newLine1 = new Line(this.p1, p);
 	var newLine2 = new Line(this.p2, p);
 	return {l1: newLine1, l2: newLine2};
-}
+};
 
 Line.prototype.getSlope = function() {
 	if (this.b != 0) { // Avoid division by 0
@@ -133,7 +147,7 @@ Line.prototype.getSlope = function() {
 	
 	var b = epsilon
 	return -1.0 * this.a / b;
-}
+};
 
 // Assume that point is on this line, return the other point
 Line.prototype.otherPoint = function(point) {
@@ -143,11 +157,11 @@ Line.prototype.otherPoint = function(point) {
 	else {
 		return this.p1;
 	}
-}
+};
 
 Line.prototype.magnitutde = function() {
 	var dx = Math.abs(this.p1.x - this.p2.x);
 	var dy = Math.abs(this.p1.y - this.p2.y);
 	return Math.sqrt(dx * dx + dy * dy);
-}
+};
 
