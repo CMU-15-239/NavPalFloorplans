@@ -80,13 +80,9 @@ app.post('/text', function (req, res) {
 app.post('/graph', function (req, res) {
     var graph = req.body.graph;
     var id = req.body.id;
-<<<<<<< HEAD
-    fs.writeFile('./www/text/graph-'+ id + '.txt', JSON.stringify(graph));
-=======
-    if (graph !== undefined) {
+    if (graph !== undefined && graph !== null) {
         fs.writeFile('./www/text/graph-'+ id + '.txt', graph);
     }
->>>>>>> ad5a3bc3dc1020f4575c207edd9f99dd22448c02
     return res.send('sucess!');
 });
 
