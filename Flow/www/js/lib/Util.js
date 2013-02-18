@@ -112,6 +112,16 @@ window.util.isValidInput = function(input) {
 
 };
 
+window.util.distanceSquared = function(x1, y1, x2, y2) {
+	var dx = x2-x1;
+	var dy = y2-y1;
+	return dx*dx + dy*dy;
+};
+
+window.util.distance = function(x1, y1, x2, y2) {
+	return Math.sqrt(this.distanceSquared(x1, y1, x2, y2));
+};
+
 String.prototype.hashCode = function(){
     var hash = 0, i, char;
     if (this.length == 0) return hash;
@@ -121,4 +131,4 @@ String.prototype.hashCode = function(){
         hash = hash & hash; // Convert to 32bit integer
     }
     return hash;
-}
+};

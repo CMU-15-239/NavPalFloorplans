@@ -37,11 +37,11 @@ function pointInShape(point, lines, width, height, linesInShape) {
 	return false;
 }
 
-function findPointInShape(lines, width, height) {
+function findPointInShape(space, width, height) {
 	var checkedVertices = [];
 	
-	for(var l = 0; l < lines.length; l++) {
-		var endPts = [lines[l].p1, lines[l].p2];
+	for(var l = 0; l < space.walls.length; l++) {
+		var endPts = [space.walls[l].p1, space.walls[l].p2];
 		for(var ep = 0; ep < endPts.length; ep++) {
 			var vertex = endPts[ep];
 			var vertexString = JSON.stringify(vertex);
@@ -52,7 +52,7 @@ function findPointInShape(lines, width, height) {
 							var point = {x: vertex.x+dx, y: vertex.y+dy};
 							if(0 <= point.x && point.x < width
 								&& 0 <= point.y && point.y < height
-								&& pointInShape(point, lines, width, height, false)) {
+								&& space.pointInSpace(point, width, false)) {
 								return point;
 							}
 						//}
@@ -66,7 +66,7 @@ function findPointInShape(lines, width, height) {
 	return null;
 }
 
-function floodFillShape(sector, lines, point, fillVal, emptyVal) {
+function floodFillShape(sector, space, point, fillVal, emptyVal) {
 	var checkPts = [{x: point.x-1, y: point.y}, {x: point.x+1, y: point.y},
 					{x: point.x, y: point.y-1}, {x: point.x, y: point.y+1}];
 	
@@ -75,10 +75,10 @@ function floodFillShape(sector, lines, point, fillVal, emptyVal) {
 		var fPoint = checkPts[cp];
 		//console.log("checkingPt: "+JSON.stringify(fPoint)+" sectorVal: "+sector[fPoint.y][fPoint.x]
 		//			+"pointOnLines: "+pointOnLines(fPoint, lines));
-		if(pointInShape(fPoint, lines, sector[0].length, sector.length, true)
+		if(space.pointInSpace(fPoint, sector[0].length, true)
 			&& sector[fPoint.y][fPoint.x] === emptyVal) {
 			sector[fPoint.y][fPoint.x] = fillVal;
-			floodFillShape(sector, lines, fPoint, fillVal, emptyVal);
+			floodFillShape(sector, space, fPoint, fillVal, emptyVal);
 		}
 	}
 	return sector;			
@@ -98,12 +98,12 @@ function fillVertices(sector, lines, fillVal, emptyVal) {
 	return sector;
 }
 
-function fillSector(sector, lines, fillVal, emptyVal) {
+function fillSector(sector, space, fillVal, emptyVal) {
 	//sector = fillVertices(sector, lines, fillVal, emptyVal); //we need to do this because we do fill with 4pt connectivity
-	var point = findPointInShape(lines, sector[0].length, sector.length);
+	var point = findPointInShape(space, sector[0].length, sector.length);
 	sector[point.y][point.x] = fillVal;
 	if(util.exists(point) && util.exists(point.x) && util.exists(point.y)) {
-		return floodFillShape(sector, lines, point, fillVal, emptyVal);
+		return floodFillShape(sector, space, point, fillVal, emptyVal);
 	}
 	else {
 		//alert("did not draw shape with lines: "+JSON.stringify(lines));
@@ -126,7 +126,7 @@ function generateSector(spaces, width, height) {
 	
 	for(var s = 0; s < spaces.length; s++) {
 		//console.log(spaces[s]);
-		sector = fillSector(sector, spaces[s].walls, ""+s, emptyChar)
+		sector = fillSector(sector, spaces[s], ""+s, emptyChar)
 	}
 	
 	//console.log(JSON.stringify(sector));
