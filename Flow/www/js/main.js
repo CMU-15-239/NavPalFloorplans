@@ -106,7 +106,11 @@ $(document).ready(function ()
 		detectRooms(ALL_WALLS); // find closed off rooms
 	});
 	
-	$('#add_room').click(function () {
+	$('#add_room').click(function() {
 		addRoomClicked();
+	});
+	
+	$('#done').click(function() {
+		return sendDataToServer(ALL_CLOSED_ROOMS, CANVAS.width, CANVAS.height);
 	});
 });
