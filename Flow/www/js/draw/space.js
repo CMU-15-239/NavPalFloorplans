@@ -1,16 +1,22 @@
 //space.js
 //Object for categorizing an open space (rooms and hallways)
 
-//create once you have an enclosed space and have all the data for it
-//px and py be the pixel point where the user clicks to classify the room
-//and this is probably needed for graphNode
+/**
+ * Summary: Create a new space when we have an enclosed area.
+ * Parameters: walls: The walls that define the space.
+ * Returns: undefined.
+**/
 function Space(walls) {
-	//this.anchor = {x: px, y: py};
+	//The doors in the space (if any)
 	this.doors = [];
+	//The walls that define the space
 	this.walls = $.extend([], walls);
 	this.points = [];
-	this.type = ""; //"room" or "hallway"
-	this.label = ""; //room number
+	//The classification of the space ("room", "hallway", "stairs", etc.)
+	this.type = "";
+	//The space's room number (if any)
+	this.label = "";
+	//Is the space closed?
 	this.isClosed = false;
 	
 	//A polygon that appears when the user selects the space.
@@ -19,10 +25,20 @@ function Space(walls) {
 	this.drawPoly = false;
 };
 
+/**
+ * Summary: Return whether the classification of the space is "room"
+ * Parameters: this
+ * Returns: true iff the classification of the space is "room"
+**/
 Space.prototype.isRoom = function() {
 	return this.type === "room";
 };
 
+/**
+ * Summary: Return whether the classification of the space is "hallway"
+ * Parameters: this
+ * Returns: true iff the classification of the space is "hallway"
+**/
 Space.prototype.isHallway = function() {
 	return this.type === "hallway";
 };
@@ -40,13 +56,26 @@ Space.prototype.addPoint = function(p) {
 	this.points.push(p);
 };
 
+/**
+ * Summary: Draw the polygon that defines the room on the canvas, if appropriate
+ * Parameters: this
+ * Returns: undefined
+**/
 Space.prototype.draw = function() {
 	if (this.drawPoly) {
+		//Make a new polygon every time to eliminate the possibility of destructively
+		//modifying its parameters.
 		this.selectPoly = new Polygon(this.walls);
 		this.selectPoly.draw();
 	}
 }
 
+/**
+ * Summary: Find the first wall that is within radius distance of the given point.
+ * Parameters: point: the point to find a match for, 
+ *	radius: the maximum distance the wall can be away from the point
+ * Returns: The first wall that is close to the point if there is one, and null otherwise.
+**/
 Space.prototype.pointOnWalls = function(point, radius) {
 	for(var w = 0; w < this.walls.length; w++) {
 		if(this.walls[w].pointNearLine(point, radius)) {
@@ -56,8 +85,16 @@ Space.prototype.pointOnWalls = function(point, radius) {
 	return null;
 };
 
+/**
+ * Summary: Check whether the given point is within the defining walls of the space.
+ * Parameters: point: the point we're checking, 
+ * 		width: ???,
+ * 		includeLine: Should we include the lines that define the walls in our check? 
+ * Returns: true iff the given point is within the defining walls of the space.
+**/
 Space.prototype.pointInSpace = function(point, width, includeLine) {
 	//console.log("params: "+JSON.stringify(point)+" width: "+width+" includeLine: "+includeLine);
+	//If point is very close to a line, then it's only in the space if we should include the walls' lines.
 	if (util.exists(this.pointOnWalls(point, 0.5))) {
 		return (includeLine === true);
 	}
@@ -100,8 +137,14 @@ Space.prototype.pointInSpace = function(point, width, includeLine) {
 	}
 };
 
+/**
+ * Summary: Check whether the given set of lines contain the same walls as this space.
+ * Parameters: lines: The set of lines we're checking against.
+ * Returns: true iff the given set of lines and this space contain the same walls.
+**/
 Space.prototype.sameLines = function(lines) {
 	var seen = {}
+	//If the two sets contain a different number of walls, then it's trivially false.
 	if (lines.length != this.walls.length) {
 		return false;
 	}
@@ -132,6 +175,11 @@ Space.prototype.sameLines = function(lines) {
 	return true;
 };
 
+/**
+ * Summary: Check whether the given space and this space contain the same walls.
+ * Parameters: room: The room to check against.
+ * Returns: true iff the given room and this room contain the same walls.
+**/
 Space.prototype.sameRoomWalls = function(room) {
 	return this.sameLines(room.walls);
 };

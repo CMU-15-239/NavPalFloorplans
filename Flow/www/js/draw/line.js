@@ -20,6 +20,11 @@ Line.prototype.toOutput = function() {
 	};
 }
 
+/**
+ * Summary: Put the line in standard form (ax + by = c)
+ * Parameters: p1, p2: The end points of the line.
+ * Returns: undefined (changes object variables)
+**/
 Line.prototype.calculateForm = function(p1, p2) {
 
 	if (p1 === undefined || p2 === undefined) {
@@ -32,6 +37,11 @@ Line.prototype.calculateForm = function(p1, p2) {
 	this.distConst = Math.sqrt(this.a * this.a + this.b * this.b);
 }
 
+/**
+ * Summary: Get the string form of the line.
+ * Parameters: this
+ * Returns: The string form of this.
+**/
 Line.prototype.toString = function() {
 	return "<" + this.p1.toString() + "," + this.p2.toString() + ">";
 }
@@ -51,12 +61,13 @@ Line.prototype.equals = function (l) {
 	return false;
 };
 
-Line.prototype.draw = function (drawPoints) {
-	if (drawPoints === true) {
-		//this.p1.draw();
-		//this.p2.draw();
-	}
-	
+/**
+ * Summary: Draw the line on the canvas.
+ * Parameters: this
+ * Returns: undefined.
+**/
+Line.prototype.draw = function () {	
+	//Save the olf stroke, so that we can restore it when we're done
 	var oldStroke = CANVAS.strokeStyle;
 	if (this.isSelected === true) {
 		CANVAS.strokeStyle = "yellow";
@@ -70,32 +81,44 @@ Line.prototype.draw = function (drawPoints) {
 	CANVAS.strokeStyle = oldStroke;
 };
 
+/**
+ * Summary: Basic setter method for the points of the line.
+ * Parameters: this
+ * Returns: undefined.
+**/
 Line.prototype.setPoints = function(p1, p2) {
 	this.p1 = p1;
 	this.p2 = p2;
 };
-	
+
+/**
+ * Summary: Plug a point's coordinates into the line's standard form equation.
+ * Parameters: point: The point to plug in.
+ * Returns: The value of the line at the given point.
+**/	
 Line.prototype.signPointToLine = function(point) {
 	return this.a * point.x + this.b * point.y + this.c;
 };
 
+/**
+ * Summary: Find the distance from the line to the given point.
+ * Parameters: point: The point whose distance we want to find.
+ * Returns: The distance of this to the given point.
+**/	
 Line.prototype.distanceToPoint = function(point) {
 	return Math.abs(this.signPointToLine(point)) / this.distConst;
 };
 
-/*
-Line.prototype.pointOnLine = function(point) {
-	var lineLenSq = util.distance(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
-	var p1ToPointSq = util.distance(this.p1.x, this.p1.y, point.x, point.y);
-	var p2ToPointSq = util.distance(this.p2.x, this.p2.y, point.x, point.y);
-	return lineLenSq === p1ToPointSq + p2ToPointSq;
-};
-*/
-
+/**
+ * Summary: Check whether the the given point is within radius distance of the line.
+ * Parameters: point: The point to check, radius: The maximum distance allowed.
+ * Returns: true iff the given point is within radius distance of the line.
+**/	
 Line.prototype.pointNearLine = function(point, radius) {
 	//if(radius <= 0) {return this.pointOnLine(point);} //why doesnt this work?
 	
 	var close = (Math.abs(this.signPointToLine(point)) / this.distConst) <= radius;
+	//Make sure the point is actually within the endpoints of the line.
 	var onLine = ((this.p1.x >= point.x && point.x >= this.p2.x) ||
 		 (this.p1.x <= point.x && point.x <= this.p2.x)) &&
 		 ((this.p1.y >= point.y && point.y >= this.p2.y) ||
@@ -104,6 +127,11 @@ Line.prototype.pointNearLine = function(point, radius) {
 	return close && onLine;
 }
 
+/**
+ * Summary: Snap the given point to the line.
+ * Parameters: point: The point to snap.
+ * Returns: true iff the point snaps to the line.
+**/	
 Line.prototype.snapToLine = function(point) {
 	var d = this.distanceToPoint(point);
 	var ratio = d / this.distConst;
@@ -116,11 +144,7 @@ Line.prototype.snapToLine = function(point) {
 	
 	var newX = point.x + dx;
 	var newY = point.y + dy;
-	
-	//point.x = newX;
-	//point.y = newY;
-	
-	//console.log("new " + newX + "," + newY + "  and points:" + this.
+
 	// Check that the new x,y coordinates are along the line segment
 	if (((this.p1.x >= newX && newX >= this.p2.x) ||
 		 (this.p1.x <= newX && newX <= this.p2.x)) &&
@@ -134,12 +158,22 @@ Line.prototype.snapToLine = function(point) {
 	
 };
 
+/**
+ * Summary: Break the line into 2 separate lines at the given point.
+ * Parameters: point: The point at which we should cut the line.
+ * Returns: A data structure containing the two new lines.
+**/	
 Line.prototype.breakIntoTwo = function(p) {
 	var newLine1 = new Line(this.p1, p);
 	var newLine2 = new Line(this.p2, p);
 	return {l1: newLine1, l2: newLine2};
 };
 
+/**
+ * Summary: Get the slop of the line.
+ * Parameters: this
+ * Returns: The slope of the line.
+**/	
 Line.prototype.getSlope = function() {
 	if (this.b != 0) { // Avoid division by 0
 		return -1.0 * this.a / this.b;
@@ -149,7 +183,11 @@ Line.prototype.getSlope = function() {
 	return -1.0 * this.a / b;
 };
 
-// Assume that point is on this line, return the other point
+/**
+ * Summary: Assuming that the given point is one endpoint of the line, return the other endpoint.
+ * Parameters: point: One endpoint of the line.
+ * Returns: The other endpoint of the line.
+**/	
 Line.prototype.otherPoint = function(point) {
 	if (point.equals(this.p1)) {
 		return this.p2;
@@ -159,6 +197,11 @@ Line.prototype.otherPoint = function(point) {
 	}
 };
 
+/**
+ * Summary: Get the magnitude of the line (i.e. its length).
+ * Parameters: this
+ * Returns: The magnitude of the line.
+**/	
 Line.prototype.magnitutde = function() {
 	var dx = Math.abs(this.p1.x - this.p2.x);
 	var dy = Math.abs(this.p1.y - this.p2.y);
