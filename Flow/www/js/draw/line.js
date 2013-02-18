@@ -83,15 +83,17 @@ Line.prototype.distanceToPoint = function(point) {
 	return Math.abs(this.signPointToLine(point)) / this.distConst;
 };
 
+/*
 Line.prototype.pointOnLine = function(point) {
 	var lineLenSq = util.distance(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
 	var p1ToPointSq = util.distance(this.p1.x, this.p1.y, point.x, point.y);
 	var p2ToPointSq = util.distance(this.p2.x, this.p2.y, point.x, point.y);
 	return lineLenSq === p1ToPointSq + p2ToPointSq;
 };
+*/
 
 Line.prototype.pointNearLine = function(point, radius) {
-	if(radius <= 0) {return this.pointOnLine(point);}
+	//if(radius <= 0) {return this.pointOnLine(point);} //why doesnt this work?
 	
 	var close = (Math.abs(this.signPointToLine(point)) / this.distConst) <= radius;
 	var onLine = ((this.p1.x >= point.x && point.x >= this.p2.x) ||
