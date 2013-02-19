@@ -31,17 +31,22 @@ def parse_input_file2(image_dir):
     img=Image.open(image_dir)
     #convert image to grayscale
     img=img.convert('L')
-    #destructively save the image
-    img.save(image_dir)
 
     #extract the pixels
     list_of_pixels=list(img.getdata())
+    #extract image size
     (width,height)=img.size
     #initialize IMG object
     IMG=FImage()
     IMG.width=width
     IMG.height=height
     IMG.rgbs=oneToMulti(list_of_pixels,IMG.width)
+    #save the converted raw image 
+    for i in xrange(len(list_of_pixels)):
+        list_of_pixels[i]=255-list_of_pixels[i]
+    im2= Image.new('L',img.size)
+    im2.putdata(list_of_pixels)
+    im2.save(image_dir)
     return IMG
 
 def extract_lines(IMG):
@@ -128,7 +133,6 @@ def process_img(image_dir):
     merge_hlines(hlines)
     #print "Mergeing horizontal lines!"
     merge_vlines(vlines)
-    
     #visualize_lines(IMG,vlines,hlines)
     
     write_vertex_list(hlines,vlines) 
