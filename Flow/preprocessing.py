@@ -53,35 +53,38 @@ def extract_lines(IMG):
 
 
 def write_vertex_list(hlines,vlines):
-    fd=open('nsh.json','w')
+    fd=open('json.txt','w')
 
-    fd.write("#line format as follow:\n")
-    fd.write("#starting_row starting_col \
-                ending_row ending_col\n")
     fd.write('{\"lines\":[\n')
 
     #write the line segments into a json file for canvas 
     for line in hlines:
-        fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
+        fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]},\n' %\
         (line.start.row, line.start.col,line.end.row,\
         line.end.col))
-    for line in vlines:
-        fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
+    for i in xrange(len(vlines)-1):
+        line=vlines[i]
+        fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]},\n' %\
             (line.start.row, line.start.col, line.end.row,\
                 line.end.col))
-    fd.write("}\n")
+    line=vlines[len(vlines)-1]
+    fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
+                (line.start.row, line.start.col, line.end.row,\
+                 line.end.col))
+    fd.write("]}\n")
     fd.close()
 
 def generate_string(hlines,vlines):
     s='{\"lines\":[\n'
     for line in hlines:
-        s+=('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
+        s+=('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]},\n' %\
                 (line.start.row, line.start.col,line.end.row,\
                         line.end.col))
     for line in vlines:
-        s+=('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
+        s+=('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]},\n' %\
                 (line.start.row, line.start.col,line.end.row,\
                         line.end.col))
+    s=s[:-2]
     s+=']}\n'
     print s
 
@@ -128,8 +131,7 @@ def process_img(image_dir):
     
     #visualize_lines(IMG,vlines,hlines)
     
-    generate_string(vlines,hlines)
-    
+    write_vertex_list(hlines,vlines) 
 
 def init():
     args=sys.argv[1:]
