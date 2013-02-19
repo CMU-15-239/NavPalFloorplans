@@ -3,8 +3,8 @@ function importLines(jsonObj) {
 		var curLine = jsonObj.lines[i];
 		var p1 = curLine.line[0];
 		var p2 = curLine.line[1];
-		p1 = new Point(p1.p1[0], p1.p1[1]);
-		p2 = new Point(p2.p2[0], p2.p2[1]);
+		p1 = new Point(p1.p1[1], p1.p1[0]);
+		p2 = new Point(p2.p2[1], p2.p2[0]);
 		ALL_WALLS.push(new Line(p1, p2));
 		//console.log(ALL_WALLS);
 		//Only add points that aren't already in the array

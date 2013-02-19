@@ -2,33 +2,22 @@ var imageLoader = document.getElementById('imageLoader');
     imageLoader.addEventListener('change', uploadImage, false);;
 
 function uploadImage(e){
-	console.log("UPLOADING IMAGE");
+	console.log("bad");
     var reader = new FileReader();
     reader.onload = function(event){
-	    var base64Encoding = event.target.result;
-	    console.log(base64Encoding)
-	     $.ajax({ 
-                type: "POST", 
-                url : '/upload', 
-                data: {
-                	image: base64Encoding
-                }
-        }).done(function(res) {
-			importLines(res);
-            window.FLOOR_PLAN = new Image();
-            FLOOR_PLAN.onload = function() {
-                $('#canvas').height(this.height)
-                $('#buttons').height(this.height)
-                $('#canvas').width(this.width)
-                can.width = this.width;
-                can.height = this.height;
-                CANVAS.width = this.width;
-                CANVAS.height = this.height;
-                CANVAS.x = can.offsetLeft;
-                CANVAS.y = can.offsetTop;
-            }
-            FLOOR_PLAN.src = res['image'];
-            }); 
+        window.FLOOR_PLAN = new Image();
+        FLOOR_PLAN.onload = function() {
+	        $('#canvas').height(this.height)
+	        $('#buttons').height(this.height)
+	        $('#canvas').width(this.width)
+	        can.width = this.width;
+			can.height = this.height;
+			CANVAS.width = this.width;
+			CANVAS.height = this.height;
+			CANVAS.x = can.offsetLeft;
+			CANVAS.y = can.offsetTop;
+	    }
+	    FLOOR_PLAN.src = event.target.result;
     }
     reader.readAsDataURL(e.target.files[0]);     
 }

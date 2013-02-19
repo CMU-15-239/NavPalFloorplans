@@ -20,8 +20,8 @@ function init(){
 init();
 
 // setup express for serving files and Access-Control workarounds
-function configureExpress(app){
-    app.configure(function(){
+function configureExpress(app) {
+    app.configure(function() {
 
     	app.use(express.logger());
     	app.use(express.cookieParser());
@@ -50,16 +50,14 @@ function configureExpress(app){
 // ENSURES: list of lines is returned in JSON as well as link to greyscale image
 app.post('/upload', function (req, res) {
 	var base64Data = req.body.image;
-    var id = req.body.id;
-    var imagePath = './public/floorplans/fp' + id + '.jpg';
+    var imagePath = './www/floorplans/floorPlan.jpg';
     var index = base64Data.indexOf('base64,') + 'base64,'.length;
     base64Data = base64Data.substring(index, base64Data.length);
     fs.writeFile(imagePath, new Buffer(base64Data, "base64"));
-    var lines = extractLines(imagePath);
-    lines['image'] = imagePath;
-	return res.json(lines);
+    var lines = preprocessor(imagePath, res);
 });
 
+// creates three text files required by navPal android app
 app.post('/text', function (req, res) {
     var map = req.body.map;
     var room = req.body.room;
@@ -77,6 +75,7 @@ app.post('/text', function (req, res) {
     return res.send('sucess!'); 
 });
 
+// creates json of graph representation of floorplan
 app.post('/graph', function (req, res) {
     var graph = req.body.graph;
     var id = req.body.id;
@@ -88,11 +87,21 @@ app.post('/graph', function (req, res) {
 
 // =========== PREPROCESSOR ==========
 
-function extractLines(imagePath) {
-    child = exec('python extractLines.py ' + imagePath,
+// calls python script to extract lines from image and convert to gray scale
+function preprocessor(imagePath, res) {
+    var linesJSON;
+    child = exec('python preprocessing.py ' + imagePath,
     function (error, stdout, stderr) {
-        var lines = JSON.parse(stdout);
-        return lines;
+        // First I want to read the file
+        fs.readFile('json.txt', function read(err, data) {
+            if (err) {
+                throw err;
+            }
+            linesJSON = data.toString('utf8');
+            var lines = JSON.parse(linesJSON);
+            lines['image'] = imagePath.substring(5, imagePath.length);
+            return res.json(lines);
+        });
     });
 }
 
