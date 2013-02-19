@@ -125,10 +125,10 @@ Line.prototype.pointNearLine = function(point, radius) {
 	
 	var close = (Math.abs(this.signPointToLine(point)) / this.distConst) <= radius;
 	//Make sure the point is actually within the endpoints of the line.
-	var onLine = ((this.p1.x >= point.x && point.x >= this.p2.x) ||
-		 (this.p1.x <= point.x && point.x <= this.p2.x)) &&
-		 ((this.p1.y >= point.y && point.y >= this.p2.y) ||
-		 (this.p1.y <= point.y && point.y <= this.p2.y));
+	var onLine = ((this.p1.x >= point.x-radius && point.x+radius >= this.p2.x) ||
+		 (this.p1.x <= point.x+radius && point.x-radius <= this.p2.x)) &&
+		 ((this.p1.y >= point.y-radius && point.y+radius >= this.p2.y) ||
+		 (this.p1.y <= point.y+radius && point.y-radius <= this.p2.y));
 		 
 	return close && onLine;
 }
