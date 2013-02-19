@@ -141,9 +141,10 @@ function mouseMoved(event) {
 	}
 	if (STATE === "select_tool") {
 		selectToolMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
+		roomSelectMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 	}
 	if (STATE === "room_detection_tool") {
-		roomSelectMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
+		//roomSelectMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 	}
 	drawWalls();
 }
@@ -291,8 +292,18 @@ function mouseClicked(event) {
 				var twoNewLines = SNAPPED_TO_LINE.breakIntoTwo(CUR_POINT);
 				CUR_POINT.degree += 2;
 				ALL_WALLS.splice(ALL_WALLS.indexOf(SNAPPED_TO_LINE), 1);
-				ALL_WALLS.push(twoNewLines.l1);
-				ALL_WALLS.push(twoNewLines.l2);
+				newLine1Duplicate = false;
+				newLine2Duplicate = false;
+				for (var i = 0; i < ALL_WALLS.length; i++) {
+					if (ALL_WALLS[i].equals(twoNewLines.l1)) newLine1Duplicate = true;
+					if (ALL_WALLS[i].equals(twoNewLines.l2)) newLine2Duplicate = true;
+				}
+				if (CUR_LINE != undefined) {
+					if (CUR_LINE.equals(twoNewLines.l1)) newLine1Duplicate = true;
+					if (CUR_LINE.equals(twoNewLines.l2)) newLine2Duplicate = true;
+				}
+				if (!newLine1Duplicate) ALL_WALLS.push(twoNewLines.l1);
+				if (!newLine2Duplicate) ALL_WALLS.push(twoNewLines.l2);
 			}
 		}
 		if (LAST_POINT !== undefined && CUR_LINE !== undefined) {
@@ -306,7 +317,16 @@ function mouseClicked(event) {
 		CAN_SNAP_TO_LAST = false;
 		SNAPPED_TO_LINE = true;
 	}
-	
+	else if (STATE === "select_tool") {
+		if (ACTIVE_ROOM !== undefined && !BLOCK_CHANGE_ROOM) {
+			$("#classification_pop").css({
+				display: "block",
+				top: event.pageY - CANVAS.y + "px",
+				left: event.pageX - CANVAS.x + "px"
+			});
+			BLOCK_CHANGE_ROOM = true;
+		}
+	}
 	drawWalls();
 }
 

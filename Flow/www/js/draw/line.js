@@ -9,6 +9,8 @@ function Line(p1, p2) {
 	this.p1 = p1;
 	this.p2 = p2;
 	this.isSelected = false;
+	this.isDoor = false;
+	this.definesRoom = false;
 	
 	this.calculateForm(p1, p2);
 }
@@ -67,10 +69,15 @@ Line.prototype.equals = function (l) {
  * Returns: undefined.
 **/
 Line.prototype.draw = function () {	
-	//Save the olf stroke, so that we can restore it when we're done
+	//Save the old stroke, so that we can restore it when we're done
 	var oldStroke = CANVAS.strokeStyle;
+	
+	CANVAS.strokeStyle = 'rgba(24,232,70,.5)';
 	if (this.isSelected === true) {
-		CANVAS.strokeStyle = "yellow";
+		CANVAS.strokeStyle = "yellow"; // Yellow
+	}
+	if (this.definesRoom === true) {
+		CANVAS.strokeStyle = 'rgba(255,0,0,.7)'; // Red
 	}
 	CANVAS.lineWidth = WALL_WIDTH;
 	CANVAS.beginPath();
@@ -196,6 +203,7 @@ Line.prototype.otherPoint = function(point) {
 		return this.p1;
 	}
 };
+
 
 /**
  * Summary: Get the magnitude of the line (i.e. its length).

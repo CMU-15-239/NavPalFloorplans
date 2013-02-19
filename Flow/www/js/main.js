@@ -88,6 +88,7 @@ $(document).ready(function ()
 			CUR_POINT = undefined;
 			resetLineGlobals();
 			CAN_SNAP_TO_LAST = true;
+			detectRooms(ALL_WALLS); 
 			$("#add_room").css("display", "block");
 		}
 		else if (STATE === "line_tool") {
@@ -103,7 +104,7 @@ $(document).ready(function ()
 		CUR_POINT = undefined;
 		resetLineGlobals();
 		CAN_SNAP_TO_LAST = true;
-		detectRooms(ALL_WALLS); // find closed off rooms
+		//detectRooms(ALL_WALLS); // find closed off rooms
 	});
 	
 	$('#add_room').click(function() {
@@ -112,6 +113,17 @@ $(document).ready(function ()
 	
 	$('#done').click(function() {
 		return sendDataToServer(ALL_CLOSED_ROOMS, CANVAS.width, CANVAS.height);
+	});
+	
+	$("#label_submit").click(function(event) {
+		event.preventDefault();
+		BLOCK_CHANGE_ROOM = false;
+		var label = $("#label").val();
+		console.log(label);
+		var type = $('input[name=type]:checked', '#classification_pop').val().toLowerCase();
+		console.log(type);
+		ACTIVE_ROOM = undefined;
+		$("#classification_pop").css("display", "none");
 	});
 	
 	/*var jsonObj = '{"lines":[{"line":[{"p1":[0,0]},{"p2":[100,100]}]}, {"line":[{"p1":[100,100]},{"p2":[200,500]}]}]}';

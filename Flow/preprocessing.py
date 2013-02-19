@@ -53,25 +53,43 @@ def extract_lines(IMG):
 
 
 def write_vertex_list(hlines,vlines):
-    fd=open('nsh.json','w')
+    fd=open('json.txt','w')
 
-    fd.write("#line format as follow:\n")
-    fd.write("#starting_row starting_col \
-                ending_row ending_col\n")
-    fd.write("{lines:[\n")
+    fd.write('{\"lines\":[\n')
+
     #write the line segments into a json file for canvas 
     for line in hlines:
-        fd.write("{line:[{p1:[%d,%d]},{p2:[%d,%d]}]}\n" %\
+        fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]},\n' %\
         (line.start.row, line.start.col,line.end.row,\
         line.end.col))
-    for line in vlines:
-        fd.write("{line:[{p1:[%d,%d]},{p2:[%d,%d]}]}\n" %\
+    for i in xrange(len(vlines)-1):
+        line=vlines[i]
+        fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]},\n' %\
             (line.start.row, line.start.col, line.end.row,\
                 line.end.col))
-    fd.write("}\n")
+    line=vlines[len(vlines)-1]
+    fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
+                (line.start.row, line.start.col, line.end.row,\
+                 line.end.col))
+    fd.write("]}\n")
     fd.close()
 
+def generate_string(hlines,vlines):
+    s='{\"lines\":[\n'
+    for line in hlines:
+        s+=('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]},\n' %\
+                (line.start.row, line.start.col,line.end.row,\
+                        line.end.col))
+    for line in vlines:
+        s+=('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]},\n' %\
+                (line.start.row, line.start.col,line.end.row,\
+                        line.end.col))
+    s=s[:-2]
+    s+=']}\n'
+    print s
+
 #Utility function to color the lines segments in yellow
+
 def colorLines(hlines,vlines,IMG):
     for line in hlines:
         row=line.start.row
@@ -108,15 +126,17 @@ def process_img(image_dir):
     (hlines,vlines)=extract_lines(IMG)
     #merge lines in close proximity
     merge_hlines(hlines)
+    #print "Mergeing horizontal lines!"
     merge_vlines(vlines)
-    visualize_lines(IMG,vlines,hlines)
-
+    
+    #visualize_lines(IMG,vlines,hlines)
+    
+    write_vertex_list(hlines,vlines) 
 
 def init():
     args=sys.argv[1:]
     image_dir=args[0]
-    process_img(image_dir)
-    
+    process_img(image_dir)    
 init()
 
 
