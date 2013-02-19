@@ -65,8 +65,12 @@ Space.prototype.draw = function() {
 	if (this.drawPoly) {
 		//Make a new polygon every time to eliminate the possibility of destructively
 		//modifying its parameters.
-		this.selectPoly = new Polygon(this.walls);
+		this.selectPoly = new Polygon(this.walls, 'rgba(51,153,255,.5)');
 		this.selectPoly.draw();
+	}
+	else if (this.type !== "") {
+		this.classifiedPoly = new Polygon(this.walls, 'rgba(255, 0, 0, .35)');
+		this.classifiedPoly.draw();
 	}
 }
 

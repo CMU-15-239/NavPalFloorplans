@@ -146,11 +146,11 @@ function mouseUp(event) {
 		//console.log(selectedLines.length + " entered lines");
 		if (isClosedRoom(SELECTED_LINES) == true) {
 			//console.log("VALID room");
-			enableAddRoom();
+			//enableAddRoom();
 		}
 		else {
 			//console.log("INVALID room");
-			disableAddRoom();
+			//disableAddRoom();
 		}
 	}
 }

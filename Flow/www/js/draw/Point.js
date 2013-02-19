@@ -42,10 +42,11 @@ Point.prototype.draw = function() {
 	//If the point is being snapped to, draw a larger circle around it to make this fact clear to the user.
 	if (this.isSnap) {
 		CANVAS.beginPath();
+		CANVAS.strokeStyle = POINT_COLOR
 		CANVAS.arc(this.x, this.y, SNAP_RADIUS, 0, 2*Math.PI, false);
 		CANVAS.lineWidth = WALL_WIDTH;
 		CANVAS.stroke();
-		CANVAS.fillStyle = "rgb(0,255,0)";
+		CANVAS.fillStyle = "rgb(255,0,255)";
 		this.isSnap = false;
 	}
 	//Color the point yellow if it's currently selected.

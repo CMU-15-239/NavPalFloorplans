@@ -52,3 +52,7 @@
 	padding: 13px 13px;
 }
 
+#done:hover {
+	cursor:pointer;
+}
+

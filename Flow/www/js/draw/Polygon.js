@@ -1,11 +1,9 @@
-var POLYGON_COLOR = 'rgba(51,153,255,.5)';
-
 /**
  * Summary: Constructor for the Polygon object.
  * Parameters: lines: An array of Line objects
  * Returns: undefined.
 **/
-function Polygon(lines) {
+function Polygon(lines, color) {
 	var copyLines = [];
 	//Make a copy of the lines so that we don't disturb any aspect of the containing space.
 	for (var i = 0; i < lines.length; i++) {
@@ -15,7 +13,7 @@ function Polygon(lines) {
 	//Sort the point in the polygon to enable drawing.
 	this.points = polySort(copyLines);
 	//Set the color the polygon should be.
-	this.color = POLYGON_COLOR;
+	this.color = color;
 }
 
 /**
