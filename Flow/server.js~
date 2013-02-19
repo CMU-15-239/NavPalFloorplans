@@ -30,7 +30,7 @@ function configureExpress(app){
     	app.use(express.bodyParser());
     	app.use(express.methodOverride());
     	app.use(express.session({secret:"keyboard cat"}));
-    	app.use(express.static(path.join(__dirname, 'public')));
+    	app.use(express.static(path.join(__dirname, 'www')));
 
         app.use(function(req, res, next) {
             res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
@@ -58,20 +58,20 @@ app.post('/upload', function (req, res) {
 });
 
 app.post('/text', function (req, res) {
-    var map = "" + req.body.map;
-    var room = "" + req.body.rooms;
-    var sector = "" + req.body.sector;
+    var map = req.body.map;
+    var room = req.body.rooms;
+    var sector = req.body.sector;
     var id = req.body.id;
-    fs.writeFile('./public/text/map-' + id + '.txt', map);
-    fs.writeFile('./public/text/rooms-' + id + '.txt', rooms);
-    fs.writeFile('./public/text/sector-' + id + '.txt', sector);
+    if (map !== undefined): fs.writeFile('./www/text/map-' + id + '.txt', map);
+    if (room !== undefined): fs.writeFile('./www/text/rooms-' + id + '.txt', rooms);
+    if (sector !== undefined): fs.writeFile('./www/text/sector-' + id + '.txt', sector);
     return res.send('sucess!');
 });
 
 app.post('/graph', function (req, res) {
     var graph = req.body.graph;
     var id = req.body.id;
-    fs.writeFile('./public/text/graph-'+ id + '.txt', graph);
+    fs.writeFile('./www/text/graph-'+ id + '.txt', graph);
     return res.send('sucess!');
 });
 
