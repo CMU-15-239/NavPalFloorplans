@@ -312,22 +312,50 @@ function mouseClicked(event) {
 			CUR_LINE.p1.degree += 1;
 			CUR_LINE.p2.degree += 1;
 		}
+		$("#done").attr("disabled", true);
 		//LAST_POINT = new Point(CUR_POINT.x, CUR_POINT.y);
 		LAST_POINT = CUR_POINT;
 		CAN_SNAP_TO_LAST = false;
 		SNAPPED_TO_LINE = true;
 	}
 	else if (STATE === "select_tool") {
-		if (ACTIVE_ROOM !== undefined && !BLOCK_CHANGE_ROOM) {
+		if (ACTIVE_ROOM !== undefined && !BLOCK_CHANGE_ROOM && !inSnapRange(event)) {
 			$("#classification_pop").css({
 				display: "block",
 				top: event.pageY - CANVAS.y + "px",
 				left: event.pageX - CANVAS.x + "px"
 			});
+			$("#label").val(ACTIVE_ROOM.label);
+			var roomType = ACTIVE_ROOM.type;
+			if ($("#" + roomType).length) $("#" + roomType).prop('checked', true);
 			BLOCK_CHANGE_ROOM = true;
 		}
 	}
+	console.log("NUM SELECTED LINES: " + SELECTED_LINES.length);
 	drawWalls();
+}
+
+function inSnapRange(event) {
+	var curP = new Point(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
+	for (var i = 0; i < ALL_WALLS.length; i++) {
+		var curWall = ALL_WALLS[i];
+		if(curWall.pointNearLine(curP, SNAP_RADIUS)) {
+			return true;
+		}
+	}
+	for (var i = 0; i < ALL_POINTS.length; i++) {
+		var curPoint = ALL_POINTS[i];
+		if (curPoint.distance(curP) <= SNAP_RADIUS) return true;
+	}
+	return false;
+}
+
+function allSpacesClassified() {
+	for (var i = 0; i < ALL_CLOSED_ROOMS.length; i++) {
+		var curRoom = ALL_CLOSED_ROOMS[i];
+		if (curRoom.type === "") return false;
+	}
+	return true;
 }
 
 //Draw the walls
@@ -382,6 +410,16 @@ function keyPressed(event) {
 		}
 		if (STATE === "select_tool") {
 			unselectAll();
+		}
+	}
+	//'d'
+	if (keyCode === 100) {
+		if (STATE === "select_tool") {
+			for (var i = 0; i < ALL_WALLS.length; i++) {
+				var curWall = ALL_WALLS[i];
+				if (curWall.isSelected) curWall.isDoor = !curWall.isDoor;
+			}
+			redraw();
 		}
 	}
 }
@@ -501,4 +539,15 @@ function addRoomClicked() {
 		else ALL_CLOSED_ROOMS[i-1].drawPoly = false;
 	}
 	redraw();
+}
+
+function addDoorsToRooms() {
+	for (var i = 0; i < ALL_CLOSED_ROOMS.length; i++) {
+		var curSpace = ALL_CLOSED_ROOMS[i];
+		for (var j = 0; j < curSpace.walls.length; j++) {
+			var curWall = curSpace.walls[j];
+			if (curWall.isDoor) curSpace.doors.push(curWall);
+		}
+		console.log(curSpace.doors.length);
+	}
 }
