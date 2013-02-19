@@ -2,22 +2,21 @@ var imageLoader = document.getElementById('imageLoader');
     imageLoader.addEventListener('change', uploadImage, false);;
 
 function uploadImage(e){
-	console.log("bad");
+	console.log("UPLOADING IMAGE");
     var reader = new FileReader();
     reader.onload = function(event){
-        window.FLOOR_PLAN = new Image();
-        FLOOR_PLAN.onload = function() {
-	        $('#canvas').height(this.height)
-	        $('#buttons').height(this.height)
-	        $('#canvas').width(this.width)
-	        can.width = this.width;
-			can.height = this.height;
-			CANVAS.width = this.width;
-			CANVAS.height = this.height;
-			CANVAS.x = can.offsetLeft;
-			CANVAS.y = can.offsetTop;
-	    }
-	    FLOOR_PLAN.src = event.target.result;
+	    var base64Encoding = event.target.result;
+	    console.log(base64Encoding)
+	     $.ajax({ 
+                type: "POST", 
+                url : '/upload', 
+                data: {
+                	image: base64Encoding
+                }
+        }).done(function(res) {
+        	//console.log(res);
+			importLines(res);
+        }); 
     }
     reader.readAsDataURL(e.target.files[0]);     
 }

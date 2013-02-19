@@ -20,7 +20,7 @@ function distance(lines) {
 	sum = 0;
 	
 	for (var i = 0; i < lines.length; i ++) {
-		sum += lines[i].getMagnitude();
+		sum += lines[i].magnitutde();
 	}
 	
 	return sum;
@@ -430,5 +430,26 @@ function determineQuad(pc, p) {
 
 function closerToZeroAngle(quad, a, b) {
 	
+}
+
+function testAngleBetween() {
+	console.log("START TESTING...");
+	
+	var p00 = new Point(0,0);
+	var p01 = new Point(0,1);
+	var p02 = new Point(0,2);
+	var p10 = new Point(1,0);
+	var p11 = new Point(1,1);
+	var p12 = new Point(1,2);
+	var p20 = new Point(2,0);
+	var p21 = new Point(2,1);
+	var p22 = new Point(2,2);
+	
+	var line00 = new Line(p00, p11);
+	var line10
+	var line20
+	var line
+	
+	console.log("ALL TESTS PASSED!");
 }
 

@@ -102,7 +102,6 @@ function mouseDown(event) {
 	}
 }
 
-/* NOTE TO PAUL: I think I fixed the bug with the phantom 0-length wall */
 function mouseUp(event) {
 	if (STATE === "select_tool") {
 		MOUSEDOWN = false;
@@ -142,9 +141,10 @@ function mouseMoved(event) {
 	}
 	if (STATE === "select_tool") {
 		selectToolMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
+		roomSelectMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 	}
 	if (STATE === "room_detection_tool") {
-		roomSelectMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
+		//roomSelectMouseMoved(event.pageX - CANVAS.x, event.pageY - CANVAS.y);
 	}
 	drawWalls();
 }
@@ -474,6 +474,9 @@ function disableAddRoom() {
 function addRoomClicked() {
 	var newSpace = new Space(SELECTED_LINES);
 	ALL_CLOSED_ROOMS.push(newSpace);
+	/*for (var j = 0; j < newSpace.walls.length; j++) {
+		console.log("Wall # " + (j+1) + " in room: " + newSpace.walls[j]);
+	}*/
 	for (var i = 1; i <= ALL_CLOSED_ROOMS.length; i++) {
 		if (i === ALL_CLOSED_ROOMS.length) ALL_CLOSED_ROOMS[i-1].drawPoly = true;
 		else ALL_CLOSED_ROOMS[i-1].drawPoly = false;

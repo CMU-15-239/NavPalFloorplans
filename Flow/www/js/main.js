@@ -5,13 +5,42 @@
 $(document).ready(function () 
 {
 	var generateData = window.generateData = function(spaces, width, height) {
-		var graph = new Graph(spaces);
 		return {
-			graph: graph.toOutput(),
-			mapArr: generateMap(spaces, width, height),
-			sectorArr: generateSector(spaces, width, height),
-			roomStr: generateRoom(spaces, '\n')
+			graph: (new Graph(spaces)).toOutput(),
+			map: generateMap(spaces, width, height),
+			sector: generateSector(spaces, width, height),
+			room: generateRoom(spaces, '\n')
 		};
+	};
+	
+	var sendDataToServer = window.sendDataToServer = function(spaces, width, height) {
+		var genData = generateData(spaces, width, height);
+		var genDataId = JSON.stringify(genData).hashCode();
+		$.ajax({
+			type: "POST",
+			url: "/graph",
+			data: {id: genDataId, graph: genData.graph},
+			success: function() {console.log("posted graph to server!");}
+		});
+		
+		if(util.exists(genData.map) && util.exists(genData.sector)) {
+			var mapStr = ""; var sectorStr = "";
+			for(var y = 0; y < height; y++) {
+				for(var x = 0; x < width; x++) {
+					mapStr += genData.map[y][x]+" ";
+					sectorStr += genData.sector[y][x]+" ";
+				}
+				mapStr += "\n";
+				sectorStr += "\n";
+			}
+		}
+		
+		$.ajax({
+			type: 'POST',
+			url: "/text",
+			data: {id: genDataId, map: mapStr, sector: sectorStr, room: genData.room},
+			success: function() {console.log("posted text data to server!");}
+		});
 	};
 
 	/* Initialize the canvas */
@@ -19,11 +48,11 @@ $(document).ready(function ()
 	can.width = CANVAS_WIDTH;
 	can.height = CANVAS_HEIGHT;
     CANVAS = can.getContext("2d");
-
 	CANVAS.width = CANVAS_WIDTH;
 	CANVAS.height = CANVAS_HEIGHT;
 	CANVAS.x = can.offsetLeft;
 	CANVAS.y = can.offsetTop;
+
     can.addEventListener("mousemove", mouseMoved);
     /*CANVAS.addEventListener("mouseout", mouseOut);
     CANVAS.addEventListener("mouseover", mouseIn); */
@@ -59,6 +88,7 @@ $(document).ready(function ()
 			CUR_POINT = undefined;
 			resetLineGlobals();
 			CAN_SNAP_TO_LAST = true;
+			detectRooms(ALL_WALLS); 
 			$("#add_room").css("display", "block");
 		}
 		else if (STATE === "line_tool") {
@@ -74,10 +104,19 @@ $(document).ready(function ()
 		CUR_POINT = undefined;
 		resetLineGlobals();
 		CAN_SNAP_TO_LAST = true;
-		detectRooms(ALL_WALLS); // find closed off rooms
+		//detectRooms(ALL_WALLS); // find closed off rooms
 	});
 	
-	$('#add_room').click(function () {
+	$('#add_room').click(function() {
 		addRoomClicked();
 	});
+	
+	$('#done').click(function() {
+		return sendDataToServer(ALL_CLOSED_ROOMS, CANVAS.width, CANVAS.height);
+	});
+	
+	/*var jsonObj = '{"lines":[{"line":[{"p1":[0,0]},{"p2":[100,100]}]}, {"line":[{"p1":[100,100]},{"p2":[200,500]}]}]}';
+	var obj = $.parseJSON(jsonObj);
+	console.log(obj);
+	importLines(obj);*/
 });

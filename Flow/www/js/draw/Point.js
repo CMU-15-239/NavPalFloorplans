@@ -3,7 +3,7 @@
 /**
  * Summary: The constructor for a Point object.
  * Parameters: x,y: The x- and y-location of the point (in pixels).
- * Returns: Undefined.
+ * Returns: undefined
 **/
 function Point(x, y) {
 	this.x = x;
@@ -22,13 +22,24 @@ Point.prototype.toOutput = function() {
 	return {x: this.x, y: this.y};
 }
 
+/**
+ * Summary: Check whether the given point refers to the same pojnt as this.
+ * Parameters: p: The point to check against for equality.
+ * Returns: true iff the given point and this have the same x and y.
+**/
 Point.prototype.equals = function(p) {
 	if (p === undefined) return false;
 	else return (this.x === p.x && this.y === p.y); 
 }
 
-Point.prototype.draw = function(isSnapped) {
+/**
+ * Summary: Draw the point on the canvas.
+ * Parameters: this
+ * Returns: undefined
+**/
+Point.prototype.draw = function() {
 	CANVAS.fillStyle = POINT_COLOR;
+	//If the point is being snapped to, draw a larger circle around it to make this fact clear to the user.
 	if (this.isSnap) {
 		CANVAS.beginPath();
 		CANVAS.arc(this.x, this.y, SNAP_RADIUS, 0, 2*Math.PI, false);
@@ -37,43 +48,57 @@ Point.prototype.draw = function(isSnapped) {
 		CANVAS.fillStyle = "rgb(0,255,0)";
 		this.isSnap = false;
 	}
+	//Color the point yellow if it's currently selected.
 	if (this.isSelected) {
 		CANVAS.fillStyle = "rgb(255,0,0)";
 	}
 	CANVAS.beginPath();
     CANVAS.arc(this.x, this.y, POINT_SIZE, 0, 2*Math.PI, false);
     CANVAS.fill();
-
-	CANVAS.fillStyle = POINT_COLOR;
-	
-	/*
-	if (this.isSnap == true) {
-		CANVAS.beginPath();
-		CANVAS.arc(this.x, this.y, SNAP_RADIUS, 0, 2*Math.PI, false);
-		CANVAS.lineWidth = WALL_WIDTH;
-		CANVAS.stroke();
-		this.isSnap = false; // Only snap to a single point at a time
-	}*/
-	
 }
 
+/**
+ * Summary: Set whether this point is being snapped to.
+ * Parameters: snap: true if the point is being snapped to, false otherwise
+ * Returns: undefined (changes object variable)
+**/
 Point.prototype.setSnap = function(snap) {
 	this.isSnap = snap;
 }
 
+/**
+ * Summary: Get the string version of this point, which is comprised of its x- and y-values.
+ * Parameters: this
+ * Returns: The string version of this point.
+**/
 Point.prototype.toString = function() {
 	return this.x + "," + this.y;
 }
 
+/**
+ * Summary: Set the x- and y-coordinates of this point.
+ * Parameters: x: the new x-coordinate, y: the new y-coordinate
+ * Returns: undefined (changes object variables)
+**/
 Point.prototype.setXY = function(x,y) {
 	this.x = x;
 	this.y = y;
 }
 
+/**
+ * Summary: Check whether this point and the given point have the same coordinates.
+ * Parameters: p: the point to check against for equality
+ * Returns: true iff this point and the given point have the same x- and y-coordinates.
+**/
 Point.prototype.equals = function(p) {
 	return (this.x == p.x && this.y == p.y);
 }
 
+/**
+ * Summary: Get the distance between the point and the given point.
+ * Parameters: p: the point to check for distance against
+ * Returns: The distance between this point and the given point.
+**/
 Point.prototype.distance = function(p) {
 	var dx = Math.abs(this.x - p.x);
 	var dy = Math.abs(this.y - p.y);
