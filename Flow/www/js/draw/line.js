@@ -73,11 +73,14 @@ Line.prototype.draw = function () {
 	var oldStroke = CANVAS.strokeStyle;
 	
 	CANVAS.strokeStyle = 'rgba(0,0,255,.5)';
+	/*if (this.definesRoom === true) {
+		CANVAS.strokeStyle = 'rgba(255,0,0,.7)'; // Red
+	}*/
 	if (this.isSelected === true) {
 		CANVAS.strokeStyle = "yellow"; // Yellow
 	}
-	if (this.definesRoom === true) {
-		CANVAS.strokeStyle = 'rgba(255,0,0,.7)'; // Red
+	if (this.isDoor === true) {
+		CANVAS.strokeStyle = "orange";
 	}
 	CANVAS.lineWidth = WALL_WIDTH;
 	CANVAS.beginPath();
