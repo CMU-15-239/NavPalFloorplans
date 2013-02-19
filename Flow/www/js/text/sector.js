@@ -17,7 +17,7 @@ function floodFillShape(sector, space, startPoint, fillVal, emptyVal) {
 	console.log(sector);
 	return sector;
 	*/
-	
+	/*
 	var checkPts = [{x: startPoint.x-1, y: startPoint.y}, {x: startPoint.x+1, y: startPoint.y},
 					{x: startPoint.x, y: startPoint.y-1}, {x: startPoint.x, y: startPoint.y+1}];
 	
@@ -32,6 +32,31 @@ function floodFillShape(sector, space, startPoint, fillVal, emptyVal) {
 			floodFillShape(sector, space, fPoint, fillVal, emptyVal);
 		}
 	}
+	return sector;
+	*/
+	
+	var fPoints = [startPoint];
+	
+	while(fPoints.length > 0) {
+		var fPoint = fPoints.splice(0, 1);
+		console.log("flood filling: "+JSON.stringify(fPoint));
+		console.log((0 <= fPoint.x && fPoint.x < sector[0].length)+" "+(0 <= fPoint.y && fPoint.y < sector.length)
+					+" "+(space.pointInSpace(fPoint, sector[0].length, true))+" "+(sector[fPoint.y][fPoint.x] === emptyVal));
+		if(0 <= fPoint.x && fPoint.x < sector[0].length
+			&& 0 <= fPoint.y && fPoint.y < sector.length
+			&& space.pointInSpace(fPoint, sector[0].length, true)
+			&& sector[fPoint.y][fPoint.x] === emptyVal) {
+			
+			sector[fPoint.y][fPoint.x] = fillVal;
+			fPoints.push({x: startPoint.x-1, y: startPoint.y});
+			fPoints.push({x: startPoint.x+1, y: startPoint.y});
+			fPoints.push({x: startPoint.x, y: startPoint.y-1});
+			fPoints.push({x: startPoint.x, y: startPoint.y+1});
+			fPoints.push({x: startPoint.x-1, y: startPoint.y-1});
+			fPoints.push({x: startPoint.x+1, y: startPoint.y+1});
+		}
+	}
+	
 	return sector;
 }
 
