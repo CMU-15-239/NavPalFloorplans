@@ -13,7 +13,7 @@ function detectRooms(lines) {
 	}
 	
 	ALL_CLOSED_ROOMS = rooms;
-	console.log(rooms.length + " rooms found!");
+	//console.log(rooms.length + " rooms found!");
 }
 
 function distance(lines) {
@@ -66,7 +66,7 @@ function searchRoom(line, rooms) {
 	if (followWalls(true, line.p1, line, route)) {
 		route.push(line);
 		takeRoute = true;
-		console.log("THETA:  " + 180.0*sumAngles(route, true)/Math.PI);
+		//console.log("THETA:  " + 180.0*sumAngles(route, true)/Math.PI);
 		//console.log("THETA: " + 180* theta/ Math.PI);
 	}
 	
@@ -80,7 +80,7 @@ function searchRoom(line, rooms) {
 	}
 	
 	// If the ccw traversal is slower, to cw
-	console.log("original: "+distance(route) + "  , rev " + distance(revRoute)); 
+	//console.log("original: "+distance(route) + "  , rev " + distance(revRoute)); 
 	if (distance(route) > distance(revRoute)) {
 		route = revRoute;
 	}
@@ -124,7 +124,7 @@ function followWalls(counterClock, point, line, route) {
 	
 	// Base Case
 	if (point == false) {
-		console.log("point is false??");
+		//console.log("point is false??");
 	}
 	//console.log(point);
 	if (point.equals(targetPoint)) {
@@ -177,8 +177,8 @@ function followWalls(counterClock, point, line, route) {
 
 function angleBetween(counterClock, point, line0, line1) {
 	
-	console.log("line 0 " + line0.toString());
-	console.log("line 1 " + line1.toString());
+	//console.log("line 0 " + line0.toString());
+	//console.log("line 1 " + line1.toString());
 	
 	var pc = point;
 	var p0 = line0.otherPoint(point);
@@ -218,9 +218,9 @@ function angleBetween(counterClock, point, line0, line1) {
 		//theta1 += 2 * Math.PI;
 	}
 	
-	console.log(Math.PI);
-	console.log(theta0);
-	console.log(theta1);
+	//console.log(Math.PI);
+	//console.log(theta0);
+	//console.log(theta1);
 	
 	var angle = 0;
 	if (counterClock) {
@@ -351,7 +351,7 @@ function shorterRotation(counterClock, point, line, a, b) {
 	if (thetaB < thetaLine) {
 		thetaB += 2 * Math.PI;
 	}
-	console.log(Math.PI);
+	//console.log(Math.PI);
 	if (thetaA < thetaB) {
 		return counterClock;
 	}

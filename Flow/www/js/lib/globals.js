@@ -35,4 +35,10 @@ var SNAP_RADIUS = 15;
 //The current state of the canvas.
 var STATE = "line_tool";
 
+//The room that's being hovered over
+var ACTIVE_ROOM = undefined;
+
+//If true, don't change the active room
+var BLOCK_CHANGE_ROOM = false;
+
 

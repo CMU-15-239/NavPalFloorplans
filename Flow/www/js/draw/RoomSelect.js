@@ -4,7 +4,7 @@ function roomSelectMouseMoved(x, y) {
 		var room = ALL_CLOSED_ROOMS[i];
 		for (var j = 0; j < room.walls.length; j ++) {
 			room.walls[j].definesRoom = false;
-			room.drawPoly = false;
+			if (ACTIVE_ROOM !== room) room.drawPoly = false;
 		}
 	}
 	
@@ -15,8 +15,9 @@ function roomSelectMouseMoved(x, y) {
 
 		
 		if (room.pointInSpace(point, CANVAS.width, false)) {
-			console.log("INSIDE A ROOM " + i);
+			//console.log("INSIDE A ROOM " + i);
 			room.drawPoly = true;
+			if (!BLOCK_CHANGE_ROOM) ACTIVE_ROOM = room;
 			// Color the lines!!
 			for (var j = 0; j < room.walls.length; j ++) {
 				room.walls[j].definesRoom = true;
@@ -24,13 +25,9 @@ function roomSelectMouseMoved(x, y) {
 			
 			return i; // only select one room
 		}
-		else {
-			
-		}
-		
 	}
 	
-
+	if (!BLOCK_CHANGE_ROOM) ACTIVE_ROOM = undefined;
 	return -1;
 	console.log("OUTSIDE A ROOM");
 
