@@ -72,11 +72,11 @@ Line.prototype.draw = function () {
 	//Save the old stroke, so that we can restore it when we're done
 	var oldStroke = CANVAS.strokeStyle;
 	CANVAS.strokeStyle = 'rgba(0,180,0,1)';
+	if (this.isDoor === true) {
+		CANVAS.strokeStyle = "pink";
+	}
 	if (this.isSelected === true) {
 		CANVAS.strokeStyle = "yellow"; // Yellow
-	}
-	if (this.isDoor === true) {
-		CANVAS.strokeStyle = "orange";
 	}
 	CANVAS.lineWidth = WALL_WIDTH;
 	CANVAS.beginPath();
@@ -125,10 +125,10 @@ Line.prototype.pointNearLine = function(point, radius) {
 	
 	var close = (Math.abs(this.signPointToLine(point)) / this.distConst) <= radius;
 	//Make sure the point is actually within the endpoints of the line.
-	var onLine = ((this.p1.x >= point.x && point.x >= this.p2.x) ||
-		 (this.p1.x <= point.x && point.x <= this.p2.x)) &&
-		 ((this.p1.y >= point.y && point.y >= this.p2.y) ||
-		 (this.p1.y <= point.y && point.y <= this.p2.y));
+	var onLine = ((this.p1.x >= point.x-radius && point.x+radius >= this.p2.x) ||
+		 (this.p1.x <= point.x+radius && point.x-radius <= this.p2.x)) &&
+		 ((this.p1.y >= point.y-radius && point.y+radius >= this.p2.y) ||
+		 (this.p1.y <= point.y+radius && point.y-radius <= this.p2.y));
 		 
 	return close && onLine;
 }

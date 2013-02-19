@@ -331,7 +331,7 @@ function mouseClicked(event) {
 			BLOCK_CHANGE_ROOM = true;
 		}
 	}
-	console.log("NUM SELECTED LINES: " + SELECTED_LINES.length);
+	//console.log("NUM SELECTED LINES: " + SELECTED_LINES.length);
 	drawWalls();
 }
 
@@ -420,6 +420,15 @@ function keyPressed(event) {
 				if (curWall.isSelected) curWall.isDoor = !curWall.isDoor;
 			}
 			redraw();
+		}
+		else if (STATE === "line_tool") {
+			if (ALL_WALLS.length >= 1) {
+				var mostRecentWall = ALL_WALLS[ALL_WALLS.length - 1];
+				mostRecentWall.isDoor = !mostRecentWall.isDoor;
+			}
+			redraw();
+			if (CUR_LINE !== undefined) CUR_LINE.draw();
+			if (CUR_POINT !== undefined) CUR_POINT.draw();
 		}
 	}
 }

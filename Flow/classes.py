@@ -6,6 +6,7 @@ class Point(object):
 
     #redefine EQUAL  to compare points  
     def __eq__(self,other):
+        if other==None: return False
         return (self.row==other.row) and (self.col==other.col)
 
 class Line(object):

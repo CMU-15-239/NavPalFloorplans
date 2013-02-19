@@ -1,7 +1,53 @@
 import sys
 from classes import *
+from extractLine import*
 epsilon=8
 
+def intersect(hline,vline): 
+    a=(vline.start.row <= hline.start.row <=vline.end.row)
+    b=(hline.start.col <=vline.start.col <= hline.end.col)
+    return a and b
+
+def newLine(startrow,startcol, endrow,endcol):
+    startp=Point(startrow,startcol)
+    endp=Point(endrow,endcol)
+    newline=Line(startp,endp)
+    return newline
+
+def merge_vertex(hlines,vlines):
+    h=0
+    v=0
+    newHlines=[]
+    newVlines=[]
+    while h<len(hlines):
+        v=0
+        while v<len(vlines):
+            hl=hlines[h]
+            vl=vlines[v]
+            if intersect(hl,vl):
+                isp=Point(hl.start.row, vl.start.col)
+                if vl.start.col-hl.start.col> minlen:
+                    line1=Line(hl.start,isp)
+                    newHlines.append(line1)
+                if isp.row-vl.start.row > minlen:
+                    line2=Line(vl.start,isp)
+                    newVlines.append(line2)
+                if hl.end.col-isp.col > minlen:
+                    hlines[h].start=isp
+                else:
+                    hlines.pop(h)
+                    h-=1
+
+                if vl.end.row-isp.row>minlen:
+                    vlines[v].start=isp
+                else:
+                    vlines.pop(v)
+                    v-=1
+                #consider more cases
+            v+=1
+        h+=1
+    hlines+=newHlines
+    vlines+=newVlines
 
 
 def h_distance(line1,line2):
