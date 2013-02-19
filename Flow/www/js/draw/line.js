@@ -76,7 +76,7 @@ Line.prototype.draw = function () {
 		CANVAS.strokeStyle = "yellow"; // Yellow
 	}
 	if (this.isDoor === true) {
-		CANVAS.strokeStyle = "orange";
+		CANVAS.strokeStyle = "pink";
 	}
 	CANVAS.lineWidth = WALL_WIDTH;
 	CANVAS.beginPath();
