@@ -133,6 +133,8 @@ def process_img(image_dir):
     merge_hlines(hlines)
     #print "Mergeing horizontal lines!"
     merge_vlines(vlines)
+    
+    merge_vertex(hlines,vlines)
     #visualize_lines(IMG,vlines,hlines)
     
     write_vertex_list(hlines,vlines) 
