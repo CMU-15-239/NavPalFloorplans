@@ -15,12 +15,36 @@ function detectRooms(lines) {
 		searchRoom(lines[i], rooms);
 	}
 	
+	var newRooms = [];
 	// Update the global list of rooms, don't overwrite existing rooms
-	ALL_CLOSED_ROOMS = rooms;
-	console.log(rooms.length + " rooms found!");
-	
+	for (var i = 0; i < rooms.length; i ++) {
+		var room = rooms[i];
+		
+		var alreadyExist = false;
+		for (var j = 0; j < ALL_CLOSED_ROOMS.length; j ++) {
+			var prevRoom = ALL_CLOSED_ROOMS[j];
+			
+			// The room already exists, don't overwrite it
+			if (prevRoom.sameRoomWalls(room)) {
+				alreadyExist = true;
+				newRooms.push(prevRoom);
+			}
+		}
+		
+		// Add new rooms
+		if (alreadyExist == false) {
+			newRooms.push(room);
+		}
+	}
+
+	ALL_CLOSED_ROOMS = newRooms;
 }
 
+/**
+ * Summary: Sums the magnitude of all lines
+ * Parameters: lines: a list lines
+ * Returns: Sum of magnitude of each line
+**/
 function distance(lines) {
 	sum = 0;
 	
@@ -30,8 +54,14 @@ function distance(lines) {
 	
 	return sum;
 }
-//var theta = 0;
 
+/**
+ * Summary: Traverse path along the lines, and sum the angles 
+ *			moving in a cw or ccw direction
+ * Parameters: lines: A set of lines that represent a path
+ *			   counterClock: true if path follows the lines ccw 
+ * Returns: The sum of the anlges
+**/
 function sumAngles(lines, counterClock) {
 	sum = 0;
 	
@@ -45,6 +75,7 @@ function sumAngles(lines, counterClock) {
 			line0 = lines[i-1];
 		}
 		
+		// Find the point that the lines share
 		var p;
 		if (line0.p1.equals(line1.p1) || 
 			line0.p1.equals(line1.p2)) {
@@ -60,116 +91,105 @@ function sumAngles(lines, counterClock) {
 	return sum;
 }
 
+/**
+ * Summary: Given the number of edges in a polygon return the sum
+ * 			of the internal angles
+ * Parameters: n: number of sides of polygon
+ * Returns: Sum of internal angles
+**/
 function sumInternalAngle(n) {
 	return (n - 2) * Math.PI;
 }
 
+/**
+ * Summary: For a given line, see if that line is part of a room.
+ *			Check the traversing both ccw and cw around to find a room.
+ * Parameters: line: a wall. rooms: a list of all rooms found so far
+ * Returns: undefined
+**/
 function searchRoom(line, rooms) {
+
 	var validRoute = false;
 	var validRevRoute = false;
 	targetPoint = line.p2;
 	
-	//theta = 0;
+	// Starting at one of the points, DFS to ge to the other, going ccw
 	var route = new Array();
 	visitedPoints = {}
-	if (followWalls(true, line.p1, line, route)) {
+	if (followWalls(true, line.p1, line, route)) { // DFS
 		route.push(line);
 		takeRoute = true;
-
 		var angles = sumAngles(route, true);
-		console.log("THETA:  " + (toDegree(angles).toFixed(2)));
-		
 		var expectedInternalAngle = sumInternalAngle(route.length);
-		//console.log("expected " + toDegree(expectedInternalAngle));
-		//console.log("actual " + toDegree(angles));
 		
-		// Must take other route, this is not valid
+		// Must take other route, this is not valid, 
+		// path did not take innermost angles
 		if (!almostEqual(expectedInternalAngle, angles)) {
-			console.log("NOT VALID CCW: expect " + toDegree(expectedInternalAngle) +  " , result " + toDegree(angles));
 			validRoute = false;
 		}
 		else {
 			validRoute = true;
-			console.log("VALID CCW!");
 		}
-
-		//console.log("THETA: " + 180* theta/ Math.PI);
 	}
 	
 	// If going counterclockwise did not find a path, try clockwise
 	if (validRoute == false) {
-	
 		visitedPoints = {}
 		var revRoute = new Array();
-		//targetPoint = line.p1
-		if (followWalls(false, line.p1, line, revRoute)) {
+		if (followWalls(false, line.p1, line, revRoute)) { // DFS
 			revRoute.push(line);
 			validRevRoute = true;
 			route = revRoute;
-			console.log("VALID REVERSE PATH!");
 			
-			var angles = sumAngles(route, true);
-			var expectedInternalAngle = sumInternalAngle(route.length); 
-			
-			console.log("Was it valid: " + almostEqual(angles, expectedInternalAngle));
-			console.log(toDegree(angles));
+			//var angles = sumAngles(route, true);
+			//var expectedInternalAngle = sumInternalAngle(route.length); 
 		}
-	
 	}
 	
-	// If the ccw traversal is slower, to cw
-	//console.log("original: "+distance(route) + "  , rev " + distance(revRoute)); 
-
-	
+	// If a valid room was found
 	if (validRoute || validRevRoute) {
-		
 		var newRoom = new Space(route);
-		
-		//console.log("FOUND ROOM");
 		
 		var found = false;
 		for (var i = 0; i < rooms.length; i ++) {
-			//console.log("Room " + i);
-			for( var j = 0; j < rooms[i].walls.length; j ++) {
-				//console.log(rooms[i].walls[j].toString());
-			}
-			
 			if (rooms[i].sameRoomWalls(newRoom)) {
 				found = true;
-				//console.log("Not unique");
 			}
 		}
 		
+		// If a room with the same walls has not been found, this room is new
 		if (!found) {
 			rooms.push(newRoom);
 		}
-		//var room = makeRoom(route);
 	}
-	
-	//followWalls(false, line.p1, line, route);
 }
 
 
-// A simple depth first search, proiritizing clockwise,
-// or counter clockwise traversal
+/**
+ * Summary: A simple DFS that prioritizes ccw (or cw) traversal through
+			neighboring edges
+ * Parameters: counterClock: true for ccw traversal
+			   point: the current point we are at
+			   line: the last line traveled
+			   route: stack of lines taken so far
+ * Returns: undefined
+**/
 function followWalls(counterClock, point, line, route) {
 
-	// Add this most recent line to our route
-	//route.push(line);
 	visitedPoints[point.toString()] = true;
-	
-	// Base Case
+
 	if (point == false) {
-		//console.log("point is false??");
+		// Why would this ever happen?
+		//alert() 
 	}
-	//console.log(point);
+	
+	// Base Case, we're at our target point
 	if (point.equals(targetPoint)) {
 		return true;
 	}	
 	
-	
+	// Find all outgoing lines and sort them in a ccw (or cw) order
 	var edges = getEdgeNeighbors(point, line);
-	//console.log("Edge count " + edges.length);
 	edges = sortEdges(counterClock, edges, point, line);
 	
 	for (var i = 0; i < edges.length; i ++) {
@@ -178,8 +198,7 @@ function followWalls(counterClock, point, line, route) {
 		// See if this point is unexplored
 		var p1 = visitedPoints[newLine.p1.toString()];
 		var p2 = visitedPoints[newLine.p2.toString()];
-		//console.log(p1);
-		//console.log(p2);
+
 		if (!(p1 == true) || !(p2 == true)) {
 			var newPoint;
 			if (!p1) {
@@ -189,10 +208,7 @@ function followWalls(counterClock, point, line, route) {
 				newPoint = newLine.p2;
 			}
 			route.push(newLine);
-			//theta += angleBetween(counterClock, point, line, newLine);
-			
-			//console.log("Traversing a line...");
-			
+
 			// We found a route back to our target
 			if (followWalls(counterClock, newPoint, newLine, route)) {
 				return true;
@@ -200,7 +216,6 @@ function followWalls(counterClock, point, line, route) {
 			
 			// We didn't find a route, let's backtrack
 			route.pop();
-			//theta -= angleBetween(counterClock, point, line, newLine);
 		}
 	}
 	
@@ -211,9 +226,15 @@ function followWalls(counterClock, point, line, route) {
 	
 }
 
+/**
+ * Summary: Find the angle between two lines
+ * Parameters: counterClock: the direction to explore from line0
+ *			   point: the center point that the lines share
+ *			   line0: starting line
+ *			   line1: target line
+ * Returns: The angle between the lines, in radians
+**/
 function angleBetween(counterClock, point, line0, line1) {
-	
-
 	//console.log("ENTER ANGLE BETWEEN ------------------");
 	//console.log("line 0 " + line0.toString());
 	//console.log("line 1 " + line1.toString());
@@ -258,18 +279,8 @@ function angleBetween(counterClock, point, line0, line1) {
 	
 	//console.log("theta0 relative: " + toDegree(theta0));
 	//console.log("theta1 relative: " + toDegree(theta1));
-	
-	if (theta1 < theta0) {
-		//theta1 += 2 * Math.PI;
-	}
-	
 
-	//console.log(Math.PI);
-	//console.log(theta0);
-	//console.log(theta1);
 	var angle = 0;
-	//if (counterClock) {
-	
 
 	if (theta1 > theta0) {
 		angle = theta1 - theta0; 
@@ -277,27 +288,22 @@ function angleBetween(counterClock, point, line0, line1) {
 	else {
 		angle = 2*Math.PI - (theta0 - theta1);
 	}
-	//console.log("ANGLE: " + 180.0*angle/Math.PI);
 	
+	// If we are going clockwise, find the opposing angle
 	if (counterClock == false) {
 		angle = 2*Math.PI - angle;
 	}
 	return angle
-		
-		
-	//}
-	/*
-		console.log("ANGLE: " + 180.0*(theta1 - theta0)/Math.PI);
-		return (theta1 - theta0); */
-	
-	
-	//return 2 * Math.PI - (theta1 - theta0);
-	
-	
 }
 
 
-// This can be more efficient some day...
+/**
+ * Summary: Find all the edges along the given point, excluded the given line
+ * Parameters: point: the current point
+ *			   includedLine: don't include this line
+ * Returns: A list of neighbors of the point
+**/
+// TODO: improve efficiency with hash-map
 function getEdgeNeighbors(point, includedLine) {
 	var edges = [];
 	
@@ -313,20 +319,22 @@ function getEdgeNeighbors(point, includedLine) {
 	return edges;
 }
 
+/**
+ * Summary: Sort the edges in a ccw (or cw) order start at line
+ * Parameters:  counterClock: sort according to ccw if true
+ *				edges: a list of edges to sort
+ *				point: center point for comparison of angles
+ *				line: starting line for comparison of angles
+ * Returns: A list of sorted edges
+**/
 function sortEdges(counterClock, edges, point, line) {
-	//console.log("enter " + edges.length);
+	/*
 	for (var count = 0; count < edges.length; count++) {
 		console.log("Edges enter: " + edges[count].toString() + counterClock);
 	}
+	*/
 	
-	/*
-	if (edges.length == 0) {
-		return;
-	}*/
-	
-	//var orderedEdges = [];
-	// Selection sort
-	
+	// Selection sort, put closest edges to line 
 	for (var count = 0; count < edges.length; count++) {
 		var closestLine = edges[count];
 		var lowIndex = count;
@@ -335,135 +343,51 @@ function sortEdges(counterClock, edges, point, line) {
 			
 			// True if edge < closestLine
 			if (shorterRotation(counterClock, point, line, edge, closestLine)) {
-				//console.log("SWITCH");
 				closestLine = edge;
 				lowIndex = i;
 			}
 		}
 		
-		//orderedEdges.push(closestLine);
-		// at position index, remove 1 element
+		// Swap the min to the front
 		var temp = edges[lowIndex];
 		edges[lowIndex] = edges[count];
-		edges[count] = temp;
-		
+		edges[count] = temp;	
 	}
 	
+	/*
 	for (var count = 0; count < edges.length; count++) {
 		console.log("Edges exit: " + edges[count].toString() + counterClock);
 	}
+	*/
 	
-	//console.log("exit " + edges.length);
 	return edges;
-	
 }
 
-// returns true if a is closer to line than b, moving cw, or ccw
+/**
+ * Summary: Compares two lines to see which is closer to a reference line
+ *			moving in a ccw (or cw) direction.
+ * Parameters:  counterClock: true if ccw direction
+ *				point: shared point between the lines
+ *				line: the reference line
+ *				a: one of the lines to compare
+ *				b: the other line to compare
+ * Returns: True if line 'a' is cloer than line 'b'.
+**/
 function shorterRotation(counterClock, point, line, a, b) {
 
 	var angleA = angleBetween(counterClock, point, line, a);
 	var angleB = angleBetween(counterClock, point, line, b);
 	
 	return angleA < angleB;
-	/*
-	if (counterClock) {
-		return angleA < angleB;
-	}
-	else {
-		return angleB < angleA;
-	}*/
-
-/*
-	// Assume we are going ccw, and return counterClock if a is closer	
-	var pc = point;
-	var p0 = line.otherPoint(point);
-	var pa = a.otherPoint(point);
-	var pb = b.otherPoint(point);
-	
-	// Determine which quadrant each line is in
-	var q0 = determineQuad(pc, p0);
-	var qa = determineQuad(pc, pa);
-	var qb = determineQuad(pc, pb);
-	
-	var vecAX = pa.x - pc.x;
-	var vecAY = pa.y - pc.y;
-	var vecBX = pb.x - pc.x;
-	var vecBY = pb.y - pc.y;
-	var vecLX = p0.x - pc.x;
-	var vecLY = p0.y - pc.y;
-	
-	if (vecAX == 0) {
-		vecAX = epsilon;
-	}
-	if (vecBX == 0) {
-		vecBX = epsilon;
-	}
-	if (vecLX == 0) {
-		vecLX = epsilon;
-	}
-	
-	var thetaA = Math.atan(vecAY / vecAX);
-	var thetaB = Math.atan(vecBY / vecBX);
-	var thetaLine = Math.atan(vecLY / vecLX);
-	
-	if (thetaA < 0) thetaA += 2 * Math.PI;
-	if (thetaB < 0) thetaB += 2 * Math.PI;
-	if (thetaLine < 0) thetaLine += 2 * Math.PI;
-	
-	if (thetaA < thetaLine) {
-		thetaA += 2 * Math.PI;
-	}
-	if (thetaB < thetaLine) {
-		thetaB += 2 * Math.PI;
-	}
-	//console.log(Math.PI);
-	if (thetaA < thetaB) {
-		return counterClock;
-	}
-	return !counterClock;
-	
-	*/
-	
-	/*
-	// Case 1: all three same quad
-	if (q0 == qa && q0 == qb) {
-		// Line is closer to theta = 0
-		if (closerToZeroAngle(q0, line, a)) {
-			if (closerToZeroAngle(q0, a, b)) { // a closer than b
-				return counterClock // TRUE
-			}
-			return !counterClock // FALSE
-		}
-		// a is closer to theta = 0
-		else {
-			if (
-		}
-	}
-	
-	// Case 2: all three all diff quad
-	else if (q0 != qa && q0 != qb && qa != qb){
-
-	}
-
-	// Case 3: a and line same quad
-	else if (q0 == qa){
-	
-	}
-	
-	// Case 4: b and line same quad
-	else if (q0 == qb) {
-	
-	}
-	
-	// Case 5: a and b same quad
-	else {
-	
-	}
-	*/
 }
 
-// Return which quadrant the line lies in 
-// (round to lower quad, if lines on axis)
+/**
+ * Summary: Returns which quadrant a point is in, with respect to a 
+			center point.
+ * Parameters:  pc: Center point (reference)
+				p: Other point
+ * Returns: Returns the quadrant the other point is in (I, II, III, or IV)
+**/
 function determineQuad(pc, p) {
 	
 	// Quad 1 or 4
@@ -484,21 +408,10 @@ function determineQuad(pc, p) {
 			return 3;
 		}	
 	}
-	// Y axis
-	/*
-	else { 
-		if (pc.y > p.y) { 
-			return 1;
-		}
-		return 4;
-	}
-	*/ //dead 
 }
 
-function closerToZeroAngle(quad, a, b) {
-	
-}
 
+// Testing for angleBetween function
 function testAngleBetween() {
 	console.log("START TESTING...");
 	
@@ -531,6 +444,8 @@ function testAngleBetween() {
 	lines.push(line12);
 	lines.push(line22);
 	
+	// Create 8 lines, and test the angles between any pair, both
+	// in the cw and ccw directions
 	var eigth = 2 * Math.PI / 8;
 	for (var zeroIndex = 0; zeroIndex < lines.length; zeroIndex ++) {
 		for (var i = 1; i < lines.length; i ++) {
@@ -557,23 +472,26 @@ function testAngleBetween() {
 				alert();
 			}
 			if (!almostEqual(angle, eigth * i)) {
-				//console.log("FAILED TEST");
 				alert();
 			}
 			else {
-				//console.log("PASSED!");
+				
 			}
-			//console.log("Test: target " + toDegree(eigth*i) +" , result " + toDegree(angle));
-			
 		}
 	}
 	
 	console.log("ALL TESTS PASSED!");
 }
 
+/**
+ * Summary: Converts an angle in radians to degrees
+ * Parameters: angle: Angle in radians
+ * Returns: The angle in degrees
+**/
 function toDegree(angle) {
 	return angle * 180.0 / Math.PI;
 }
+
 
 function almostEqual(a,b) {
 	return Math.abs(a - b) < 0.001;
