@@ -72,7 +72,7 @@ Line.prototype.draw = function () {
 	//Save the old stroke, so that we can restore it when we're done
 	var oldStroke = CANVAS.strokeStyle;
 	
-	CANVAS.strokeStyle = 'rgba(0,0,255,.5)';
+	CANVAS.strokeStyle = 'rgba(24,232,70,.5)';
 	if (this.isSelected === true) {
 		CANVAS.strokeStyle = "yellow"; // Yellow
 	}

@@ -21,7 +21,7 @@ var CANVAS_WIDTH = 780;
 var CANVAS_HEIGHT = 500;
 
 //The color that the points at the ends of walls should be drawn.
-var POINT_COLOR = "black";
+var POINT_COLOR = "blue";
 
 //The radius of a point, in pixels.
 var POINT_SIZE = 5;
