@@ -2,7 +2,7 @@
 #out and add them into the list of line segments
 
 from classes import *
-minlen=24
+minlen=50
 
 def process_img_line_horizontal(row, fimage, lines):
     x=0

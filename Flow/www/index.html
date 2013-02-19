@@ -27,8 +27,8 @@
 			<area id="changer" class="spacePoly" shape="polygon" coords="0, 0, 500, 0, 500, 500, 0, 500">
 		</map>
 		<form id="classification_pop">
-			<input type="radio" name="type" value="Room" checked>Room
-			<input type="radio" name="type" value="Hallway">Hallway
+			<input type="radio" name="type" value="Room" id="room" checked>Room
+			<input type="radio" name="type" value="Hallway" id="hallway">Hallway
 			<br>Label:<input type="text" name="label" id="label">
 			<br><input type="submit" value="Done" id="label_submit">
 		</form>
@@ -39,9 +39,7 @@
 			<div id="select_tool" class="tool">
 				<h1>Select</h1>
 			</div>
-			<button id="detectRooms">Detect Rooms</button>
-			<button id="add_room" disabled>Add Room</button>
-			<button id="done">DONE!</button>
+			<button id="done" disabled>Done</button>
 		</div>
 		<input type="file" id="imageLoader" name="imageLoader"/>
 		<script src = "js/image/upload.js"></script>

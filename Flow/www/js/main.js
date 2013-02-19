@@ -112,6 +112,7 @@ $(document).ready(function ()
 	});
 	
 	$('#done').click(function() {
+		addDoorsToRooms();
 		return sendDataToServer(ALL_CLOSED_ROOMS, CANVAS.width, CANVAS.height);
 	});
 	
@@ -119,11 +120,12 @@ $(document).ready(function ()
 		event.preventDefault();
 		BLOCK_CHANGE_ROOM = false;
 		var label = $("#label").val();
-		console.log(label);
+		ACTIVE_ROOM.label = label;
 		var type = $('input[name=type]:checked', '#classification_pop').val().toLowerCase();
-		console.log(type);
+		ACTIVE_ROOM.type = type;
 		ACTIVE_ROOM = undefined;
 		$("#classification_pop").css("display", "none");
+		if (allSpacesClassified()) $("#done").removeAttr("disabled");
 	});
 	
 	/*var jsonObj = '{"lines":[{"line":[{"p1":[0,0]},{"p2":[100,100]}]}, {"line":[{"p1":[100,100]},{"p2":[200,500]}]}]}';
