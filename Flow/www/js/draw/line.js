@@ -71,11 +71,7 @@ Line.prototype.equals = function (l) {
 Line.prototype.draw = function () {	
 	//Save the old stroke, so that we can restore it when we're done
 	var oldStroke = CANVAS.strokeStyle;
-	
-	CANVAS.strokeStyle = 'rgba(0,0,255,.5)';
-	/*if (this.definesRoom === true) {
-		CANVAS.strokeStyle = 'rgba(255,0,0,.7)'; // Red
-	}*/
+	CANVAS.strokeStyle = 'rgba(0,180,0,1)';
 	if (this.isSelected === true) {
 		CANVAS.strokeStyle = "yellow"; // Yellow
 	}

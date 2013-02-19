@@ -114,7 +114,11 @@ Space.prototype.pointInSpace = function(point, width, includeLine) {
 					lastLineIntersected = intersectLine;
 					if(util.exists(currP1)) {
 						//deep cpy
-						inShapeSegments.push(new Line(new Point(currP1.x, currP1.y) , new Point(currRayPt.x, currRayPt.y)));
+						var inShapeSegment = new Line(new Point(currP1.x, currP1.y) , new Point(currRayPt.x, currRayPt.y));
+						inShapeSegments.push(inShapeSegment);
+						if(inShapeSegment.pointNearLine(point, 0.5)) {
+							return true;
+						}
 						currP1 = null;
 						//console.log("interLine: "+JSON.stringify(inShapeSegments[inShapeSegments.length-1]));
 					}
@@ -128,12 +132,15 @@ Space.prototype.pointInSpace = function(point, width, includeLine) {
 		
 		//console.log(inShapeSegments);
 		//determine if point is on one of these intersected lines
+		return false;
+		/*
 		for(var s = 0; s < inShapeSegments.length; s++) {
 			if(inShapeSegments[s].pointNearLine(point, 0)) {
 				return true;
 			}
 		}
 		return false;
+		*/
 	}
 };
 
