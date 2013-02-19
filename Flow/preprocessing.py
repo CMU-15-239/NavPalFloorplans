@@ -73,7 +73,7 @@ def write_vertex_list(hlines,vlines):
     fd.close()
 
 def generate_string(hlines,vlines):
-    s=""
+    s='{\"lines\":[\n'
     for line in hlines:
         s+=('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
                 (line.start.row, line.start.col,line.end.row,\
@@ -82,6 +82,7 @@ def generate_string(hlines,vlines):
         s+=('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
                 (line.start.row, line.start.col,line.end.row,\
                         line.end.col))
+    s+=']}\n'
     print s
 
 #Utility function to color the lines segments in yellow
