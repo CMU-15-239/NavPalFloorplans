@@ -72,11 +72,11 @@ Line.prototype.draw = function () {
 	//Save the old stroke, so that we can restore it when we're done
 	var oldStroke = CANVAS.strokeStyle;
 	CANVAS.strokeStyle = 'rgba(0,180,0,1)';
-	if (this.isSelected === true) {
-		CANVAS.strokeStyle = "yellow"; // Yellow
-	}
 	if (this.isDoor === true) {
 		CANVAS.strokeStyle = "pink";
+	}
+	if (this.isSelected === true) {
+		CANVAS.strokeStyle = "yellow"; // Yellow
 	}
 	CANVAS.lineWidth = WALL_WIDTH;
 	CANVAS.beginPath();

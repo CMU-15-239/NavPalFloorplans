@@ -331,7 +331,7 @@ function mouseClicked(event) {
 			BLOCK_CHANGE_ROOM = true;
 		}
 	}
-	console.log("NUM SELECTED LINES: " + SELECTED_LINES.length);
+	//console.log("NUM SELECTED LINES: " + SELECTED_LINES.length);
 	drawWalls();
 }
 
