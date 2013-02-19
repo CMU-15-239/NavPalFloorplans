@@ -16,31 +16,34 @@ $(document).ready(function ()
 	var sendDataToServer = window.sendDataToServer = function(spaces, width, height) {
 		var genData = generateData(spaces, width, height);
 		var genDataId = JSON.stringify(genData).hashCode();
-		$.ajax({
-			type: "POST",
-			url: "/graph",
-			data: {id: genDataId, graph: genData.graph},
-			success: function() {console.log("posted graph to server!");}
-		});
 		
-		if(util.exists(genData.map) && util.exists(genData.sector)) {
-			var mapStr = ""; var sectorStr = "";
+		var mapStr = ""; 
+		if(util.exists(genData.map) /*&& util.exists(genData.sector)*/) {
+			//var sectorStr = "";
 			for(var y = 0; y < height; y++) {
 				for(var x = 0; x < width; x++) {
 					mapStr += genData.map[y][x]+" ";
-					sectorStr += genData.sector[y][x]+" ";
+					//sectorStr += genData.sector[y][x]+" ";
 				}
 				mapStr += "\n";
-				sectorStr += "\n";
+				//sectorStr += "\n";
 			}
 		}
 		
 		$.ajax({
 			type: 'POST',
 			url: "/text",
-			data: {id: genDataId, map: mapStr, sector: sectorStr, room: genData.room},
+			data: {id: genDataId, map: mapStr, /*sector: sectorStr,*/ room: genData.room},
 			success: function() {console.log("posted text data to server!");}
 		});
+		
+		$.ajax({
+			type: "POST",
+			url: "/graph",
+			data: {id: genDataId, graph: genData.graph, width: width, height: height},
+			success: function() {console.log("posted graph to server!");}
+		});
+		
 	};
 
 	/* Initialize the canvas */

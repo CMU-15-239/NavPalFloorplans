@@ -5,6 +5,7 @@ var util = require('util');
 var exec = require('child_process').exec;
 var fs = require('fs');
 var child;
+var Sector = require('./sector.js');
 
 // set up express server
 var app = express();
@@ -61,7 +62,7 @@ app.post('/upload', function (req, res) {
 app.post('/text', function (req, res) {
     var map = req.body.map;
     var room = req.body.room;
-    var sector = req.body.sector;
+    //var sector = req.body.sector;
     var id = req.body.id;
     if (map !== undefined && map !== null) {
         fs.writeFile('./www/text/' + id + '_map.txt', map);
@@ -69,18 +70,28 @@ app.post('/text', function (req, res) {
     if (room !== undefined && room !== null) {
         fs.writeFile('./www/text/' + id + '_room.txt', room);
     }
-    if (sector !== undefined && sector !== null) {
-        fs.writeFile('./www/text/' + id + '_sector.txt', sector);
-    }
+    //if (sector !== undefined && sector !== null) {
+    //    fs.writeFile('./www/text/' + id + '_sector.txt', sector);
+    //}
     return res.send('sucess!'); 
 });
 
 // creates json of graph representation of floorplan
 app.post('/graph', function (req, res) {
     var graph = req.body.graph;
+    var width = req.body.width;
+    var height = req.body.height;
     var id = req.body.id;
     if (graph !== undefined && graph !== null) {
+		console.log("************************");
+		console.log(graph.spaceNodes.length);
         fs.writeFile('./www/text/'+ id + '_graph.txt', JSON.stringify(graph));
+		if(width !== undefined && width !== null && height !== undefined && height !== null
+			&& graph.spaceNodes !== undefined && graph.spaceNodes !== null) {
+			
+			var sector = Sector.generateSectorStr(graph.spaceNodes, width, height);
+			fs.writeFile('./www/text/' + id + '_sector.txt', sector);
+		}
     }
     return res.send('sucess!');
 });
