@@ -130,9 +130,4 @@ $(document).ready(function ()
 		$("#classification_pop").css("display", "none");
 		if (allSpacesClassified()) $("#done").removeAttr("disabled");
 	});
-	
-	/*var jsonObj = '{"lines":[{"line":[{"p1":[0,0]},{"p2":[100,100]}]}, {"line":[{"p1":[100,100]},{"p2":[200,500]}]}]}';
-	var obj = $.parseJSON(jsonObj);
-	console.log(obj);
-	importLines(obj);*/
 });
