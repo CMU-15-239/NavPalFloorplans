@@ -1,5 +1,13 @@
 //graph.js
 
+/**
+ * Summary: Constructor for the Graph object.
+ * Parameters: spaces: The list of space objects created in the drawing tool,
+				callback: Function to callback after the constructor executes. 
+				(To notify something when the graph has been created (e.g load wheel))
+				callbackVars: Inputs for callback.
+ * Returns: undefined
+**/
 function Graph(spaces, callback, callbackVars) {
 	this.spaceNodes = [];
 	this.pswNodes = [];
@@ -11,6 +19,11 @@ function Graph(spaces, callback, callbackVars) {
 	if(util.exists(callback)) {callback.apply(callbackVars);}
 }
 
+/**
+ * Summary: Converts the Graph object to a simple JSON object (for export)
+ * Parameters: undefined
+ * Returns: Simple JSON object.
+**/
 Graph.prototype.toOutput = function() {
 	var outSpaceNodes = [];
 	for(var s = 0; s < this.spaceNodes.length; s++) {
@@ -28,6 +41,11 @@ Graph.prototype.toOutput = function() {
 	};
 };
 
+/**
+ * Summary: Gets the PswNode with the 2d line represenation of line.
+ * Parameters: line: Line object.
+ * Returns: PswNode found or null if none found.
+**/
 Graph.prototype.getPswNodeByLine = function(line) {
 	for(var p = 0; p < this.pswNodes.length; p++) {
 		if(this.pswNodes[p].lineRep.equals(line)) {
@@ -37,6 +55,11 @@ Graph.prototype.getPswNodeByLine = function(line) {
 	return null;
 };
 
+/**
+ * Summary: Adds a new GraphNode (SpaceNode) and establishes links to (and creates) PswNodes as necessary.
+ * Parameters: space: Space object.
+ * Returns: undefined
+**/
 Graph.prototype.addGraphNode = function(space) {
 	//first check and add doors
 	var psws = [];
@@ -66,6 +89,11 @@ Graph.prototype.addGraphNode = function(space) {
 	this.spaceNodes.push(spaceNode);
 };
 
+/**
+ * Summary: Gets a GraphNode from an id
+ * Parameters: id: String.
+ * Returns: undefined
+**/
 Graph.prototype.getGraphNodeById = function(id) {
 	var searchArr = [];
 	if(id.indexOf("psw_") === 0) {
