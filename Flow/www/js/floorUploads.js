@@ -40,6 +40,7 @@ function createThumb(file) {
         	floorPlan.append(floorPlanImg);
         	floorPlanImg.popover({
 			  html: true,
+			  animation: "",
 			  placement: 'top',
 			  trigger: 'hover',
 			  content: function (width, height) {
