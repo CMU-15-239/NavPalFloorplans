@@ -1,3 +1,11 @@
+
+/**
+ * Summary: Adds doors from map string (overwrites).
+ * Parameters: space: Space object.
+				map: 2d array of strings
+				doorChar: String, how to represent a door in map
+ * Returns: map (2d array of strings)
+**/
 function removeDoors(space, map, doorChar) {
 	for (var d=0; d<space.doors.length; d++) {
 		var door = space.doors[d];
@@ -40,6 +48,13 @@ function removeDoors(space, map, doorChar) {
 	return map;
 }
 
+/**
+ * Summary: Adds walls from Space object to map string.
+ * Parameters: space: Space object.
+				map: 2d array of strings
+				wallChar: String, how to represent a wall in map
+ * Returns: map (2d array of strings)
+**/
 function addLines(space, map, wallChar) {
 	//console.log(map);
 	for (var w=0; w<space.walls.length; w++) {
@@ -82,6 +97,13 @@ function addLines(space, map, wallChar) {
 	return map;
 }
 
+/**
+ * Summary: Constructs a map array (2d array of strings).
+ * Parameters: spaces: List of Space objects
+				width: Number
+				height: Number
+ * Returns: map (2d array of strings)
+**/
 function generateMap(spaces, width, height) {
 	var map = [];
 	var doorChar = '0';

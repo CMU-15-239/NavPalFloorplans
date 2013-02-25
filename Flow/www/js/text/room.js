@@ -1,5 +1,11 @@
 //room.js
 
+/**
+ * Summary: Constructs a room text string.
+ * Parameters: spaces: List of Space objects
+				EOL: String, line termination character
+ * Returns: String
+**/
 function generateRoom(spaces, EOL) {
 	if(!util.exists(EOL)) {EOL = "";}
 	var info = "";

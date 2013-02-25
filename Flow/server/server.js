@@ -62,7 +62,6 @@ app.post('/upload', function (req, res) {
 app.post('/text', function (req, res) {
     var map = req.body.map;
     var room = req.body.room;
-    //var sector = req.body.sector;
     var id = req.body.id;
     if (map !== undefined && map !== null) {
         fs.writeFile('../www/text/' + id + '_map.txt', map);
@@ -70,9 +69,9 @@ app.post('/text', function (req, res) {
     if (room !== undefined && room !== null) {
         fs.writeFile('../www/text/' + id + '_room.txt', room);
     }
-    //if (sector !== undefined && sector !== null) {
-    //    fs.writeFile('./www/text/' + id + '_sector.txt', sector);
-    //}
+    if (sector !== undefined && sector !== null) {
+        fs.writeFile('./www/text/' + id + '_sector.txt', sector);
+    }
     return res.send('sucess!'); 
 });
 
