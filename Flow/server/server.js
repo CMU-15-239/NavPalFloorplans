@@ -109,7 +109,8 @@ function preprocessor(imagePath, res) {
             }
             linesJSON = data.toString('utf8');
             var lines = JSON.parse(linesJSON);
-            lines['image'] = imagePath.substring(5, imagePath.length);
+            // start at character 6 to remove ../www
+            lines['image'] = imagePath.substring(6, imagePath.length);
             return res.json(lines);
         });
     });
