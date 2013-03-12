@@ -6,9 +6,33 @@ html, body {
     background-image: url(../img/black-Linen.png);
 }
 
-#toolRow {
+.toolRow {
 	display: inline-block;
 }
+
+.toolGrouping {
+    border-bottom: 5px solid #222;
+    margin-bottom: 5px
+}
+
+.toolIcon:hover {
+    background-color: #6E6E6E;
+}
+
+.toolIcon.active {
+    background-color: #353535;
+}
+
+.toolIcon {
+    width: 32px;
+    height: 32px;
+    padding: 5px;
+    background-size: 30px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 
 #carousel {
 	padding: 15px;
@@ -22,8 +46,10 @@ html, body {
 	top: 230px;
 	left:0px;
 	bottom: 0px;
-	width: 90px;
-	background-image: url(../img/low_contrast_linen.png)
+    padding-top: 15px;
+    padding-left: 2px;
+    padding-right: 2px;
+	background-color: #494949
 }
 
 #canvas {
