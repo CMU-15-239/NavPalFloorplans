@@ -1,5 +1,26 @@
 //graph.js
 
+function importGraph(simpleGraph) {
+  if(util.exists(simpleGraph)) {
+    var graph = new Graph();
+    if(util.exists(simpleGraph.spaceNodes)) {
+      for(var s = 0; s < simpleGraph.spaceNodes.length; s++) {
+        graph.spaceNodes.push(importSpaceNode(simpleGraph.spaceNodes[s]));
+      }
+    }
+    
+    if(util.exists(simpleGraph.pswNodes)) {
+      for(var p = 0; p < simpleGraph.pswNodes.length; p++) {
+        graph.pswNodes.push(importPswNode(simpleGraph.pswNodes[p])); 
+      }
+    }
+    
+    return graph;
+  }
+  
+  return null;
+}
+
 /**
  * Summary: Constructor for the Graph object.
  * Parameters: spaces: The list of space objects created in the drawing tool,
@@ -11,13 +32,44 @@
 function Graph(spaces, callback, callbackVars) {
 	this.spaceNodes = [];
 	this.pswNodes = [];
+  this.spaceType = "space";
+  this.pswType = "psw";
 	
-	for(var s = 0; s < spaces.length; s++) {
-		this.addGraphNode(spaces[s]);
-	}
+  if(util.exists(spaces)) {
+    for(var s = 0; s < spaces.length; s++) {
+      this.addGraphNode(spaces[s]);
+    }
+  }
 	
 	if(util.exists(callback)) {callback.apply(callbackVars);}
 }
+
+
+/**
+ * Summary: Constructs a list of spaces to represent the floor.
+ * Parameters: none
+ * Returns: list of spaces
+**/
+Graph.prototype.toSpaces = function() {
+  var result = [];
+  for(var s = 0; s < this.spaceNodes.length; s++) {
+    var spaceNode = this.spaceNodes[s];
+    //console.log(JSON.stringify(spaceNode));
+    var space = new Space(spaceNode.walls);
+    space.type = spaceNode.spaceType;
+    space.label = spaceNode.label;
+    for(var d = 0; d < spaceNode.edges.length; d++) {
+      var edge = this.getGraphNodeById(spaceNode.edges[d]);
+      if(util.exists(edge) && edge.type === this.pswType) {
+        space.doors.push(edge.lineRep);
+      }
+    }
+    
+    result.push(space);
+  }
+  
+  return result;
+};
 
 /**
  * Summary: Converts the Graph object to a simple JSON object (for export)
@@ -73,7 +125,7 @@ Graph.prototype.addGraphNode = function(space) {
 		}
 		else {
 			//TODO: check and make sure the newId function returns in time for adding to pswIds
-			var newDoor = new PswNode("door", null, lineRep);
+			var newDoor = new PswNode("psw", "door", null, lineRep);
 			psws.push(newDoor);
 			pswIds.push(newDoor.id);
 			this.pswNodes.push(newDoor);
@@ -81,7 +133,7 @@ Graph.prototype.addGraphNode = function(space) {
 	}
 	
 	
-	var spaceNode = new SpaceNode(space.type, space.label, pswIds, space.walls);
+	var spaceNode = new SpaceNode(this.spaceType, space.type, space.label, pswIds, space.walls);
 	//TODO: check and make sure the newId function returns in time for adding to psws
 	for(var p = 0; p < psws.length; p++) {
 		psws[p].edges.push(spaceNode.id);
@@ -96,10 +148,10 @@ Graph.prototype.addGraphNode = function(space) {
 **/
 Graph.prototype.getGraphNodeById = function(id) {
 	var searchArr = [];
-	if(id.indexOf("psw_") === 0) {
+	if(id.indexOf(this.pswType+"_") === 0) {
 		searchArr = this.pswNodes;
 	}
-	else if(id.indexOf("space_") === 0) {
+	else if(id.indexOf(this.spaceType+"_") === 0) {
 		searchArr = this.spaceNodes;
 	}
 	
@@ -110,4 +162,34 @@ Graph.prototype.getGraphNodeById = function(id) {
 	}
 	
 	return null;
+};
+
+
+Graph.prototype.equals = function(otherGraph) {
+  if(util.exists(otherGraph) && util.exists(otherGraph.spaceNodes)
+      && otherGraph.spaceNodes.length === this.spaceNodes.length
+      && util.exists(otherGraph.pswNodes) 
+      && otherGraph.pswNodes.length === this.pswNodes.length) {
+    
+    for(var s = 0; s < this.spaceNodes.length; s++) {
+      var thisSpaceNode = this.spaceNodes[s];
+      var otherSpaceNode = otherGraph.getGraphNodeById(thisSpaceNode.id);
+      if(!util.exists(otherSpaceNode) || !thisSpaceNode.equals(otherSpaceNode)) {
+        console.log("false for: "+s+" "+this.spaceNodes[s].id+" "+otherSpaceNode.id);
+        return false;
+      }
+    }
+    
+    for(var p = 0; p < this.pswNodes.length; p++) {
+     var thisPswNode = this.spaceNodes[p];
+      var otherPswNode = otherGraph.getGraphNodeById(thisPswNode.id);
+      if(!util.exists(otherPswNode) || !thisPswNode.equals(otherPswNode)) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  return false;
 };
