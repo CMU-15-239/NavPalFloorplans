@@ -49,8 +49,8 @@ ManipulationAreaView.prototype.toRealWorld = function(p) {
 					  as the 0th and 1st elements in a list
 **/
 ManipulationAreaView.prototype.toCanvasWorld = function(p) {
-	point = new Point((p.x - offsetX) * scale + canvasX,
-					  (p.y - offsetY) * scale + canvasY);
+	point = new Point((p.x - offsetX) * scale + this.canvasX,
+					  (p.y - offsetY) * scale + this.canvasY);
 	return point;
 }
 

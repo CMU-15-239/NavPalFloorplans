@@ -5,14 +5,16 @@
 $(document).ready(function () 
 {
 	/* Initialize the canvas */
-    can = document.getElementById("canvas");
+    var can = document.getElementById("canvas");
 	can.width = 500;
 	can.height = 500;
-    CANVAS = can.getContext("2d");
-	CANVAS.width = 500;
-	CANVAS.height = 500;
-	CANVAS.x = can.offsetLeft;
-	CANVAS.y = can.offsetTop;
+    var canvas = can.getContext("2d");
+	canvas.width = 500;
+	canvas.height = 500;
+	canvas.x = can.offsetLeft;
+	canvas.y = can.offsetTop;
+	
+	GLOBALS = new GlobalsContainer(canvas);
 	
 	var stateManager = new StateManager();
 	

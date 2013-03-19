@@ -16,29 +16,26 @@ DrawState.prototype.exit = function() {
 }
 
 DrawState.prototype.mouseMove = function(event) {
-	var xCoordinate = event.pageX;
-	var yCoordinate = event.pageY;
-	this.pointAtCursor = new Point(xCoordinate, yCoordinate);
+	this.pointAtCursor = GLOBALS.view.toRealWorld(event.pageX, event.pageY);
 	
 	this.stateManager.redraw();
 }
 
 DrawState.prototype.addPoint = function(pointToAdd) {
-	ALL_POINTS.push(pointToAdd);
+	GLOBALS.addPoint(pointToAdd);
 }
 
 DrawState.prototype.addWall = function(wallToAdd) {
-	ALL_WALLS.push(wallToAdd);
+	GLOBALS.addWall(wallToAdd);
 }
 
 DrawState.prototype.draw = function() {
+	//Draw the point that follows the cursor around
 	if (this.pointAtCursor !== undefined) {
 		this.pointAtCursor.draw();
 	}
-	if (this.pointBeenDrawnInSession()) {
-		var numPointsDrawn = this.pointsAddedInSession.length;
-		this.pointsAddedInSession[numPointsDrawn - 1].draw();
-	}
+
+	//Draw the line that goes from the most recently drawn point to the user's cursor
 	if (this.pointsAtCursor !== undefined && pointBeenDrawnInSession()) {
 		var numPointsDrawn = this.pointsAddedInSession.length;
 		var newestPointAdded = this.pointsAddedInSession[numPointsDrawn - 1];

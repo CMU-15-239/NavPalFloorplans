@@ -73,21 +73,21 @@ Line.prototype.draw = function () {
 	canvasP2 = GLOBALS.view.toCanvasWorld(this.p2);
 	
 	//Save the old stroke, so that we can restore it when we're done
-	var oldStroke = CANVAS.strokeStyle;
-	CANVAS.strokeStyle = 'rgba(0,180,0,1)';
+	var oldStroke = GLOBALS.canvas.strokeStyle;
+	GLOBALS.canvas.strokeStyle = 'rgba(0,180,0,1)';
 	if (this.isDoor === true) {
-		CANVAS.strokeStyle = "pink";
+		GLOBALS.canvas.strokeStyle = "pink";
 	}
 	if (this.isSelected === true) {
-		CANVAS.strokeStyle = "yellow"; // Yellow
+		GLOBALS.canvas.strokeStyle = "yellow"; // Yellow
 	}
-	CANVAS.lineWidth = WALL_WIDTH;
-	CANVAS.beginPath();
-	CANVAS.moveTo(canvasP1.x, canvasP1.y);
-	CANVAS.lineTo(canvasP2.x, canvasP2.y);
-	CANVAS.stroke();
+	GLOBALS.canvas.lineWidth = WALL_WIDTH;
+	GLOBALS.canvas.beginPath();
+	GLOBALS.canvas.moveTo(canvasP1.x, canvasP1.y);
+	GLOBALS.canvas.lineTo(canvasP2.x, canvasP2.y);
+	GLOBALS.canvas.stroke();
 	//Reset the stroke style
-	CANVAS.strokeStyle = oldStroke;
+	GLOBALS.canvas.strokeStyle = oldStroke;
 };
 
 /**

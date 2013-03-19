@@ -20,7 +20,10 @@ StateManager.prototype.changeState = function(newState) {
 
 StateManager.prototype.redraw = function() {
 	//First, delete everything from the canvas.
-    CANVAS.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    GLOBALS.canvas.clearRect(0, 0, GLOBALS.canvas.width, GLOBALS.canvas.height);
+	GLOBALS.drawPoints();
+	GLOBALS.drawWalls();
+	//Let the state draw itself
 	this.currentState.draw();
 }
 

@@ -5,7 +5,6 @@ BaseState.prototype.click = function(event) {
 }
 
 BaseState.prototype.mouseMove = function(event) {
-	console.log("mouse move");
 }
 
 BaseState.prototype.mouseDown = function(event) {
