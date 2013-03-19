@@ -32,13 +32,14 @@ function ManipulationAreaView(maxWidth, maxHeight, canvasX, canvasY) {
  * Returns: [x',y'] : The x and y coordinates in the real-world, 
 					  as the 0th and 1st elements in a list
 **/
-ManipulationAreaView.prototype.toRealWorld = function(x, y) {
+ManipulationAreaView.prototype.toRealWorld = function(p) {
+	x = p.x;
+	y = p.y;
 	x -= this.canvasX;
 	y -= this.canvasY;
-	coords = [];
-	coords[0] = (x * scale) + offsetX;
-	coords[1] = (y * scale) + offsetY;
-	return coords;
+	point = new Point((x * scale) + offsetX, 
+					  (y * scale) + offsetY);
+	return point;
 }
 
 /**
@@ -47,11 +48,10 @@ ManipulationAreaView.prototype.toRealWorld = function(x, y) {
  * Returns: [x',y'] : The x and y coordinates in the canvas world, 
 					  as the 0th and 1st elements in a list
 **/
-ManipulationAreaView.prototype.toCanvasWorld = function(x, y) {
-	coords = [];
-	coords[0] = (x - offsetX) * scale + canvasX;
-	coords[1] = (y - offsetY) * scale + canvasY;
-	return coords;
+ManipulationAreaView.prototype.toCanvasWorld = function(p) {
+	point = new Point((p.x - offsetX) * scale + canvasX,
+					  (p.y - offsetY) * scale + canvasY);
+	return point;
 }
 
 /**
