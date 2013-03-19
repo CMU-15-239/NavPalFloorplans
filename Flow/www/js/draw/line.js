@@ -69,6 +69,9 @@ Line.prototype.equals = function (l) {
  * Returns: undefined.
 **/
 Line.prototype.draw = function () {	
+	canvasP1 = GLOBALS.view.toCanvasWorld(this.p1);
+	canvasP2 = GLOBALS.view.toCanvasWorld(this.p2);
+	
 	//Save the old stroke, so that we can restore it when we're done
 	var oldStroke = CANVAS.strokeStyle;
 	CANVAS.strokeStyle = 'rgba(0,180,0,1)';
@@ -80,8 +83,8 @@ Line.prototype.draw = function () {
 	}
 	CANVAS.lineWidth = WALL_WIDTH;
 	CANVAS.beginPath();
-	CANVAS.moveTo(this.p1.x,this.p1.y);
-	CANVAS.lineTo(this.p2.x,this.p2.y);
+	CANVAS.moveTo(canvasP1.x, canvasP1.y);
+	CANVAS.lineTo(canvasP2.x, canvasP2.y);
 	CANVAS.stroke();
 	//Reset the stroke style
 	CANVAS.strokeStyle = oldStroke;

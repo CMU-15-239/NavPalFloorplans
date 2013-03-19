@@ -39,11 +39,14 @@ Point.prototype.equals = function(p) {
 **/
 Point.prototype.draw = function() {
 	CANVAS.fillStyle = POINT_COLOR;
+	
+	canvasPoint = GLOBALS.view.toCanvasWorld(this);
+	
 	//If the point is being snapped to, draw a larger circle around it to make this fact clear to the user.
 	if (this.isSnap) {
 		CANVAS.beginPath();
 		CANVAS.strokeStyle = POINT_COLOR
-		CANVAS.arc(this.x, this.y, SNAP_RADIUS, 0, 2*Math.PI, false);
+		CANVAS.arc(canvasPoint.x, canvasPoint.y, SNAP_RADIUS, 0, 2*Math.PI, false);
 		CANVAS.lineWidth = WALL_WIDTH;
 		CANVAS.stroke();
 		CANVAS.fillStyle = "rgb(255,0,255)";
@@ -54,7 +57,7 @@ Point.prototype.draw = function() {
 		CANVAS.fillStyle = "rgb(255,0,0)";
 	}
 	CANVAS.beginPath();
-    CANVAS.arc(this.x, this.y, POINT_SIZE, 0, 2*Math.PI, false);
+    CANVAS.arc(canvasPoint.x, canvasPoint.y, POINT_SIZE, 0, 2*Math.PI, false);
     CANVAS.fill();
 }
 
