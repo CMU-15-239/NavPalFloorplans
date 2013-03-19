@@ -10,9 +10,11 @@
 	
 */
 
-function ManipulationAreaView(maxWidth, maxHeight) {
+function ManipulationAreaView(maxWidth, maxHeight, canvasX, canvasY) {
 	this.maxWidth = maxWidth;
 	this.maxHeight = maxHeight;
+	this.canvasX = canvasX;
+	this.canvasY = canvasY;
 	
 	// Offsets from the real-world (0,0)
 	// Represents a vector from real-world (0,0) to canvas world (0,0)
@@ -31,6 +33,8 @@ function ManipulationAreaView(maxWidth, maxHeight) {
 					  as the 0th and 1st elements in a list
 **/
 ManipulationAreaView.prototype.toRealWorld = function(x, y) {
+	x -= this.canvasX;
+	y -= this.canvasY;
 	coords = [];
 	coords[0] = (x * scale) + offsetX;
 	coords[1] = (y * scale) + offsetY;
@@ -45,8 +49,8 @@ ManipulationAreaView.prototype.toRealWorld = function(x, y) {
 **/
 ManipulationAreaView.prototype.toCanvasWorld = function(x, y) {
 	coords = [];
-	coords[0] = (x - offsetX) * scale;
-	coords[1] = (y - offsetY) * scale;
+	coords[0] = (x - offsetX) * scale + canvasX;
+	coords[1] = (y - offsetY) * scale + canvasY;
 	return coords;
 }
 
