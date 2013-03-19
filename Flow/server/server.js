@@ -55,7 +55,7 @@ app.post('/upload', function (req, res) {
     var index = base64Data.indexOf('base64,') + 'base64,'.length;
     base64Data = base64Data.substring(index, base64Data.length);
     fs.writeFile(imagePath, new Buffer(base64Data, "base64"));
-    var lines = preprocessor(imagePath, res);
+    preprocessor(imagePath, res);
 });
 
 // creates three text files required by navPal android app
