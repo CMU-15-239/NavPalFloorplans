@@ -38,6 +38,7 @@ function detectRooms(lines) {
 	}
 
 	ALL_CLOSED_ROOMS = newRooms;
+	console.log(ALL_CLOSED_ROOMS.length + " rooms found");
 }
 
 /**
