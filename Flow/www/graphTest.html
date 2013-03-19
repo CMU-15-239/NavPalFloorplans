@@ -25,7 +25,7 @@
 <script src="js/graph/spaceNode.js"></script>
 <script src="js/graph/pswNode.js"></script>
 <script src="js/text/room.js"></script>
-<script src="js/text/sector2.js"></script>
+<!--<script src="js/text/sector2.js"></script>-->
 <script src="js/text/map.js"></script>
 <script src="js/main.js"></script>
 
@@ -54,7 +54,7 @@ var s1 = newTestSpace([lines1[0], lines1[1], lines1[2], lines1[3]], doors1, "roo
 var s2 = newTestSpace([lines1[3], lines1[4], lines1[5], lines1[6]], doors1, "room", "s2");
 
 var spaces1 = [s1, s2];
-//var g1 = new Graph(spaces1);
+var g1 = new Graph(spaces1);
 
 
 var lines2 = [];
@@ -136,7 +136,7 @@ spaces2[10] = newTestSpace([lines2[16], lines2[18], lines2[20], lines2[22], line
 			[doors2[0], doors2[1], doors2[2], doors2[3], doors2[4], doors2[6], doors2[8], doors2[9]], "hallway", "2504");
 
 var g2 = new Graph(spaces2);
-var s2 = Sector.generateSector(spaces1, 31, 41);
+/*var s2 = Sector.generateSector(spaces1, 31, 41);
 for (var row=0; row<s2.length; row++) {
 	var text = "";
 	for (var col=0; col<s2[row].length; col++) {
@@ -146,7 +146,7 @@ for (var row=0; row<s2.length; row++) {
 	}
 	$("#testOutput").append(text + '<br>');
 
-}
+}*/
 //var roomInfo2 = room(spaces2);
 //console.log(roomInfo2, "\n");
 

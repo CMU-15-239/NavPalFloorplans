@@ -1,5 +1,16 @@
 // PswNode.js
 
+function importPswNode(simplePswNode) {
+  if(util.exists(simplePswNode)) {
+    var pswNode = new PswNode(simplePswNode.type, simplePswNode.pswType,
+                    simplePswNode.edges, importLine(simplePswNode.lineRep, true));
+    pswNode.id = simplePswNode.id;
+    return pswNode;
+  }
+  
+  return null;
+}
+
 /**
  * Summary: Constructor for the PswNode object.
  * Parameters: pswType: String, type of passageway (door, sliding, opening, etc...)
@@ -7,11 +18,11 @@
 				lineRep: Line object, 2d line represenation of passageway
  * Returns: undefined
 **/
-function PswNode(pswType, edges, lineRep) {
+function PswNode(type, pswType, edges, lineRep) {
 	this.pswType = pswType;
 	this.lineRep = lineRep;
 
-	GraphNode.call(this, "psw", edges, "psw");
+	GraphNode.call(this, type, edges, type);
 }
 
 PswNode.prototype = new GraphNode();
@@ -31,3 +42,23 @@ PswNode.prototype.toOutput = function() {
 		lineRep: this.lineRep.toOutput()
 	};
 };
+
+PswNode.prototype.equals = function(otherPswNode) {
+  if(util.exists(otherPswNode) && otherPswNode.id === this.id
+      && otherPswNode.type === this.type && util.exists(otherPswNode.edges)
+      && this.edges.length === otherPswNode.edges.length
+      && this.pswType === otherPswNode.pswType
+      && this.lineRep.equals(otherPswNode.lineRep)) {
+    
+    for(var e = 0; e < this.edges.length; e++) {
+      if(this.edges[e] !== otherPswNode.edges[e]) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  return false;
+};
+

@@ -1,6 +1,16 @@
 //graphNode.js
 //a node in the graph structure
 
+function importGraphNode(simpleGraphNode) {
+  if(util.exists(simpleGraphNode)) {
+    var graphNode = new GraphNode(simpleGraphNode.type, simpleGraphNode.edges, simpleGraphNode.type);
+    graphNode.id = simpleGraphNode.id;
+    return graphNode;
+  }
+  
+  return null;
+}
+
 /**
  * Summary: Constructor for the GraphNode object.
  * Parameters: type: String, type of node (space vs psw)
@@ -38,6 +48,19 @@ GraphNode.prototype.newId = function(idPrefix) {
 	this.id = idPrefix+"_"+JSON.stringify(this).hashCode();
 };
 
-GraphNode.prototype.test = function() {
-	console.log("in graphNode");
+GraphNode.prototype.equals = function(otherGraphNode) {
+  if(util.exists(otherGraphNode) && otherGraphNode.id === this.id
+      && otherGraphNode.type === this.type && util.exists(otherGraphNode.edges)
+      && this.edges.length === otherGraphNode.edges.length) {
+    
+    for(var e = 0; e < this.edges.length; e++) {
+      if(this.edges[e] !== otherGraphNode.edges[e]) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  return false;
 };

@@ -1,5 +1,13 @@
 //Point.js
 
+function importPoint(simplePoint) {
+  if(util.exists(simplePoint)) {
+    return new Point(simplePoint.x, simplePoint.y);
+  }
+  
+  return null;
+}
+
 /**
  * Summary: The constructor for a Point object.
  * Parameters: x,y: The x- and y-location of the point (in pixels).

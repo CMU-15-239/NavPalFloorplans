@@ -1,5 +1,16 @@
 //line.js
 
+function importLine(simpleLine, isDoor) {
+  if(util.exists(simpleLine)) {
+    var line = new Line(importPoint(simpleLine.p1), importPoint(simpleLine.p2));
+    line.isDoor = (isDoor === true);
+    return line;
+  }
+  
+  return null;
+}
+
+
 /**
  * Summary: Constructor for the Line object.
  * Parameters: p1, p2: The points that comprise the start and end of the line.
