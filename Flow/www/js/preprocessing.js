@@ -23,7 +23,8 @@ function importLines(jsonObj) {
 		var p2Exists = pointAlreadyExists(p2);
 		//If the point already exists, make p2 point to it.
 		if (p2Exists !== false) p2 = p2Exists;
-		
+		p1.degree += 1;
+		p2.degree += 1;
 		//Add the new line to the drawing
 		ALL_WALLS.push(new Line(p1, p2));
 		//Only add points that aren't already in the array
