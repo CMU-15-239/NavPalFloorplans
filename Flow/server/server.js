@@ -4,20 +4,34 @@ var http = require('http');
 var util = require('util');
 var exec = require('child_process').exec;
 var fs = require('fs');
-var child;
+var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
+var Util = require('./util.js');
+var FlowDB = require('./controllers/flowDB.js');
+
 var Sector = require('./sector.js');
+
 
 // set up express server
 var app = express();
 var port = process.env.PORT || 3000;
+var child;
+var flowDB;
 
 function init(){
     configureExpress(app);
+    
+    flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
+    //flowDB.clearData();
+    
+    var child;
+    
     http.createServer(app).listen(port, function() {
         console.log("Express server listening on port %d", port);
     });
 }
-
 init();
 
 // setup express for serving files and Access-Control workarounds
@@ -28,6 +42,10 @@ function configureExpress(app) {
     	app.use(express.cookieParser());
     	app.use(express.bodyParser());
     	app.use(express.methodOverride());
+        
+        app.use(passport.initialize());
+        app.use(passport.session());
+        
     	app.use(express.session({secret:"keyboard cat"}));
     	app.use(express.static(path.join(__dirname, '../www')));
 
@@ -85,14 +103,63 @@ app.post('/graph', function (req, res) {
 		console.log("************************");
 		console.log(graph.spaceNodes.length);
         fs.writeFile('../www/text/'+ id + '_graph.txt', JSON.stringify(graph));
-		if(width !== undefined && width !== null && height !== undefined && height !== null
-			&& graph.spaceNodes !== undefined && graph.spaceNodes !== null) {
-			
-			var sector = Sector.generateSectorStr(graph.spaceNodes, width, height);
-			fs.writeFile('../www/text/' + id + '_sector.txt', sector);
-		}
+      if(width !== undefined && width !== null && height !== undefined && height !== null
+        && graph.spaceNodes !== undefined && graph.spaceNodes !== null) {
+        
+        var sector = Sector.generateSectorStr(graph.spaceNodes, width, height);
+        fs.writeFile('../www/text/' + id + '_sector.txt', sector);
+      }
     }
     return res.send('sucess!');
+});
+
+//errorCodes: success 0, fail 1
+app.post('/login', passport.authenticate('local'), 
+    function(req, res) {
+        req.user.lastLoginTimestamp = new Date();
+        
+        var responseData = {
+            buildingNames: req.user.userBuildingNames,
+            buildingIds: req.user.userBuildingIds,
+            errorCode: 0
+        };
+        
+        return res.send(responseData);
+    },
+    function(req, res) {
+        return res.send({errorCode: 1});
+    }
+);
+
+app.post('/logout', function(req, res) {
+    req.logout();
+    return res.redirect('/home.html');
+});
+
+//errorCodes: success 0, invalid data 1, user already exists 2, failed to auto login 3
+app.post('/register', function(req, res) {
+    var responseData = {error: 1};
+    if(Util.exists(req) && Util.isValidUsername(req.body.username) 
+        && Util.isValidPassword(req.body.password)) {
+        
+        flowDB.register(req.body.username, req.body.password, function(newUser) {
+            if(Util.exists(newUser)) {
+                responseData.error = 0;
+                req.login(newUser, function(err) {
+                  if (err) {
+                    console.log("server.js 134");
+                    responseData.error = 3;
+                  }
+                  return res.send(responseData);
+                });
+            } else {
+                responseData.error = 2;
+                return res.send(responseData);
+            }
+        });
+    } else {
+        return res.send(responseData);
+    }
 });
 
 // =========== PREPROCESSOR ==========
