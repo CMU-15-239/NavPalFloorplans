@@ -16,7 +16,7 @@ DrawState.prototype.exit = function() {
 }
 
 DrawState.prototype.mouseMove = function(event) {
-	this.pointAtCursor = GLOBALS.view.toRealWorld(event.pageX, event.pageY);
+	this.pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX, event.pageY));
 	
 	this.stateManager.redraw();
 }
