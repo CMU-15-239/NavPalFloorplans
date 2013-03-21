@@ -33,10 +33,10 @@ function SpaceNode(type, spaceType, label, edges, walls) {
 	if(util.exists(walls)) {this.walls = walls;}
 	else {this.walls = [];}
 	
-	GraphNode.call(this, type, edges, type);
+	FloorNode.call(this, type, edges, type);
 }
 
-SpaceNode.prototype = new GraphNode();
+SpaceNode.prototype = new FloorNode();
 SpaceNode.prototype.constructor = SpaceNode;
 
 /**
