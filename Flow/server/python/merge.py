@@ -4,8 +4,8 @@ from extractLine import*
 epsilon=8
 
 def intersect(hline,vline): 
-    a=(vline.start.row <= hline.start.row <=vline.end.row)
-    b=(hline.start.col <=vline.start.col <= hline.end.col)
+    a = (vline.start.row <= hline.start.row <=vline.end.row)
+    b = (hline.start.col <=vline.start.col <= hline.end.col)
     return a and b
 
 def newLine(startrow,startcol, endrow,endcol):

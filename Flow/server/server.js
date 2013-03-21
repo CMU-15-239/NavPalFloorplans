@@ -1,3 +1,8 @@
+/*  Node.js server for User Authoring tool
+    Written by: Daniel Muller and Vansi Vallabhaneni (2013)
+*/
+
+// initialize middleware and global variables
 var path = require('path');
 var express = require('express');
 var http = require('http');
@@ -20,6 +25,11 @@ var port = process.env.PORT || 3000;
 var child;
 var flowDB;
 
+/**
+ * Summary: Initiazes the express server
+ * Parameters: undefined
+ * Returns: undefined
+**/
 function init(){
     configureExpress(app);
     
@@ -34,7 +44,12 @@ function init(){
 }
 init();
 
-// setup express for serving files and Access-Control workarounds
+
+/**
+ * Summary: Setup express with middleware and Access-Control workarounds
+ * Parameters: undefined
+ * Returns: undefined
+**/
 function configureExpress(app) {
     app.configure(function() {
 
@@ -49,10 +64,10 @@ function configureExpress(app) {
     	app.use(express.session({secret:"keyboard cat"}));
     	app.use(express.static(path.join(__dirname, '../www')));
 
-        app.use(function(req, res, next) {
-            res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-            res.header('Access-Control-Allow-Methods', 'PUT,GET,POST,DELETE,OPTIONS');
-            res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
+        app.use(function(request, response, next) {
+            response.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+            response.header('Access-Control-Allow-Methods', 'PUT,GET,POST,DELETE,OPTIONS');
+            response.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
 
             next();
         });
@@ -64,23 +79,26 @@ function configureExpress(app) {
 
 // =========== ROUTES ==========
 
-// upload an image for preprocessing.
-// REQUIRES: base64 represenation of floorplan image
-// ENSURES: list of lines is returned in JSON as well as link to greyscale image
-app.post('/upload', function (req, res) {
+/**
+ * Summary: Upload an image for preprocessing.
+ * Parameters:  req.body.image: base64 encoding of
+                request.user: passport userId   
+ * Returns: list of lines is returned in JSON as well as link to greyscale image
+**/
+app.post('/upload', function (request, response) {
 	var base64Data = req.body.image;
     var imagePath = '../www/floorplans/floorPlan.jpg';
     var index = base64Data.indexOf('base64,') + 'base64,'.length;
     base64Data = base64Data.substring(index, base64Data.length);
     fs.writeFile(imagePath, new Buffer(base64Data, "base64"));
-    var lines = preprocessor(imagePath, res);
+    preprocessor(imagePath, response);
 });
 
 // creates three text files required by navPal android app
-app.post('/text', function (req, res) {
-    var map = req.body.map;
-    var room = req.body.room;
-    var id = req.body.id;
+app.post('/text', function (request, response) {
+    var map = request.body.map;
+    var room = request.body.room;
+    var id = request.body.id;
     if (map !== undefined && map !== null) {
         fs.writeFile('../www/text/' + id + '_map.txt', map);
     }
@@ -90,15 +108,15 @@ app.post('/text', function (req, res) {
     if (sector !== undefined && sector !== null) {
         fs.writeFile('./www/text/' + id + '_sector.txt', sector);
     }
-    return res.send('sucess!'); 
+    return response.send('sucess!'); 
 });
 
 // creates json of graph representation of floorplan
-app.post('/graph', function (req, res) {
-    var graph = req.body.graph;
-    var width = req.body.width;
-    var height = req.body.height;
-    var id = req.body.id;
+app.post('/graph', function (request, response) {
+    var graph = request.body.graph;
+    var width = request.body.width;
+    var height = request.body.height;
+    var id = request.body.id;
     if (graph !== undefined && graph !== null) {
 		console.log("************************");
 		console.log(graph.spaceNodes.length);
@@ -110,65 +128,94 @@ app.post('/graph', function (req, res) {
         fs.writeFile('../www/text/' + id + '_sector.txt', sector);
       }
     }
-    return res.send('sucess!');
+    return response.send('sucess!');
 });
 
 //errorCodes: success 0, fail 1
 app.post('/login', passport.authenticate('local'), 
-    function(req, res) {
-        req.user.lastLoginTimestamp = new Date();
+    function(request, response) { //success case
+        request.user.lastLoginTimestamp = new Date();
         
         var responseData = {
-            buildingNames: req.user.userBuildingNames,
-            buildingIds: req.user.userBuildingIds,
+            buildingNames: request.user.userBuildingNames,
+            buildingIds: request.user.userBuildingIds,
             errorCode: 0
         };
         
-        return res.send(responseData);
+        return response.send(responseData);
     },
-    function(req, res) {
-        return res.send({errorCode: 1});
+    function(request, response) { //failure case
+        return response.send({errorCode: 1});
     }
 );
 
-app.post('/logout', function(req, res) {
-    req.logout();
-    return res.redirect('/home.html');
+app.post('/logout', function(request, response) {
+    request.logout();
+    return response.redirect('/home.html');
 });
 
 //errorCodes: success 0, invalid data 1, user already exists 2, failed to auto login 3
-app.post('/register', function(req, res) {
+app.post('/register', function(request, response) {
     var responseData = {error: 1};
-    if(Util.exists(req) && Util.isValidUsername(req.body.username) 
-        && Util.isValidPassword(req.body.password)) {
+    if(Util.exists(request) && Util.isValidUsername(request.body.username) 
+        && Util.isValidPassword(request.body.password)) {
         
-        flowDB.register(req.body.username, req.body.password, function(newUser) {
+        flowDB.register(request.body.username, request.body.password, function(newUser) {
             if(Util.exists(newUser)) {
                 responseData.error = 0;
-                req.login(newUser, function(err) {
+                request.login(newUser, function(err) {
                   if (err) {
-                    console.log("server.js 134");
-                    responseData.error = 3;
+                     console.log("server.js 134");
+                     responseData.error = 3;
                   }
-                  return res.send(responseData);
+                  return response.send(responseData);
                 });
             } else {
-                responseData.error = 2;
-                return res.send(responseData);
+                  responseData.error = 2;
+                  return response.send(responseData);
             }
         });
     } else {
-        return res.send(responseData);
+        return response.send(responseData);
     }
+});
+
+// success 0, failedToSave 1, failedToExport 2
+app.post('/saveExport', passport.authenticate('local'), function(request, response) { //success case
+   request.user.saveBuilding(request.body.buildingName, request.body.buildingId,
+         request.body.graph, request.body.authoData, function(buildingObj) {
+         var responseData = {errorCode: 1, buildingId: null};
+         
+         if(Util.exists(buildingObj)) {
+            if(Util.exists(request.body.exportData) && request.body.exportData) {
+               console.log("----EXPORT----");
+            }
+            responseData.errorCode = 0;
+            responseData.buildingId = buildingObj.userBuildingId;
+         }
+         
+         return response.send(responseData);
+   });
 });
 
 // =========== PREPROCESSOR ==========
 
-// calls python script to extract lines from image and convert to gray scale
-function preprocessor(imagePath, res) {
+/*  TODO:
+        temp id for 
+
+*/
+
+
+/**
+ * Summary: calls python script to extract lines from image and convert to gray scale
+ * Parameters:  imagePath: path to image to be processsed
+                response: responseponse to be sent to user 
+ * Returns: response with json of identified lines and src of thresholded image
+**/
+function preprocessor(imagePath, response) {
     var linesJSON;
-    child = exec('python preprocessing.py ' + imagePath,
-    function (error, stdout, stderr) {
+    child = exec('python preprocessing.py ' + imagePath, 
+        function (error, stdout, stderr) {
         // First I want to read the file
         fs.readFile('json.txt', function read(err, data) {
             if (err) {
@@ -178,7 +225,7 @@ function preprocessor(imagePath, res) {
             var lines = JSON.parse(linesJSON);
             // start at character 6 to remove ../www
             lines['image'] = imagePath.substring(6, imagePath.length);
-            return res.json(lines);
+            return response.json(lines);
         });
     });
 }

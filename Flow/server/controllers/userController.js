@@ -27,6 +27,7 @@ var UserController = {
 			else if(!Util.exists(user)) {
 				user = new User({
 					username: username,
+					buildingRefs: [],
 					userBuildingNames: [],
 					userBuildingIds: []
 				});

@@ -4,10 +4,10 @@ var Util = require('../util.js');
 
 var BuildingSchema = new mongoose.Schema({
 	_creatorId: String,
-  userBuildingId: String,
-  userBuildingName: String,
-	graph: Object,
-  authoData: Object
+   userBuildingId: String,
+   userBuildingName: String,
+   graph: Object,
+   authoData: Object
 });
 
 BuildingSchema.methods.getUserBuildingId = function() {

@@ -1,27 +1,53 @@
 var mongoose = require('mongoose');
-var BuidlingController = require('../controllers/buildingController.js');
+var BuildingController = require('../controllers/buildingController.js');
 var Util = require('../util.js');
 var passportLocalMongoose = require('passport-local-mongoose');
 
 var UserSchema = new mongoose.Schema({
-    registeredTimestamp: Date,
-    lastLoginTimestamp: Date,
+   registeredTimestamp: Date,
+   lastLoginTimestamp: Date,
 	//username: String,
 	//password: String,
-    userBuildingNames: Array,
-    userBuildingIds: Array
+   buildingRefs: Array,
+   userBuildingNames: Array,
+   userBuildingIds: Array
 });
 
 UserSchema.plugin(passportLocalMongoose); //adds username, password to schema
 
+UserSchema.methods.saveBuilding = function(buildingName, buildingId, graph, authoData, callback) {
+   if(!this.hasBuilding(buildingId)) {
+      return this.createNewBuilding(buildingName, graph, authoData, callback);
+   } else {
+      return this.getBuilding(buildingId, function(buildingObj) {
+         if(Util.exists(buildingObj)) {
+            buildingObj.userBuildingName = buildingName;
+            buildingObj.graph = graph;
+            buildingObj.authoData = authoData;
+            buildingObj.save(function(err) {
+               if(err) {
+                  console.log("userModel.js 29 failed to save buildingObj");
+                  if(Util.exists(callback)) {return callback(null);}
+               } else if(Util.exists(callback)) {
+                  return callback(buildingObj);
+               }
+            });
+         } else if(Util.exists(callback)){
+            return callback(null);
+         }
+      });
+   }
+};
+
 UserSchema.methods.createNewBuilding = function(buildingName, graph, authoData, callback) {
 	console.log("userModel line18");
 	var user = this;
-	BuidlingController.newBuilding(this.username, buildingName, graph, authoData, function(buildingObj) {
+	BuildingController.newBuilding(this.username, buildingName, graph, authoData, function(buildingObj) {
 		console.log("userModel line20: created canvas: "+JSON.stringify(buildingObj));
-		user.userBuildingIds.push(buildingObj.getUserBuildingId());
 		user.userBuildingNames.push(buildingObj.getUserBuildingName());
-		buildingObj.save(function(err) {
+      user.userBuildingIds.push(buildingObj.getUserBuildingId());
+		user.buildingRefs.push({name: buildingObj.getUserBuildingName(), id: buildingObj.getUserBuildingId()});
+      buildingObj.save(function(err) {
 			if(err) {
 				console.log("\n--userMode.js 26 ERR: "+err+"--\n");
 				if(Util.exists(callback)) {return callback(null);}
@@ -29,8 +55,8 @@ UserSchema.methods.createNewBuilding = function(buildingName, graph, authoData, 
 			else {
 				user.save(function(err) {
 					if(err) {
-						console.log("\n--userMode.js 31 ERR: "+err+"--\n");
-						if(Util.exists(callback)) {return callback(null);}
+                  console.log("\n--userMode.js 31 ERR: "+err+"--\n");
+                  if(Util.exists(callback)) {return callback(null);}
 					}
 					else if(Util.exists(callback)) {return callback(buildingObj);}
 				});
@@ -42,7 +68,7 @@ UserSchema.methods.createNewBuilding = function(buildingName, graph, authoData, 
 UserSchema.methods.addBuildingById = function(userBuildingId, callback) {
 	if(!this.hasCanvas(userBuildingId)) {
 		var user = this;
-		BuidlingController.findOne(userBuildingId, function(buildingObj) {
+		BuildingController.findOne(userBuildingId, function(buildingObj) {
 			if(Util.exists(buildingObj)) {
 				user.userBuildingIds.push(buildingObj.getUserBuildingId());
         user.save(function(err) {
@@ -58,7 +84,7 @@ UserSchema.methods.addBuildingById = function(userBuildingId, callback) {
   else if(Util.exists(callback)) {return callback(null);}
 };
 
-UserSchema.methods.addBuidlingByObj = function(buildingObj, callback) {
+UserSchema.methods.addBuildingByObj = function(buildingObj, callback) {
 	if(!this.hasBuilding(buildingObj.userBuildingId)) {
 		this.userBuildingIds.push(buildingObj.getUserBuildingId());
 		this.userBuildingNames.push(buildingObj.getUserBuildingName());
@@ -73,16 +99,22 @@ UserSchema.methods.addBuidlingByObj = function(buildingObj, callback) {
 	}
 };
 
+UserSchema.methods.indexOfBuildingRef = function(userBuildingId) {
+   for(var br = 0; br < this.buildingRefs.length; br++) {
+      if(this.buildingRefs[br].id === userBuildingId) {return br;}
+   }
+   
+   return -1;
+};
+
 UserSchema.methods.hasBuilding = function(userBuildingId) {
-	return (this.userBuildingIds.indexOf(userBuildingId) !== -1);
+   return Util.exists(userBuildingId) && this.indexOfBuildingRef(userBuildingId) !== -1;
 };
 
 UserSchema.methods.getBuilding = function(userBuildingId, callback) {
 	console.log("--getting Building--: "+userBuildingId);
 	console.log("hasBuilding="+this.hasBuilding(userBuildingId));
-	if(this.hasCanvas(userBuildingId)) {
-		BuildingController.findOne({'userBuildingId': userBuildingId}, callback);
-	}
+	BuildingController.findOne({_creatorId: this.username, userBuildingId: userBuildingId}, callback);
 };
 
 module.exports = mongoose.model('User', UserSchema);

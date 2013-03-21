@@ -5,28 +5,26 @@ var Building = require('../models/buildingModel.js');
 var BuildingController = {
 	newBuilding: function(creatorId, userBuildingName, graph, authoData, callback) {
 		var BC = this;
-		var userBuildingId = this.generateCanvasId(6); //11 mill possible canvases
+		var userBuildingId = this.generateBuildingId(6); //11 mill possible canvases
 		console.log("buildingController line10: "+userBuildingId);
     
-		this.findOne({userBuildingId: userBuildingId}, function(buildingObj) {
+		this.findOne({_creatorId: creatorId, userBuildingId: userBuildingId}, function(buildingObj) {
 			if(!Util.exists(buildingObj)) {
-				buildingObj = new Building({
-					_creatorId: creatorId,
-          userBuildingId: userBuildingId,
-          userBuildingName: userBuildingName,
-          graph: graph,
-          authoData: authoData
-				});
+            buildingObj = new Building({
+               _creatorId: creatorId,
+               userBuildingId: userBuildingId,
+               userBuildingName: userBuildingName,
+               graph: graph,
+               authoData: authoData
+            });
 				
-        buildingObj.save(function(err) {
-          if(err) {
-            console.log("\n--buildingController.js 32 ERR: "+err+"--\n");
-            if(Util.exists(callback)) {return callback(null);}
-          }
-          else if(Util.exists(callback)) {
-            return callback(buildingObj);
-          }
-        });
+            buildingObj.save(function(err) {
+               if(err) {
+                  console.log("\n--buildingController.js 32 ERR: "+err+"--\n");
+                  if(Util.exists(callback)) {return callback(null);}
+               }
+               else if(Util.exists(callback)) {return callback(buildingObj);}
+            });
 			}
 			else {
 				return BC.newCanvas(creatorId, userBuildingName, graph, authoData, callback);
