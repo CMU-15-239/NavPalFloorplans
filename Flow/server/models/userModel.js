@@ -15,6 +15,25 @@ var UserSchema = new mongoose.Schema({
 
 UserSchema.plugin(passportLocalMongoose); //adds username, password to schema
 
+UserSchema.methods.changePassword = function(newPassword, callback) {
+   var user = this;
+   this.setPassword(newPassword, function(err) {
+        if(err) {
+            console.log("\n--userController.js 22 ERR: "+err+"--\n");
+            if(Util.exists(callback)) {return callback(null);}
+        }
+        else {
+            user.save(function(err) {
+                if(err) {
+                    console.log("\n--userController.js 22 ERR: "+err+"--\n");
+                    if(Util.exists(callback)) {return callback(null);}
+                }
+                else if(Util.exists(callback)) {return callback(user);}
+            });
+        }
+   });
+};
+
 UserSchema.methods.saveBuilding = function(buildingName, buildingId, graph, authoData, callback) {
    if(!this.hasBuilding(buildingId)) {
       return this.createNewBuilding(buildingName, graph, authoData, callback);

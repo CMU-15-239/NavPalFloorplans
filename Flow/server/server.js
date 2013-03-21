@@ -85,7 +85,7 @@ function configureExpress(app) {
                 request.user: passport userId   
  * Returns: list of lines is returned in JSON as well as link to greyscale image
 **/
-app.post('/upload', function (request, response) {
+app.post('/upload', passport.authenticate('local'), function (request, response) {
 	var base64Data = req.body.image;
     var imagePath = '../www/floorplans/floorPlan.jpg';
     var index = base64Data.indexOf('base64,') + 'base64,'.length;
@@ -198,6 +198,21 @@ app.post('/saveExport', passport.authenticate('local'), function(request, respon
    });
 });
 
+//errorCodes: success 0, invalid data 1, failed to change password 3
+app.post('/changePassword', passport.authenticate('local'), function(request, response) {
+   if(Util.exists(request) && Util.isValidPassword(request.body.newPassword)) {
+      request.user.changePassword(request.body.newPassword, function(user) {
+         if(Util.exists(user)) {
+            return response.send({errorCode: 0});
+         } else {
+            return response.send({errorCode: 3});
+         }
+      });
+   } else {
+      return response.send({errorCode: 1});
+   }
+});
+
 // =========== PREPROCESSOR ==========
 
 /*  TODO:
@@ -224,6 +239,8 @@ function preprocessor(imagePath, response) {
             linesJSON = data.toString('utf8');
             var lines = JSON.parse(linesJSON);
             // start at character 6 to remove ../www
+            //what is 6???
+            //where do i save the black and white image to the db
             lines['image'] = imagePath.substring(6, imagePath.length);
             return response.json(lines);
         });

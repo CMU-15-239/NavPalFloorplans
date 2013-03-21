@@ -34,7 +34,7 @@ var UserController = {
 				
 				user.lastLoginTimestamp = user.registeredTimestamp = new Date();
 				
-                user.setPassword(password, function(err) {
+               user.setPassword(password, function(err) {
                     if(err) {
                         console.log("\n--userController.js 22 ERR: "+err+"--\n");
                         if(Util.exists(callback)) {return callback(null);}
@@ -48,7 +48,7 @@ var UserController = {
                             else if(Util.exists(callback)) {return callback(user);}
                         });
                     }
-                });
+               });
 				
 			}
 			else if(Util.exists(callback)) {return callback(null);}
