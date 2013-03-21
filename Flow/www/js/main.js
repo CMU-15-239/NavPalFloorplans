@@ -6,7 +6,7 @@ $(document).ready(function ()
 {
 	var generateData = window.generateData = function(spaces, width, height) {
 		return {
-			graph: (new Floor(spaces)).toOutput(),
+			graph: (new FloorGraph(spaces)).toOutput(),
 			map: generateMap(spaces, width, height),
 			//sector: generateSector(spaces, width, height),
 			room: generateRoom(spaces, '\n')
