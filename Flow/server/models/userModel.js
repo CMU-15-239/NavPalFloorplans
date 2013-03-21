@@ -34,27 +34,33 @@ UserSchema.methods.changePassword = function(newPassword, callback) {
    });
 };
 
-UserSchema.methods.saveBuilding = function(buildingName, buildingId, graph, authoData, callback) {
-   if(!this.hasBuilding(buildingId)) {
-      return this.createNewBuilding(buildingName, graph, authoData, callback);
-   } else {
-      return this.getBuilding(buildingId, function(buildingObj) {
-         if(Util.exists(buildingObj)) {
-            buildingObj.userBuildingName = buildingName;
-            buildingObj.graph = graph;
-            buildingObj.authoData = authoData;
-            buildingObj.save(function(err) {
-               if(err) {
-                  console.log("userModel.js 29 failed to save buildingObj");
-                  if(Util.exists(callback)) {return callback(null);}
-               } else if(Util.exists(callback)) {
-                  return callback(buildingObj);
-               }
-            });
-         } else if(Util.exists(callback)){
-            return callback(null);
-         }
-      });
+UserSchema.methods.saveBuilding = function(buildingObj, callback) {
+   if(Util.exists(buildingObj) && Util.exists(buildingObj.buildingName) 
+      && Util.exists(buildingObj.buildingId) && Util.exists(buildingObj.graph)
+      && Util.exists(buildingObj.authoData)) {
+      if(!this.hasBuilding(buildingId)) {
+         return this.createNewBuilding(buildingName, graph, authoData, callback);
+      } else {
+         return this.getBuilding(buildingId, function(buildingObj) {
+            if(Util.exists(buildingObj)) {
+               buildingObj.userBuildingName = buildingName;
+               buildingObj.graph = graph;
+               buildingObj.authoData = authoData;
+               buildingObj.save(function(err) {
+                  if(err) {
+                     console.log("userModel.js 29 failed to save buildingObj");
+                     if(Util.exists(callback)) {return callback(null);}
+                  } else if(Util.exists(callback)) {
+                     return callback(buildingObj);
+                  }
+               });
+            } else if(Util.exists(callback)){
+               return callback(null);
+            }
+         });
+      }
+   } else if(Util.exists(callback) {
+      return callback(null);
    }
 };
 
@@ -85,29 +91,33 @@ UserSchema.methods.createNewBuilding = function(buildingName, graph, authoData, 
 };
 
 UserSchema.methods.addBuildingById = function(userBuildingId, callback) {
-	if(!this.hasCanvas(userBuildingId)) {
+	if(!this.hasBuilding(userBuildingId)) {
 		var user = this;
-		BuildingController.findOne(userBuildingId, function(buildingObj) {
+		BuildingController.findOne({userBuildingId: userBuildingId}, function(buildingObj) {
 			if(Util.exists(buildingObj)) {
-				user.userBuildingIds.push(buildingObj.getUserBuildingId());
-        user.save(function(err) {
-          if(err) {
-            console.log("\n--userModel.js 48 ERR: "+err+"--\n");
-            if(Util.exists(callback)) {return callback(null);}
-          }
-          else if(Util.exists(callback)) {return callback(buildingObj);}
-        });
+            user.userBuildingIds.push(buildingObj.getUserBuildingId());
+            user.userBuildingName.push(buildingObj.getUserBuildingName());
+            user.buildingRefs.push({name: buildingObj.getUserBuildingName(),
+                                    id: buildingObj.getUserBuildingId()});
+            user.save(function(err) {
+               if(err) {
+                  console.log("\n--userModel.js 48 ERR: "+err+"--\n");
+                  if(Util.exists(callback)) {return callback(null);}
+               }
+               else if(Util.exists(callback)) {return callback(buildingObj);}
+            });
 			}
 		});
 	}
-  else if(Util.exists(callback)) {return callback(null);}
+   else if(Util.exists(callback)) {return callback(null);}
 };
 
 UserSchema.methods.addBuildingByObj = function(buildingObj, callback) {
 	if(!this.hasBuilding(buildingObj.userBuildingId)) {
 		this.userBuildingIds.push(buildingObj.getUserBuildingId());
 		this.userBuildingNames.push(buildingObj.getUserBuildingName());
-		
+		this.buildingRefs.push({name: buildingObj.getUserBuildingName(),
+                              id: buildingObj.getUserBuildingId()});
 		this.save(function(err) {
 			if(err) {
 				console.log("\n--userModel.js 66 ERR: "+err+"--\n");
@@ -124,6 +134,10 @@ UserSchema.methods.indexOfBuildingRef = function(userBuildingId) {
    }
    
    return -1;
+};
+
+UserSchema.methods.getBuildingRefs = function() {
+   return this.buildingRefs;
 };
 
 UserSchema.methods.hasBuilding = function(userBuildingId) {

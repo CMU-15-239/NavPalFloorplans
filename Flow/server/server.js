@@ -132,58 +132,48 @@ app.post('/graph', function (request, response) {
 });
 
 //errorCodes: success 0, fail 1
-app.post('/login', passport.authenticate('local'), 
-    function(request, response) { //success case
-        request.user.lastLoginTimestamp = new Date();
-        
-        var responseData = {
-            buildingNames: request.user.userBuildingNames,
-            buildingIds: request.user.userBuildingIds,
-            errorCode: 0
-        };
-        
-        return response.send(responseData);
-    },
-    function(request, response) { //failure case
-        return response.send({errorCode: 1});
-    }
-);
+app.post('/login', passport.authenticate('local'), function(request, response) { //success case
+   request.user.lastLoginTimestamp = new Date();
+   return response.send({
+      buildings: request.user.getBuildingRefs(),
+      errorCode: 0
+   });
+});
 
 app.post('/logout', function(request, response) {
-    request.logout();
-    return response.redirect('/home.html');
+   request.logout();
+   return response.redirect('/home.html');
 });
 
 //errorCodes: success 0, invalid data 1, user already exists 2, failed to auto login 3
 app.post('/register', function(request, response) {
-    var responseData = {error: 1};
-    if(Util.exists(request) && Util.isValidUsername(request.body.username) 
-        && Util.isValidPassword(request.body.password)) {
-        
-        flowDB.register(request.body.username, request.body.password, function(newUser) {
-            if(Util.exists(newUser)) {
-                responseData.error = 0;
-                request.login(newUser, function(err) {
-                  if (err) {
-                     console.log("server.js 134");
-                     responseData.error = 3;
-                  }
-                  return response.send(responseData);
-                });
-            } else {
-                  responseData.error = 2;
-                  return response.send(responseData);
-            }
-        });
-    } else {
-        return response.send(responseData);
-    }
+   var responseData = {error: 1};
+   if(Util.exists(request) && Util.isValidUsername(request.body.username) 
+      && Util.isValidPassword(request.body.password)) {
+     
+      flowDB.register(request.body.username, request.body.password, function(newUser) {
+         if(Util.exists(newUser)) {
+            responseData.error = 0;
+            request.login(newUser, function(err) {
+               if (err) {
+                  console.log("server.js 134");
+                  responseData.error = 3;
+               }
+               return response.send(responseData);
+            });
+         } else {
+            responseData.error = 2;
+            return response.send(responseData);
+         }
+     });
+   } else {
+     return response.send(responseData);
+   }
 });
 
 // success 0, failedToSave 1, failedToExport 2
 app.post('/saveExport', passport.authenticate('local'), function(request, response) { //success case
-   request.user.saveBuilding(request.body.buildingName, request.body.buildingId,
-         request.body.graph, request.body.authoData, function(buildingObj) {
+   request.user.saveBuilding(request.body.building, function(buildingObj) {
          var responseData = {errorCode: 1, buildingId: null};
          
          if(Util.exists(buildingObj)) {
@@ -198,14 +188,29 @@ app.post('/saveExport', passport.authenticate('local'), function(request, respon
    });
 });
 
-//errorCodes: success 0, invalid data 1, failed to change password 3
+//errorCodes: success 0, invalid data 1, failed to change password 2
 app.post('/changePassword', passport.authenticate('local'), function(request, response) {
    if(Util.exists(request) && Util.isValidPassword(request.body.newPassword)) {
       request.user.changePassword(request.body.newPassword, function(user) {
          if(Util.exists(user)) {
             return response.send({errorCode: 0});
          } else {
-            return response.send({errorCode: 3});
+            return response.send({errorCode: 2});
+         }
+      });
+   } else {
+      return response.send({errorCode: 1});
+   }
+});
+
+//erroCode: success 0, invalid data 1, buildingNotFound 2,
+app.get('/getBuilding', passport.authenticate('local'), function(request, response) {
+   if(Util.exists(request.body.buildingId)) {
+      request.user.getBuilding(request.body.buildingId, function(buildingObj) {
+         if(Util.exists(buildingObj)) {
+            return response.send({building: buildingObj, errorCode: 0});
+         } else {
+            return response.send({errorCode: 2});
          }
       });
    } else {
