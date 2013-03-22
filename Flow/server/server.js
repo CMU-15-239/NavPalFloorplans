@@ -78,7 +78,14 @@ function configureExpress(app) {
                 request.user: passport userId   
  * Returns: list of lines is returned in JSON as well as link to greyscale image
 **/
-//errorCode: success 0, preprocessingFailed 1, unauthorized 401
+/**
+ * Summary: Route to preprocess an image.
+ * request: {image : String}
+ * response: {errorCode : Number, lines : [], ????}
+ * errorCode: success 0, preprocessing failed 1, unauthorized 401
+ * httpCode: success 200, preprocessing failed 500, unauthorized 401
+**/
+//errorCode: success 0, preprocessingFailed 500, unauthorized 401
 app.post('/preprocess', function (request, response) {
    flowDB.getUserById(request.session.userId, function(user) {
       if(Util.exists(user)) {
@@ -90,8 +97,10 @@ app.post('/preprocess', function (request, response) {
          preprocessor(imagePath, function(lines) {
             if(Util.exists(lines)) {
                lines.errorCode = 0;
-               response.send(lines);
+               response.status(200);
+               return response.send(lines);
             } else {
+               response.status(500);
                response.send({errorCode: 1});
             }
          });
@@ -139,27 +148,43 @@ app.post('/graph', function (request, response) {
     return response.send('sucess!');
 });
 
-//errorCodes: success 0, fail 1
-app.post('/login', passport.authenticate('local'), function(request, response) { //success case
+/**
+ * Summary: Route to login an existing user.
+ * request: {username : String, password : String}
+ * response: {buildings : [{buildingId : String, buildingName : String}]}
+ * httpCode: success 200, unauthorized 401
+**/
+app.post('/login', passport.authenticate('local'), function(request, response) {
    request.user.lastLoginTimestamp = new Date();
    request.session.userId = request.user._id;
    request.user.save(function(err) {
-      var responseData = {
-         buildings: request.user.getBuildingRefs(),
-         errorCode: 0
-      };
-      if(err) {responseData.errorCode = 1;}
-      return response.send(responseData);
+      response.status(200);
+      return response.send({
+         buildings: request.user.getBuildingRefs()
+      });
    });
 });
 
+/**
+ * Summary: Route to logout the current user.
+ * request: undefined
+ * response: redirects to home.html
+ * errorCode: undefined
+ * httpCode: undefined
+**/
 app.post('/logout', function(request, response) {
    request.logout();
    request.session.userId = null;
    return response.redirect('/home.html');
 });
 
-//errorCodes: success 0, invalid data 1, user already exists 2, failed to auto login 3
+/**
+ * Summary: Route to register a new user.
+ * request: {username : String, password : String}
+ * response: {errorCode : Number, buildingId : String}
+ * errorCode: success 0, invalid data 1, user already exists 2, failed to auto login 3
+ * httpCode: success 200, invalid data 400, user already exists 200, failed to auto login 200
+**/
 app.post('/register', function(request, response) {
    var responseData = {error: 1};
    if(Util.exists(request) && Util.isValidUsername(request.body.username) 
@@ -168,6 +193,7 @@ app.post('/register', function(request, response) {
       flowDB.register(request.body.username, request.body.password, function(newUser) {
          if(Util.exists(newUser)) {
             responseData.error = 0;
+            response.status(200);
             request.login(newUser, function(err) {
                if (err) {
                   console.log("server.js 134");
@@ -182,14 +208,22 @@ app.post('/register', function(request, response) {
          }
      });
    } else {
+     response.status(400);
      return response.send(responseData);
    }
 });
 
-// success 0, failedToSave 1, failedToExport 2, unauthorized 401
-app.post('/saveExport', function(request, response) { //success case
+/**
+ * Summary: Route to save or export building plans.
+ * request: {building : obj}
+ * response: {errorCode : Number, buildingId : String}
+ * errorCode: success 0, failed to save 1, failedToExport 2, unauthorized 401
+ * httpCode: success 200, failed to save 500, failed to export 500, unauthorized 401
+**/
+app.post('/saveExport', function(request, response) {
    flowDB.getUserById(request.session.userId, function(user) {
       var responseData = {errorCode: 1, buildingId: null};
+      response.status(500);
       if(Util.exists(user)) {
          user.saveBuilding(request.body.building, function(buildingObj) {
                if(Util.exists(buildingObj)) {
@@ -197,7 +231,8 @@ app.post('/saveExport', function(request, response) { //success case
                      console.log("----EXPORT----");
                   }
                   responseData.errorCode = 0;
-                  responseData.buildingId = buildingObj.userBuildingId;
+                  responseData.buildingId = buildingObj.getUserBuildingId();
+                  response.status(200);
                }
                
                return response.send(responseData);
@@ -209,7 +244,13 @@ app.post('/saveExport', function(request, response) { //success case
    });
 });
 
-//errorCodes: success 0, invalid data 1, failed to change password 2, unauthorized 401
+/**
+ * Summary: Route to change the current user's password.
+ * request: {newPassword : String}
+ * response: {errorCode : Number}
+ * errorCode: success 0, invalid data 1, failed to change password 2, unauthorized 401
+ * httpCode: success 200, invalid data 400, failed to change password 500, unauthorized 401
+**/
 app.post('/changePassword', function(request, response) {
    flowDB.getUserById(request.session.userId, function(user) {
       if(Util.exists(user)) {
@@ -218,41 +259,52 @@ app.post('/changePassword', function(request, response) {
             console.log("---valid new password");
             user.changePassword(request.body.newPassword, function(user) {
                if(Util.exists(user)) {
+                  response.status(200);
                   return response.send({errorCode: 0});
                } else {
+                  response.status(500);
                   return response.send({errorCode: 2});
                }
             });
          } else {
+            response.status(400);
             return response.send({errorCode: 1});
          }
       } else {
          console.log("---unable to find user");
          response.status(401);
-         return response.send();
+         return response.send({errorCode: 401});
       }
    });
 });
 
-//erroCode: success 0, invalid data 1, buildingNotFound 404, unauthorized 401
+/**
+ * Summary: Route to get the building object (name, id, authoData, graph).
+ * request: {buildingId : String}
+ * response: building : {errorCode : Number, name : String, id : String, authoData : obj, graph : obj}
+ * errorCode: success 0, invalid data 1, building not found 404, unauthorized 401
+ * httpCode: success 200, invalid data 400, building not found 404, unauthorized 401
+**/
 app.post('/getBuilding', function(request, response) {
    flowDB.getUserById(request.session.userId, function(user) {
       if(Util.exists(user)) {
          if(Util.exists(request.body.buildingId)) {
             user.getBuilding(request.body.buildingId, function(buildingObj) {
                if(Util.exists(buildingObj)) {
+                  response.status(200);
                   return response.send({building: buildingObj.toOutput(), errorCode: 0});
                } else {
                   response.status(404);
-                  return response.send();
+                  return response.send({errorCode: 404});
                }
             });
          } else {
+            response.status(400);
             return response.send({errorCode: 1});
          }
       } else {
          response.status(401);
-         return response.send();
+         return response.send({errorCode: 401});
       }
    });
 });
