@@ -59,7 +59,7 @@ UserSchema.methods.saveBuilding = function(buildingObj, callback) {
             }
          });
       }
-   } else if(Util.exists(callback) {
+   } else if(Util.exists(callback)) {
       return callback(null);
    }
 };

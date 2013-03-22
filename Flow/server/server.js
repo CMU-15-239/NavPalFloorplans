@@ -21,7 +21,6 @@ var Sector = require('./sector.js');
 
 // set up express server
 var app = express();
-var port = process.env.PORT || 3000;
 var child;
 var flowDB;
 
@@ -35,12 +34,6 @@ function init(){
     
     flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
     //flowDB.clearData();
-    
-    var child;
-    
-    http.createServer(app).listen(port, function() {
-        console.log("Express server listening on port %d", port);
-    });
 }
 init();
 
@@ -85,13 +78,28 @@ function configureExpress(app) {
                 request.user: passport userId   
  * Returns: list of lines is returned in JSON as well as link to greyscale image
 **/
-app.post('/upload', passport.authenticate('local'), function (request, response) {
-	var base64Data = req.body.image;
-    var imagePath = '../www/floorplans/floorPlan.jpg';
-    var index = base64Data.indexOf('base64,') + 'base64,'.length;
-    base64Data = base64Data.substring(index, base64Data.length);
-    fs.writeFile(imagePath, new Buffer(base64Data, "base64"));
-    preprocessor(imagePath, response);
+//errorCode: success 0, preprocessingFailed 1, unauthorized 401
+app.post('/preprocess', function (request, response) {
+   flowDB.getUserById(request.session.userId, function(user) {
+      if(Util.exists(user)) {
+         var base64Data = req.body.image;
+         var imagePath = '../www/floorplans/floorPlan.jpg';
+         var index = base64Data.indexOf('base64,') + 'base64,'.length;
+         base64Data = base64Data.substring(index, base64Data.length);
+         fs.writeFile(imagePath, new Buffer(base64Data, "base64"));
+         preprocessor(imagePath, function(lines) {
+            if(Util.exists(lines)) {
+               lines.errorCode = 0;
+               response.send(lines);
+            } else {
+               response.send({errorCode: 1});
+            }
+         });
+      } else {
+         response.status(401);
+         return response.send();
+      }
+   });
 });
 
 // creates three text files required by navPal android app
@@ -134,14 +142,20 @@ app.post('/graph', function (request, response) {
 //errorCodes: success 0, fail 1
 app.post('/login', passport.authenticate('local'), function(request, response) { //success case
    request.user.lastLoginTimestamp = new Date();
-   return response.send({
-      buildings: request.user.getBuildingRefs(),
-      errorCode: 0
+   request.session.userId = request.user._id;
+   request.user.save(function(err) {
+      var responseData = {
+         buildings: request.user.getBuildingRefs(),
+         errorCode: 0
+      };
+      if(err) {responseData.errorCode = 1;}
+      return response.send(responseData);
    });
 });
 
 app.post('/logout', function(request, response) {
    request.logout();
+   request.session.userId = null;
    return response.redirect('/home.html');
 });
 
@@ -159,6 +173,7 @@ app.post('/register', function(request, response) {
                   console.log("server.js 134");
                   responseData.error = 3;
                }
+               request.session.userId = newUser._id;
                return response.send(responseData);
             });
          } else {
@@ -171,51 +186,75 @@ app.post('/register', function(request, response) {
    }
 });
 
-// success 0, failedToSave 1, failedToExport 2
-app.post('/saveExport', passport.authenticate('local'), function(request, response) { //success case
-   request.user.saveBuilding(request.body.building, function(buildingObj) {
-         var responseData = {errorCode: 1, buildingId: null};
-         
-         if(Util.exists(buildingObj)) {
-            if(Util.exists(request.body.exportData) && request.body.exportData) {
-               console.log("----EXPORT----");
-            }
-            responseData.errorCode = 0;
-            responseData.buildingId = buildingObj.userBuildingId;
-         }
-         
-         return response.send(responseData);
+// success 0, failedToSave 1, failedToExport 2, unauthorized 401
+app.post('/saveExport', function(request, response) { //success case
+   flowDB.getUserById(request.session.userId, function(user) {
+      var responseData = {errorCode: 1, buildingId: null};
+      if(Util.exists(user)) {
+         user.saveBuilding(request.body.building, function(buildingObj) {
+               if(Util.exists(buildingObj)) {
+                  if(Util.exists(request.body.exportData) && request.body.exportData) {
+                     console.log("----EXPORT----");
+                  }
+                  responseData.errorCode = 0;
+                  responseData.buildingId = buildingObj.userBuildingId;
+               }
+               
+               return response.send(responseData);
+         });
+      } else {
+         response.status(401);
+         return response.send();
+      }
    });
 });
 
-//errorCodes: success 0, invalid data 1, failed to change password 2
-app.post('/changePassword', passport.authenticate('local'), function(request, response) {
-   if(Util.exists(request) && Util.isValidPassword(request.body.newPassword)) {
-      request.user.changePassword(request.body.newPassword, function(user) {
-         if(Util.exists(user)) {
-            return response.send({errorCode: 0});
+//errorCodes: success 0, invalid data 1, failed to change password 2, unauthorized 401
+app.post('/changePassword', function(request, response) {
+   flowDB.getUserById(request.session.userId, function(user) {
+      if(Util.exists(user)) {
+         console.log("---user exists");
+         if(Util.isValidPassword(request.body.newPassword)) {
+            console.log("---valid new password");
+            user.changePassword(request.body.newPassword, function(user) {
+               if(Util.exists(user)) {
+                  return response.send({errorCode: 0});
+               } else {
+                  return response.send({errorCode: 2});
+               }
+            });
          } else {
-            return response.send({errorCode: 2});
+            return response.send({errorCode: 1});
          }
-      });
-   } else {
-      return response.send({errorCode: 1});
-   }
+      } else {
+         console.log("---unable to find user");
+         response.status(401);
+         return response.send();
+      }
+   });
 });
 
-//erroCode: success 0, invalid data 1, buildingNotFound 2,
-app.get('/getBuilding', passport.authenticate('local'), function(request, response) {
-   if(Util.exists(request.body.buildingId)) {
-      request.user.getBuilding(request.body.buildingId, function(buildingObj) {
-         if(Util.exists(buildingObj)) {
-            return response.send({building: buildingObj, errorCode: 0});
+//erroCode: success 0, invalid data 1, buildingNotFound 404, unauthorized 401
+app.post('/getBuilding', function(request, response) {
+   flowDB.getUserById(request.session.userId, function(user) {
+      if(Util.exists(user)) {
+         if(Util.exists(request.body.buildingId)) {
+            user.getBuilding(request.body.buildingId, function(buildingObj) {
+               if(Util.exists(buildingObj)) {
+                  return response.send({building: buildingObj.toOutput(), errorCode: 0});
+               } else {
+                  response.status(404);
+                  return response.send();
+               }
+            });
          } else {
-            return response.send({errorCode: 2});
+            return response.send({errorCode: 1});
          }
-      });
-   } else {
-      return response.send({errorCode: 1});
-   }
+      } else {
+         response.status(401);
+         return response.send();
+      }
+   });
 });
 
 // =========== PREPROCESSOR ==========
@@ -232,25 +271,25 @@ app.get('/getBuilding', passport.authenticate('local'), function(request, respon
                 response: responseponse to be sent to user 
  * Returns: response with json of identified lines and src of thresholded image
 **/
-function preprocessor(imagePath, response) {
+function preprocessor(imagePath, callback) {
     var linesJSON;
     child = exec('python preprocessing.py ' + imagePath, 
         function (error, stdout, stderr) {
         // First I want to read the file
         fs.readFile('json.txt', function read(err, data) {
             if (err) {
-                throw err;
+               console.log("failed to preprocess: "+err);
+               if(Util.exists(callback)) {return callback(null)}
             }
             linesJSON = data.toString('utf8');
             var lines = JSON.parse(linesJSON);
-            // start at character 6 to remove ../www
-            //what is 6???
-            //where do i save the black and white image to the db
-            lines['image'] = imagePath.substring(6, imagePath.length);
-            return response.json(lines);
+            // start at character 9 to remove ../../www
+            lines['image'] = imagePath.substring(9, imagePath.length);
+            if(Util.exists(callback)) {return callback(lines)}
         });
     });
 }
 
 // Launch server
 app.listen(8080);
+console.log("Express server listening on port 8080");

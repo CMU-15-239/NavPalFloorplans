@@ -9,8 +9,16 @@ function FlowDB(connection) {
 	mongoose.connect(connection);
 }
 
-FlowDB.prototype.getUser = function(username, callback) {
+FlowDB.prototype.getUserByUsername = function(username, callback) {
 	UserController.findOne({username: username}, callback);
+};
+
+FlowDB.prototype.getUserById = function(id, callback) {
+   if(Util.exists(id)) {
+      return UserController.findOne({_id: id}, callback);
+   } else if(Util.exists(callback)) {
+      return callback(null);
+   }
 };
 
 FlowDB.prototype.clearData = function(callback) {

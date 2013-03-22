@@ -48,4 +48,13 @@ BuildingSchema.methods.setAuthoData = function(newAuthoData, callback) {
 	});
 };
 
+BuildingSchema.methods.toOutput = function() {
+   return {
+      id: this.getUserBuildingId(),
+      uname: this.getUserBuildingName(),
+      graph: this.getGraph(),
+      authoData: this.getAuthoData()
+   };
+};
+
 module.exports = mongoose.model('Building', BuildingSchema);
