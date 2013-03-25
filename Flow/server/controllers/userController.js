@@ -3,6 +3,9 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var Util = require('../util.js');
 
+/**
+ * Initializes the authentication strategy to the default.
+**/
 function initPassportUser(){
     var User = require('../models/userModel.js');
 
@@ -17,6 +20,13 @@ var User = initPassportUser();
 
 
 var UserController = {
+   /**
+    * Summary: Creates and initializes a new User.
+    * Parameters: username: String
+                  password: String
+                  callback: function
+    * Returns: undefined. Calls callback with created User or null if it fails.
+   **/
 	newUser: function(username, password, callback) {
 		User.findOne({username: username}, function(err, user) {
 			if(err) {
@@ -31,8 +41,10 @@ var UserController = {
 					userBuildingNames: [],
 					userBuildingIds: []
 				});
-				
-				user.lastLoginTimestamp = user.registeredTimestamp = new Date();
+            
+            var date = new Date();
+				user.lastLoginTimestamp = date;
+            user.registeredTimestamp = date;
 				
                user.setPassword(password, function(err) {
                     if(err) {
@@ -54,39 +66,12 @@ var UserController = {
 			else if(Util.exists(callback)) {return callback(null);}
 		});
 	},
-    
-    isAuthorized: function(validity) {return validity === 1;},
-    isUserNotFound: function(validity) {return validity === 0;},
-    isInvalidPassword: function(validity) {return validity === -1;},
-    
-	//validity is 1 if authorized
-	//validity is 0 if username not found
-	//validity is -1 if username found, but password doesnt match
-	authUser: function(username, password, callback) {
-		User.findOne({username: username}, function(err, result) {
-			if(err) {
-				console.log("\n--userController.js 38 ERR: "+err+"--\n");
-				if(Util.exists(callback)) {return callback(false, null);}
-				return;
-			}
-			console.log("userController.js 50 username: "+username+" result: ");
-			console.log(JSON.stringify(result));
-			console.log("-------------\n");
-			
-			var validity = 0;
-			if(Util.exists(result)) {
-				if(Util.exists(result.password) && result.password === password) 
-				{validity = 1;}
-				
-				else {validity = -1;}
-			}
-			
-			if(Util.exists(callback)) {
-				return callback(validity, result);
-			}
-		});
-	},
 	
+   /**
+    * Summary: Find all Users based off searchJSON.
+    * Parameters: searchJSON: obj
+    * Returns: undefined. Calls callback with found Users or null if none found.
+   **/
 	find: function(searchJSON, callback) {
 		User.find(searchJSON, function(err, userObjs) {
 			if(err) {
@@ -97,6 +82,11 @@ var UserController = {
 		});
 	},
 	
+   /**
+    * Summary: Find one User based off searchJSON.
+    * Parameters: searchJSON: obj
+    * Returns: undefined. Calls callback with found User or null if none found.
+   **/
 	findOne: function(searchJSON, callback) {
 		User.findOne(searchJSON, function(err, userObj) {
 			if(err) {

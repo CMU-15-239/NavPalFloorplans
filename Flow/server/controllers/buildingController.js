@@ -3,9 +3,18 @@ var Util = require('../util.js');
 var Building = require('../models/buildingModel.js');
 
 var BuildingController = {
+   /**
+    * Summary: Creates and initializes a new Building.
+    * Parameters: creatorId: String
+                  userBuildingName: String
+                  graph: Object
+                  authoData: Object
+                  callback: function
+    * Returns: undefined. Calls callback with created Building or null if it fails.
+   **/   
 	newBuilding: function(creatorId, userBuildingName, graph, authoData, callback) {
-		var BC = this;
-		var userBuildingId = this.generateBuildingId(6); //11 mill possible canvases
+		var BC = this; //the building controller
+		var userBuildingId = this.generateBuildingId();
 		console.log("buildingController line10: "+userBuildingId);
     
 		this.findOne({_creatorId: creatorId, userBuildingId: userBuildingId}, function(buildingObj) {
@@ -27,21 +36,29 @@ var BuildingController = {
             });
 			}
 			else {
-				return BC.newCanvas(creatorId, userBuildingName, graph, authoData, callback);
+				return BC.newBuilding(creatorId, userBuildingName, graph, authoData, callback);
 			}
 		});
 	},
+   
+   idCounter: 0,
 
-	generateBuildingId: function(idLen) {
-		var chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-		var id = 'building_';
-		for(var i = 0; i < idLen; i++) {
-			id += chars[Math.round(Math.random()*(chars.length-1))];
-		}
-		//need to check if id already exists, but it is an async call :(
-		return id;
+   /**
+    * Summary: Generates an id based off counter.
+    * Parameters: undefined
+    * Returns: String
+   **/
+	generateBuildingId: function() {
+      var id = 'building_' + this.idCounter;
+      this.idCounter++;
+      return id;
 	},
 	
+   /**
+    * Summary: Find all Buildings based off searchJSON.
+    * Parameters: searchJSON: obj
+    * Returns: undefined. Calls callback with found Buildings or null if none found.
+   **/
 	find: function(searchJSON, callback) {
 		Building.find(searchJSON, function(err, buildingObjs) {
 			if(err) {
@@ -52,10 +69,15 @@ var BuildingController = {
 		});
 	},
 	
+   /**
+    * Summary: Find one Building based off searchJSON.
+    * Parameters: searchJSON: obj
+    * Returns: undefined. Calls callback with found Building or null if none found.
+   **/
 	findOne: function(searchJSON, callback) {
 		console.log('line63 :'+JSON.stringify(searchJSON));
 		Building.findOne(searchJSON, function(err, buildingObj) {
-			console.log("BC findone: "+JSON.stringify(buildingObj));
+			//console.log("BC findone: "+JSON.stringify(buildingObj));
 			if(err) {
 				console.log("\n--buildingController.js 72 ERR: "+err+"--\n");
 				if(Util.exists(callback)) {return callback(null);}

@@ -6,15 +6,18 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var UserSchema = new mongoose.Schema({
    registeredTimestamp: Date,
    lastLoginTimestamp: Date,
-	//username: String,
-	//password: String,
-   buildingRefs: Array,
-   userBuildingNames: Array,
-   userBuildingIds: Array
+   buildingRefs: Array
 });
 
+//Plugs in passport to User, adds username and password to UserSchema
 UserSchema.plugin(passportLocalMongoose); //adds username, password to schema
 
+/**
+ * Summary: Changes the password to newPassword.
+ * Parameters: newPassword: String
+               callback: function
+ * Returns: calls callback with null or user.
+**/
 UserSchema.methods.changePassword = function(newPassword, callback) {
    var user = this;
    this.setPassword(newPassword, function(err) {
@@ -34,18 +37,24 @@ UserSchema.methods.changePassword = function(newPassword, callback) {
    });
 };
 
-UserSchema.methods.saveBuilding = function(buildingObj, callback) {
-   if(Util.exists(buildingObj) && Util.exists(buildingObj.buildingName) 
-      && Util.exists(buildingObj.buildingId) && Util.exists(buildingObj.graph)
-      && Util.exists(buildingObj.authoData)) {
-      if(!this.hasBuilding(buildingId)) {
-         return this.createNewBuilding(buildingName, graph, authoData, callback);
+/**
+ * Summary: Saves buildingData.
+ * Parameters: buildingData: {name : string, authoData : obj, graph : obj, id : String}
+                  id is undefined if this is a new building
+               callback: function
+ * Returns: calls callback with null or building.
+**/
+UserSchema.methods.saveBuilding = function(buildingData, callback) {
+   if(Util.exists(buildingData) && Util.exists(buildingData.name)
+      && Util.exists(buildingData.graph) && Util.exists(buildingData.authoData)) {
+      if(!this.hasBuilding(buildingData.id)) {
+         return this.createNewBuilding(buildingData.name, buildingData.graph, buildingData.authoData, callback);
       } else {
-         return this.getBuilding(buildingId, function(buildingObj) {
+         return this.getBuilding(buildingData.id, function(buildingObj) {
             if(Util.exists(buildingObj)) {
-               buildingObj.userBuildingName = buildingName;
-               buildingObj.graph = graph;
-               buildingObj.authoData = authoData;
+               buildingObj.userBuildingName = buildingData.name;
+               buildingObj.graph = buildingData.graph;
+               buildingObj.authoData = buildingData.authoData;
                buildingObj.save(function(err) {
                   if(err) {
                      console.log("userModel.js 29 failed to save buildingObj");
@@ -64,14 +73,20 @@ UserSchema.methods.saveBuilding = function(buildingObj, callback) {
    }
 };
 
+/**
+ * Summary: Creates a new building from inputs.
+ * Parameters: buildingData: {name : string, authoData : obj, graph : obj, id : String}
+                  id is undefined if this is a new building
+               callback: function
+ * Returns: calls callback with null or building.
+**/
 UserSchema.methods.createNewBuilding = function(buildingName, graph, authoData, callback) {
 	console.log("userModel line18");
 	var user = this;
-	BuildingController.newBuilding(this.username, buildingName, graph, authoData, function(buildingObj) {
-		console.log("userModel line20: created canvas: "+JSON.stringify(buildingObj));
-		user.userBuildingNames.push(buildingObj.getUserBuildingName());
-      user.userBuildingIds.push(buildingObj.getUserBuildingId());
-		user.buildingRefs.push({name: buildingObj.getUserBuildingName(), id: buildingObj.getUserBuildingId()});
+	BuildingController.newBuilding(this._id, buildingName, graph, authoData, function(buildingObj) {
+		//console.log("userModel line87: created building: "+JSON.stringify(buildingObj));
+		user.buildingRefs.push({name: buildingObj.getUserBuildingName(),
+                              id: buildingObj.getUserBuildingId()});
       buildingObj.save(function(err) {
 			if(err) {
 				console.log("\n--userMode.js 26 ERR: "+err+"--\n");
@@ -90,13 +105,17 @@ UserSchema.methods.createNewBuilding = function(buildingName, graph, authoData, 
 	});
 };
 
+/**
+ * Summary: Finds and adds existing building by id to this User.
+ * Parameters: userBuildingId: String
+               callback: function
+ * Returns: calls callback with null or building.
+**/
 UserSchema.methods.addBuildingById = function(userBuildingId, callback) {
 	if(!this.hasBuilding(userBuildingId)) {
 		var user = this;
 		BuildingController.findOne({userBuildingId: userBuildingId}, function(buildingObj) {
 			if(Util.exists(buildingObj)) {
-            user.userBuildingIds.push(buildingObj.getUserBuildingId());
-            user.userBuildingName.push(buildingObj.getUserBuildingName());
             user.buildingRefs.push({name: buildingObj.getUserBuildingName(),
                                     id: buildingObj.getUserBuildingId()});
             user.save(function(err) {
@@ -112,10 +131,14 @@ UserSchema.methods.addBuildingById = function(userBuildingId, callback) {
    else if(Util.exists(callback)) {return callback(null);}
 };
 
+/**
+ * Summary: Adds existing building to this User.
+ * Parameters: buildingObj: Building object
+               callback: function
+ * Returns: calls callback with null or building.
+**/
 UserSchema.methods.addBuildingByObj = function(buildingObj, callback) {
 	if(!this.hasBuilding(buildingObj.userBuildingId)) {
-		this.userBuildingIds.push(buildingObj.getUserBuildingId());
-		this.userBuildingNames.push(buildingObj.getUserBuildingName());
 		this.buildingRefs.push({name: buildingObj.getUserBuildingName(),
                               id: buildingObj.getUserBuildingId()});
 		this.save(function(err) {
@@ -128,6 +151,21 @@ UserSchema.methods.addBuildingByObj = function(buildingObj, callback) {
 	}
 };
 
+/**
+ * Summary: Getter for buildingRef.
+ * Parameters: undefined.
+ * Returns: list of building references.
+**/
+UserSchema.methods.getBuildingRefs = function() {
+   return this.buildingRefs;
+};
+
+/**
+ * Summary: Index of first building reference ({name : String, id : String})
+            with id equal to userBuildingId
+ * Parameters: userBuildingId: String
+ * Returns: Number, index or -1 if building reference not found
+**/
 UserSchema.methods.indexOfBuildingRef = function(userBuildingId) {
    for(var br = 0; br < this.buildingRefs.length; br++) {
       if(this.buildingRefs[br].id === userBuildingId) {return br;}
@@ -136,18 +174,25 @@ UserSchema.methods.indexOfBuildingRef = function(userBuildingId) {
    return -1;
 };
 
-UserSchema.methods.getBuildingRefs = function() {
-   return this.buildingRefs;
-};
-
+/**
+ * Summary: Determines if the user has access to the building from userBuildingId.
+ * Parameters: userBuildingId: String
+ * Returns: boolean
+**/
 UserSchema.methods.hasBuilding = function(userBuildingId) {
    return Util.exists(userBuildingId) && this.indexOfBuildingRef(userBuildingId) !== -1;
 };
 
+/**
+ * Summary: Finds the building with id of userBuildingId if the user has access to it.
+ * Parameters: userBuildingId: String
+               callback: function
+ * Returns: calls callback with building or null if none found.
+**/
 UserSchema.methods.getBuilding = function(userBuildingId, callback) {
 	console.log("--getting Building--: "+userBuildingId);
 	console.log("hasBuilding="+this.hasBuilding(userBuildingId));
-	BuildingController.findOne({_creatorId: this.username, userBuildingId: userBuildingId}, callback);
+	BuildingController.findOne({_creatorId: this._id, userBuildingId: userBuildingId}, callback);
 };
 
 module.exports = mongoose.model('User', UserSchema);

@@ -1,8 +1,15 @@
-/*  Node.js server for User Authoring tool
-    Written by: Daniel Muller and Vansi Vallabhaneni (2013)
+/**
+ * Node.js server for User Authoring tool
+ * Written by: Daniel Muller and Vansi Vallabhaneni (2013)
+ * Express Docs: expressjs.com
+ * Passport Docs: passportjs.org
+ * Mongoose (MongoDB middleware for node) Docs: mongoosejs.com
+ * Some good example code (from 15-237 Fall 12): 
+      kosbie.net/cmu/fall-12/15-237/handouts/notes-server-side-part1.html
+      kosbie.net/cmu/fall-12/15-237/handouts/notes-server-side-part2.html
 */
 
-// initialize middleware and global variables
+// Initialize middleware and global variables.
 var path = require('path');
 var express = require('express');
 var http = require('http');
@@ -19,7 +26,7 @@ var FlowDB = require('./controllers/flowDB.js');
 var Sector = require('./sector.js');
 
 
-// set up express server
+// Set up express server.
 var app = express();
 var child;
 var flowDB;
@@ -32,8 +39,9 @@ var flowDB;
 function init(){
     configureExpress(app);
     
-    flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
-    //flowDB.clearData();
+   flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
+   //flowDB.clearData();
+   
 }
 init();
 
@@ -72,45 +80,6 @@ function configureExpress(app) {
 
 // =========== ROUTES ==========
 
-/**
- * Summary: Upload an image for preprocessing.
- * Parameters:  req.body.image: base64 encoding of
-                request.user: passport userId   
- * Returns: list of lines is returned in JSON as well as link to greyscale image
-**/
-/**
- * Summary: Route to preprocess an image.
- * request: {image : String}
- * response: {errorCode : Number, lines : [], ????}
- * errorCode: success 0, preprocessing failed 1, unauthorized 401
- * httpCode: success 200, preprocessing failed 500, unauthorized 401
-**/
-//errorCode: success 0, preprocessingFailed 500, unauthorized 401
-app.post('/preprocess', function (request, response) {
-   flowDB.getUserById(request.session.userId, function(user) {
-      if(Util.exists(user)) {
-         var base64Data = req.body.image;
-         var imagePath = '../www/floorplans/floorPlan.jpg';
-         var index = base64Data.indexOf('base64,') + 'base64,'.length;
-         base64Data = base64Data.substring(index, base64Data.length);
-         fs.writeFile(imagePath, new Buffer(base64Data, "base64"));
-         preprocessor(imagePath, function(lines) {
-            if(Util.exists(lines)) {
-               lines.errorCode = 0;
-               response.status(200);
-               return response.send(lines);
-            } else {
-               response.status(500);
-               response.send({errorCode: 1});
-            }
-         });
-      } else {
-         response.status(401);
-         return response.send();
-      }
-   });
-});
-
 // creates three text files required by navPal android app
 app.post('/text', function (request, response) {
     var map = request.body.map;
@@ -148,6 +117,10 @@ app.post('/graph', function (request, response) {
     return response.send('sucess!');
 });
 
+//-------------------------------
+// User Account Management Routes
+//-------------------------------
+
 /**
  * Summary: Route to login an existing user.
  * request: {username : String, password : String}
@@ -156,6 +129,8 @@ app.post('/graph', function (request, response) {
 **/
 app.post('/login', passport.authenticate('local'), function(request, response) {
    request.user.lastLoginTimestamp = new Date();
+   
+   // userId is used to reference this user from future requests
    request.session.userId = request.user._id;
    request.user.save(function(err) {
       response.status(200);
@@ -181,29 +156,29 @@ app.post('/logout', function(request, response) {
 /**
  * Summary: Route to register a new user.
  * request: {username : String, password : String}
- * response: {errorCode : Number, buildingId : String}
+ * response: {errorCode : Number}
  * errorCode: success 0, invalid data 1, user already exists 2, failed to auto login 3
  * httpCode: success 200, invalid data 400, user already exists 200, failed to auto login 200
 **/
 app.post('/register', function(request, response) {
-   var responseData = {error: 1};
+   var responseData = {errorCode: 1};
    if(Util.exists(request) && Util.isValidUsername(request.body.username) 
       && Util.isValidPassword(request.body.password)) {
      
       flowDB.register(request.body.username, request.body.password, function(newUser) {
          if(Util.exists(newUser)) {
-            responseData.error = 0;
+            responseData.errorCode = 0;
             response.status(200);
             request.login(newUser, function(err) {
                if (err) {
                   console.log("server.js 134");
-                  responseData.error = 3;
+                  responseData.errorCode = 3;
                }
                request.session.userId = newUser._id;
                return response.send(responseData);
             });
          } else {
-            responseData.error = 2;
+            responseData.errorCode = 2;
             return response.send(responseData);
          }
      });
@@ -213,36 +188,9 @@ app.post('/register', function(request, response) {
    }
 });
 
-/**
- * Summary: Route to save or export building plans.
- * request: {building : obj}
- * response: {errorCode : Number, buildingId : String}
- * errorCode: success 0, failed to save 1, failedToExport 2, unauthorized 401
- * httpCode: success 200, failed to save 500, failed to export 500, unauthorized 401
-**/
-app.post('/saveExport', function(request, response) {
-   flowDB.getUserById(request.session.userId, function(user) {
-      var responseData = {errorCode: 1, buildingId: null};
-      response.status(500);
-      if(Util.exists(user)) {
-         user.saveBuilding(request.body.building, function(buildingObj) {
-               if(Util.exists(buildingObj)) {
-                  if(Util.exists(request.body.exportData) && request.body.exportData) {
-                     console.log("----EXPORT----");
-                  }
-                  responseData.errorCode = 0;
-                  responseData.buildingId = buildingObj.getUserBuildingId();
-                  response.status(200);
-               }
-               
-               return response.send(responseData);
-         });
-      } else {
-         response.status(401);
-         return response.send();
-      }
-   });
-});
+//-------------------
+// Application Routes
+//-------------------
 
 /**
  * Summary: Route to change the current user's password.
@@ -278,10 +226,99 @@ app.post('/changePassword', function(request, response) {
    });
 });
 
+
 /**
- * Summary: Route to get the building object (name, id, authoData, graph).
+ * Summary: Upload an image for preprocessing.
+ * Parameters:  req.body.image: base64 encoding of
+                request.user: passport userId   
+ * Returns: list of lines is returned in JSON as well as link to greyscale image
+**/
+/**
+ * Summary: Route to preprocess an image.
+ * request: {image : String}
+ * response: {errorCode : Number, lines : [], ????}
+ * errorCode: success 0, preprocessing failed 1, unauthorized 401
+ * httpCode: success 200, preprocessing failed 500, unauthorized 401
+**/
+app.post('/preprocess', function (request, response) {
+   flowDB.getUserById(request.session.userId, function(user) {
+      if(Util.exists(user)) {
+         var base64Data = req.body.image;
+         var imagePath = '../www/floorplans/floorPlan.jpg';
+         var index = base64Data.indexOf('base64,') + 'base64,'.length;
+         base64Data = base64Data.substring(index, base64Data.length);
+         fs.writeFile(imagePath, new Buffer(base64Data, "base64"));
+         preprocessor(imagePath, function(lines) {
+            if(Util.exists(lines)) {
+               lines.errorCode = 0;
+               response.status(200);
+               return response.send(lines);
+            } else {
+               response.status(500);
+               response.send({errorCode: 1});
+            }
+         });
+      } else {
+         response.status(401);
+         return response.send();
+      }
+   });
+});
+
+/**
+ * Summary: Route to save or publish building plans.
+ * request: {
+               building : {name : string, authoData : Object, graph : Object, id : String}
+               publishData: boolean
+            }
+            id is undefined if this is a new building
+ * response: {errorCode : Number, buildingId : String}
+             buildingId is null if there is an error
+ * errorCode: success 0, invalid data 1, failed to save 2, failedToExport 3, unauthorized 401
+ * httpCode: success 200, invalid data 400, failed to save 500, failed to export 500, unauthorized 401
+**/
+app.post('/savePublish', function(request, response) {
+   //var buildingData = JSON.parse(request.body.building);
+   var buildingData = request.body.building;
+   //console.log("---savePublish---");
+   //console.log(request.body.building);
+   flowDB.getUserById(request.session.userId, function(user) {      
+      if(Util.exists(user)) {
+         if(Util.exists(buildingData) 
+            && Util.exists(buildingData.name)
+            && Util.exists(buildingData.authoData) 
+            && Util.exists(buildingData.graph)) {
+            
+            user.saveBuilding(buildingData, function(buildingObj) {
+                  if(Util.exists(buildingObj)) {
+                     if(request.body.publishData === true) {
+                        console.log("----PUBLISHING----");
+                     }                     
+                     response.status(200);
+                     return response.send({
+                        errorCode: 0, 
+                        buildingId: buildingObj.getUserBuildingId()
+                     });
+                  } else {
+                     response.status(500);
+                     return response.send({errorCode: 2, buildingId: null});
+                  }
+            });
+         } else {
+            response.status(400);
+            return response.send({errorCode: 1, buildingId: null});
+         }
+      } else {
+         response.status(401);
+         return response.send({errorCode: 401, buildingId: null});
+      }
+   });
+});
+
+/**
+ * Summary: Route to get the building object.
  * request: {buildingId : String}
- * response: building : {errorCode : Number, name : String, id : String, authoData : obj, graph : obj}
+ * response: building : {errorCode : Number, building: {name: String, id: String, authoData: Object, graph: Object}
  * errorCode: success 0, invalid data 1, building not found 404, unauthorized 401
  * httpCode: success 200, invalid data 400, building not found 404, unauthorized 401
 **/
@@ -308,6 +345,7 @@ app.post('/getBuilding', function(request, response) {
       }
    });
 });
+
 
 // =========== PREPROCESSOR ==========
 
