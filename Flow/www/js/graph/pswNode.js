@@ -22,10 +22,10 @@ function PswNode(type, pswType, edges, lineRep) {
 	this.pswType = pswType;
 	this.lineRep = lineRep;
 
-	GraphNode.call(this, type, edges, type);
+	FloorNode.call(this, type, edges, type);
 }
 
-PswNode.prototype = new GraphNode();
+PswNode.prototype = new FloorNode();
 PswNode.prototype.constructor = PswNode;
 
 /**

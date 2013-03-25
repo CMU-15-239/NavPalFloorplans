@@ -1,35 +1,35 @@
-//graph.js
+//floorGraph.js
 
-function importGraph(simpleGraph) {
-  if(util.exists(simpleGraph)) {
-    var graph = new Graph();
-    if(util.exists(simpleGraph.spaceNodes)) {
-      for(var s = 0; s < simpleGraph.spaceNodes.length; s++) {
-        graph.spaceNodes.push(importSpaceNode(simpleGraph.spaceNodes[s]));
+function importFloorGraph(simpleFloorGraph) {
+  if(util.exists(simpleFloorGraph)) {
+    var floorGraph = new FloorGraph();
+    if(util.exists(simpleFloorGraph.spaceNodes)) {
+      for(var s = 0; s < simpleFloorGraph.spaceNodes.length; s++) {
+        floorGraph.spaceNodes.push(importSpaceNode(simpleFloorGraph.spaceNodes[s]));
       }
     }
     
-    if(util.exists(simpleGraph.pswNodes)) {
-      for(var p = 0; p < simpleGraph.pswNodes.length; p++) {
-        graph.pswNodes.push(importPswNode(simpleGraph.pswNodes[p])); 
+    if(util.exists(simpleFloorGraph.pswNodes)) {
+      for(var p = 0; p < simpleFloorGraph.pswNodes.length; p++) {
+        floorGraph.pswNodes.push(importPswNode(simpleFloorGraph.pswNodes[p])); 
       }
     }
     
-    return graph;
+    return floorGraph;
   }
   
   return null;
 }
 
 /**
- * Summary: Constructor for the Graph object.
+ * Summary: Constructor for the FloorGraph object.
  * Parameters: spaces: The list of space objects created in the drawing tool,
 				callback: Function to callback after the constructor executes. 
-				(To notify something when the graph has been created (e.g load wheel))
+				(To notify something when the floorGraph has been created (e.g load wheel))
 				callbackVars: Inputs for callback.
  * Returns: undefined
 **/
-function Graph(spaces, callback, callbackVars) {
+function FloorGraph(spaces, callback, callbackVars) {
 	this.spaceNodes = [];
 	this.pswNodes = [];
   this.spaceType = "space";
@@ -37,7 +37,7 @@ function Graph(spaces, callback, callbackVars) {
 	
   if(util.exists(spaces)) {
     for(var s = 0; s < spaces.length; s++) {
-      this.addGraphNode(spaces[s]);
+      this.addFloorNode(spaces[s]);
     }
   }
 	
@@ -46,11 +46,11 @@ function Graph(spaces, callback, callbackVars) {
 
 
 /**
- * Summary: Constructs a list of spaces to represent the floor.
+ * Summary: Constructs a list of spaces to represent the floorGraph.
  * Parameters: none
  * Returns: list of spaces
 **/
-Graph.prototype.toSpaces = function() {
+FloorGraph.prototype.toSpaces = function() {
   var result = [];
   for(var s = 0; s < this.spaceNodes.length; s++) {
     var spaceNode = this.spaceNodes[s];
@@ -59,7 +59,7 @@ Graph.prototype.toSpaces = function() {
     space.type = spaceNode.spaceType;
     space.label = spaceNode.label;
     for(var d = 0; d < spaceNode.edges.length; d++) {
-      var edge = this.getGraphNodeById(spaceNode.edges[d]);
+      var edge = this.getFloorNodeById(spaceNode.edges[d]);
       if(util.exists(edge) && edge.type === this.pswType) {
         space.doors.push(edge.lineRep);
       }
@@ -72,11 +72,11 @@ Graph.prototype.toSpaces = function() {
 };
 
 /**
- * Summary: Converts the Graph object to a simple JSON object (for export)
+ * Summary: Converts the FloorGraph object to a simple JSON object (for export)
  * Parameters: undefined
  * Returns: Simple JSON object.
 **/
-Graph.prototype.toOutput = function() {
+FloorGraph.prototype.toOutput = function() {
 	var outSpaceNodes = [];
 	for(var s = 0; s < this.spaceNodes.length; s++) {
 		outSpaceNodes.push(this.spaceNodes[s].toOutput());
@@ -98,7 +98,7 @@ Graph.prototype.toOutput = function() {
  * Parameters: line: Line object.
  * Returns: PswNode found or null if none found.
 **/
-Graph.prototype.getPswNodeByLine = function(line) {
+FloorGraph.prototype.getPswNodeByLine = function(line) {
 	for(var p = 0; p < this.pswNodes.length; p++) {
 		if(this.pswNodes[p].lineRep.equals(line)) {
 			return this.pswNodes[p]
@@ -108,11 +108,11 @@ Graph.prototype.getPswNodeByLine = function(line) {
 };
 
 /**
- * Summary: Adds a new GraphNode (SpaceNode) and establishes links to (and creates) PswNodes as necessary.
+ * Summary: Adds a new FloorNode (SpaceNode) and establishes links to (and creates) PswNodes as necessary.
  * Parameters: space: Space object.
  * Returns: undefined
 **/
-Graph.prototype.addGraphNode = function(space) {
+FloorGraph.prototype.addFloorNode = function(space) {
 	//first check and add doors
 	var psws = [];
 	var pswIds = [];
@@ -142,11 +142,11 @@ Graph.prototype.addGraphNode = function(space) {
 };
 
 /**
- * Summary: Gets a GraphNode from an id
+ * Summary: Gets a FloorNode from an id
  * Parameters: id: String.
  * Returns: undefined
 **/
-Graph.prototype.getGraphNodeById = function(id) {
+FloorGraph.prototype.getFloorNodeById = function(id) {
 	var searchArr = [];
 	if(id.indexOf(this.pswType+"_") === 0) {
 		searchArr = this.pswNodes;
@@ -165,15 +165,15 @@ Graph.prototype.getGraphNodeById = function(id) {
 };
 
 
-Graph.prototype.equals = function(otherGraph) {
-  if(util.exists(otherGraph) && util.exists(otherGraph.spaceNodes)
-      && otherGraph.spaceNodes.length === this.spaceNodes.length
-      && util.exists(otherGraph.pswNodes) 
-      && otherGraph.pswNodes.length === this.pswNodes.length) {
+FloorGraph.prototype.equals = function(otherFloorGraph) {
+  if(util.exists(otherFloorGraph) && util.exists(otherFloorGraph.spaceNodes)
+      && otherFloorGraph.spaceNodes.length === this.spaceNodes.length
+      && util.exists(otherFloorGraph.pswNodes) 
+      && otherFloorGraph.pswNodes.length === this.pswNodes.length) {
     
     for(var s = 0; s < this.spaceNodes.length; s++) {
       var thisSpaceNode = this.spaceNodes[s];
-      var otherSpaceNode = otherGraph.getGraphNodeById(thisSpaceNode.id);
+      var otherSpaceNode = otherFloorGraph.getFloorNodeById(thisSpaceNode.id);
       if(!util.exists(otherSpaceNode) || !thisSpaceNode.equals(otherSpaceNode)) {
         console.log("false for: "+s+" "+this.spaceNodes[s].id+" "+otherSpaceNode.id);
         return false;
@@ -182,7 +182,7 @@ Graph.prototype.equals = function(otherGraph) {
     
     for(var p = 0; p < this.pswNodes.length; p++) {
      var thisPswNode = this.spaceNodes[p];
-      var otherPswNode = otherGraph.getGraphNodeById(thisPswNode.id);
+      var otherPswNode = otherFloorGraph.getFloorNodeById(thisPswNode.id);
       if(!util.exists(otherPswNode) || !thisPswNode.equals(otherPswNode)) {
         return false;
       }

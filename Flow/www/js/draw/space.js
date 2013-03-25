@@ -25,6 +25,35 @@ function Space(walls) {
 	this.drawPoly = false;
 };
 
+Space.prototype.toOutput = function() {
+   console.log("**generating door outputs**");
+   var outDoors = [];
+   for(var d = 0; d < this.doors.length; d++) {
+      outDoors[d] = this.doors[d].toOutput();
+   }
+   
+   console.log("**generating wall outputs**");
+   var outWalls = [];
+   for(var w = 0; w < this.walls.length; w++) {
+      outWalls[w] = this.walls[w].toOutput();
+   }
+   
+   console.log("**generating point outputs**");
+   var outPoints = [];
+   for(var p = 0; p < this.points.length; p++) {
+      outPoints[p] = this.points[p].toOutput();
+   }
+   
+   return {
+      doors: outDoors,
+      walls: outWalls,
+      points: outPoints,
+      type: this.type,
+      label: this.label,
+      isClosed: this.isClosed
+   }
+};
+
 /**
  * Summary: Return whether the classification of the space is "room"
  * Parameters: this
