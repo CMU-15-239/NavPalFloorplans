@@ -218,3 +218,32 @@ Line.prototype.magnitutde = function() {
 	return Math.sqrt(dx * dx + dy * dy);
 };
 
+Line.prototype.pointOfLineIntersection = function(line) {
+	var epsilon = .00001;
+	
+	//The following can't be 0
+	var checkOne = Math.abs(line.a*this.b - this.a*line.b) > epsilon;
+	var checkTwo = Math.abs(line.b * this.b) > epsilon;
+	
+	if (!checkOne || !checkTwo) return null;
+	
+	//The equation for checking the x-value of the intersection of two lines in standard form.
+	var xIntersect = (line.b*this.c - this.b*line.c)/(this.a*line.b - line.a*this.b);
+	
+	//Now check that the x-value falls on both lines.
+	var fallsOnThis = ((this.p1.x >= xIntersect && xIntersect >= this.p2.x) || 
+		(this.p1.x <= xIntersect && xIntersect <= this.p2.x));
+		
+	var fallsOnLine = ((line.p1.x >= xIntersect && xIntersect >= line.p2.x) || 
+		(line.p1.x <= xIntersect && xIntersect <= line.p2.x));
+		
+	if (fallsOnThis && fallsOnLine) {
+		//Doesn't matter which line we use to calculate y-value, because they're equal at this x.
+		var yIntersect = (this.c - this.a*xIntersect)/(this.b);
+		return new Point(xIntersect, yIntersect);
+	}
+	
+	//There is no valid point of intersection.
+	return null;
+}
+

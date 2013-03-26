@@ -21,10 +21,36 @@ StateManager.prototype.changeState = function(newState) {
 StateManager.prototype.redraw = function() {
 	//First, delete everything from the canvas.
     GLOBALS.canvas.clearRect(0, 0, GLOBALS.canvas.width, GLOBALS.canvas.height);
-	GLOBALS.drawPoints();
 	GLOBALS.drawWalls();
+	GLOBALS.drawPoints();
 	//Let the state draw itself
 	this.currentState.draw();
+}
+
+StateManager.prototype.aboutToSnapToPoint = function(testPoint, recentlyAddedPoints) {
+	var curPoint;
+	var numPoints = recentlyAddedPoints.length;
+	for (var i = 0; i < GLOBALS.points.length; i++) {
+		curPoint = GLOBALS.points[i];
+		if (testPoint.distance(curPoint) <= GLOBALS.snapRadius) {
+			//Make sure that we're not snapping to the point we just added, if it exists.
+			if (numPoints === 0 || (numPoints > 0 && !recentlyAddedPoints[numPoints - 1].equals(curPoint))) {
+				return curPoint;
+			}
+		}
+	}
+	return null;
+}
+
+StateManager.prototype.aboutToSnapToLine = function(testPoint) {
+	var curWall;
+	for (var i = 0; i < GLOBALS.walls.length; i++) {
+		curWall = GLOBALS.walls[i];
+		if (curWall.pointNearLine(testPoint, GLOBALS.snapRadius)) {
+			return curWall;
+		}
+	}
+	return null;
 }
 
 

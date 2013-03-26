@@ -31,6 +31,9 @@ $(document).ready(function ()
 });
 
 function initCanvasEventHandlers(stateManager) {
+	// Add tab index to ensure the canvas retains focus (needed for keydown)
+	$("#canvas").attr("tabindex", "0");
+
 	$("#canvas").click(function(event) {
 		stateManager.currentState.click(event);
 	});

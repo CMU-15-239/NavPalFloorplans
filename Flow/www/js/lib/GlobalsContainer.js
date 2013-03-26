@@ -4,6 +4,7 @@ var GlobalsContainer = function(canvas) {
 	//Points stored as real-world coordinates
 	this.points = [];
 	this.view = new ManipulationAreaView(0, 0, this.canvas.x, this.canvas.y);
+	this.snapRadius = 15;
 }
 
 GlobalsContainer.prototype.drawPoints = function() {
@@ -19,7 +20,6 @@ GlobalsContainer.prototype.drawWalls = function() {
 }
 
 GlobalsContainer.prototype.addPoint = function(pointToAdd) {
-	console.log("Point added.");
 	//Check to make sure that the point being added isn't a duplicate
 	for (var i = 0; i < this.points.length; i++) {
 		if (this.points[i].equals(pointToAdd)) return;
