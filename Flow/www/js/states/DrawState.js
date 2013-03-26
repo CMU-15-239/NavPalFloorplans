@@ -61,10 +61,16 @@ DrawState.prototype.click = function(event) {
 }
 
 DrawState.prototype.mergeIntersectingLines = function(line) {
+	var intersectionPoints = [];
+	var newLines = [];
 	for (var i = 0; i < GLOBALS.walls.length; i++) {
 		curWall = GLOBALS.walls[i];
 		var pointOfIntersect = curWall.pointOfLineIntersection(line);
-		if (pointOfIntersect !== null) console.log(pointOfIntersect);
+		if (pointOfIntersect !== null) {
+			console.log(pointOfIntersect);
+			intersectionPoints.push(pointOfIntersect);
+			curWall.breakIntoTwo(pointOfIntersect);
+		}
 	}
 	
 	this.addWall(line);

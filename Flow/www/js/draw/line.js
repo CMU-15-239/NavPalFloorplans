@@ -219,6 +219,10 @@ Line.prototype.magnitutde = function() {
 };
 
 Line.prototype.pointOfLineIntersection = function(line) {
+	//If they have a common endpoint, they don't intersect in any meaningful way.
+	if (this.p1.equals(line.p1) || this.p1.equals(line.p2) || this.p2.equals(line.p1) || this.p2.equals(line.p2)){
+		return null;
+	}
 	var epsilon = .00001;
 	
 	//The following can't be 0
@@ -229,7 +233,6 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	
 	//The equation for checking the x-value of the intersection of two lines in standard form.
 	var xIntersect = -1*(line.b*this.c - this.b*line.c)/(this.a*line.b - line.a*this.b);
-	console.log(xIntersect);
 	
 	//Now check that the x-value falls on both lines.
 	var fallsOnThis = ((this.p1.x >= xIntersect && xIntersect >= this.p2.x) || 
