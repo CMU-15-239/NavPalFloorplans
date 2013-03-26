@@ -228,7 +228,8 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	if (!checkOne || !checkTwo) return null;
 	
 	//The equation for checking the x-value of the intersection of two lines in standard form.
-	var xIntersect = (line.b*this.c - this.b*line.c)/(this.a*line.b - line.a*this.b);
+	var xIntersect = -1*(line.b*this.c - this.b*line.c)/(this.a*line.b - line.a*this.b);
+	console.log(xIntersect);
 	
 	//Now check that the x-value falls on both lines.
 	var fallsOnThis = ((this.p1.x >= xIntersect && xIntersect >= this.p2.x) || 
@@ -239,7 +240,7 @@ Line.prototype.pointOfLineIntersection = function(line) {
 		
 	if (fallsOnThis && fallsOnLine) {
 		//Doesn't matter which line we use to calculate y-value, because they're equal at this x.
-		var yIntersect = (this.c - this.a*xIntersect)/(this.b);
+		var yIntersect = (-1*this.c - this.a*xIntersect)/(this.b);
 		return new Point(xIntersect, yIntersect);
 	}
 	

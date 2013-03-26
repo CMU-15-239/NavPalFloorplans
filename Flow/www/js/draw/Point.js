@@ -57,7 +57,7 @@ Point.prototype.draw = function() {
 		GLOBALS.canvas.fillStyle = "rgb(255,0,0)";
 	}
 	GLOBALS.canvas.beginPath();
-    GLOBALS.canvas.arc(canvasPoint.x, canvasPoint.y, 10, 0, 2*Math.PI, false);
+    GLOBALS.canvas.arc(canvasPoint.x, canvasPoint.y, 5, 0, 2*Math.PI, false);
     GLOBALS.canvas.fill();
 }
 

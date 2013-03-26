@@ -21,13 +21,13 @@ function ManipulationAreaView(htmlX, htmlY, scaleStep) {
 	
 	// Offsets from the real-world (0,0)
 	// Represents a vector from real-world (0,0) to canvas world (0,0)
-	offsetX = 0;
-	offsetY = 0;
+	this.offsetX = 0;
+	this.offsetY = 0;
 	
 	// scale is ratio-  real-world : canvas world
-	scale = 1;
-	maxScale = 16;
-	minScale = 1.0/16;
+	this.scale = 1;
+	this.maxScale = 16;
+	this.minScale = 1.0/16;
 }
 
 /**
@@ -38,8 +38,6 @@ function ManipulationAreaView(htmlX, htmlY, scaleStep) {
 ManipulationAreaView.prototype.toRealWorld = function(p) {
 	x = p.x;
 	y = p.y;
-	x -= this.htmlX;
-	y -= this.htmlY;
 	point = new Point((x / this.scale) + this.offsetX, 
 					  (y / this.scale) + this.offsetY);
 	return point;
@@ -51,8 +49,8 @@ ManipulationAreaView.prototype.toRealWorld = function(p) {
  * Returns: The point as canvas world coordinates
 **/
 ManipulationAreaView.prototype.toCanvasWorld = function(p) {
-	point = new Point((p.x - this.offsetX) * this.scale + this.htmlX,
-					  (p.y - this.offsetY) * this.scale + this.htmlY);
+	point = new Point((p.x - this.offsetX) * this.scale,
+					  (p.y - this.offsetY) * this.scale);
 	return point;
 }
 

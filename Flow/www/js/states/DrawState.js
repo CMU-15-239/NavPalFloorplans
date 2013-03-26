@@ -7,11 +7,14 @@ var DrawState = function(stateMan) {
 	this.redoStack = [];
 }
 
+//NEED TO HAVE
 DrawState.prototype = new BaseState();
 
+//NEED TO HAVE
 DrawState.prototype.enter = function() {
 }
 
+//NEED TO HAVE
 DrawState.prototype.exit = function() {
 	this.pointAtCursor = undefined;
 	this.pointsAddedInSession = [];
@@ -19,7 +22,6 @@ DrawState.prototype.exit = function() {
 
 DrawState.prototype.mouseMove = function(event) {
 	this.pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, event.pageY - GLOBALS.canvas.y));
-	
 	//Snapping to a point takes precedence over snapping to a line
 	var snapPoint = this.stateManager.aboutToSnapToPoint(this.pointAtCursor, this.pointsAddedInSession);
 	var snapLine = this.stateManager.aboutToSnapToLine(this.pointAtCursor);
@@ -40,7 +42,6 @@ DrawState.prototype.click = function(event) {
 	if (numPoints > 0) recentPoint = this.pointsAddedInSession[numPoints - 1];
 	
 	this.addPoint(this.pointAtCursor);
-	console.log(this.pointAtCursor.toString());
 	
 	if (recentPoint !== undefined) {
 		//TO-DO: undo/redo
@@ -62,7 +63,6 @@ DrawState.prototype.click = function(event) {
 DrawState.prototype.mergeIntersectingLines = function(line) {
 	for (var i = 0; i < GLOBALS.walls.length; i++) {
 		curWall = GLOBALS.walls[i];
-		//console.log(curWall.toString());
 		var pointOfIntersect = curWall.pointOfLineIntersection(line);
 		if (pointOfIntersect !== null) console.log(pointOfIntersect);
 	}
@@ -86,6 +86,7 @@ DrawState.prototype.addWall = function(wallToAdd) {
 	GLOBALS.addWall(wallToAdd);
 }
 
+//NEED TO HAVE
 DrawState.prototype.draw = function() {
 	//Draw the line that goes from the most recently drawn point to the user's cursor
 	if (this.pointAtCursor !== undefined && this.pointBeenDrawnInSession()) {
