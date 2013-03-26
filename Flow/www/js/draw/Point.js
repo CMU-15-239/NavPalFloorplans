@@ -41,7 +41,7 @@ Point.prototype.draw = function() {
 	GLOBALS.canvas.fillStyle = "black";
 	
 	canvasPoint = GLOBALS.view.toCanvasWorld(this);
-	
+
 	//If the point is being snapped to, draw a larger circle around it to make this fact clear to the user.
 	if (this.isSnap) {
 		GLOBALS.canvas.beginPath();
@@ -57,7 +57,7 @@ Point.prototype.draw = function() {
 		GLOBALS.canvas.fillStyle = "rgb(255,0,0)";
 	}
 	GLOBALS.canvas.beginPath();
-    GLOBALS.canvas.arc(canvasPoint.x, canvasPoint.y, POINT_SIZE, 0, 2*Math.PI, false);
+    GLOBALS.canvas.arc(canvasPoint.x, canvasPoint.y, 10, 0, 2*Math.PI, false);
     GLOBALS.canvas.fill();
 }
 
