@@ -1,3 +1,11 @@
+/**
+	ManipulationAreaView.js
+	Written by Paul Davis
+	pjbdavis@gmail.com
+	Spring 2013
+	
+*/
+
 var targetPoint;
 var visitedPoints = {};
 
