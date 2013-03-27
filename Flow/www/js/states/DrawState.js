@@ -58,26 +58,50 @@ DrawState.prototype.click = function(event) {
 			this.mergeIntersectingLines(newWall);
 		}
 	}
+	
+	console.log("Number of points: " + GLOBALS.points.length);
+	console.log("Number of walls: " + GLOBALS.walls.length);
+	this.stateManager.redraw();
 }
 
 DrawState.prototype.mergeIntersectingLines = function(line) {
 	var intersectionPoints = [];
 	var newLines = [];
-	for (var i = 0; i < GLOBALS.walls.length; i++) {
+	var i = 0;
+	while (i < GLOBALS.walls.length) {
 		curWall = GLOBALS.walls[i];
 		var pointOfIntersect = curWall.pointOfLineIntersection(line);
 		if (pointOfIntersect !== null) {
-			console.log(pointOfIntersect);
+			this.addPoint(pointOfIntersect);
 			intersectionPoints.push(pointOfIntersect);
-			curWall.breakIntoTwo(pointOfIntersect);
+			var twoNewLines = curWall.breakIntoTwo(pointOfIntersect);
+			newLines.push(twoNewLines.l1);
+			newLines.push(twoNewLines.l2);
+			GLOBALS.removeWall(curWall);
+		}
+		else {
+			i += 1;
+		}
+	}
+	if (intersectionPoints.length === 0) this.addWall(line);
+	else {
+		//Now split up the line we just drew
+		var splitUpLineSegs = line.splitUpLine(intersectionPoints);
+		for (var i = 0; i < splitUpLineSegs; i++) {
+			newLines.push(splitUpLineSegs[i]);
 		}
 	}
 	
-	this.addWall(line);
+	//Now add in all the new lines
+	for (var k = 0; k < newLines.length; k++) {
+		this.addWall(newLines[k]);
+	}
+	
+	this.addActionSetToStack(newLines);
 }
 
 DrawState.prototype.addActionSetToStack = function(recentlyAddedWalls) {
-	actionStack.push(recentlyAddedWalls);
+	this.actionStack.push(recentlyAddedWalls);
 }
 
 DrawState.prototype.addPoint = function(pointToAdd) {
@@ -134,10 +158,11 @@ DrawState.prototype.undo = function() {
 	this.redoStack.push(actionToUndo);
 	var numRemoved = 0;
 	while (numRemoved < actionToUndo.length) {
-		GLOBALS.walls.splice(GLOBALS.walls.indexOf(actionToUndo[numRemoved]), 1);
+		GLOBALS.removeWall(actionToUndo[numRemoved]);
 		numRemoved += 1;
 	}
-		
+	
+	this.stateManager.redraw();
 }
 
 DrawState.prototype.redo = function() {

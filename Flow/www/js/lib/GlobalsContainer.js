@@ -34,3 +34,7 @@ GlobalsContainer.prototype.addWall = function(wallToAdd) {
 	}
 	this.walls.push(wallToAdd);
 }
+
+GlobalsContainer.prototype.removeWall = function(wallToRemove) {
+	this.walls.splice(this.walls.indexOf(wallToRemove), 1);
+}

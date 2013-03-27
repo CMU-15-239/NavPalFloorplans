@@ -251,3 +251,48 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	return null;
 }
 
+Line.prototype.splitUpLine = function(setOfPoints) {
+	var sortedPoints = this.sortPoints(setOfPoints);
+	var newLineSegments = [];
+	var lineToSplit = this;
+	for (var i = 0; i < sortedPoints.length; i++) {
+		var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
+		newLineSegments.push(newSegs.l1);
+		lineToSplit = newSegs.l2;
+	}
+	newLineSegments.push(newSegs.l2);
+	return newLineSegments;
+}
+
+Line.prototype.sortPoints = function(points) {
+	points.unshift(this.p1);
+	var closestPoint;
+	var closestDistance = 100000000000;
+	var numSorted = 0;
+	var sortedPoints = [];
+	while (numSorted < points.length) {
+		var pointToCheck = points[numSorted];
+		for (var j = 0; j < points.length; j++) {
+			var curPoint = points[j];
+			if (!curPoint.equals(pointToCheck) &&
+				!this.containsPoint(sortedPoints, curPoint) && 
+				pointToCheck.distance(curPoint) < closestDistance) {
+				closestPoint = curPoint;
+				closestDistance = pointToCheck.distance(curPoint);
+			}
+		}
+		sortedPoints.push(closestPoint);
+		closestDistance = 10000000000000;
+		numSorted += 1;
+	}
+	//Remove this.p1
+	return points.splice(1, points.length - 1);
+}
+
+Line.prototype.containsPoint = function(pointList, point) {
+	for (var i = 0; i < pointList.length; i++) {
+		if (pointList[i].equals(point)) return true;
+	}
+	return false;
+}
+
