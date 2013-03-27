@@ -1,4 +1,10 @@
 /**
+ * Initializes layout of authoring tool page
+ * Written by: Daniel Muller
+*/
+
+
+/**
  * Summary: Toggles highlighting of tool on click event
  * Parameters:  n/a
  * Returns: n/a

@@ -9,18 +9,23 @@
 
 /* Body and structure
 -------------------------------------------------- */
-
 body {
   position: relative;
   padding-top: 40px;
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #333333;
 }
 
-/* Code in headings */
-h3 code {
-  font-size: 14px;
-  font-weight: normal;
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 300;
+  color: inherit;
+  text-rendering: optimizelegibility;
 }
-
 
 
 /* Tweak navbar brand link to be super sleek
@@ -1069,36 +1074,14 @@ form.bs-docs-example {
   }
 }
 
-body {
-  margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-  color: #333333;
-}
 
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  font-family: inherit;
-  font-weight: 300;
-  color: inherit;
-  text-rendering: optimizelegibility;
-}
 
 .instructions h1 {
-  margin: 10px 0 20px;
+  margin-bottom: 30px;
   font-size: 60px;
   font-weight: 200;
   line-height: 1;
   letter-spacing: -1px;
-}
-
-.instructions p {
-  margin-bottom: 40px;
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 1.25;
-  color: #999;
 }
 
 h2 {
@@ -1109,8 +1092,6 @@ h2 {
 .instructions {
   text-align: center
 }
-
-
 
 .icon svg {
   margin: auto;

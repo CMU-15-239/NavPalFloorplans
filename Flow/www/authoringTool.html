@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="min-width: 800px;">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title>NavPal Floor Creator</title>
@@ -9,19 +9,14 @@
 
     <!-- Le styles -->
     <link href="./css/bootstrap.non-responsive.min.css" rel="stylesheet">
-    <link href="css/docs.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/styles.css">
-    <link rel="stylesheet" href="./css/authoringTool.css">
-    <link rel="stylesheet" href="./css/jcarousel.connected-carousels.css">
-    
-
-
+    <link href="./css/docs.css" rel="stylesheet">
+    <link href="./css/styles.css" rel="stylesheet">
+    <link href="./css/authoringTool.css" rel="stylesheet">    
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="js/html5shiv.js"></script>
     <![endif]-->
-
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -56,7 +51,11 @@
         </div>
       </div>
     </div>
+    <!-- end Navbar -->
+
     <div class="container-fluid authoringTool">
+
+      <!-- floorplan carousel -->
       <div class="row-fluid" id="carousel">
         <div class="connected-carousels row-fluid">
                 <div class="stage span3">
@@ -88,10 +87,11 @@
                 </div>
             </div>
       </div>
+      <!-- end carousel -->
+
       <div class="row authoringTool" id="toolRow">
         <div id="toolHolder">
           <div class="toolGrouping">
-
             <div class="row-fluid toolrow">
               <div class="toolIcon left" style="background-image: url(img/cursorIcon.svg)">            </div>
               <div class="toolIcon right" style="background-image: url(img/handIcon.svg)"></div>
@@ -103,8 +103,7 @@
             <div class="row-fluid toolrow">
               <div class="toolIcon left" style="background-image: url(img/zoominIcon.svg)">            </div>
               <div class="toolIcon right" style="background-image: url(img/zoomoutIcon.svg)"></div>
-            </div>
-            
+            </div>      
           </div>
           <div class="toolGrouping">
             <div class="row-fluid toolrow">
@@ -122,21 +121,32 @@
               <div class="toolIcon right" style="background-image: url(img/elevatorIcon.svg)"></div>
             </div>
           </div>
-          
-
         </div>
-        <div id="canvas"></div>
+
+        <canvas id="canvas"></canvas>
       </div>
-   </div>
-  <!-- Le javascript
-  ================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script type="text/javascript" src="./js/jquery.js"></script>
-  <script src="./js/bootstrap/bootstrap.js"></script>
-  <script type="text/javascript" src="./js/carousel/jquery.jcarousel.js"></script>
-  <script src="./js/authoringTool.js"></script>
+    </div>
 
-
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script src="./js/bootstrap/bootstrap.js"></script>
+    <script type="text/javascript" src="./js/carousel/jquery.jcarousel.js"></script>
+    <script src="./js/authoringTool.js"></script>
+    <script src="./js/lib/Util.js"></script>
+    <script src="./js/lib/kinetic.js"></script>
+    <script src = "./js/lib/globals.js"></script>
+    <script src = "./js/draw/Point.js"></script>
+    <script src = "./js/draw/line.js"></script>
+    <script src = "./js/draw/space.js"></script>
+    <script src = "./js/draw/Draw.js"></script>
+    <script src = "./js/draw/RoomClosed.js"></script>
+    <script src = "./js/draw/RoomDetection.js"></script>
+    <script src = "./js/draw/RoomSelect.js"></script>
+    <script src = "./js/draw/Polygon.js"></script>
+    <script src = "./js/draw/Exception.js"></script>
+    <script src="./js/preprocessing.js"></script>
 
   </body>
 </html>

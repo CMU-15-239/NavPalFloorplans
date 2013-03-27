@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>NavPal Floor Creator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/docs.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+    <!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="./home.html">NavPal</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active navlink">
+                <a href="./index.html">Home</a>
+              </li>
+              <li class="navlink">
+                <a href="./howItWorks.html">How it works</a>
+              </li>
+              <li class="navlink">
+                <a href="./featureGuide.html">Feature Guide</a>
+              </li>
+              <li class="navlink">
+                <a href="./benefits.html">Benefits</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Title and subtitile
+    ================================================== -->
+    <header class="jumbotron subhead" id="overview">
+      <div class="container">
+        <h1 style="margin-bottom: 10px;">Login or Sign up</h1>
+        <p class="note">By creating your account you agree to our 
+        <a href="/terms/" target="blank">Terms of Use</a> and <a href="/privacy/" target="blank">Privacy Policy</a>.</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row" id="formRow" style="text-align:center;">
+        <div class="span12">
+          <div class="page-header">
+            <h3 style="margin-top: 30px;">Please fill out your information to get started.</h3>
+          </div>
+          </div>
+        
+          <div class="span4 offset2">   
+              <form action="/signup" method="POST" autocomplete="off" class="clearfix span4" id="auth-form"><div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="5jHx3oaKMvEefEzxqyUfKSs2PJ0YYk6u"></div>
+                  <h3>Log in</h3>
+                  <div class="all-errors">
+                      
+                  </div>
+
+                  <div class="input">
+                      <input id="id_email" type="text" placeholder="Email" name="email" maxlength="75">
+                      
+                  <div class="email_suggestion"></div>
+                  </div>
+                  <div class="input">
+                      <input type="password" placeholder="Password" name="password" id="id_password">
+                      
+                  </div>
+
+                  <div class="action">
+                      
+                          <input type="hidden" name="next" value="/welcome/">
+                      
+                      <input type="submit" value="Login" class="btn btn-primary registration-btn">
+                  </div>
+              </form>
+          </div>
+          
+          <div class="span6">   
+              <form action="/signup" method="POST" autocomplete="off" class="clearfix span4" id="auth-form"><div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="5jHx3oaKMvEefEzxqyUfKSs2PJ0YYk6u"></div>
+                  <h3>Sign up with email</h3>
+                  <div class="all-errors">
+                      
+                  </div>
+
+                  <div class="input">
+                      <input id="id_email" type="text" placeholder="Email" name="email" maxlength="75">
+                  </div>
+
+                   <div class="input">
+                      <input id="id_email" type="text" placeholder="Confirm Email" name="email" maxlength="75">
+                  </div>
+
+                  <div class="input">
+                      <input type="password" placeholder="Password" name="password" id="id_password">
+                  </div>
+
+                  <div class="input">
+                      <input type="password" placeholder="Confirm Password" name="password" id="id_password">
+                  </div>
+
+                  <div class="action">
+                      
+                          <input type="hidden" name="next" value="/welcome/">
+                      
+                      <input type="submit" value="Create account" class="btn btn-primary registration-btn">
+                  </div>
+              </form>
+          </div>
+      </div>
+    </div>
+
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+
+  </body>
+</html>

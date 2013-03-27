@@ -4,7 +4,6 @@
  * Written by: Daniel Muller
 */
 
-
 /**
  * Summary: size of the thumbnails that we create
  * Parameters: n/a-
@@ -99,7 +98,6 @@ function createThumb(file) {
         var floorPlanImg = new Image();
         floorPlanImg.onload = function() {
 
-
         	var li = $('<li></li>').addClass('span4')
         	var thumb = $('<div></div>').addClass('thumbnail');
         	var holder = $('<div></div>').addClass('holder');
@@ -119,7 +117,6 @@ function createThumb(file) {
     }
     reader.readAsDataURL(file);
 }
-
 
 /**
  * Summary: html hack that allows styling of upload button #genius

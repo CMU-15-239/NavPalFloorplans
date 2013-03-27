@@ -1,3 +1,43 @@
+/*
+    Styles for authoring tool page
+    Written by Daniel Muller
+*/
+
+#carousel {
+    padding: 15px;
+    background-image: url(../img/whitey.png);
+    vertical-align: middle;
+    width: auto;
+}
+
+#toolHolder {
+    position: absolute;
+    top: 230px;
+    left:0px;
+    bottom: 0px;
+    padding-top: 15px;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: #494949
+}
+
+#canvas {
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    top: 230px;
+    bottom: 0px;
+    left: 90px;
+    right: 0px;
+}
+
+/* Body and structure
+-------------------------------------------------- */
+html {
+    min-width: 800px;
+}
+
 html, body {
     height: 100%;
     padding: 0px;
@@ -6,23 +46,8 @@ html, body {
     background-image: url(../img/black-Linen.png);
 }
 
-.toolRow {
-	display: inline-block;
-}
-
-.toolGrouping {
-    border-bottom: 5px solid #222;
-    margin-bottom: 5px
-}
-
-.toolIcon:hover {
-    background-color: #6E6E6E;
-}
-
-.toolIcon.active {
-    background-color: #353535;
-}
-
+/* Toolbar icons
+-------------------------------------------------- */
 .toolIcon {
     width: 32px;
     height: 32px;
@@ -33,34 +58,23 @@ html, body {
     background-position: center;
 }
 
-
-#carousel {
-	padding: 15px;
-	background-image: url(../img/whitey.png);
-	vertical-align: middle;
-	width: auto;
+.toolIcon:hover {
+    background-color: #6E6E6E;
 }
 
-#toolHolder {
-	position: absolute;
-	top: 230px;
-	left:0px;
-	bottom: 0px;
-    padding-top: 15px;
-    padding-left: 2px;
-    padding-right: 2px;
-	background-color: #494949
+.toolIcon.active {
+    background-color: #353535;
 }
 
-#canvas {
-	border: 0px;
-	padding: 0px;
-	margin: 0px;
-	position: absolute;
-	top: 230px;
-	bottom: 0px;
-	left: 90px;
-	right: 0px;
+/* Toolbar icon containers
+-------------------------------------------------- */
+.toolRow {
+    display: inline-block;
+}
+
+.toolGrouping {
+    border-bottom: 5px solid #222;
+    margin-bottom: 5px
 }
 
 .authoringTool {
@@ -69,25 +83,14 @@ html, body {
 	height: 190px;
 }
 
-.currentImage {
-	height: 160px;
-	width: 240px;
-}
-
-.navigationImage {
-	height: 140px;
-	width: 210px;
-	line-height: 200px;
-}
-
-/** Stage container **/
-
+/** Stage container
+-------------------------------------------------- */
 .connected-carousels .stage {
     width: 240px;
 }
 
-/** Navigation container **/
-
+/** Navigation container
+-------------------------------------------------- */
 .connected-carousels .navigation {
 	position: absolute;
 	right: 20px;
@@ -96,8 +99,8 @@ html, body {
 	height: 160px;
 }
 
-/** Shared carousel styles **/
-
+/** Shared carousel styles
+-------------------------------------------------- */
 .connected-carousels .carousel {
     overflow: hidden;
 }
@@ -114,15 +117,15 @@ html, body {
     float: left;
 }
 
-/** Stage carousel specific styles **/
-
+/** Stage carousel specific styles
+-------------------------------------------------- */
 .connected-carousels .carousel-stage {
     height: 160px;
     margin-bottom: 0px;
 }
 
-/** Navigation carousel specific styles **/
-
+/** Navigation carousel specific styles
+-------------------------------------------------- */
 .connected-carousels .carousel-navigation {
     height: 200px;
 }
@@ -140,8 +143,8 @@ html, body {
     border-color: #bbb;
 }
 
-/** Navigation carousel controls **/
-
+/** Navigation carousel controls
+-------------------------------------------------- */
 .connected-carousels .prev-navigation,
 .connected-carousels .next-navigation {
     display: block;
@@ -186,4 +189,17 @@ html, body {
 
 .prev.prev-navigation.inactive {
 	display: none;
+}
+
+/* Images inside the carousels
+-------------------------------------------------- */
+.currentImage {
+    height: 160px;
+    width: 240px;
+}
+
+.navigationImage {
+    height: 140px;
+    width: 210px;
+    line-height: 200px;
 }

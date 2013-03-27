@@ -1,3 +1,12 @@
+/*
+	Styles for floor upload page
+	Written by Daniel Muller
+*/
+
+input, textarea, .uneditable-input {
+	width: 120px;
+}
+
 #buildingNameInput {
 	width: 100%;
 	height: 38px;
@@ -6,6 +15,15 @@
 	font-size: 30px;
 	padding: 2px 2px;
 	vertical-align: middle;
+}
+
+#buildingNameRow {
+	margin: 45px 0px;
+	text-align: center;
+}
+
+#gallary {
+	margin-top: 45px;
 }
 
 .thumbnail {
@@ -30,15 +48,6 @@
 	padding-right: 0px;
 }
 
-#buildingNameRow {
-	margin: 45px 0px;
-	text-align: center;
-}
-
-#gallary {
-	margin-top: 45px;
-}
-
 .holder {
 	line-height: 240px;
 	text-align: center;
@@ -60,10 +69,6 @@ input, textarea, .uneditable-input {
 
 .form-horizontal .controls {
 	margin-left: 120px;
-}
-
-input, textarea, .uneditable-input {
-	width: 120px;
 }
 
 .form, .form-horizontal {
