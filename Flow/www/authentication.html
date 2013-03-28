@@ -33,18 +33,10 @@
           <a class="brand" href="./home.html">NavPal</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active navlink">
-                <a href="./index.html">Home</a>
-              </li>
-              <li class="navlink">
-                <a href="./howItWorks.html">How it works</a>
-              </li>
-              <li class="navlink">
-                <a href="./featureGuide.html">Feature Guide</a>
-              </li>
-              <li class="navlink">
-                <a href="./benefits.html">Benefits</a>
-              </li>
+              <li class="active"><a href="./home.html">Home</a></li>
+              <li class=""><a href="./howItWorks.html">How it works</a></li>
+              <li class=""><a href="./featureGuide.html">Feature Guide</a></li>
+              <li class=""><a href="./benefits.html">Benefits</a></li>
             </ul>
           </div>
         </div>
@@ -64,61 +56,40 @@
     <div class="container">
       <div class="row" id="formRow" style="text-align:center;">
         <div class="span12">
-          <div class="page-header">
-            <h3 style="margin-top: 30px;">Please fill out your information to get started.</h3>
-          </div>
-          </div>
+          <div class="page-header"><h3 style="margin-top: 30px;">Please fill out your information to get started.</h3></div>
+        </div>
         
-          <div class="span4 offset2">   
-                  <h3>Log in</h3>
-
-                  <div class="all-errors"></div>
-
-                  <div class="input">
-                      <input id="login-email" type="text" placeholder="Email" maxlength="75">
-                  </div>
-
-                  <div class="input">
-                      <input id="login-pass" type="password" placeholder="Password">
-                  </div>
-
-                  <button id="login-btn" class="btn btn-primary registration-btn">Login</button>
-          </div>
+        <!-- Login Form
+        ================================================== -->
+        <div class="span4 offset2">   
+          <h3>Log in</h3>
+          <div class="all-errors"></div>
+          <div class="input"><input id="login-email" type="text" placeholder="Email" maxlength="75"></div>
+          <div class="input"><input id="login-pass" type="password" placeholder="Password"></div>
+          <button id="login-btn" class="btn btn-primary registration-btn">Login</button>
+        </div>
           
-          <div class="span4">   
-                <h3>Sign up with email</h3>
-                  <div class="all-errors">
-                      
-                  </div>
+        <!-- Registration Form
+        ================================================== -->
+        <div class="span4">   
+          <h3>Sign up with email</h3>
+          <div class="all-errors"></div>
+          <div class="input"><input id="reg-email" type="text" placeholder="Email" name="email" maxlength="75"></div>
+          <div class="input"><input id="confirm-email" type="text" placeholder="Confirm Email" name="email" maxlength="75"></div>
+          <div class="input"><input id="reg-pass" type="password" placeholder="Password"></div>
+          <div class="input"><input id="confirm-pass" type="password" placeholder="Confirm Password"></div>
+          <div id="reg-btn" class="btn btn-primary registration-btn">Create account</div>
+        </div>
 
-                  <div class="input">
-                      <input id="reg-email" type="text" placeholder="Email" name="email" maxlength="75">
-                  </div>
-
-                   <div class="input">
-                      <input id="confirm-email" type="text" placeholder="Confirm Email" name="email" maxlength="75">
-                  </div>
-
-                  <div class="input">
-                      <input id="reg-pass" type="password" placeholder="Password">
-                  </div>
-
-                  <div class="input">
-                      <input id="confirm-pass" type="password" placeholder="Confirm Password">
-                  </div>
-
-                  <div id="reg-btn" class="btn btn-primary registration-btn">Create account</div>
-          </div>
       </div>
     </div>
-
 
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="./js/jquery.js"></script>
-    <script type="text/javascript" src="./js/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="./js/authentication.js"></script>
+    <script src="./js/jquery.js" type="text/javascript" ></script>
+    <script src="./js/bootstrap/bootstrap.min.js" type="text/javascript" ></script>
+    <script src="./js/authentication.js" type="text/javascript" ></script>
 
   </body>
 </html>

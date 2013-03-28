@@ -3,10 +3,6 @@
 	Written by Daniel Muller
 */
 
-input, textarea, .uneditable-input {
-	width: 120px;
-}
-
 #buildingNameInput {
 	width: 100%;
 	height: 38px;
@@ -22,16 +18,20 @@ input, textarea, .uneditable-input {
 	text-align: center;
 }
 
+/* image gallary */
 #gallary {
 	margin-top: 45px;
 }
 
-.thumbnail {
-	line-height: 30px;
+/* holder for each thumbnail*/
+.holder {
+	line-height: 240px;
+	text-align: center;
 }
 
-.form-horizontal .control-group {
-	margin-bottom: 0px;
+/* used to center thumb within container*/
+.thumbnail {
+	line-height: 30px;
 }
 
 .floorPlan {
@@ -40,6 +40,7 @@ input, textarea, .uneditable-input {
 	border-radius: 4px;
 }
 
+/* make upload and done button fill screen */
 .btn-large.btn.span6 {
 	margin: 0px 20px;
 	width: 440px;
@@ -48,23 +49,17 @@ input, textarea, .uneditable-input {
 	padding-right: 0px;
 }
 
-.holder {
-	line-height: 240px;
-	text-align: center;
-}
-
+/* Override bootstrap default form styles*/
 input, textarea, .uneditable-input {
 	width: 150px;
 }
 
-.popover {
-	max-width: 560px;
-	max-height: 410px;
-}
-
 .form-horizontal .control-label {
 	width: 100px;
+}
 
+.form-horizontal .control-group {
+	margin-bottom: 0px;
 }
 
 .form-horizontal .controls {
@@ -77,6 +72,12 @@ input, textarea, .uneditable-input {
 
 .form-horizontal input {
 	text-align: center;
+}
+
+/* used for image popout when hovering over thumbnail*/
+.popover {
+	max-width: 560px;
+	max-height: 410px;
 }
 
 .hoverzoom {

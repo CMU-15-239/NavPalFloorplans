@@ -2,15 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>NavPal Floor Creator</title>
+    <title>NavPal Authoring Tool</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
     <!-- Le styles -->
     <link href="./css/bootstrap.non-responsive.min.css" rel="stylesheet">
-    <link href="./css/docs.css" rel="stylesheet">
-    <link href="./css/styles.css" rel="stylesheet">
+    <link href="./css/global-styles.css" rel="stylesheet">
     <link href="./css/authoringTool.css" rel="stylesheet">    
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -34,18 +33,10 @@
           <a class="brand" href="./home.html">NavPal</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active">
-                <a href="./home.html">Home</a>
-              </li>
-              <li class="">
-                <a href="./howItWorks.html">How it works</a>
-              </li>
-              <li class="">
-                <a href="./featureGuide.html">Feature Guide</a>
-              </li>
-              <li class="">
-                <a href="./benefits.html">Benefits</a>
-              </li>
+              <li class="active"><a href="./home.html">Home</a></li>
+              <li class=""><a href="./howItWorks.html">How it works</a></li>
+              <li class=""><a href="./featureGuide.html">Feature Guide</a></li>
+              <li class=""><a href="./benefits.html">Benefits</a></li>
             </ul>
           </div>
         </div>
@@ -54,46 +45,46 @@
     <!-- end Navbar -->
 
     <div class="container-fluid authoringTool">
-
       <!-- floorplan carousel -->
       <div class="row-fluid" id="carousel">
         <div class="connected-carousels row-fluid">
-                <div class="stage span3">
-                    <div class="carousel carousel-stage">
-                        <ul>
-                            <li><img class="currentImage" src="./img/test/img1.jpg" alt=""></li>
-                            <li><img class="currentImage" src="./img/test/img2.jpg" alt=""></li>
-                            <li><img class="currentImage" src="./img/test/img3.jpg" alt=""></li>
-                            <li><img class="currentImage" src="./img/test/img4.jpg" alt=""></li>
-                            <li><img class="currentImage" src="./img/test/img5.jpg" alt=""></li>
-                            <li><img class="currentImage" src="./img/test/img6.jpg" alt=""></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="navigation container-fluid">
-                    <a href="#" class="prev prev-navigation">&lsaquo;</a>
-                    <a href="#" class="next next-navigation">&rsaquo;</a>
-                    <div class="carousel carousel-navigation">
-                        <ul>
-                            <li><img class="navigationImage" src="./img/test/img1.jpg" alt=""></li>
-                            <li><img class="navigationImage" src="./img/test/img2.jpg" alt=""></li>
-                            <li><img class="navigationImage" src="./img/test/img3.jpg" alt=""></li>
-                            <li><img class="navigationImage" src="./img/test/img4.jpg" alt=""></li>
-                            <li><img class="navigationImage" src="./img/test/img5.jpg" alt=""></li>
-                            <li><img class="navigationImage" src="./img/test/img6.jpg" alt=""></li>
-                        </ul>
-                    </div>
-                </div>
+          <div class="stage span3">
+            <div class="carousel carousel-stage">
+              <ul>
+                <li><img class="currentImage" src="./img/test/img1.jpg" alt=""></li>
+                <li><img class="currentImage" src="./img/test/img2.jpg" alt=""></li>
+                <li><img class="currentImage" src="./img/test/img3.jpg" alt=""></li>
+                <li><img class="currentImage" src="./img/test/img4.jpg" alt=""></li>
+                <li><img class="currentImage" src="./img/test/img5.jpg" alt=""></li>
+                <li><img class="currentImage" src="./img/test/img6.jpg" alt=""></li>
+              </ul>
             </div>
+          </div>
+
+          <div class="navigation container-fluid">
+            <a href="#" class="prev prev-navigation">&lsaquo;</a>
+            <a href="#" class="next next-navigation">&rsaquo;</a>
+            <div class="carousel carousel-navigation">
+              <ul>
+                <li><img class="navigationImage" src="./img/test/img1.jpg" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/img2.jpg" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/img3.jpg" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/img4.jpg" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/img5.jpg" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/img6.jpg" alt=""></li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- end carousel -->
 
+      <!-- toolbar -->
       <div class="row authoringTool" id="toolRow">
         <div id="toolHolder">
           <div class="toolGrouping">
             <div class="row-fluid toolrow">
-              <div class="toolIcon left" style="background-image: url(img/cursorIcon.svg)">            </div>
+              <div class="toolIcon left" style="background-image: url(img/cursorIcon.svg)"></div>
               <div class="toolIcon right" style="background-image: url(img/handIcon.svg)"></div>
             </div>
             <div class="row-fluid toolrow">
@@ -101,7 +92,7 @@
               <div class="toolIcon right" style="background-image: url(img/redoIcon.svg)"></div>
             </div>
             <div class="row-fluid toolrow">
-              <div class="toolIcon left" style="background-image: url(img/zoominIcon.svg)">            </div>
+              <div class="toolIcon left" style="background-image: url(img/zoominIcon.svg)"></div>
               <div class="toolIcon right" style="background-image: url(img/zoomoutIcon.svg)"></div>
             </div>      
           </div>
@@ -111,7 +102,7 @@
               <div class="toolIcon right" style="background-image: url(img/doorIcon.svg)"></div>
             </div>
             <div class="row-fluid toolrow">
-              <div class="toolIcon left" style="background-image: url(img/labelIcon.svg)">            </div>
+              <div class="toolIcon left" style="background-image: url(img/labelIcon.svg)"></div>
               <div class="toolIcon right" style="background-image: url(img/nailIcon.svg)"></div>
             </div>
           </div>
@@ -122,31 +113,33 @@
             </div>
           </div>
         </div>
+        <!-- end toolbar -->
 
         <canvas id="canvas"></canvas>
+
       </div>
     </div>
 
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="./js/jquery.js"></script>
-    <script src="./js/bootstrap/bootstrap.js"></script>
-    <script type="text/javascript" src="./js/carousel/jquery.jcarousel.js"></script>
-    <script src="./js/authoringTool.js"></script>
-    <script src="./js/lib/Util.js"></script>
-    <script src="./js/lib/kinetic.js"></script>
-    <script src = "./js/lib/globals.js"></script>
-    <script src = "./js/draw/Point.js"></script>
-    <script src = "./js/draw/line.js"></script>
-    <script src = "./js/draw/space.js"></script>
-    <script src = "./js/draw/Draw.js"></script>
-    <script src = "./js/draw/RoomClosed.js"></script>
-    <script src = "./js/draw/RoomDetection.js"></script>
-    <script src = "./js/draw/RoomSelect.js"></script>
-    <script src = "./js/draw/Polygon.js"></script>
-    <script src = "./js/draw/Exception.js"></script>
-    <script src="./js/preprocessing.js"></script>
+    <script src = "./js/jquery.js" type="text/javascript"></script>
+    <script src = "./js/bootstrap/bootstrap.js" type="text/javascript"></script>
+    <script src = "./js/carousel/jquery.jcarousel.js" type="text/javascript"></script>
+    <script src = "./js/authoringTool.js" type="text/javascript"></script>
+    <script src = "./js/lib/Util.js" type="text/javascript"></script>
+    <script src = "./js/lib/kinetic.js" type="text/javascript"></script>
+    <script src = "./js/lib/globals.js" type="text/javascript"></script>
+    <script src = "./js/draw/Point.js" type="text/javascript"></script>
+    <script src = "./js/draw/line.js" type="text/javascript"></script>
+    <script src = "./js/draw/space.js" type="text/javascript"></script>
+    <script src = "./js/draw/Draw.js" type="text/javascript"></script>
+    <script src = "./js/draw/RoomClosed.js" type="text/javascript"></script>
+    <script src = "./js/draw/RoomDetection.js" type="text/javascript"></script>
+    <script src = "./js/draw/RoomSelect.js" type="text/javascript"></script>
+    <script src = "./js/draw/Polygon.js" type="text/javascript"></script>
+    <script src = "./js/draw/Exception.js" type="text/javascript"></script>
+    <script src = "./js/preprocessing.js" type="text/javascript"></script>
 
   </body>
 </html>
