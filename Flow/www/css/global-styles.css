@@ -6,6 +6,10 @@
 
 /* Body and structure
 -------------------------------------------------- */
+html {
+  min-width: 940px;
+}
+
 body {
   position: relative;
   padding-top: 40px;
@@ -84,7 +88,6 @@ body > .navbar .brand:hover {
   font-size: 24px;
   font-weight: 300;
   line-height: 1.25;
-  margin-bottom: 30px;
 }
 
 /* Link styles (used on .masthead-links as well) */
@@ -102,7 +105,7 @@ body > .navbar .brand:hover {
 
 /* Take the first step button */
 .masthead .btn {
-  margin-top: 40px;
+  margin-top: 20px;
   padding: 19px 24px;
   font-size: 24px;
   font-weight: 200;
@@ -132,7 +135,7 @@ body > .navbar .brand:hover {
 /* Masthead (home)
 ------------------------- */
 .masthead {
-  padding: 70px 0 40px;
+  padding: 50px 0 40px;
   margin-bottom: 40px;
   color: #fff;
 }
@@ -162,83 +165,4 @@ body > .navbar .brand:hover {
 }
 .subhead .navbar {
   display: none;
-}
-
-/* Responsive
--------------------------------------------------- */
-
-/* Desktop
-------------------------- */
-@media (max-width: 980px) {
-  /* Unfloat brand */
-  body > .navbar-fixed-top .brand {
-    float: left;
-    margin-left: 0;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-}
-
-/* Tablet to desktop
-------------------------- */
-@media (min-width: 768px) and (max-width: 979px) {
-  /* Widen masthead and social buttons to fill body padding */
-  .jumbotron {
-    margin-top: -20px; /* Offset bottom margin on .navbar */
-  }
-
-}
-
-/* Tablet
-------------------------- */
-@media (max-width: 767px) {
-
-  /* Widen masthead and social buttons to fill body padding */
-  .jumbotron {
-    padding: 40px 20px;
-    margin-top:   -20px; /* Offset bottom margin on .navbar */
-    margin-right: -20px;
-    margin-left:  -20px;
-  }
-  .masthead h1 {
-    font-size: 90px;
-        margin-bottom: 20px;
-
-  }
-  .masthead p,
-  .masthead .btn {
-    font-size: 24px;
-  }
-
-}
-
-/* Landscape phones
-------------------------- */
-@media (max-width: 480px) {
-
-  /* Change up some type stuff */
-  h2 small {
-    display: block;
-  }
-
-  /* Downsize the jumbotrons */
-  .jumbotron h1 {
-    font-size: 45px;
-  }
-  .jumbotron p,
-  .jumbotron .btn {
-    font-size: 18px;
-  }
-  .jumbotron .btn {
-    display: block;
-    margin: 0 auto;
-  }
-
-  /* center align subhead text like the masthead */
-  .subhead h1,
-  .subhead p {
-    text-align: center;
-  }
-
 }
