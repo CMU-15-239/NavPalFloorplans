@@ -9,7 +9,8 @@
 
     <!-- Le styles -->
     <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="css/docs.css" rel="stylesheet">
+    <link href="css/global-styles.css" rel="stylesheet">
+    <link href="css/authentication.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -69,61 +70,44 @@
           </div>
         
           <div class="span4 offset2">   
-              <form action="/signup" method="POST" autocomplete="off" class="clearfix span4" id="auth-form"><div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="5jHx3oaKMvEefEzxqyUfKSs2PJ0YYk6u"></div>
                   <h3>Log in</h3>
-                  <div class="all-errors">
-                      
+
+                  <div class="all-errors"></div>
+
+                  <div class="input">
+                      <input id="login-email" type="text" placeholder="Email" maxlength="75">
                   </div>
 
                   <div class="input">
-                      <input id="id_email" type="text" placeholder="Email" name="email" maxlength="75">
-                      
-                  <div class="email_suggestion"></div>
-                  </div>
-                  <div class="input">
-                      <input type="password" placeholder="Password" name="password" id="id_password">
-                      
+                      <input id="login-pass" type="password" placeholder="Password">
                   </div>
 
-                  <div class="action">
-                      
-                          <input type="hidden" name="next" value="/welcome/">
-                      
-                      <input type="submit" value="Login" class="btn btn-primary registration-btn">
-                  </div>
-              </form>
+                  <button id="login-btn" class="btn btn-primary registration-btn">Login</button>
           </div>
           
-          <div class="span6">   
-              <form action="/signup" method="POST" autocomplete="off" class="clearfix span4" id="auth-form"><div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="5jHx3oaKMvEefEzxqyUfKSs2PJ0YYk6u"></div>
-                  <h3>Sign up with email</h3>
+          <div class="span4">   
+                <h3>Sign up with email</h3>
                   <div class="all-errors">
                       
                   </div>
 
                   <div class="input">
-                      <input id="id_email" type="text" placeholder="Email" name="email" maxlength="75">
+                      <input id="reg-email" type="text" placeholder="Email" name="email" maxlength="75">
                   </div>
 
                    <div class="input">
-                      <input id="id_email" type="text" placeholder="Confirm Email" name="email" maxlength="75">
+                      <input id="confirm-email" type="text" placeholder="Confirm Email" name="email" maxlength="75">
                   </div>
 
                   <div class="input">
-                      <input type="password" placeholder="Password" name="password" id="id_password">
+                      <input id="reg-pass" type="password" placeholder="Password">
                   </div>
 
                   <div class="input">
-                      <input type="password" placeholder="Confirm Password" name="password" id="id_password">
+                      <input id="confirm-pass" type="password" placeholder="Confirm Password">
                   </div>
 
-                  <div class="action">
-                      
-                          <input type="hidden" name="next" value="/welcome/">
-                      
-                      <input type="submit" value="Create account" class="btn btn-primary registration-btn">
-                  </div>
-              </form>
+                  <div id="reg-btn" class="btn btn-primary registration-btn">Create account</div>
           </div>
       </div>
     </div>
@@ -132,9 +116,9 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./js/authentication.js"></script>
 
   </body>
 </html>

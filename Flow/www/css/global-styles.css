@@ -183,10 +183,6 @@ body > .navbar .brand:hover {
 /* Tablet to desktop
 ------------------------- */
 @media (min-width: 768px) and (max-width: 979px) {
-  /* Remove any padding from the body */
-  body {
-    padding-top: 0;
-  }
   /* Widen masthead and social buttons to fill body padding */
   .jumbotron {
     margin-top: -20px; /* Offset bottom margin on .navbar */
@@ -197,10 +193,6 @@ body > .navbar .brand:hover {
 /* Tablet
 ------------------------- */
 @media (max-width: 767px) {
-  /* Remove any padding from the body */
-  body {
-    padding-top: 0;
-  }
 
   /* Widen masthead and social buttons to fill body padding */
   .jumbotron {
@@ -224,10 +216,6 @@ body > .navbar .brand:hover {
 /* Landscape phones
 ------------------------- */
 @media (max-width: 480px) {
-  /* Remove padding above jumbotron */
-  body {
-    padding-top: 0;
-  }
 
   /* Change up some type stuff */
   h2 small {
