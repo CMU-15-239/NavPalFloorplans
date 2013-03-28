@@ -98,9 +98,14 @@ body > .navbar .brand:hover {
      -moz-transition: all .2s ease-in-out;
           transition: all .2s ease-in-out;
 }
+
 .jumbotron a:hover {
   color: #fff;
   text-shadow: 0 0 10px rgba(255,255,255,.25);
+}
+
+.jumbotron .container {
+  padding-left: 15px;
 }
 
 /* Take the first step button */
