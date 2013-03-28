@@ -61,7 +61,7 @@ function labelTemplate(fileName) {
 			<div class="control-group">\
 				<label class="control-label" for="floorLabel">Floor Number:</label>\
 				<div class="controls">\
-					<input type="text" id="inputPassword" placeholder="###">\
+					<input type="text" placeholder="##">\
 				</div>\
 			</div>\
 		</form>');
@@ -98,16 +98,16 @@ function createThumb(file) {
         var floorPlanImg = new Image();
         floorPlanImg.onload = function() {
 
-        	var li = $('<li></li>').addClass('span4')
+        	var li = $('<li></li>').addClass('span4').addClass('thumb-li')
         	var thumb = $('<div></div>').addClass('thumbnail');
-        	var holder = $('<div></div>').addClass('holder');
+        	var imgHolder = $('<div></div>').addClass('img-holder');
         	var caption = $('<div></div>').addClass('caption');
         	var label = labelTemplate(file.name);
         	var floorPlan = formatFloorPlan(floorPlanImg);
 
-        	holder.append(floorPlan);
+        	imgHolder.append(floorPlan);
         	caption.append(label);
-        	thumb.append(holder);
+        	thumb.append(imgHolder);
         	thumb.append(caption);
             li.append(thumb);
 

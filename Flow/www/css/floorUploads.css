@@ -24,16 +24,20 @@
 }
 
 /* holder for each thumbnail*/
-.holder {
+.img-holder {
 	line-height: 240px;
 	text-align: center;
 }
 
 /* used to center thumb within container*/
-.thumbnail {
-	line-height: 30px;
+.thumb-container {
+	line-height: 20px;
+	height: 100%
 }
 
+
+
+/* used for cool image border*/
 .floorPlan {
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
@@ -49,9 +53,17 @@
 	padding-right: 0px;
 }
 
+.thumbnail {
+	height: 100%;
+}
+
+.thumb-li {
+	height: 350px;
+}
+
 /* Override bootstrap default form styles*/
 input, textarea, .uneditable-input {
-	width: 150px;
+	width: 40px;
 }
 
 .form-horizontal .control-label {
@@ -63,11 +75,12 @@ input, textarea, .uneditable-input {
 }
 
 .form-horizontal .controls {
-	margin-left: 120px;
+	margin-left: 110px;
+	word-wrap: break-word;
 }
 
 .form, .form-horizontal {
-	margin-bottom: 10px;
+	margin-bottom: 0px;
 }
 
 .form-horizontal input {
