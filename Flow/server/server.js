@@ -268,7 +268,7 @@ app.post('/preprocess', function (request, response) {
                      
                   } else {
                      user.saveImage(data, function(imageObj) {
-                        if(util.exists(imageObj) {
+                        if(util.exists(imageObj)) {
                            lines.imageId = imageObj.imageId;
                            return response.send(lines);
                         }
