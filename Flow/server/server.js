@@ -62,7 +62,7 @@ function configureExpress(app) {
         app.use(passport.initialize());
         app.use(passport.session());
         
-    	app.use(express.session({secret:"keyboard cat"}));
+    	app.use(express.session({userId: "", secret:"keyboard cat"}));
     	app.use(express.static(path.join(__dirname, '../www')));
 
         app.use(function(request, response, next) {
@@ -134,6 +134,7 @@ app.post('/login', passport.authenticate('local'), function(request, response) {
    request.session.userId = request.user._id;
    request.user.save(function(err) {
       response.status(200);
+      
       return response.send({
          buildings: request.user.getBuildingRefs()
       });
@@ -244,23 +245,74 @@ app.post('/preprocess', function (request, response) {
    flowDB.getUserById(request.session.userId, function(user) {
       if(Util.exists(user)) {
          var base64Data = req.body.image;
-         var imagePath = '../www/floorplans/floorPlan.jpg';
+         //var imagePath = '../www/floorplans/floorPlan.jpg';
+         
+         var imageDir = '/temp/images/';
+         var imagePath = imageDir + 'image1.jpg';
+         
          var index = base64Data.indexOf('base64,') + 'base64,'.length;
          base64Data = base64Data.substring(index, base64Data.length);
          fs.writeFile(imagePath, new Buffer(base64Data, "base64"));
          preprocessor(imagePath, function(lines) {
             if(Util.exists(lines)) {
                lines.errorCode = 0;
+               lines.imageId = null;
                response.status(200);
-               return response.send(lines);
+
+               //TODO: read image from same file and add to db
+                  //var imageObj = user.addImage(base64Data);
+                  //imageObj.imageId
+               fs.readFile(imagePath, function(err, data) {
+                  
+                  if(err) {
+                     
+                  } else {
+                     user.saveImage(data, function(imageObj) {
+                        if(util.exists(imageObj) {
+                           lines.imageId = imageObj.imageId;
+                           return response.send(lines);
+                        }
+                     });
+                  }
+               });
             } else {
                response.status(500);
-               response.send({errorCode: 1});
+               return response.send({errorCode: 1});
             }
          });
       } else {
          response.status(401);
          return response.send();
+      }
+   });
+});
+
+/**
+ * Summary: Route to get the preprocessed image.
+ * request: {imageId : String}
+ * response: {errorCode : Number, image : String}
+ * errorCode: success 0, image not found 404, unauthorized 401
+ * httpCode: success 200, image not found 404, unauthorized 401
+**/
+app.get('/getImage', function(request, response) {
+   flowDB.getUserById(request.session.userId, function(user) {
+      if(Util.exists(user)) {
+         user.getImage(request.body.imageId, function(imageObj) {
+            if(Util.exists(image)) {
+               response.status(200);
+               return response.send({
+                  errorCode: 0,
+                  image: imageObj.image
+               });
+            } else {
+               response.status(404);
+               return response.send({errorCode: 404});
+            }
+         });
+         
+      } else {
+         response.status(401);
+         return response.send({errorCode: 401});
       }
    });
 });
