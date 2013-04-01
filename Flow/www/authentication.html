@@ -63,25 +63,29 @@
         ================================================== -->
         <div class="span4 offset2">   
           <h3>Log in</h3>
-          <div class="input">
-            <input id="login-email" type="text" placeholder="Email" maxlength="75">
-            <input id="login-pass" type="password" placeholder="Password"></div>
-          <button id="login-btn" class="btn btn-primary registration-btn">Login</button>
+          <div id="loginForm" class="control-group">
+            <input id="loginEmail" type="text" placeholder="Email" maxlength="75">
+            <input id="loginPass" type="password" placeholder="Password">
+            <div id="loginInfo" class="help-inline" style="display:none"></div>
+          </div>
+            <button id="loginButton" class="btn btn-primary auth-btn">Login</button>
         </div>
           
         <!-- Registration Form
         ================================================== -->
         <div class="span4">   
           <h3>Sign up with email</h3>
-          <div class="control-group">
-            <input id="reg-email" type="text" placeholder="Email" name="email" maxlength="75">
-            <input id="confirm-email" type="text" placeholder="Confirm Email" name="email" maxlength="75">
+          <div id="matchEmails" class="control-group">
+            <input id="regEmail" type="text" placeholder="Email" name="email" maxlength="75">
+            <input id="confirmEmail" type="text" placeholder="Confirm Email" name="email" maxlength="75">
+            <div id="regEmailInfo" class="help-inline" style="display:none"></div>
           </div>
-          <div class="control-group">
-            <input id="reg-pass" type="password" placeholder="Password">
-            <input id="confirm-pass" type="password" placeholder="Confirm Password">
+          <div id="matchPasswords" class="control-group">
+            <input id="regPass" type="password" placeholder="Password">
+            <input id="confirmPass" type="password" placeholder="Confirm Password">
+            <div id="regPasswordInfo" class="help-inline" style="display:none"></div>
           </div>
-          <div id="reg-btn" class="btn btn-primary registration-btn">Create account</div>
+          <div id="regButton" class="btn btn-primary auth-btn">Create account</div>
         </div>
 
       </div>
