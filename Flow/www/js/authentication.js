@@ -33,7 +33,8 @@ $("#reg-btn").click(function() {
 				password: regPass
 			},
 		}).done(function(response) {
-			console.log(response)
+			var errorCode = response.errorCode
+			if (errorCode = 0) { alert('success!')}
 		});
 	}
 })
