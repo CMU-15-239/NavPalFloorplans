@@ -134,9 +134,21 @@ $('#file').click(function(){
  * Parameters: n/a
  * Returns: appends images into image gallary
 **/
-fileInput.change( function(e){
+fileInput.change( function(e) {
 	var files = e.target.files
     for (var i=0; i < files.length; i++) {
     	createThumb(files[i]);
     }
 });
+
+$("#done").click(function(e) {
+	var buildingName = $("#buildingNameInput").val();
+	var thumbs = $(".thumbnail");
+	console.log(thumbs);
+	if (buildingName !== "" && thumbs.length !== 0) {
+		$("#loadingOverlay").css('display', 'block');
+		for (var i = 0; i < thumbs.length; i++) {
+			thumbs[i]
+		};
+	}
+})
