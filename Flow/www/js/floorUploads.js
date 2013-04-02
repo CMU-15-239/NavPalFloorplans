@@ -150,7 +150,6 @@ fileInput.change( function(e) {
 $("#done").click(function(e) {
 	var buildingName = $("#buildingNameInput").val();
 	var thumbs = $(".thumbnail");
-	console.log(thumbs);
 	if (buildingName !== "" && thumbs.length !== 0) {
 		$("#loadingOverlay").css('display', 'block');
 		for (var i = 0; i < thumbs.length; i++) {

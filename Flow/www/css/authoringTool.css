@@ -90,8 +90,7 @@ html, body {
 -------------------------------------------------- */
 .connected-carousels .navigation {
 	position: relative;
-	right: 20px;
-	left: 20px;
+	left: 15px;
 	width: auto;
 	height: 160px;
 }
