@@ -12,6 +12,7 @@ DrawState.prototype = new BaseState();
 
 //NEED TO HAVE
 DrawState.prototype.enter = function() {
+console.log("entering draw state");
 }
 
 //NEED TO HAVE

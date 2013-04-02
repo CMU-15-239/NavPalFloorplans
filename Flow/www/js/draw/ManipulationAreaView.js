@@ -91,8 +91,17 @@ ManipulationAreaView.prototype.zoom = function(isZoomIn) {
  * Returns: true if zoom was successful, and false if already at zoom bounds
 **/
 ManipulationAreaView.prototype.zoomCanvasPoint = function(isZoomIn, point) {
+	
+	oldRealPoint = this.toRealWorld(point);
+	
 	// Apply a zoom
 	zoom = this.zoom(isZoomIn);
+	
+	newRealPoint = this.toRealWorld(point);
+	
+	this.offsetX += (oldRealPoint.x - newRealPoint.x);
+	this.offsetY += (oldRealPoint.y - newRealPoint.y);
+	/*
 	
 	// Modify the offset so it remains in the same place
 	if (zoom) {
@@ -109,7 +118,7 @@ ManipulationAreaView.prototype.zoomCanvasPoint = function(isZoomIn, point) {
 		this.offsetX += dx;
 		this.offsetY += dy;
 	}
-	
+	*/
 	return zoom;
 }
 

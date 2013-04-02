@@ -3,7 +3,9 @@ var StateManager = function() {
 		"Preprocess": new PreprocessState(this),
 		"Draw": new DrawState(this),
 		"Select": new SelectState(this),
-		"Move": new MoveState(this)
+		"Move": new MoveState(this),
+		"Zoom": new ZoomState(this),
+		"Pan": new PanState(this)
 	};
 	
 	this.currentState = this.avaliableStates["Draw"];
@@ -32,7 +34,8 @@ StateManager.prototype.aboutToSnapToPoint = function(testPoint, recentlyAddedPoi
 	var numPoints = recentlyAddedPoints.length;
 	for (var i = 0; i < GLOBALS.points.length; i++) {
 		curPoint = GLOBALS.points[i];
-		if (testPoint.distance(curPoint) <= GLOBALS.snapRadius) {
+		// Snap radius depends on the scale
+		if (testPoint.distance(curPoint) <= GLOBALS.snapRadius / GLOBALS.view.scale) {
 			//Make sure that we're not snapping to the point we just added, if it exists.
 			if (numPoints === 0 || (numPoints > 0 && !recentlyAddedPoints[numPoints - 1].equals(curPoint))) {
 				return curPoint;
@@ -46,11 +49,23 @@ StateManager.prototype.aboutToSnapToLine = function(testPoint) {
 	var curWall;
 	for (var i = 0; i < GLOBALS.walls.length; i++) {
 		curWall = GLOBALS.walls[i];
-		if (curWall.pointNearLine(testPoint, GLOBALS.snapRadius)) {
+		// Snap radius depends on scale
+		if (curWall.pointNearLine(testPoint, GLOBALS.snapRadius / GLOBALS.view.scale)) {
 			return curWall;
 		}
 	}
 	return null;
 }
 
+// Allow for mousewheel scrolling in ANY state
+StateManager.prototype.scroll = function(event) {
+
+	// Consider: GLOBALS.canvas.width - event.originalEvent.layerX [WLOG Y]
+	// It provices a different feel for zoom out
+	GLOBALS.view.zoomCanvasPoint(event.originalEvent.wheelDeltaY > 0, 
+								 new Point(event.originalEvent.layerX, 
+										   event.originalEvent.layerY));
+	
+	this.redraw();
+}
 

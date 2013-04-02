@@ -43,11 +43,11 @@ function initCanvasEventHandlers(stateManager) {
 	});
 	
 	$("#canvas").mousedown(function(event) {
-		stateManager.currentState.mouseDown(event);
+		stateManager.currentState.mousedown(event);
 	});
 	
 	$("#canvas").mouseup(function(event) {
-		stateManager.currentState.mouseUp(event);
+		stateManager.currentState.mouseup(event);
 	});
 	
 	$("#canvas").keypress(function(event) {
@@ -60,5 +60,9 @@ function initCanvasEventHandlers(stateManager) {
 	
 	$("#canvas").keyup(function(event) {
 		stateManager.currentState.keyUp(event);
-	});	
+	});
+	
+	//$("#canvas").on('mousewheel', function(event){console.log(event)});
+	$("#canvas").on('mousewheel', function(event){stateManager.scroll(event)});
+	
 }
