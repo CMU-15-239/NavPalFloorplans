@@ -12,7 +12,7 @@ html {
 
 body {
   width: 100%;
-  height: 100%;
+  height: auto;
   margin: 0px;
   padding: 0px;
   margin: 0px;
@@ -35,6 +35,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0px;
   padding:0px;
   top: 0px;
+  right:0px;
 }
 
 
@@ -70,8 +71,8 @@ body > .navbar .brand:hover {
 /* Base class
 ------------------------- */
 .jumbotron {
-  position: relative;
-  padding: 40px 0;
+  margin-top: 40px;
+  padding: 40px 10px;
   color: #fff;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
@@ -92,6 +93,7 @@ body > .navbar .brand:hover {
   font-weight: bold;
   letter-spacing: -1px;
   line-height: 1;
+  margin-bottom: 10px;
 }
 .jumbotron p {
   font-size: 24px;
@@ -113,9 +115,24 @@ body > .navbar .brand:hover {
   text-shadow: 0 0 10px rgba(255,255,255,.25);
 }
 
-.jumbotron .container {
-  
-  width: 100%;
+
+/* Masthead (home)
+------------------------- */
+.masthead {
+  color: #fff;
+}
+
+.masthead h1 {
+  font-size: 80px;
+  line-height: 1;
+  letter-spacing: -2px;
+  margin-bottom: 20px;
+}
+
+.masthead p {
+  font-size: 36px;
+  font-weight: 200;
+  line-height: 1.25;
 }
 
 /* Take the first step button */
@@ -136,49 +153,26 @@ body > .navbar .brand:hover {
      -moz-transition: none;
           transition: none;
 }
+
 .masthead .btn:hover {
   -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
      -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
           box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
 }
+
 .masthead .btn:active {
   -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
      -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
           box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
 }
 
-/* Masthead (home)
-------------------------- */
-.masthead {
-  padding: 50px 0 40px;
-  margin-bottom: 40px;
-  color: #fff;
-}
-.masthead h1 {
-  font-size: 80px;
-  line-height: 1;
-  letter-spacing: -2px;
-      margin-bottom: 20px;
-}
-.masthead p {
-  font-size: 36px;
-  font-weight: 200;
-  line-height: 1.25;
-}
-
 /* Subhead (other pages)
 ------------------------- */
 .subhead {
-  padding-left: 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
+
 .subhead h1 {
   font-size: 60px;
-}
-.subhead p {
-  margin-bottom: 20px;
-}
-.subhead .navbar {
-  display: none;
 }

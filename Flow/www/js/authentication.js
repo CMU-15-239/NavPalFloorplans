@@ -1,8 +1,9 @@
 $("#loginButton").click(function() {
-	var logEmail = $("#loginEmail").val()
-	var logPass = $("#loginPass").val()
+	$(".help-block").addClass('hidden');
+	var logEmail = $("#loginEmail").val();
+	var logPass = $("#loginPass").val();
 	var loginForm = $("#loginForm").attr('class', 'control-group');
-	var loginInfo = $("#loginInfo").css('display', 'none');
+	var loginInfo = $("#loginInfo");
 	$.ajax({
 		type: "POST",
 		url: '/login',
@@ -15,30 +16,28 @@ $("#loginButton").click(function() {
 		},
 		error: function() {
 			loginForm.addClass('error');
-			loginInfo.css('display', 'block');
-			loginInfo.text('Login failed, please try again');
+			loginInfo.removeClass('hidden').text('Login failed, please try again');
 		},
 	});
 })
 
 $("#regButton").click(function() {
-	var regEmail = $("#regEmail").val()
-	var conEmail = $("#confirmEmail").val()
-	var regPass = $("#regPass").val()
-	var confirmPass = $("#confirmPass").val()
+	$(".help-block").addClass('hidden');
+	var regEmail = $("#regEmail").val();
+	var conEmail = $("#confirmEmail").val();
+	var regPass = $("#regPass").val();
+	var confirmPass = $("#confirmPass").val();
 	var matchEmails = $('#matchEmails').attr('class', 'control-group');
 	var matchPasswords = $('#matchPasswords').attr('class', 'control-group');
-	var regEmailInfo = $('#regEmailInfo').css('display', 'none');
-	var regPasswordInfo = $('#regPasswordInfo').css('display', 'none');
+	var regEmailInfo = $('#regEmailInfo');
+	var regPasswordInfo = $('#regPasswordInfo');
 	if (regEmail !== conEmail) {
 		matchEmails.addClass('error');
-		regEmailInfo.css('display', 'block');
-		regEmailInfo.text('Emails do not match.');
+		regEmailInfo.removeClass('hidden').text('Emails do not match.');
 	}
 	else if (regPass !== confirmPass) {
 		matchPasswords.addClass('error');
-		regPasswordInfo.css('display', 'block');
-		regPasswordInfo.text('Passwords do not match');
+		regPasswordInfo.removeClass('hidden').text('Passwords do not match');
 	}
 	else {
 		$.ajax({
@@ -49,21 +48,17 @@ $("#regButton").click(function() {
 				password: regPass
 			},
 		}).done(function(response) {
-			console.log(response.errorCode)
-			
 			switch (response.errorCode) {
 				case 0:
 					alert ("success");
 					break
 				case 1:
 					matchEmails.addClass('info');
-					regEmailInfo.css('display', 'block');
-					regEmailInfo.text('Invalid Email');
+					regEmailInfo.removeClass('hidden').text('Invalid Email');
 					break
 				case 2:
 					matchEmails.addClass('info');
-					regEmailInfo.css('display', 'block');
-					regEmailInfo.text('Email already registered');
+					regEmailInfo.removeClass('hidden').text('Email already registered');
 					break
 				case 3:
 					break
