@@ -13,7 +13,7 @@ function importFloorNode(simpleFloorNode) {
 
 /**
  * Summary: Constructor for the FloorNode object.
- * Parameters: type: String, type of node (space vs psw)
+ * Parameters: type: String, type of floor node (e.g. space, psw, floorConnection)
 				edges: List of Strings (FloorNodes ids)
 				idPrefix: String, prefix for id
  * Returns: undefined

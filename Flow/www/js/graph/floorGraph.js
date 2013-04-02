@@ -32,8 +32,11 @@ function importFloorGraph(simpleFloorGraph) {
 function FloorGraph(spaces, callback, callbackVars) {
 	this.spaceNodes = [];
 	this.pswNodes = [];
+	this.floorConnectionNodes = [];
+  
   this.spaceType = "space";
   this.pswType = "psw";
+  this.floorConnectionType = "floorConnection";
 	
   if(util.exists(spaces)) {
     for(var s = 0; s < spaces.length; s++) {
