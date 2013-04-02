@@ -10,7 +10,7 @@
  * Returns: n/a
 **/
 var THUMBWIDTH = 280.0;
-var THUMBHEIGHT = 240.0;
+var THUMBHEIGHT = 200.0;
 
 /**
  * Summary: hides origonal file input button because it is ugly
@@ -51,17 +51,17 @@ function popoverOptions(imgSrc, width, height) {
 **/
 function labelTemplate(fileName) {
 	return $(
-		'<form class="form-horizontal">\
+		'<form class="form-horizontal well form-inline">\
 			<div class="control-group">\
 				<label class="control-label" for="fileName">File Name:</label>\
 				<div class="controls">\
-					<p style="vertical-align:middle">'+ fileName +'</p>\
+					<p>'+ fileName +'</p>\
 				</div>\
 			</div>\
 			<div class="control-group">\
 				<label class="control-label" for="floorLabel">Floor Number:</label>\
 				<div class="controls">\
-					<input type="text" placeholder="##">\
+					<input class="span1" type="text">\
 				</div>\
 			</div>\
 		</form>');
@@ -141,6 +141,12 @@ fileInput.change( function(e) {
     }
 });
 
+
+/**
+ * Summary: uploads all floorplans to preprocessor
+ * Parameters: n/a
+ * Returns: redirection to authoringTool page
+**/
 $("#done").click(function(e) {
 	var buildingName = $("#buildingNameInput").val();
 	var thumbs = $(".thumbnail");

@@ -36,14 +36,14 @@
 
 /* holder for each thumbnail*/
 .img-holder {
-	line-height: 240px;
+	line-height: 200px;
+	padding: 5px;
 	text-align: center;
 }
 
-/* used to center thumb within container*/
-.thumb-container {
-	line-height: 20px;
-	height: 100%;
+p {
+	padding-top: 5px;
+	margin-bottom: 5px;
 }
 
 /* used for cool image border*/
@@ -60,25 +60,14 @@
 	padding-right: 0px;
 }
 
-.thumbnail {
-	height: 100%;
-}
-
-.thumb-li {
-	height: 350px;
-}
-
 /* Override bootstrap default form styles*/
-input, textarea, .uneditable-input {
-	width: 40px;
+.well {
+	padding-bottom: 0px;
 }
 
 .form-horizontal .control-label {
-	width: 100px;
-}
-
-.form-horizontal .control-group {
-	margin-bottom: 0px;
+	width: 90px;
+	display: inline;
 }
 
 .form-horizontal .controls {
@@ -108,6 +97,7 @@ input, textarea, .uneditable-input {
 	border-radius: 4px;
 }
 
+/* loading wheel */
 #floatingCirclesG {
 	position:relative;
 	width:300px;
@@ -235,51 +225,27 @@ input, textarea, .uneditable-input {
 }
 
 @-moz-keyframes f_fadeG {
-	0% {
-		background-color:#000000
-	}
-
-	100% {
-		background-color:#FFFFFF
+	0% {background-color:#000000}
+	100% {background-color:#FFFFFF
 	}
 }
 
 @-webkit-keyframes f_fadeG {
-	0% {
-		background-color:#000000
-	}
-
-	100% {
-		background-color:#FFFFFF
-	}
+	0% {background-color:#000000}
+	100% {background-color:#FFFFFF}
 }
 
 @-ms-keyframes f_fadeG {
-	0% {
-		background-color:#000000
-	}
-
-	100% {
-		background-color:#FFFFFF
-	}
+	0% {background-color:#000000}
+	100% {background-color:#FFFFFF}
 }
 
 @-o-keyframes f_fadeG {
-	0%{
-		background-color:#000000
-	}
-
-	100%{
-		background-color:#FFFFFF
-	}
+	0%{background-color:#000000}
+	100%{background-color:#FFFFFF}
 }
 
 @keyframes f_fadeG {
-	0% {
-		background-color:#000000
-	}
-
-	100% {
-		background-color:#FFFFFF
-	}
+	0% {background-color:#000000}
+	100% {background-color:#FFFFFF}
 }
