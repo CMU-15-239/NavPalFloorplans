@@ -1,3 +1,4 @@
+
 /**
  * Handles clicking events and creating of dynamic content for
    floor upload page
@@ -26,6 +27,7 @@ var fileInput = $(':file').wrap(wrapper);
  * Parameters: imgSrc-location of image, width-image width, height-image height
  * Returns: html template of popover
 **/
+
 function popoverOptions(imgSrc, width, height) { 
 	return {
 		html: true,
@@ -43,6 +45,7 @@ function popoverOptions(imgSrc, width, height) {
 	  }
 	}
 }
+
 
 /**
  * Summary: template for dyanmicly added floorplan from upload
@@ -67,12 +70,14 @@ function labelTemplate(fileName) {
 		</form>');
 }
 
+
 /**
  * Summary: return jquery object of floorplan with correct dimensions and centered
  			vertically within its container
  * Parameters: floorPlanImg-img object of uploaded floorplan
  * Returns: formatted image of floorplan
 **/
+
 function formatFloorPlan(floorPlanImg) {
 	var widthRatio = THUMBWIDTH / floorPlanImg.width;
 	var heightRatio = THUMBHEIGHT / floorPlanImg.height;
@@ -87,20 +92,24 @@ function formatFloorPlan(floorPlanImg) {
 	return floorPlan
 }
 
+
 /**
  * Summary: creates a thumbnail for a given floorplan file
  * Parameters: file-uploaded image of floorplan
  * Returns: n/a, appends element directly to image gallary
 **/
+
 function createThumb(file) {
 	var reader = new FileReader();
     reader.onload = function(event){
         var floorPlanImg = new Image();
         floorPlanImg.onload = function() {
 
+
         	var li = $('<li></li>').addClass('span4').addClass('thumb-li')
         	var thumb = $('<div></div>').addClass('thumbnail');
         	var imgHolder = $('<div></div>').addClass('img-holder');
+
         	var caption = $('<div></div>').addClass('caption');
         	var label = labelTemplate(file.name);
         	var floorPlan = formatFloorPlan(floorPlanImg);
@@ -108,6 +117,7 @@ function createThumb(file) {
         	imgHolder.append(floorPlan);
         	caption.append(label);
         	thumb.append(imgHolder);
+
         	thumb.append(caption);
             li.append(thumb);
 
@@ -118,6 +128,7 @@ function createThumb(file) {
     reader.readAsDataURL(file);
 }
 
+
 /**
  * Summary: html hack that allows styling of upload button #genius
  			hides input button (ugly) and paris clicking of pretty button
@@ -125,9 +136,11 @@ function createThumb(file) {
  * Parameters: none
  * Returns:
 **/
+
 $('#file').click(function(){
     fileInput.click();
 }).show();
+
 
 /**
  * Summary: goes through all selected files and creates thumbnail
@@ -157,3 +170,4 @@ $("#done").click(function(e) {
 		};
 	}
 })
+
