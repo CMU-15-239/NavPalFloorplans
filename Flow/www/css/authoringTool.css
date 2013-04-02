@@ -2,17 +2,23 @@
     Styles for authoring tool page
     Written by Daniel Muller
 */
+html {
+    min-width: 800px;
+}
 
 #carousel {
+    width: 100%;
     padding: 15px;
+    margin-top: 40px;
     background-image: url(../img/whitey.png);
     vertical-align: middle;
     width: auto;
 }
 
+
 #toolHolder {
     position: absolute;
-    top: 190px;
+    top: 230px;
     left:0px;
     bottom: 0px;
     padding-top: 15px;
@@ -84,9 +90,9 @@ html, body {
 /** Navigation container
 -------------------------------------------------- */
 .connected-carousels .navigation {
-	position: absolute;
+	position: relative;
 	right: 20px;
-	left: 275px;
+	left: 20px;
 	width: auto;
 	height: 160px;
 }
@@ -157,7 +163,7 @@ html, body {
 }
 
 .connected-carousels .prev-navigation {
-    left: 4px;
+    left: 224px;
     top: 65px;
     text-indent: 6px;
 }
