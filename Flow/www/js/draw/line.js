@@ -219,6 +219,10 @@ Line.prototype.magnitutde = function() {
 };
 
 Line.prototype.pointOfLineIntersection = function(line) {
+	//If they have a common endpoint, they don't intersect in any meaningful way.
+	if (this.p1.equals(line.p1) || this.p1.equals(line.p2) || this.p2.equals(line.p1) || this.p2.equals(line.p2)){
+		return null;
+	}
 	var epsilon = .00001;
 	
 	//The following can't be 0
@@ -229,7 +233,6 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	
 	//The equation for checking the x-value of the intersection of two lines in standard form.
 	var xIntersect = -1*(line.b*this.c - this.b*line.c)/(this.a*line.b - line.a*this.b);
-	console.log(xIntersect);
 	
 	//Now check that the x-value falls on both lines.
 	var fallsOnThis = ((this.p1.x >= xIntersect && xIntersect >= this.p2.x) || 
@@ -246,5 +249,50 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	
 	//There is no valid point of intersection.
 	return null;
+}
+
+Line.prototype.splitUpLine = function(setOfPoints) {
+	var sortedPoints = this.sortPoints(setOfPoints);
+	var newLineSegments = [];
+	var lineToSplit = this;
+	for (var i = 0; i < sortedPoints.length; i++) {
+		var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
+		newLineSegments.push(newSegs.l1);
+		lineToSplit = newSegs.l2;
+	}
+	newLineSegments.push(newSegs.l2);
+	return newLineSegments;
+}
+
+Line.prototype.sortPoints = function(points) {
+	points.unshift(this.p1);
+	var closestPoint;
+	var closestDistance = 100000000000;
+	var numSorted = 0;
+	var sortedPoints = [];
+	while (numSorted < points.length) {
+		var pointToCheck = points[numSorted];
+		for (var j = 0; j < points.length; j++) {
+			var curPoint = points[j];
+			if (!curPoint.equals(pointToCheck) &&
+				!this.containsPoint(sortedPoints, curPoint) && 
+				pointToCheck.distance(curPoint) < closestDistance) {
+				closestPoint = curPoint;
+				closestDistance = pointToCheck.distance(curPoint);
+			}
+		}
+		sortedPoints.push(closestPoint);
+		closestDistance = 10000000000000;
+		numSorted += 1;
+	}
+	//Remove this.p1
+	return points.splice(1, points.length - 1);
+}
+
+Line.prototype.containsPoint = function(pointList, point) {
+	for (var i = 0; i < pointList.length; i++) {
+		if (pointList[i].equals(point)) return true;
+	}
+	return false;
 }
 

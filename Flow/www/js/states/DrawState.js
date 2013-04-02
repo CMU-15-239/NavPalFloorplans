@@ -33,7 +33,6 @@ DrawState.prototype.mouseMove = function(event) {
 		snapLine.snapToLine(this.pointAtCursor);
 	}
 	
-	
 	this.stateManager.redraw();
 }
 
@@ -42,7 +41,6 @@ DrawState.prototype.click = function(event) {
 	var recentPoint = undefined;
 	if (numPoints > 0) recentPoint = this.pointsAddedInSession[numPoints - 1];
 	
-	this.addPoint(this.pointAtCursor);
 	
 	if (recentPoint !== undefined) {
 		//TO-DO: undo/redo
@@ -59,20 +57,57 @@ DrawState.prototype.click = function(event) {
 			this.mergeIntersectingLines(newWall);
 		}
 	}
+	
+	this.addPoint(this.pointAtCursor);
+	//console.log("Number of points: " + GLOBALS.points.length);
+	//console.log("Number of walls: " + GLOBALS.walls.length);
+	this.stateManager.redraw();
 }
 
 DrawState.prototype.mergeIntersectingLines = function(line) {
-	for (var i = 0; i < GLOBALS.walls.length; i++) {
+	var intersectionPoints = [];
+	var newLines = [];
+	var newPoints = [];
+	var deletedLines = [];
+	var i = 0;
+	while (i < GLOBALS.walls.length) {
 		curWall = GLOBALS.walls[i];
 		var pointOfIntersect = curWall.pointOfLineIntersection(line);
-		if (pointOfIntersect !== null) console.log(pointOfIntersect);
+		if (pointOfIntersect !== null) {
+			this.addPoint(pointOfIntersect);
+			intersectionPoints.push(pointOfIntersect);
+			newPoints.push(pointOfIntersect);
+			var twoNewLines = curWall.breakIntoTwo(pointOfIntersect);
+			newLines.push(twoNewLines.l1);
+			newLines.push(twoNewLines.l2);
+			deletedLines.push(curWall);
+			GLOBALS.removeWall(curWall, false);
+		}
+		else {
+			i += 1;
+		}
+	}
+	if (intersectionPoints.length === 0) this.addWall(line);
+	else {
+		//Now split up the line we just drew
+		var splitUpLineSegs = line.splitUpLine(intersectionPoints);
+		for (var i = 0; i < splitUpLineSegs.length; i++) {
+			newLines.push(splitUpLineSegs[i]);
+		}
 	}
 	
-	this.addWall(line);
+	//Now add in all the new lines
+	for (var k = 0; k < newLines.length; k++) {
+		this.addWall(newLines[k]);
+	}
+	
+	if (newLines.length === 0) this.addActionSetToStack({newlyAddedLines: new Array(line), deletedLines: deletedLines, newlyAddedPoints: newPoints});
+	else this.addActionSetToStack({newlyAddedLines: newLines, deletedLines: deletedLines, newlyAddedPoints: newPoints});
 }
 
-DrawState.prototype.addActionSetToStack = function(recentlyAddedWalls) {
-	actionStack.push(recentlyAddedWalls);
+DrawState.prototype.addActionSetToStack = function(recentAction) {
+	this.actionStack[this.actionStack.length] = recentAction;
+	//this.actionStack.push(recentlyAddedWalls);
 }
 
 DrawState.prototype.addPoint = function(pointToAdd) {
@@ -81,9 +116,6 @@ DrawState.prototype.addPoint = function(pointToAdd) {
 }
 
 DrawState.prototype.addWall = function(wallToAdd) {
-	var newAction = [];
-	newAction.push(wallToAdd);
-	this.actionStack.push(newAction);
 	GLOBALS.addWall(wallToAdd);
 }
 
@@ -108,8 +140,13 @@ DrawState.prototype.keyDown = function(event) {
 	if (keyCode === 32) {
 		this.disengage();
 	}
+	//b
 	else if (keyCode === 66) {
 		this.undo();
+	}
+	//n
+	else if (keyCode === 78) {
+		this.redo();
 	}
 }
 
@@ -124,16 +161,53 @@ DrawState.prototype.disengage = function() {
 
 DrawState.prototype.undo = function() {
 	if (this.actionStack.length <= 0) return undefined;
-	
-	var actionToUndo = this.actionStack.splice(this.actionStack.length - 1, 1);
+	var actionToUndo = this.actionStack[this.actionStack.length - 1];
+	this.actionStack = this.actionStack.splice(0, this.actionStack.length - 1);
 	this.redoStack.push(actionToUndo);
-	var numRemoved = 0;
-	while (numRemoved < actionToUndo.length) {
-		GLOBALS.walls.splice(GLOBALS.walls.indexOf(actionToUndo[numRemoved]), 1);
-		numRemoved += 1;
+	var numLinesRemoved = 0;
+	while (numLinesRemoved < actionToUndo.newlyAddedLines.length) {
+		var wallToRemove = actionToUndo.newlyAddedLines[numLinesRemoved];
+		GLOBALS.removeWall(wallToRemove, true);
+		numLinesRemoved += 1;
 	}
-		
+	var numPointsRemoved = 0;
+	while (numPointsRemoved < actionToUndo.newlyAddedPoints.length) {
+		var pointToRemove = actionToUndo.newlyAddedPoints[numPointsRemoved];
+		GLOBALS.removePoint(pointToRemove);
+		numPointsRemoved += 1;
+	}
+	var numAddedBack = 0;
+	while (numAddedBack < actionToUndo.deletedLines.length) {
+		this.addWall(actionToUndo.deletedLines[numAddedBack]);
+		numAddedBack += 1;
+	}
+	
+	this.stateManager.redraw();
 }
 
 DrawState.prototype.redo = function() {
+	if (this.redoStack.length <= 0) return undefined;
+	var actionToRedo = this.redoStack[this.redoStack.length - 1];
+	this.redoStack = this.redoStack.splice(0, this.redoStack.length - 1);
+	this.actionStack.push(actionToRedo);
+	var numLinesAdded = 0;
+	while (numLinesAdded < actionToRedo.newlyAddedLines.length) {
+		var wallToAdd = actionToRedo.newlyAddedLines[numLinesAdded];
+		this.addWall(wallToAdd);
+		numLinesAdded += 1;
+	}
+	/*var numPoints = 0;
+	while (numPointsRemoved < actionToUndo.newlyAddedPoints.length) {
+		var pointToRemove = actionToUndo.newlyAddedPoints[numPointsRemoved];
+		GLOBALS.removePoint(pointToRemove);
+		numPointsRemoved += 1;
+	}*/
+	var numLinesRemoved = 0;
+	while (numLinesRemoved < actionToRedo.deletedLines.length) {
+		var wallToRemove = actionToRedo.deletedLines[numLinesRemoved];
+		GLOBALS.removeWall(wallToRemove, true);
+		numLinesRemoved += 1;
+	}
+	
+	this.stateManager.redraw();
 }
