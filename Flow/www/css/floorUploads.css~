@@ -55,6 +55,8 @@
 
 /* make upload and done button fill screen */
 .btn-large.btn.span6 {
+	margin: 0px 20px;
+	width: 440px;
 	border: 0px;
 	padding-left: 0px;
 	padding-right: 0px;
