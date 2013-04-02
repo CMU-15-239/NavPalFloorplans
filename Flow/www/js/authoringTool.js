@@ -3,22 +3,6 @@
  * Written by: Daniel Muller
 */
 
-
-/**
- * Summary: Toggles highlighting of tool on click event
- * Parameters:  n/a
- * Returns: n/a
-**/
-$(document).ready( 
-    function() {
-        $('.toolIcon').click(
-            function() {
-                $('.toolIcon').removeClass('active');
-                $(this).addClass('active');
-            })
-    }
-);
-
 /**
  * Summary: Connects preview pane to floorplan carousel by linking two carousels
             together and only showing 1 image of one carousel to create our
