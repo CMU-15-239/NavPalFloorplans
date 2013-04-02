@@ -1,0 +1,287 @@
+/*
+	Styles for floor upload page
+	Written by Daniel Muller
+*/
+
+#loadingOverlay {
+	display: none;
+	z-index: 999;
+	position: fixed;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background-color: rgba(150, 150, 150, 0.5);
+}
+
+#buildingNameInput {
+	width: 100%;
+	height: 38px;
+	line-height: 36px;
+	margin-bottom: 0px;
+	font-size: 30px;
+	padding: 2px 2px;
+	vertical-align: middle;
+}
+
+#buildingNameRow {
+	margin: 45px 0px;
+	text-align: center;
+}
+
+/* image gallary */
+#gallary {
+	margin-top: 45px;
+}
+
+/* holder for each thumbnail*/
+.img-holder {
+	line-height: 240px;
+	text-align: center;
+}
+
+/* used to center thumb within container*/
+.thumb-container {
+	line-height: 20px;
+	height: 100%;
+}
+
+/* used for cool image border*/
+.floorPlan {
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+/* make upload and done button fill screen */
+.btn-large.btn.span6 {
+	margin: 0px 20px;
+	width: 440px;
+	border: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.thumbnail {
+	height: 100%;
+}
+
+.thumb-li {
+	height: 350px;
+}
+
+/* Override bootstrap default form styles*/
+input, textarea, .uneditable-input {
+	width: 40px;
+}
+
+.form-horizontal .control-label {
+	width: 100px;
+}
+
+.form-horizontal .control-group {
+	margin-bottom: 0px;
+}
+
+.form-horizontal .controls {
+	margin-left: 110px;
+	word-wrap: break-word;
+}
+
+.form, .form-horizontal {
+	margin-bottom: 0px;
+}
+
+.form-horizontal input {
+	text-align: center;
+}
+
+/* used for image popout when hovering over thumbnail*/
+.popover {
+	max-width: 560px;
+	max-height: 410px;
+}
+
+.hoverzoom {
+	max-width: 520px;
+	max-height: 390px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#floatingCirclesG {
+	position:relative;
+	width:300px;
+	height:300px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 15%;
+	-moz-transform:scale(0.6);
+	-webkit-transform:scale(0.6);
+	-ms-transform:scale(0.6);
+	-o-transform:scale(0.6);
+	transform:scale(0.6);
+}
+
+.f_circleG {
+	position:absolute;
+	background-color:#FFFFFF;
+	height:55px;
+	width:55px;
+	-moz-border-radius:27px;
+	-moz-animation-name:f_fadeG;
+	-moz-animation-duration:1.2s;
+	-moz-animation-iteration-count:infinite;
+	-moz-animation-direction:linear;
+	-webkit-border-radius:27px;
+	-webkit-animation-name:f_fadeG;
+	-webkit-animation-duration:1.2s;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-direction:linear;
+	-ms-border-radius:27px;
+	-ms-animation-name:f_fadeG;
+	-ms-animation-duration:1.2s;
+	-ms-animation-iteration-count:infinite;
+	-ms-animation-direction:linear;
+	-o-border-radius:27px;
+	-o-animation-name:f_fadeG;
+	-o-animation-duration:1.2s;
+	-o-animation-iteration-count:infinite;
+	-o-animation-direction:linear;
+	border-radius:27px;
+	animation-name:f_fadeG;
+	animation-duration:1.2s;
+	animation-iteration-count:infinite;
+	animation-direction:linear;
+}
+
+#frotateG_01 {
+	left:0;
+	top:123px;
+	-moz-animation-delay:0.45s;
+	-webkit-animation-delay:0.45s;
+	-ms-animation-delay:0.45s;
+	-o-animation-delay:0.45s;
+	animation-delay:0.45s;
+}
+
+#frotateG_02 {
+	left:35px;
+	top:35px;
+	-moz-animation-delay:0.6s;
+	-webkit-animation-delay:0.6s;
+	-ms-animation-delay:0.6s;
+	-o-animation-delay:0.6s;
+	animation-delay:0.6s;
+}
+
+#frotateG_03 {
+	left:123px;
+	top:0;
+	-moz-animation-delay:0.75s;
+	-webkit-animation-delay:0.75s;
+	-ms-animation-delay:0.75s;
+	-o-animation-delay:0.75s;
+	animation-delay:0.75s;
+}
+
+#frotateG_04{
+	right:35px;
+	top:35px;
+	-moz-animation-delay:0.9s;
+	-webkit-animation-delay:0.9s;
+	-ms-animation-delay:0.9s;
+	-o-animation-delay:0.9s;
+	animation-delay:0.9s;
+}
+
+#frotateG_05 { 
+	right:0;
+	top:123px;
+	-moz-animation-delay:1.05s;
+	-webkit-animation-delay:1.05s;
+	-ms-animation-delay:1.05s;
+	-o-animation-delay:1.05s;
+	animation-delay:1.05s;
+}
+
+#frotateG_06 {
+	right:35px;
+	bottom:35px;
+	-moz-animation-delay:1.2s;
+	-webkit-animation-delay:1.2s;
+	-ms-animation-delay:1.2s;
+	-o-animation-delay:1.2s;
+	animation-delay:1.2s;
+}
+
+#frotateG_07 {
+	left:123px;
+	bottom:0;
+	-moz-animation-delay:1.35s;
+	-webkit-animation-delay:1.35s;
+	-ms-animation-delay:1.35s;
+	-o-animation-delay:1.35s;
+	animation-delay:1.35s;
+}
+
+#frotateG_08 {
+	left:35px;
+	bottom:35px;
+	-moz-animation-delay:1.5s;
+	-webkit-animation-delay:1.5s;
+	-ms-animation-delay:1.5s;
+	-o-animation-delay:1.5s;
+	animation-delay:1.5s;
+}
+
+@-moz-keyframes f_fadeG {
+	0% {
+		background-color:#000000
+	}
+
+	100% {
+		background-color:#FFFFFF
+	}
+}
+
+@-webkit-keyframes f_fadeG {
+	0% {
+		background-color:#000000
+	}
+
+	100% {
+		background-color:#FFFFFF
+	}
+}
+
+@-ms-keyframes f_fadeG {
+	0% {
+		background-color:#000000
+	}
+
+	100% {
+		background-color:#FFFFFF
+	}
+}
+
+@-o-keyframes f_fadeG {
+	0%{
+		background-color:#000000
+	}
+
+	100%{
+		background-color:#FFFFFF
+	}
+}
+
+@keyframes f_fadeG {
+	0% {
+		background-color:#000000
+	}
+
+	100% {
+		background-color:#FFFFFF
+	}
+}

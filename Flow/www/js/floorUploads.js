@@ -1,11 +1,31 @@
+/**
+ * Handles clicking events and creating of dynamic content for
+   floor upload page
+ * Written by: Daniel Muller
+*/
+
+/**
+ * Summary: size of the thumbnails that we create
+ * Parameters: n/a-
+ * Returns: n/a
+**/
+var THUMBWIDTH = 280.0;
+var THUMBHEIGHT = 200.0;
+
+/**
+ * Summary: hides origonal file input button because it is ugly
+ * Parameters: n/a-
+ * Returns: n/a
+**/
 var wrapper = $('<div/>').css({height:0,width:0,'overflow':'hidden'});
 var fileInput = $(':file').wrap(wrapper);
-var THUMBWIDTH = 280.0;
-var THUMBHEIGHT = 240.0;
-var clickedAway = true
-var isVisible = false
 
-// options for boostrap popover a.k.a hoverzoom
+/**
+ * Summary: options for boostrap popover a.k.a hoverzoom
+ 			uses postion of image to decide where popup should appear
+ * Parameters: imgSrc-location of image, width-image width, height-image height
+ * Returns: html template of popover
+**/
 function popoverOptions(imgSrc, width, height) { 
 	return {
 		html: true,
@@ -24,26 +44,35 @@ function popoverOptions(imgSrc, width, height) {
 	}
 }
 
-// template for dyanmicly added floorplan from upload
+/**
+ * Summary: template for dyanmicly added floorplan from upload
+ * Parameters: fileName-name of uploaded floorplan 
+ * Returns: html string of form feilds for a floorplan
+**/
 function labelTemplate(fileName) {
 	return $(
-		'<form class="form-horizontal">\
+		'<form class="form-horizontal well form-inline">\
 			<div class="control-group">\
 				<label class="control-label" for="fileName">File Name:</label>\
 				<div class="controls">\
-					<p style="vertical-align:middle">'+ fileName +'</p>\
+					<p>'+ fileName +'</p>\
 				</div>\
 			</div>\
 			<div class="control-group">\
 				<label class="control-label" for="floorLabel">Floor Number:</label>\
 				<div class="controls">\
-					<input type="text" id="inputPassword" placeholder="###">\
+					<input class="span1" type="text">\
 				</div>\
 			</div>\
 		</form>');
 }
 
-// return jquery object of floorplan with correct dimensions
+/**
+ * Summary: return jquery object of floorplan with correct dimensions and centered
+ 			vertically within its container
+ * Parameters: floorPlanImg-img object of uploaded floorplan
+ * Returns: formatted image of floorplan
+**/
 function formatFloorPlan(floorPlanImg) {
 	var widthRatio = THUMBWIDTH / floorPlanImg.width;
 	var heightRatio = THUMBHEIGHT / floorPlanImg.height;
@@ -58,23 +87,27 @@ function formatFloorPlan(floorPlanImg) {
 	return floorPlan
 }
 
-// creates a thumbnail for a given floorplan file
+/**
+ * Summary: creates a thumbnail for a given floorplan file
+ * Parameters: file-uploaded image of floorplan
+ * Returns: n/a, appends element directly to image gallary
+**/
 function createThumb(file) {
 	var reader = new FileReader();
     reader.onload = function(event){
         var floorPlanImg = new Image();
         floorPlanImg.onload = function() {
 
-        	var li = $('<li></li>').addClass('span4')
+        	var li = $('<li></li>').addClass('span4').addClass('thumb-li')
         	var thumb = $('<div></div>').addClass('thumbnail');
-        	var holder = $('<div></div>').addClass('holder');
+        	var imgHolder = $('<div></div>').addClass('img-holder');
         	var caption = $('<div></div>').addClass('caption');
         	var label = labelTemplate(file.name);
         	var floorPlan = formatFloorPlan(floorPlanImg);
 
-        	holder.append(floorPlan);
+        	imgHolder.append(floorPlan);
         	caption.append(label);
-        	thumb.append(holder);
+        	thumb.append(imgHolder);
         	thumb.append(caption);
             li.append(thumb);
 
@@ -85,15 +118,42 @@ function createThumb(file) {
     reader.readAsDataURL(file);
 }
 
-// html hack that allows styling of upload button #genius
+/**
+ * Summary: html hack that allows styling of upload button #genius
+ 			hides input button (ugly) and paris clicking of pretty button
+ 			to click event of old button 
+ * Parameters: none
+ * Returns:
+**/
 $('#file').click(function(){
     fileInput.click();
 }).show();
 
-// goes through all selected files and creates thumbnails
-fileInput.change( function(e){
+/**
+ * Summary: goes through all selected files and creates thumbnail
+ * Parameters: n/a
+ * Returns: appends images into image gallary
+**/
+fileInput.change( function(e) {
 	var files = e.target.files
     for (var i=0; i < files.length; i++) {
     	createThumb(files[i]);
     }
 });
+
+
+/**
+ * Summary: uploads all floorplans to preprocessor
+ * Parameters: n/a
+ * Returns: redirection to authoringTool page
+**/
+$("#done").click(function(e) {
+	var buildingName = $("#buildingNameInput").val();
+	var thumbs = $(".thumbnail");
+	if (buildingName !== "" && thumbs.length !== 0) {
+		$("#loadingOverlay").css('display', 'block');
+		for (var i = 0; i < thumbs.length; i++) {
+			thumbs[i]
+		};
+	}
+})

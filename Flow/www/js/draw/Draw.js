@@ -469,7 +469,17 @@ function drawSpaces() {
  * Returns: undefined
 **/
 function redraw() {
-	//First, delete everything from the canvas.
+;
+  	var width = window.innerWidth;
+  	var height = window.innerHeight;
+  	console.log(width, height);
+  	can.width = width;
+	can.height = height;
+	CANVAS.width = width;
+	CANVAS.height = height;
+	CANVAS.x = can.offsetLeft;
+	CANVAS.y = can.offsetTop;
+
     CANVAS.clearRect(0, 0, CANVAS.width, CANVAS.height);
 	//Draw the background floorplan image
     drawFloorPlan();

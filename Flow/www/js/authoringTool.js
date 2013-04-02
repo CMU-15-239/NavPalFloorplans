@@ -1,3 +1,14 @@
+/**
+ * Initializes layout of authoring tool page
+ * Written by: Daniel Muller
+*/
+
+
+/**
+ * Summary: Toggles highlighting of tool on click event
+ * Parameters:  n/a
+ * Returns: n/a
+**/
 $(document).ready( 
     function() {
         $('.toolIcon').click(
@@ -8,6 +19,13 @@ $(document).ready(
     }
 );
 
+/**
+ * Summary: Connects preview pane to floorplan carousel by linking two carousels
+            together and only showing 1 image of one carousel to create our
+            preview pane
+ * Parameters:  n/a
+ * Returns: n/a
+**/
 (function($) {
     // This is the connector function.
     // It connects one item from the navigation carousel to one item from the
