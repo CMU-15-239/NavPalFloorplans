@@ -17,11 +17,11 @@ PanState.prototype.enter = function() {
 PanState.prototype.exit = function() {
 }
 
-PanState.prototype.mouseup = function(event) {
+PanState.prototype.mouseUp = function(event) {
 	this.drag = false;
 }
 
-PanState.prototype.mousedown = function(event) {
+PanState.prototype.mouseDown = function(event) {
 	this.drag = true;
 	this.oldPoint = this.pointAtCursor;
 }

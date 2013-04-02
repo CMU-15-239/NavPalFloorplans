@@ -43,11 +43,11 @@ function initCanvasEventHandlers(stateManager) {
 	});
 	
 	$("#canvas").mousedown(function(event) {
-		stateManager.currentState.mousedown(event);
+		stateManager.currentState.mouseDown(event);
 	});
 	
 	$("#canvas").mouseup(function(event) {
-		stateManager.currentState.mouseup(event);
+		stateManager.currentState.mouseUp(event);
 	});
 	
 	$("#canvas").keypress(function(event) {
