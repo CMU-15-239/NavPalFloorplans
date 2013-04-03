@@ -1,3 +1,11 @@
+$(".navigationImage").click(function() {
+		console.log(this);
+		var image = this;
+		GLOBALS.canvas.drawImage(image,0,0,GLOBALS.canvas.width,GLOBALS.canvas.height);
+	}
+)
+
+
 
 /**
  * Summary: Initialize everything, but only when the document is fully loaded.
@@ -6,12 +14,11 @@ $(document).ready(function ()
 {
 	/* Initialize the canvas */
     var can = document.getElementById("canvas");
-	can.width = 500;
-	can.height = 500;
+	can.width = window.innerWidth - 95;
+	can.height = window.innerHeight - 240;
     var canvas = can.getContext("2d");
-    console.log(window.innerWidth);
-	canvas.width = window.innerWidth - 92;
-	canvas.height = window.innerHeight - 240;
+	canvas.width = can.width;
+	canvas.height = can.height;
 	canvas.x = can.offsetLeft;
 	canvas.y = can.offsetTop;
 	
