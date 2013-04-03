@@ -9,8 +9,9 @@ $(document).ready(function ()
 	can.width = 500;
 	can.height = 500;
     var canvas = can.getContext("2d");
-	canvas.width = 500;
-	canvas.height = 500;
+    console.log(window.innerWidth);
+	canvas.width = window.innerWidth - 92;
+	canvas.height = window.innerHeight - 240;
 	canvas.x = can.offsetLeft;
 	canvas.y = can.offsetTop;
 	
