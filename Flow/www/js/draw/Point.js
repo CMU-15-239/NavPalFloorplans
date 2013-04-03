@@ -46,24 +46,27 @@ Point.prototype.equals = function(p) {
  * Returns: undefined
 **/
 Point.prototype.draw = function() {
-	CANVAS.fillStyle = POINT_COLOR;
+	GLOBALS.canvas.fillStyle = "black";
+	
+	canvasPoint = GLOBALS.view.toCanvasWorld(this);
+
 	//If the point is being snapped to, draw a larger circle around it to make this fact clear to the user.
 	if (this.isSnap) {
-		CANVAS.beginPath();
-		CANVAS.strokeStyle = POINT_COLOR
-		CANVAS.arc(this.x, this.y, SNAP_RADIUS, 0, 2*Math.PI, false);
-		CANVAS.lineWidth = WALL_WIDTH;
-		CANVAS.stroke();
-		CANVAS.fillStyle = "rgb(255,0,255)";
+		GLOBALS.canvas.beginPath();
+		GLOBALS.canvas.strokeStyle = "black";
+		GLOBALS.canvas.arc(canvasPoint.x, canvasPoint.y, SNAP_RADIUS, 0, 2*Math.PI, false);
+		GLOBALS.canvas.lineWidth = WALL_WIDTH;
+		GLOBALS.canvas.stroke();
+		GLOBALS.canvas.fillStyle = "rgb(255,0,255)";
 		this.isSnap = false;
 	}
 	//Color the point yellow if it's currently selected.
 	if (this.isSelected) {
-		CANVAS.fillStyle = "rgb(255,0,0)";
+		GLOBALS.canvas.fillStyle = "rgb(255,0,0)";
 	}
-	CANVAS.beginPath();
-    CANVAS.arc(this.x, this.y, POINT_SIZE, 0, 2*Math.PI, false);
-    CANVAS.fill();
+	GLOBALS.canvas.beginPath();
+    GLOBALS.canvas.arc(canvasPoint.x, canvasPoint.y, 5, 0, 2*Math.PI, false);
+    GLOBALS.canvas.fill();
 }
 
 /**

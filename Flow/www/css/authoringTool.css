@@ -1,10 +1,22 @@
+
 /*
     Styles for authoring tool page
     Written by Daniel Muller
 */
+html {
+    min-width: 800px;
+    height: 100%;
+}
+
+body {
+    display: block;
+    height: 100%;
+}
 
 #carousel {
+    width: 100%;
     padding: 15px;
+    margin-top: 40px;
     background-image: url(../img/whitey.png);
     vertical-align: middle;
     width: auto;
@@ -22,27 +34,25 @@
 }
 
 #canvas {
-    border: 0px;
-    padding: 0px;
-    margin: 0px;
     position: absolute;
     top: 230px;
+    left: 95px;
     bottom: 0px;
-    left: 90px;
     right: 0px;
+}
+
+#carouselHolder {
+    height: 100%;
+}
+
+#toolRow {
+    height: 100%;
 }
 
 /* Body and structure
 -------------------------------------------------- */
-html {
-    min-width: 800px;
-}
 
 html, body {
-    height: 100%;
-    padding: 0px;
-    margin: 0px;
-    border: 0px;
     background-image: url(../img/black-Linen.png);
 }
 
@@ -79,7 +89,6 @@ html, body {
 
 .authoringTool {
 	padding: 0px;
-	padding-top: 40px;
 	height: 190px;
 }
 
@@ -92,9 +101,8 @@ html, body {
 /** Navigation container
 -------------------------------------------------- */
 .connected-carousels .navigation {
-	position: absolute;
-	right: 20px;
-	left: 275px;
+	position: relative;
+	left: 15px;
 	width: auto;
 	height: 160px;
 }
@@ -165,7 +173,7 @@ html, body {
 }
 
 .connected-carousels .prev-navigation {
-    left: 4px;
+    left: 224px;
     top: 65px;
     text-indent: 6px;
 }
@@ -181,7 +189,6 @@ html, body {
     opacity: .5;
     cursor: default;
 }
-
 
 .next.next-navigation.inactive {
 	display: none;

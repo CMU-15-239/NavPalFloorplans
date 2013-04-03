@@ -10,66 +10,69 @@
 	
 */
 
-function ManipulationAreaView(maxWidth, maxHeight) {
-	this.maxWidth = maxWidth;
-	this.maxHeight = maxHeight;
+function ManipulationAreaView(htmlX, htmlY, scaleStep) {
+	// Represents the coordinates of the canvas object on the HTML page
+	this.htmlX = htmlX;
+	this.htmlY = htmlY;
+	
+	this.scaleStep = scaleStep;
 	
 	// Offsets from the real-world (0,0)
 	// Represents a vector from real-world (0,0) to canvas world (0,0)
-	offsetX = 0;
-	offsetY = 0;
+	this.offsetX = 0;
+	this.offsetY = 0;
 	
-	scale = 1;
-	maxScale = 16;
-	minScale = 1.0/16;
+	// scale is ratio-  real-world : canvas world
+	this.scale = 1;
+	this.maxScale = 16;
+	this.minScale = 1.0/16;
 }
 
 /**
  * Summary: Converts canvas coordinates to real-world coordinates
- * Parameters: x,y: The x and y coordinates in the canvas wolrd
- * Returns: [x',y'] : The x and y coordinates in the real-world, 
-					  as the 0th and 1st elements in a list
+ * Parameters: p: The point in the canvas world
+ * Returns: The point as a real-world coordinate
 **/
-ManipulationAreaView.prototype.toRealWorld = function(x, y) {
-	coords = [];
-	coords[0] = (x * scale) + offsetX;
-	coords[1] = (y * scale) + offsetY;
-	return coords;
+ManipulationAreaView.prototype.toRealWorld = function(p) {
+	x = p.x;
+	y = p.y;
+	point = new Point((x / this.scale) + this.offsetX, 
+					  (y / this.scale) + this.offsetY);
+	return point;
 }
 
 /**
  * Summary: Converts real-world coordinates to canvas coordinates
- * Parameters: x,y: The x and y coordinates in the real-world world
- * Returns: [x',y'] : The x and y coordinates in the canvas world, 
-					  as the 0th and 1st elements in a list
+ * Parameters: p: The point in the real-world world
+ * Returns: The point as canvas world coordinates
 **/
-ManipulationAreaView.prototype.toCanvasWorld = function(x, y) {
-	coords = [];
-	coords[0] = (x - offsetX) * scale;
-	coords[1] = (y - offsetY) * scale;
-	return coords;
+ManipulationAreaView.prototype.toCanvasWorld = function(p) {
+	point = new Point((p.x - this.offsetX) * this.scale,
+					  (p.y - this.offsetY) * this.scale);
+	return point;
 }
 
 /**
  * Summary: Modifies the scale to zoom in or out
  * Parameters: zoomIn: true if zooming in, false if zooming out
+			   scaleStep: the factor to zoom in
  * Returns: true if zoom was successful, and false if already at zoom bounds
 **/
 ManipulationAreaView.prototype.zoom = function(isZoomIn) {
 	// Zoom in
 	if (isZoomIn) {
-		scale *= 2;
-		if (scale > maxScale) {
-			scale = maxScale;
+		this.scale *= this.scaleStep;
+		if (this.scale > this.maxScale) {
+			this.scale = this.maxScale;
 			return false;
 		}
 	}
 	
 	// Zoom out
 	else {
-		scale /= 2;
-		if (scale < minScale) {
-			scale = minScale;
+		this.scale /= this.scaleStep;
+		if (this.scale < this.minScale) {
+			this.scale = this.minScale;
 			return false;
 		}
 	}
@@ -78,34 +81,29 @@ ManipulationAreaView.prototype.zoom = function(isZoomIn) {
 }
 
 /**
- * Summary: Modifies the scale to zoom in or out
+ * Summary: Modifies the scale to zoom in or out, keeping a specific point
+			in the same place.
  * Parameters: 	zoomIn: true if zooming in, false if zooming out
 				point: the point to remain pinned, while zooming
 					   the point is in CANVAS WOLRD coordinates!
  * Returns: true if zoom was successful, and false if already at zoom bounds
 **/
 ManipulationAreaView.prototype.zoomCanvasPoint = function(isZoomIn, point) {
+	
+	oldRealPoint = this.toRealWorld(point);
+	
 	// Apply a zoom
 	zoom = this.zoom(isZoomIn);
 	
-	// Modify the offset so it remains in the same place
-	if (zoom) {
-		dx = point.x - this.offsetX;
-		dy = point.y - this.offsetY;
-		if (isZoomIn) {
-			dx /= 2;
-			dy /= 2;
-		}
-		else {
-			dx *= -2;
-			dy *= -2;
-		}
-		this.offsetX += dx;
-		this.offsetY += dy;
-	}
+	newRealPoint = this.toRealWorld(point);
 	
+	this.offsetX += (oldRealPoint.x - newRealPoint.x);
+	this.offsetY += (oldRealPoint.y - newRealPoint.y);
+
 	return zoom;
 }
+
+// TODO: write zoom canvas point CENTER
 
 /**
  * Summary: Changes the offset of the manipulation area
@@ -114,6 +112,6 @@ ManipulationAreaView.prototype.zoomCanvasPoint = function(isZoomIn, point) {
  * Returns: undefined
 **/
 ManipulationAreaView.prototype.pan = function(dx, dy) {
-	this.offsetX += dx * this.scale;
-	this.offsetY += dy * this.scale;
+	this.offsetX += dx / this.scale;
+	this.offsetY += dy / this.scale;
 }

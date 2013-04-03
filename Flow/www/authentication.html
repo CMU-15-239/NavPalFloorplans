@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>NavPal Floor Creator</title>
+    <title>Login or Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -18,7 +18,7 @@
     <![endif]-->
   </head>
 
-  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+  <body>
 
     <!-- Navbar
     ================================================== -->
@@ -34,9 +34,7 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="./home.html">Home</a></li>
-              <li class=""><a href="./howItWorks.html">How it works</a></li>
-              <li class=""><a href="./featureGuide.html">Feature Guide</a></li>
-              <li class=""><a href="./benefits.html">Benefits</a></li>
+              <li class=""><a href="./account.html">Account</a></li>
             </ul>
           </div>
         </div>
@@ -47,16 +45,16 @@
     ================================================== -->
     <header class="jumbotron subhead" id="overview">
       <div class="container">
-        <h1 style="margin-bottom: 10px;">Login or Sign up</h1>
+        <h1>Login or Sign up</h1>
         <p class="note">By creating your account you agree to our 
         <a href="/terms/" target="blank">Terms of Use</a> and <a href="/privacy/" target="blank">Privacy Policy</a>.</p>
       </div>
     </header>
 
     <div class="container">
-      <div class="row" id="formRow" style="text-align:center;">
+      <div class="row" id="formRow">
         <div class="span12">
-          <div class="page-header"><h3 style="margin-top: 30px;">Please fill out your information to get started.</h3></div>
+          <div class="page-header"><h3>Please fill out your information to get started.</h3></div>
         </div>
         
         <!-- Login Form
@@ -66,7 +64,7 @@
           <div id="loginForm" class="control-group">
             <input id="loginEmail" type="text" placeholder="Email" maxlength="75">
             <input id="loginPass" type="password" placeholder="Password">
-            <div id="loginInfo" class="help-inline" style="display:none"></div>
+            <div id="loginInfo" class="help-block hidden"></div>
           </div>
             <button id="loginButton" class="btn btn-primary auth-btn">Login</button>
         </div>
@@ -78,12 +76,12 @@
           <div id="matchEmails" class="control-group">
             <input id="regEmail" type="text" placeholder="Email" name="email" maxlength="75">
             <input id="confirmEmail" type="text" placeholder="Confirm Email" name="email" maxlength="75">
-            <div id="regEmailInfo" class="help-inline" style="display:none"></div>
+            <div id="regEmailInfo" class="help-block hidden"></div>
           </div>
           <div id="matchPasswords" class="control-group">
             <input id="regPass" type="password" placeholder="Password">
             <input id="confirmPass" type="password" placeholder="Confirm Password">
-            <div id="regPasswordInfo" class="help-inline" style="display:none"></div>
+            <div id="regPasswordInfo" class="help-block hidden"></div>
           </div>
           <div id="regButton" class="btn btn-primary auth-btn">Create account</div>
         </div>
