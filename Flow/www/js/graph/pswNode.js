@@ -13,7 +13,8 @@ function importPswNode(simplePswNode) {
 
 /**
  * Summary: Constructor for the PswNode object.
- * Parameters: pswType: String, type of passageway (door, sliding, opening, etc...)
+ * Parameters: type: String, type of floor node (e.g. space, psw, floorConnection)
+        pswType: String, type of passageway (door, sliding, opening, etc...)
 				edges: List of Strings (GraphNodes ids)
 				lineRep: Line object, 2d line represenation of passageway
  * Returns: undefined

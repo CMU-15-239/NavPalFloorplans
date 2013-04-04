@@ -4,14 +4,19 @@ function Floor(name, imageId) {
   this.name = name;
   this.imageId = imageId;
   this.imageScale = 1.0;
-  
+
   //Space objects
   this.spaces = [];
-  this.obsticals = [];
+  this.obstacles = [];
   
   this.landmarks = [];
   this.floorConnections = [];
+  
+  StateManager.call(this);
 }
+
+Floor.prototype = new StateManager();
+Floor.prototype.constructor = Floor;
 
 Floor.prototype.calcScale = function(space, userSqFt) {
   this.imageScale = 1.0;

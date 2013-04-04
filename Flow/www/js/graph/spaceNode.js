@@ -20,7 +20,8 @@ function importSpaceNode(simpleSpaceNode) {
 
 /**
  * Summary: Constructor for the SpaceNode object.
- * Parameters: spaceType: String, type of space (room, hallway, etc...)
+ * Parameters: type: String, type of floor node (e.g. space, psw, floorConnection)
+        spaceType: String, type of space (room, hallway, etc...)
 				label: String, label for room (e.g. room number)
 				edges: List of Strings (GraphNodes ids)
 				walls: List of Line objects, walls of SpaceNode (unordered)

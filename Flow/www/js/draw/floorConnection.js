@@ -1,8 +1,9 @@
 //floorInterconnection.js
 
-function FloorConnection(name, location) {
-   this.name = name; //String
-   this.location = location; //Point
+function FloorConnection(label, pointRep, floorConnectionType) {
+   this.label = label; //String
+   this.pointRep = pointRep; //Point
+   this.floorConnectionType = floorConnectionType; //String
 }
 
 FloorConnection.prototype.toOutput = function() {

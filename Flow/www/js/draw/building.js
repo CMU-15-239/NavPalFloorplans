@@ -14,9 +14,11 @@ Building.prototype.toOutput = function() {
    }
    
    var outFloorConnections = [];
-   for(var f = 0; f < this.floorConnections.length; f++) {
-      outFloorConnections.push(this.floorConnections[f].toOutput());
+   for(var fc = 0; fc < this.floorConnections.length; fc++) {
+      outFloorConnections.push(this.floorConnections[fc].toOutput());
    }
+   
+   //output landmarks
    
    return {
       name: this.name,

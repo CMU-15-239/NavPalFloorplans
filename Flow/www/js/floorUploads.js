@@ -32,12 +32,47 @@ function popoverOptions(imgSrc, width, height) {
 	return {
 		html: true,
 		animation: false,
-		placement: function (context, source) {
-		    var position = $(source).position();
-		    if (position.left > 515) {
-		        return "left";
-		    }
-		    return "right";
+		placement: function(tip, element) {
+		    var $element, above, actualHeight, actualWidth, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
+		    isWithinBounds = function(elementPosition) {
+		      return boundTop < elementPosition.top && boundLeft < elementPosition.left && boundRight > (elementPosition.left + actualWidth) && boundBottom > (elementPosition.top + actualHeight);
+		    };
+		    $element = $(element);
+		    pos = $.extend({}, $element.offset(), {
+		      width: element.offsetWidth,
+		      height: element.offsetHeight
+		    });
+		    actualWidth = 550;
+		    actualHeight = 315;
+		    boundTop = $(document).scrollTop();
+		    boundLeft = $(document).scrollLeft();
+		    boundRight = boundLeft + $(window).width();
+		    boundBottom = boundTop + $(window).height();
+		    elementAbove = {
+		      top: pos.top - actualHeight,
+		      left: pos.left + pos.width / 2 - actualWidth / 2
+		    };
+		    elementBelow = {
+		      top: pos.top + pos.height,
+		      left: pos.left + pos.width / 2 - actualWidth / 2
+		    };
+		    elementLeft = {
+		      top: pos.top + pos.height / 2 - actualHeight / 2,
+		      left: pos.left - actualWidth
+		    };
+		    elementRight = {
+		      top: pos.top + pos.height / 2 - actualHeight / 2,
+		      left: pos.left + pos.width
+		    };
+		    above = isWithinBounds(elementAbove);
+		    below = isWithinBounds(elementBelow);
+		    left = isWithinBounds(elementLeft);
+		    right = isWithinBounds(elementRight);
+		    if (above) return "top";
+		    else if (below) return "bottom";
+		    else if (left) return "left";
+		    else if (right) return "right";
+		    else return "right";
 		},
 	  trigger: 'hover',
 	  content: function (width, height) {
@@ -92,6 +127,16 @@ function formatFloorPlan(floorPlanImg) {
 	return floorPlan
 }
 
+String.prototype.hashCode = function(){
+    var hash = 0, i, char;
+    if (this.length == 0) return hash;
+    for (i = 0; i < this.length; i++) {
+        char = this.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return "h" + hash;
+};
 
 /**
  * Summary: creates a thumbnail for a given floorplan file
@@ -100,20 +145,17 @@ function formatFloorPlan(floorPlanImg) {
 **/
 
 function createThumb(file) {
+	var id = file.name.hashCode();
 	var reader = new FileReader();
     reader.onload = function(event){
         var floorPlanImg = new Image();
         floorPlanImg.onload = function() {
-
-
         	var li = $('<li></li>').addClass('span4').addClass('thumb-li')
         	var thumb = $('<div></div>').addClass('thumbnail');
-        	var imgHolder = $('<div></div>').addClass('img-holder');
-
+        	var imgHolder = $('<div></div>').addClass('imgHolder').addClass(id);
         	var caption = $('<div></div>').addClass('caption');
         	var label = labelTemplate(file.name);
-        	var floorPlan = formatFloorPlan(floorPlanImg);
-
+        	var floorPlan = formatFloorPlan(floorPlanImg).addClass('loading').addClass(id);
         	imgHolder.append(floorPlan);
         	caption.append(label);
         	thumb.append(imgHolder);
@@ -128,6 +170,51 @@ function createThumb(file) {
     reader.readAsDataURL(file);
 }
 
+function processFiles(files) {
+	for (var i=0; i < files.length; i++) {
+		var file = files[i]
+		var reader = new FileReader();
+		var id = file.name.hashCode();
+		$('.'+id).spin('large', '#fff');
+	    reader.onload = function(event) {
+			$.ajax({
+				type: "POST",
+				url: '/preprocess',
+				async: true,
+				data: {
+					image: event.target.result,
+				},
+				success: function(response) {
+					var id = this.name.hashCode();
+					$("."+ id).removeClass('loading').spin(false);
+				}.bind(this),
+				error: function(response) {
+					var id = this.name.hashCode();
+					$("."+ id).removeClass('loading').spin(false);
+				}.bind(this)
+			})}.bind(file)
+		reader.readAsDataURL(file);
+	}
+	$('#done').toggleClass('disabled');
+}
+
+
+
+/**
+ * Summary: goes through all selected files and creates thumbnail
+ * Parameters: n/a
+ * Returns: appends images into image gallary
+**/
+fileInput.change( 
+	function(e) {
+		var files = e.target.files
+		$('#done').toggleClass('disabled');
+	    for (var i=0; i < files.length; i++) {
+	    	createThumb(files[i]);
+	    }
+	    setTimeout(function() { 
+	    	processFiles(files); }, 100 * files.length);
+});
 
 /**
  * Summary: html hack that allows styling of upload button #genius
@@ -140,34 +227,3 @@ function createThumb(file) {
 $('#file').click(function(){
     fileInput.click();
 }).show();
-
-
-/**
- * Summary: goes through all selected files and creates thumbnail
- * Parameters: n/a
- * Returns: appends images into image gallary
-**/
-fileInput.change( function(e) {
-	var files = e.target.files
-    for (var i=0; i < files.length; i++) {
-    	createThumb(files[i]);
-    }
-});
-
-
-/**
- * Summary: uploads all floorplans to preprocessor
- * Parameters: n/a
- * Returns: redirection to authoringTool page
-**/
-$("#done").click(function(e) {
-	var buildingName = $("#buildingNameInput").val();
-	var thumbs = $(".thumbnail");
-	if (buildingName !== "" && thumbs.length !== 0) {
-		$("#loadingOverlay").css('display', 'block');
-		for (var i = 0; i < thumbs.length; i++) {
-			thumbs[i]
-		};
-	}
-})
-

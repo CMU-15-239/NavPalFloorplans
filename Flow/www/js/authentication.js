@@ -26,7 +26,8 @@ $("#loginButton").click(function() {
 			password: logPass
 		},
 		success: function() {
-			alert('success');
+			console.log(window.location)
+			window.location = "/floorUploads.html";
 		},
 		error: function() {
 			loginForm.addClass('error');
