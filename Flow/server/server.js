@@ -257,38 +257,32 @@ app.post('/preprocess', function (request, response) {
         fs.writeFile(imagePath, new Buffer(base64Data, "base64"), function(err) {
           if(Util.exists(err)) {
             console.log("failed to write inital image: "+err);
-            response.status(500);
             return response.send({errorCode: 2});
           } else {
             preprocessor(imagePath, function(preprocessData) {
               if(Util.exists(preprocessData)) {
                 preprocessData.result.errorCode = 0;
                 preprocessData.result.imageId = null;
-                response.status(200);
 
                 user.saveImage(preprocessData.image, function(imageObj) {
                   if(util.exists(imageObj)) {
                     preprocessData.result.imageId = imageObj.imageId;
                     return response.send(preprocessData.result);
                   } else {
-                    response.status(500);
                     return response.send({errorCode: 2});
                   }
                 });
                   
               } else {
-                response.status(500);
                 return response.send({errorCode: 2});
               }
             });
           }
         });
       } else {
-        response.status(400);
        return response.send({errorCode: 1});
       }
     } else {
-      response.status(401);
       return response.send({errorCode: 401});
     }
   });

@@ -92,6 +92,16 @@ function formatFloorPlan(floorPlanImg) {
 	return floorPlan
 }
 
+String.prototype.hashCode = function(){
+    var hash = 0, i, char;
+    if (this.length == 0) return hash;
+    for (i = 0; i < this.length; i++) {
+        char = this.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return "h" + hash;
+};
 
 /**
  * Summary: creates a thumbnail for a given floorplan file
@@ -100,20 +110,17 @@ function formatFloorPlan(floorPlanImg) {
 **/
 
 function createThumb(file) {
+	var id = file.name.hashCode();
 	var reader = new FileReader();
     reader.onload = function(event){
         var floorPlanImg = new Image();
         floorPlanImg.onload = function() {
-
-
         	var li = $('<li></li>').addClass('span4').addClass('thumb-li')
         	var thumb = $('<div></div>').addClass('thumbnail');
-        	var imgHolder = $('<div></div>').addClass('img-holder');
-
+        	var imgHolder = $('<div></div>').addClass('imgHolder').addClass(id);
         	var caption = $('<div></div>').addClass('caption');
         	var label = labelTemplate(file.name);
-        	var floorPlan = formatFloorPlan(floorPlanImg);
-
+        	var floorPlan = formatFloorPlan(floorPlanImg).addClass('loading').addClass(id);
         	imgHolder.append(floorPlan);
         	caption.append(label);
         	thumb.append(imgHolder);
@@ -122,12 +129,51 @@ function createThumb(file) {
             li.append(thumb);
 
             $('#gallary').append(li);
+            imgHolder.spin('large', '#fff')
         }
         floorPlanImg.src = event.target.result;
     }
     reader.readAsDataURL(file);
 }
 
+function processFiles(files) {
+	for (var i=0; i < files.length; i++) {
+		var file = files[i]
+		var reader = new FileReader();
+	    reader.onload = function(event) {
+			$.ajax({
+				type: "POST",
+				url: '/preprocess',
+				async: false,
+				data: {
+					image: event.target.result
+				}
+			}).done(function(response) {
+				var id = this.name.hashCode();
+				$("."+ id).removeClass('loading').spin(false);
+			}.bind(this));
+		}.bind(file)
+		reader.readAsDataURL(file);
+	}
+	$('#done').toggleClass('disabled');
+}
+
+
+
+/**
+ * Summary: goes through all selected files and creates thumbnail
+ * Parameters: n/a
+ * Returns: appends images into image gallary
+**/
+fileInput.change( 
+	function(e) {
+		var files = e.target.files
+		$('#done').toggleClass('disabled');
+	    for (var i=0; i < files.length; i++) {
+	    	createThumb(files[i]);
+	    }
+	    setTimeout(function() { processFiles(files); }, 100 * files.length);
+});
 
 /**
  * Summary: html hack that allows styling of upload button #genius
@@ -140,34 +186,3 @@ function createThumb(file) {
 $('#file').click(function(){
     fileInput.click();
 }).show();
-
-
-/**
- * Summary: goes through all selected files and creates thumbnail
- * Parameters: n/a
- * Returns: appends images into image gallary
-**/
-fileInput.change( function(e) {
-	var files = e.target.files
-    for (var i=0; i < files.length; i++) {
-    	createThumb(files[i]);
-    }
-});
-
-
-/**
- * Summary: uploads all floorplans to preprocessor
- * Parameters: n/a
- * Returns: redirection to authoringTool page
-**/
-$("#done").click(function(e) {
-	var buildingName = $("#buildingNameInput").val();
-	var thumbs = $(".thumbnail");
-	if (buildingName !== "" && thumbs.length !== 0) {
-		$("#loadingOverlay").css('display', 'block');
-		for (var i = 0; i < thumbs.length; i++) {
-			thumbs[i]
-		};
-	}
-})
-
