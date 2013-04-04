@@ -229,12 +229,6 @@ app.post('/changePassword', function(request, response) {
 
 
 /**
- * Summary: Upload an image for preprocessing.
- * Parameters:  req.body.image: base64 encoding of
-                request.user: passport userId   
- * Returns: list of lines is returned in JSON as well as link to greyscale image
-**/
-/**
  * Summary: Route to preprocess an image.
  * request: {image : String}
  * response: {errorCode : Number, lines : [], ????}
@@ -244,9 +238,7 @@ app.post('/changePassword', function(request, response) {
 app.post('/preprocess', function (request, response) {
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
-      var base64Data = req.body.image;
-      //var imagePath = '../www/floorplans/floorPlan.jpg';
-       
+      var base64Data = request.body.image;       
       if(Util.exists(base64Data)) {
         var imageDir = '/temp/images/';
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
@@ -257,32 +249,38 @@ app.post('/preprocess', function (request, response) {
         fs.writeFile(imagePath, new Buffer(base64Data, "base64"), function(err) {
           if(Util.exists(err)) {
             console.log("failed to write inital image: "+err);
+            response.status(500);
             return response.send({errorCode: 2});
           } else {
             preprocessor(imagePath, function(preprocessData) {
               if(Util.exists(preprocessData)) {
                 preprocessData.result.errorCode = 0;
                 preprocessData.result.imageId = null;
+                response.status(200);
 
                 user.saveImage(preprocessData.image, function(imageObj) {
                   if(util.exists(imageObj)) {
                     preprocessData.result.imageId = imageObj.imageId;
                     return response.send(preprocessData.result);
                   } else {
+                    response.status(500);
                     return response.send({errorCode: 2});
                   }
                 });
                   
               } else {
+                response.status(500);
                 return response.send({errorCode: 2});
               }
             });
           }
         });
       } else {
+        response.status(400);
        return response.send({errorCode: 1});
       }
     } else {
+      response.status(401);
       return response.send({errorCode: 401});
     }
   });
