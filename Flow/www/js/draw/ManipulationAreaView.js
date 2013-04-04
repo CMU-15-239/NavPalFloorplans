@@ -100,6 +100,9 @@ ManipulationAreaView.prototype.zoomCanvasPoint = function(isZoomIn, point) {
 	this.offsetX += (oldRealPoint.x - newRealPoint.x);
 	this.offsetY += (oldRealPoint.y - newRealPoint.y);
 
+	if (this.offsetX < 0) this.offsetX = 0;
+	if (this.offsetY < 0) this.offsetY = 0;
+	
 	return zoom;
 }
 
@@ -114,4 +117,7 @@ ManipulationAreaView.prototype.zoomCanvasPoint = function(isZoomIn, point) {
 ManipulationAreaView.prototype.pan = function(dx, dy) {
 	this.offsetX += dx / this.scale;
 	this.offsetY += dy / this.scale;
+	
+	if (this.offsetX < 0) this.offsetX = 0;
+	if (this.offsetY < 0) this.offsetY = 0;
 }

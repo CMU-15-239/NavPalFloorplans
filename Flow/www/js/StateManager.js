@@ -23,7 +23,14 @@ StateManager.prototype.changeState = function(newState) {
 
 StateManager.prototype.redraw = function() {
 	//First, delete everything from the canvas.
+	console.log(GLOBALS.view.offsetX);
     GLOBALS.canvas.clearRect(0, 0, GLOBALS.canvas.width, GLOBALS.canvas.height);
+	GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
+	GLOBALS.view.offsetX, GLOBALS.view.offsetY,
+	GLOBALS.canvas.image.width - GLOBALS.view.offsetX, GLOBALS.canvas.image.height - GLOBALS.view.offsetY,
+	50,50,
+	GLOBALS.canvas.image.width -  GLOBALS.view.offsetX, GLOBALS.canvas.image.height -  GLOBALS.view.offsetY);
+	
 	GLOBALS.drawWalls();
 	GLOBALS.drawPoints();
 	//Let the state draw itself

@@ -5,6 +5,7 @@ var GlobalsContainer = function(canvas) {
 	this.points = [];
 	this.view = new ManipulationAreaView(this.canvas.x, this.canvas.y, 1.05);
 	this.snapRadius = 15;
+	this.image;
 }
 
 GlobalsContainer.prototype.drawPoints = function() {
