@@ -239,15 +239,16 @@ app.post('/preprocess', function (request, response) {
   console.log("\n***Preprocessing***");
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
-      var base64Data = request.body.image;       
-      if(Util.exists(base64Data)) {
-        var imageDir = '/temp/images/';
+      var imageData = request.body.image;       
+      if(Util.exists(imageData)) {
+        var imageDir = './temp/';
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
         var imagePath = imageDir + 'image'+randFileNum+'.jpg';
          
-        var index = base64Data.indexOf('base64,') + 'base64,'.length;
-        base64Data = base64Data.substring(index, base64Data.length);
-        fs.writeFile(imagePath, new Buffer(base64Data, "base64"), function(err) {
+        var index = imageData.indexOf('base64,') + 'base64,'.length;
+        var base64Data = imageData.substring(index, imageData.length);
+        var base64DataBuffer = new Buffer(base64Data, "base64");
+        fs.writeFile(imagePath, base64DataBuffer, function(err) {
           if(Util.exists(err)) {
             console.log("failed to write inital image: "+err);
             response.status(500);
@@ -261,6 +262,7 @@ app.post('/preprocess', function (request, response) {
 
                 user.saveImage(preprocessData.image, function(imageObj) {
                   if(util.exists(imageObj)) {
+                    console.log("sucessful");
                     preprocessData.result.imageId = imageObj.imageId;
                     return response.send(preprocessData.result);
                   } else {
@@ -415,7 +417,7 @@ app.get('/building', function(request, response) {
  * Returns: response with json of identified lines and src of thresholded image
 **/
 function preprocessor(imagePath, callback) {
-  var child = exec('python preprocessing.py ' + imagePath, function (error, stdout, stderr) {
+  var child = exec('python ./python/preprocessing.py ' + imagePath, function (error, stdout, stderr) {
     fs.readFile('json.txt', function read(err, dataStr) {
       if (err) {
         console.log("failed to preprocess: "+err);
