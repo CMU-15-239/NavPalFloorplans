@@ -236,6 +236,7 @@ app.post('/changePassword', function(request, response) {
  * httpCode: success 200, invalid data 400, preprocessing failed 500, unauthorized 401
 **/
 app.post('/preprocess', function (request, response) {
+  console.log("\n***Preprocessing***");
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
       var base64Data = request.body.image;       
@@ -263,12 +264,14 @@ app.post('/preprocess', function (request, response) {
                     preprocessData.result.imageId = imageObj.imageId;
                     return response.send(preprocessData.result);
                   } else {
+                    console.log("unable to save image");
                     response.status(500);
                     return response.send({errorCode: 2});
                   }
                 });
                   
               } else {
+                console.log("unable to preprocess data");
                 response.status(500);
                 return response.send({errorCode: 2});
               }
@@ -276,10 +279,12 @@ app.post('/preprocess', function (request, response) {
           }
         });
       } else {
+        console.log("bad request");
         response.status(400);
        return response.send({errorCode: 1});
       }
     } else {
+      console.log("unauthorized");
       response.status(401);
       return response.send({errorCode: 401});
     }
