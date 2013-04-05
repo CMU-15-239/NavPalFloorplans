@@ -79,7 +79,7 @@ Line.prototype.equals = function (l) {
  * Parameters: this
  * Returns: undefined.
 **/
-Line.prototype.draw = function () {	
+Line.prototype.draw = function (lineColor) {	
 	canvasP1 = GLOBALS.view.toCanvasWorld(this.p1);
 	canvasP2 = GLOBALS.view.toCanvasWorld(this.p2);
 	
@@ -92,6 +92,7 @@ Line.prototype.draw = function () {
 	if (this.isSelected === true) {
 		GLOBALS.canvas.strokeStyle = "yellow"; // Yellow
 	}
+	if (lineColor !== undefined) GLOBALS.canvas.strokeStyle = lineColor;
 	GLOBALS.canvas.lineWidth = WALL_WIDTH;
 	GLOBALS.canvas.beginPath();
 	GLOBALS.canvas.moveTo(canvasP1.x, canvasP1.y);

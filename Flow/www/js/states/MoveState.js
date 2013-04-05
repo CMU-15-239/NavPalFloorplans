@@ -9,5 +9,7 @@ MoveState.prototype.enter = function() {
 }
 
 MoveState.prototype.exit = function() {
-	console.log("exit move state");
+}
+
+MoveState.prototype.mouseDown = function(event) {
 }
