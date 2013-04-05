@@ -45,8 +45,9 @@ Point.prototype.equals = function(p) {
  * Parameters: this
  * Returns: undefined
 **/
-Point.prototype.draw = function() {
-	GLOBALS.canvas.fillStyle = "black";
+Point.prototype.draw = function(pointColor) {
+	if (pointColor === undefined) GLOBALS.canvas.fillStyle = "black";
+	else GLOBALS.canvas.fillStyle = pointColor;
 	
 	canvasPoint = GLOBALS.view.toCanvasWorld(this);
 

@@ -71,6 +71,11 @@ $(document).ready(function ()
 		keyPressed(event);
 	});
 	$("canvas").keydown(function(event) {
+		var keyCode = event.keyCode;
+		if (keyCode === 32) {
+			alert("hur");
+			event.preventDefault();
+		}
 		keyDown(event);
 	});
 	$("canvas").keyup(function(event) {

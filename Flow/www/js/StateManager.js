@@ -18,18 +18,19 @@ StateManager.prototype.changeState = function(newState) {
 		this.currentState.exit();
 		this.currentState = this.avaliableStates[newState];
 		this.currentState.enter();
+		this.redraw();
 	}
 }
 
 StateManager.prototype.redraw = function() {
 	//First, delete everything from the canvas.
-	console.log(GLOBALS.view.offsetX);
+	//console.log(GLOBALS.view.offsetX);
     GLOBALS.canvas.clearRect(0, 0, GLOBALS.canvas.width, GLOBALS.canvas.height);
-	GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
+	/*GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
 	GLOBALS.view.offsetX, GLOBALS.view.offsetY,
 	GLOBALS.canvas.image.width - GLOBALS.view.offsetX, GLOBALS.canvas.image.height - GLOBALS.view.offsetY,
 	50,50,
-	GLOBALS.canvas.image.width -  GLOBALS.view.offsetX, GLOBALS.canvas.image.height -  GLOBALS.view.offsetY);
+	GLOBALS.canvas.image.width -  GLOBALS.view.offsetX, GLOBALS.canvas.image.height -  GLOBALS.view.offsetY);*/
 	
 	GLOBALS.drawWalls();
 	GLOBALS.drawPoints();

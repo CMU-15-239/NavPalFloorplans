@@ -175,7 +175,7 @@ function processFiles(files) {
 		var file = files[i]
 		var reader = new FileReader();
 		var id = file.name.hashCode();
-		$('.'+id).spin('large', '#fff');
+		$('.imgHolder.'+id).spin();
 	    reader.onload = function(event) {
 			$.ajax({
 				type: "POST",

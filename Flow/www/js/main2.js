@@ -64,10 +64,16 @@ function initCanvasEventHandlers(stateManager) {
 	});
 	
 	$("#canvas").keypress(function(event) {
+		event.preventDefault();
 		stateManager.currentState.keyPress(event);
 	});
 	
 	$("#canvas").keydown(function(event) {
+		var keyCode = event.keyCode;
+		//Prevent default browser behavior on space.
+		if (keyCode === 32) {
+			event.preventDefault();
+		}
 		stateManager.currentState.keyDown(event);
 	});
 	
@@ -76,6 +82,9 @@ function initCanvasEventHandlers(stateManager) {
 	});
 	
 	//$("#canvas").on('mousewheel', function(event){console.log(event)});
-	$("#canvas").on('mousewheel', function(event){stateManager.scroll(event)});
+	$("#canvas").on('mousewheel', function(event){
+		event.preventDefault();
+		stateManager.scroll(event);
+	});
 	
 }

@@ -12,7 +12,6 @@ DrawState.prototype = new BaseState();
 
 //NEED TO HAVE
 DrawState.prototype.enter = function() {
-console.log("entering draw state");
 }
 
 //NEED TO HAVE
@@ -43,14 +42,6 @@ DrawState.prototype.click = function(event) {
 	
 	
 	if (recentPoint !== undefined) {
-		//TO-DO: undo/redo
-		/* Keep track of all the things added in the merge (and the things that
-		 * existed before a merge ever took place), and add them
-		 * to the activity stack. On undo, just delete those lines and add
-		 * back the old ones. On redo, add the new lines and delete the old
-		 * ones.
-		*/
-		
 		//Prevent the user from adding the same point multiple times.
 		if (!recentPoint.equals(this.pointAtCursor)) {
 			var newWall = new Line(this.pointAtCursor, recentPoint);
@@ -137,6 +128,7 @@ DrawState.prototype.draw = function() {
 
 DrawState.prototype.keyDown = function(event) {
 	var keyCode = event.keyCode;
+	//space
 	if (keyCode === 32) {
 		this.disengage();
 	}
