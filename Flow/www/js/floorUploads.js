@@ -32,6 +32,7 @@ function popoverOptions(imgSrc, width, height) {
 	return {
 		html: true,
 		animation: false,
+		// logic to place popover such that it never appears off screen
 		placement: function(tip, element) {
 		    var $element, above, actualHeight, actualWidth, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
 		    isWithinBounds = function(elementPosition) {
@@ -185,10 +186,12 @@ function processFiles(files) {
 					image: event.target.result,
 				},
 				success: function(response) {
+					console.log(response);
 					var id = this.name.hashCode();
 					$("."+ id).removeClass('loading').spin(false);
 				}.bind(this),
 				error: function(response) {
+					console.log(response);
 					var id = this.name.hashCode();
 					$("."+ id).removeClass('loading').spin(false);
 				}.bind(this)
@@ -210,7 +213,9 @@ fileInput.change(
 		var files = e.target.files
 		$('#done').toggleClass('disabled');
 	    for (var i=0; i < files.length; i++) {
-	    	createThumb(files[i]);
+	    	if (files[i].type === "image/jpeg" || files[i].type === "image/png") {
+	    		createThumb(files[i]);
+	    	}
 	    }
 	    setTimeout(function() { 
 	    	processFiles(files); }, 100 * files.length);

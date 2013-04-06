@@ -10,22 +10,25 @@ $(".navigationImage").click(function() {
 	}
 )
 
-
-
-/**
- * Summary: Initialize everything, but only when the document is fully loaded.
-**/
-$(document).ready(function () 
-{
-	/* Initialize the canvas */
-    var can = document.getElementById("canvas");
+function resizeCanvas() {
+	var can = document.getElementById("canvas");
 	can.width = window.innerWidth - 95;
-	can.height = window.innerHeight - 240;
+	can.height = window.innerHeight - 230;
     var canvas = can.getContext("2d");
 	canvas.width = can.width;
 	canvas.height = can.height;
 	canvas.x = can.offsetLeft;
 	canvas.y = can.offsetTop;
+	return canvas;
+}
+
+/**
+ * Summary: Initialize everything, but only when the document is fully loaded.
+**/
+$(window).ready(function () 
+{
+	/* Initialize the canvas */
+    var canvas = resizeCanvas();
 	
 	GLOBALS = new GlobalsContainer(canvas);
 	
@@ -41,6 +44,10 @@ $(document).ready(function ()
 	});
 	
 	initCanvasEventHandlers(stateManager);
+});
+
+$(window).resize(function() {
+	resizeCanvas();
 });
 
 function initCanvasEventHandlers(stateManager) {
