@@ -3,15 +3,15 @@
 function importFloorGraph(simpleFloorGraph) {
   if(util.exists(simpleFloorGraph)) {
     var floorGraph = new FloorGraph();
-    if(util.exists(simpleFloorGraph.spaceNodes)) {
-      for(var s = 0; s < simpleFloorGraph.spaceNodes.length; s++) {
-        floorGraph.spaceNodes.push(importSpaceNode(simpleFloorGraph.spaceNodes[s]));
+    if(util.exists(simpleFloorGraph.spaces)) {
+      for(var s = 0; s < simpleFloorGraph.spaces.length; s++) {
+        floorGraph.spaces.push(importSpaceNode(simpleFloorGraph.spaces[s]));
       }
     }
     
-    if(util.exists(simpleFloorGraph.pswNodes)) {
-      for(var p = 0; p < simpleFloorGraph.pswNodes.length; p++) {
-        floorGraph.pswNodes.push(importPswNode(simpleFloorGraph.pswNodes[p])); 
+    if(util.exists(simpleFloorGraph.psws)) {
+      for(var p = 0; p < simpleFloorGraph.psws.length; p++) {
+        floorGraph.psws.push(importPswNode(simpleFloorGraph.psws[p])); 
       }
     }
     
@@ -29,18 +29,28 @@ function importFloorGraph(simpleFloorGraph) {
 				callbackVars: Inputs for callback.
  * Returns: undefined
 **/
-function FloorGraph(spaces, callback, callbackVars) {
-	this.spaceNodes = [];
-	this.pswNodes = [];
-	this.floorConnectionNodes = [];
+function FloorGraph(floor, callback, callbackVars) {
+	this.name;
+  this.imageId;
+  this.imageScale = 1.0;
+  
+  this.spaces = [];
+	this.psws = [];
+	this.floorConnections = [];
+  this.landmarks = [];
   
   this.spaceType = "space";
   this.pswType = "psw";
   this.floorConnectionType = "floorConnection";
+  this.landmarkType = "landmark";
 	
-  if(util.exists(spaces)) {
-    for(var s = 0; s < spaces.length; s++) {
-      this.addFloorNode(spaces[s]);
+  if(util.exists(floor)) {
+    this.imageId = floor.imageId;
+    this.imageScale = floor.imageScale;
+    if(util.exists(floor.spaces)) {
+      for(var s = 0; s < floor.spaces.length; s++) {
+        this.addSpaceNode(floor.spaces[s]);
+      }
     }
   }
 	
@@ -49,50 +59,36 @@ function FloorGraph(spaces, callback, callbackVars) {
 
 
 /**
- * Summary: Constructs a list of spaces to represent the floorGraph.
- * Parameters: none
- * Returns: list of spaces
-**/
-FloorGraph.prototype.toSpaces = function() {
-  var result = [];
-  for(var s = 0; s < this.spaceNodes.length; s++) {
-    var spaceNode = this.spaceNodes[s];
-    //console.log(JSON.stringify(spaceNode));
-    var space = new Space(spaceNode.walls);
-    space.type = spaceNode.spaceType;
-    space.label = spaceNode.label;
-    for(var d = 0; d < spaceNode.edges.length; d++) {
-      var edge = this.getFloorNodeById(spaceNode.edges[d]);
-      if(util.exists(edge) && edge.type === this.pswType) {
-        space.doors.push(edge.lineRep);
-      }
-    }
-    
-    result.push(space);
-  }
-  
-  return result;
-};
-
-/**
  * Summary: Converts the FloorGraph object to a simple JSON object (for export)
  * Parameters: undefined
  * Returns: Simple JSON object.
 **/
 FloorGraph.prototype.toOutput = function() {
-	var outSpaceNodes = [];
-	for(var s = 0; s < this.spaceNodes.length; s++) {
-		outSpaceNodes.push(this.spaceNodes[s].toOutput());
+	var outSpaces = [];
+	for(var s = 0; s < this.spaces.length; s++) {
+		outSpaces.push(this.spaces[s].toOutput());
 	}
 	
-	var outPswNodes = [];
-	for(var p = 0; p < this.pswNodes.length; p++) {
-		outPswNodes.push(this.pswNodes[p].toOutput());
+	var outPsws = [];
+	for(var p = 0; p < this.psws.length; p++) {
+		outPsws.push(this.psws[p].toOutput());
 	}
+  
+  var outFloorConnections = [];
+  for(var fc = 0; fc < this.floorConnections.length; fc++) {
+    outFloorConnections.push(this.floorConnections[fc].toOutput());
+  }
+  
+  var outLandmarks = [];
+  for(var l = 0; l < this.landmarks.length; l++) {
+    outLandmarks.push(this.landmarks[l].toOutput());
+  }
 	
 	return {
-		spaceNodes: outSpaceNodes,
-		pswNodes: outPswNodes
+		spaces: outSpaces,
+		psws: outPsws,
+    floorConnections: outFloorConnections,
+    landmarks: outLandmarks
 	};
 };
 
@@ -102,20 +98,20 @@ FloorGraph.prototype.toOutput = function() {
  * Returns: PswNode found or null if none found.
 **/
 FloorGraph.prototype.getPswNodeByLine = function(line) {
-	for(var p = 0; p < this.pswNodes.length; p++) {
-		if(this.pswNodes[p].lineRep.equals(line)) {
-			return this.pswNodes[p]
+	for(var p = 0; p < this.psws.length; p++) {
+		if(this.psws[p].lineRep.equals(line)) {
+			return this.psws[p]
 		}
 	}
 	return null;
 };
 
 /**
- * Summary: Adds a new FloorNode (SpaceNode) and establishes links to (and creates) PswNodes as necessary.
+ * Summary: Adds a new SpaceNode and establishes links to (and creates) PswNodes as necessary.
  * Parameters: space: Space object.
  * Returns: undefined
 **/
-FloorGraph.prototype.addFloorNode = function(space) {
+FloorGraph.prototype.addSpaceNode = function(space) {
 	//first check and add doors
 	var psws = [];
 	var pswIds = [];
@@ -131,7 +127,7 @@ FloorGraph.prototype.addFloorNode = function(space) {
 			var newDoor = new PswNode("psw", "door", null, lineRep);
 			psws.push(newDoor);
 			pswIds.push(newDoor.id);
-			this.pswNodes.push(newDoor);
+			this.psws.push(newDoor);
 		}
 	}
 	
@@ -141,7 +137,7 @@ FloorGraph.prototype.addFloorNode = function(space) {
 	for(var p = 0; p < psws.length; p++) {
 		psws[p].edges.push(spaceNode.id);
 	}
-	this.spaceNodes.push(spaceNode);
+	this.spaces.push(spaceNode);
 };
 
 /**
@@ -152,10 +148,10 @@ FloorGraph.prototype.addFloorNode = function(space) {
 FloorGraph.prototype.getFloorNodeById = function(id) {
 	var searchArr = [];
 	if(id.indexOf(this.pswType+"_") === 0) {
-		searchArr = this.pswNodes;
+		searchArr = this.psws;
 	}
 	else if(id.indexOf(this.spaceType+"_") === 0) {
-		searchArr = this.spaceNodes;
+		searchArr = this.spaces;
 	}
 	
 	for(var n = 0; n < searchArr.length; n++) {
@@ -169,22 +165,22 @@ FloorGraph.prototype.getFloorNodeById = function(id) {
 
 
 FloorGraph.prototype.equals = function(otherFloorGraph) {
-  if(util.exists(otherFloorGraph) && util.exists(otherFloorGraph.spaceNodes)
-      && otherFloorGraph.spaceNodes.length === this.spaceNodes.length
-      && util.exists(otherFloorGraph.pswNodes) 
-      && otherFloorGraph.pswNodes.length === this.pswNodes.length) {
+  if(util.exists(otherFloorGraph) && util.exists(otherFloorGraph.spaces)
+      && otherFloorGraph.spaces.length === this.spaces.length
+      && util.exists(otherFloorGraph.psws) 
+      && otherFloorGraph.psws.length === this.psws.length) {
     
-    for(var s = 0; s < this.spaceNodes.length; s++) {
-      var thisSpaceNode = this.spaceNodes[s];
+    for(var s = 0; s < this.spaces.length; s++) {
+      var thisSpaceNode = this.spaces[s];
       var otherSpaceNode = otherFloorGraph.getFloorNodeById(thisSpaceNode.id);
       if(!util.exists(otherSpaceNode) || !thisSpaceNode.equals(otherSpaceNode)) {
-        console.log("false for: "+s+" "+this.spaceNodes[s].id+" "+otherSpaceNode.id);
+        console.log("false for: "+s+" "+this.spaces[s].id+" "+otherSpaceNode.id);
         return false;
       }
     }
     
-    for(var p = 0; p < this.pswNodes.length; p++) {
-     var thisPswNode = this.spaceNodes[p];
+    for(var p = 0; p < this.psws.length; p++) {
+     var thisPswNode = this.spaces[p];
       var otherPswNode = otherFloorGraph.getFloorNodeById(thisPswNode.id);
       if(!util.exists(otherPswNode) || !thisPswNode.equals(otherPswNode)) {
         return false;
