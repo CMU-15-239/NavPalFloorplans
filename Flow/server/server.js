@@ -133,7 +133,7 @@ app.post('/login', passport.authenticate('local'), function(request, response) {
    // userId is used to reference this user from future requests
    request.session.userId = request.user._id;
    request.user.save(function(err) {
-      //response.status(200);
+      response.status(200);
       
       return response.send({
          buildings: request.user.getBuildingRefs()
@@ -159,34 +159,33 @@ app.post('/logout', function(request, response) {
  * request: {username : String, password : String}
  * response: {errorCode : Number}
  * errorCode: success 0, invalid data 1, user already exists 2, failed to auto login 3
- * httpCode: success 200, invalid data 400, user already exists 200, failed to auto login 200
+ * httpCode: success 200, invalid data 400, user already exists 400, failed to auto login 200
 **/
 app.post('/register', function(request, response) {
-   var responseData = {errorCode: 1};
-   if(Util.exists(request) && Util.isValidUsername(request.body.username) 
-      && Util.isValidPassword(request.body.password)) {
-     
-      flowDB.register(request.body.username, request.body.password, function(newUser) {
-         if(Util.exists(newUser)) {
-            responseData.errorCode = 0;
-            //response.status(200);
-            request.login(newUser, function(err) {
-               if (err) {
-                  console.log("server.js 134");
-                  responseData.errorCode = 3;
-               }
-               request.session.userId = newUser._id;
-               return response.send(responseData);
-            });
-         } else {
-            responseData.errorCode = 2;
-            return response.send(responseData);
-         }
-     });
-   } else {
-     //response.status(400);
-     return response.send({errorCode: 1});
-   }
+  if(Util.exists(request) && Util.isValidUsername(request.body.username) 
+    && Util.isValidPassword(request.body.password)) {
+   
+    flowDB.register(request.body.username, request.body.password, function(newUser) {
+      if(Util.exists(newUser)) {
+        var responseData = {errorCode: 0}
+        //response.status(200);
+        request.login(newUser, function(err) {
+          if (err) {
+          console.log("server.js register: failed to login");
+          responseData.errorCode = 3;
+          }
+          request.session.userId = newUser._id;
+          return response.send(responseData);
+        });
+      } else {
+        //response.status(400);
+        return response.send({errorCode: 2});
+      }
+   });
+  } else {
+    //response.status(400);
+    return response.send({errorCode: 1});
+  }
 });
 
 //-------------------
@@ -208,20 +207,20 @@ app.post('/changePassword', function(request, response) {
         console.log("---valid new password");
         user.changePassword(request.body.newPassword, function(user) {
            if(Util.exists(user)) {
-              //response.status(200);
+              response.status(200);
               return response.send({errorCode: 0});
            } else {
-              //response.status(500);
+              response.status(500);
               return response.send({errorCode: 2});
            }
         });
       } else {
-        //response.status(400);
+        response.status(400);
         return response.send({errorCode: 1});
       }
     } else {
        console.log("---unable to find user");
-       //response.status(401);
+       response.status(401);
        return response.send({errorCode: 401});
     }
   });
@@ -252,14 +251,14 @@ app.post('/preprocess', function (request, response) {
         fs.writeFile(imagePath, base64DataBuffer, function(err) {
           if(Util.exists(err)) {
             console.log("failed to write inital image: "+err);
-            //response.status(500);
+            response.status(500);
             return response.send({errorCode: 2});
           } else {
             preprocessor(imagePath, dataPath, function(preprocessData) {
               if(Util.exists(preprocessData)) {
                 preprocessData.result.errorCode = 0;
                 preprocessData.result.imageId = null;
-                //response.status(200);
+                response.status(200);
                 
                 console.log("Going to save image...");
                 user.saveImage(preprocessData.image, null, function(imageObj) {
@@ -270,14 +269,14 @@ app.post('/preprocess', function (request, response) {
                     return response.send(preprocessData.result);
                   } else {
                     console.log("unable to save image");
-                    //response.status(500);
+                    response.status(500);
                     return response.send({errorCode: 2});
                   }
                 });
                   
               } else {
                 console.log("unable to preprocess data");
-                //response.status(500);
+                response.status(500);
                 return response.send({errorCode: 2});
               }
             });
@@ -285,12 +284,12 @@ app.post('/preprocess', function (request, response) {
         });
       } else {
         console.log("bad request");
-        //response.status(400);
+        response.status(400);
        return response.send({errorCode: 1});
       }
     } else {
       console.log("unauthorized");
-      //response.status(401);
+      response.status(401);
       return response.send({errorCode: 401});
     }
   });
@@ -310,23 +309,23 @@ app.get('/image', function(request, response) {
       if(Util.exists(request.query.imageId)) {
         user.getImage(request.query.imageId, function(imageObj) {
           if(Util.exists(imageObj)) {
-            //response.status(200);
+            response.status(200);
             return response.send({
               errorCode: 0,
               image: imageObj.imageStr,
               imageId: imageObj.imageId
             });
           } else {
-            //response.status(404);
+            response.status(404);
             return response.send({errorCode: 404});
           }
         });
       } else {
-        //response.status(400);
+        response.status(400);
         return response.send({errorCode: 1});
       }
     } else {
-       //response.status(401);
+       response.status(401);
        return response.send({errorCode: 401});
     }
   });
@@ -361,22 +360,22 @@ app.post('/savePublish', function(request, response) {
             if(request.body.publishData === true) {
               console.log("----PUBLISHING----");
             }                     
-            //response.status(200);
+            response.status(200);
             return response.send({
               errorCode: 0, 
               buildingId: buildingObj.getUserBuildingId()
             });
           } else {
-            //response.status(500);
+            response.status(500);
             return response.send({errorCode: 2, buildingId: null});
           }
         });
       } else {
-        //response.status(400);
+        response.status(400);
         return response.send({errorCode: 1, buildingId: null});
       }
     } else {
-       //response.status(401);
+       response.status(401);
        return response.send({errorCode: 401, buildingId: null});
     }
   });
@@ -395,19 +394,19 @@ app.get('/building', function(request, response) {
         if(Util.exists(request.query.buildingId)) {
           user.getBuilding(request.query.buildingId, function(buildingObj) {
             if(Util.exists(buildingObj)) {
-              //response.status(200);
+              response.status(200);
               return response.send({building: buildingObj.toOutput(), errorCode: 0});
             } else {
-              //response.status(404);
+              response.status(404);
               return response.send({errorCode: 404});
             }
           });
         } else {
-          //response.status(400);
+          response.status(400);
           return response.send({errorCode: 1});
         }
       } else {
-        //response.status(401);
+        response.status(401);
         return response.send({errorCode: 401});
       }
    });
