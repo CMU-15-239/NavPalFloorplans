@@ -75,7 +75,7 @@ var BuildingController = {
     * Returns: undefined. Calls callback with found Building or null if none found.
    **/
 	findOne: function(searchJSON, callback) {
-		console.log('line63 :'+JSON.stringify(searchJSON));
+		console.log('BuildingController.js line78 :'+JSON.stringify(searchJSON));
 		Building.findOne(searchJSON, function(err, buildingObj) {
 			//console.log("BC findone: "+JSON.stringify(buildingObj));
 			if(err) {

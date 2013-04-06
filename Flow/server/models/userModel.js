@@ -44,9 +44,9 @@ UserSchema.methods.changePassword = function(newPassword, callback) {
 //-------------------
 
 /**
- * Summary: Edits and saves imageStr and creates a new image if imageId is undefined.
+ * Summary: Edits and saves imageStr and creates a new image if imageId is undefined/null.
  * Parameters: imageStr: String
-               imageId is undefined if this is a new image
+               imageId: String
                callback: function
  * Returns: calls callback with null or building.
 **/

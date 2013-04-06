@@ -7,7 +7,7 @@
  * Some good example code (from 15-237 Fall 12): 
       kosbie.net/cmu/fall-12/15-237/handouts/notes-server-side-part1.html
       kosbie.net/cmu/fall-12/15-237/handouts/notes-server-side-part2.html
-*/
+**/
 
 // Initialize middleware and global variables.
 var path = require('path');
@@ -244,6 +244,7 @@ app.post('/preprocess', function (request, response) {
         var imageDir = './temp/';
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
         var imagePath = imageDir + 'image'+randFileNum+'.jpg';
+        var dataPath = imageDir + 'data'+randFileNum+'.jpg';
          
         var index = imageData.indexOf('base64,') + 'base64,'.length;
         var base64Data = imageData.substring(index, imageData.length);
@@ -254,16 +255,18 @@ app.post('/preprocess', function (request, response) {
             response.status(500);
             return response.send({errorCode: 2});
           } else {
-            preprocessor(imagePath, function(preprocessData) {
+            preprocessor(imagePath, dataPath, function(preprocessData) {
               if(Util.exists(preprocessData)) {
                 preprocessData.result.errorCode = 0;
                 preprocessData.result.imageId = null;
                 response.status(200);
-
-                user.saveImage(preprocessData.image, function(imageObj) {
-                  if(util.exists(imageObj)) {
+                
+                console.log("Going to save image...");
+                user.saveImage(preprocessData.image, null, function(imageObj) {
+                  if(Util.exists(imageObj)) {
                     console.log("sucessful");
                     preprocessData.result.imageId = imageObj.imageId;
+                    //preprocessData.result.image = base64Data;                    
                     return response.send(preprocessData.result);
                   } else {
                     console.log("unable to save image");
@@ -301,15 +304,16 @@ app.post('/preprocess', function (request, response) {
  * httpCode: success 200, invalid data 400, image not found 404, unauthorized 401
 **/
 app.get('/image', function(request, response) {
+  console.log("\n***Get Image***");
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
       if(Util.exists(request.query.imageId)) {
         user.getImage(request.query.imageId, function(imageObj) {
-          if(Util.exists(image)) {
+          if(Util.exists(imageObj)) {
             response.status(200);
             return response.send({
               errorCode: 0,
-              image: imageObj.image,
+              image: imageObj.imageStr,
               imageId: imageObj.imageId
             });
           } else {
@@ -413,28 +417,36 @@ app.get('/building', function(request, response) {
 // =========== PREPROCESSOR ==========
 /**
  * Summary: calls python script to extract lines from image and convert to gray scale
- * Parameters:  imagePath: path to image to be processsed
-                response: responseponse to be sent to user 
- * Returns: response with json of identified lines and src of thresholded image
+ * Parameters:  imagePath: String, path to image to be processsed
+                dataPath: String, path to store processed data
+                callback: function
+ * Returns: calls callback with preprocessed data and image
 **/
-function preprocessor(imagePath, callback) {
+function preprocessor(imagePath, dataPath, callback) {
+  dataPath = 'json.txt';
   var child = exec('python ./python/preprocessing.py ' + imagePath, function (error, stdout, stderr) {
-    fs.readFile('json.txt', function read(err, dataStr) {
-      if (err) {
-        console.log("failed to preprocess: "+err);
+    fs.readFile(imagePath, function(err, imageStr) {
+      if(err) {
+        console.log("failed to read processed image: "+err);
         if(Util.exists(callback)) {return callback(null)}
       } else {
-        var dataStrUTF8 = dataStr.toString('utf8');
-        var data = JSON.parse(dataStrUTF8);
+        fs.unlink(imagePath);
+        var base64ImageStr = new Buffer(imageStr, 'base64').toString('base64');
         
-        fs.readFile(imagePath, function(err, imageStr) {
-          if(err) {
-            console.log("failed to read processed image: "+err);
-            if(Util.exists(callback)) {return callback(null)}
-          } else {
-            fs.unlink(imagePath);
-            if(Util.exists(callback)) {return callback({result: data, image: imageStr})}
-          }
+        fs.exists(dataPath, function(exists) {
+          if(exists) {
+            fs.readFile(dataPath, function read(err, dataStr) {
+              if (err) {
+                console.log("failed to preprocess: "+err);
+                if(Util.exists(callback)) {return callback(null)}
+              } else {
+                var dataStrUTF8 = dataStr.toString('utf8');
+                var data = JSON.parse(dataStrUTF8);
+                fs.unlink(dataPath);
+                if(Util.exists(callback)) {return callback({result: data, image: base64ImageStr});}
+              }
+            });
+          } else if(Util.exists(callback)) {return callback(null);}
         });
       }
     });

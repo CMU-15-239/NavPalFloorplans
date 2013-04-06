@@ -11,11 +11,11 @@ var ImageSchema = new mongoose.Schema({
 /**
  * Summary: Extract the data to output. Removes sensitive data (e.g. this._id).
  * Parameters: undefined
- * Returns: {id : String, image: String}
+ * Returns: {imageId : String, image: String}
 **/
 ImageSchema.methods.toOutput = function() {
    return {
-      id: this.imageId,
+      imageId: this.imageId,
       imageStr: this.imageStr
    };
 };
