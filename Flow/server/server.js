@@ -296,42 +296,43 @@ app.post('/preprocess', function (request, response) {
 /**
  * Summary: Route to get the preprocessed image.
  * request: {imageId : String}
- * response: {errorCode : Number, image : String}
+ * response: {errorCode : Number, image : String, imageId : String}
  * errorCode: success 0, invalid data 1, image not found 404, unauthorized 401
  * httpCode: success 200, invalid data 400, image not found 404, unauthorized 401
 **/
 app.get('/image', function(request, response) {
-   flowDB.getUserById(request.session.userId, function(user) {
-      if(Util.exists(user)) {
-        if(Util.exists(request.query.imageId)) {
-          user.getImage(request.query.imageId, function(imageObj) {
-            if(Util.exists(image)) {
-               response.status(200);
-               return response.send({
-                  errorCode: 0,
-                  image: imageObj.image
-               });
-            } else {
-               response.status(404);
-               return response.send({errorCode: 404});
-            }
-          });
-        } else {
-          response.status(400);
-          return response.send({errorCode: 1});
-        }
+  flowDB.getUserById(request.session.userId, function(user) {
+    if(Util.exists(user)) {
+      if(Util.exists(request.query.imageId)) {
+        user.getImage(request.query.imageId, function(imageObj) {
+          if(Util.exists(image)) {
+            response.status(200);
+            return response.send({
+              errorCode: 0,
+              image: imageObj.image,
+              imageId: imageObj.imageId
+            });
+          } else {
+            response.status(404);
+            return response.send({errorCode: 404});
+          }
+        });
       } else {
-         response.status(401);
-         return response.send({errorCode: 401});
+        response.status(400);
+        return response.send({errorCode: 1});
       }
-   });
+    } else {
+       response.status(401);
+       return response.send({errorCode: 401});
+    }
+  });
 });
 
 /**
  * Summary: Route to save or publish building plans.
  * request: {
-               building : {name : string, authoData : Object, graph : Object, id : String}
-               publishData: boolean
+              building : {name : string, authoData : Object, graph : Object, id : String}
+              publishData: boolean
             }
             id is undefined if this is a new building
  * response: {errorCode : Number, buildingId : String}
