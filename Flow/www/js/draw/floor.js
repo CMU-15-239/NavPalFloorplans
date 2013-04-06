@@ -1,8 +1,9 @@
 //floor.js
 
-function Floor(name, imageId) {
+function Floor(name, imageId, width) {
   this.name = name;
   this.imageId = imageId;
+  this.width = width;
   this.imageScale = 1.0;
 
   //Space objects

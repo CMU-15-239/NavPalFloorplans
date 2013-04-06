@@ -11,24 +11,6 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 <script src="../js/lib/Util.js"></script>
 
-<script src="../js/lib/kinetic.js"></script>
-<script src="../js/lib/globals.js"></script>
-<script src="../js/draw/Point.js"></script>
-<script src="../js/draw/line.js"></script>
-<script src="../js/draw/space.js"></script>
-<script src="../js/draw/Draw.js"></script>
-<script src="../js/draw/RoomClosed.js"></script>
-<script src="../js/draw/Polygon.js"></script>
-<script src="../js/draw/Exception.js"></script>
-<script src="../js/graph/floorGraph.js"></script>
-<script src="../js/graph/floorNode.js"></script>
-<script src="../js/graph/spaceNode.js"></script>
-<script src="../js/graph/pswNode.js"></script>
-<script src="../js/text/room.js"></script>
-<!--<script src="../js/text/sector2.js"></script>-->
-<script src="../js/text/map.js"></script>
-
-
 <script src= "../js/StateManager.js"></script>
 <script src= "../js/states/BaseState.js"></script>
 <script src= "../js/states/PreprocessState.js"></script>
@@ -41,14 +23,31 @@
 <script src= "../js/lib/globals.js"></script>
 <script src= "../js/lib/GlobalsContainer.js"></script>
 <script src= "../js/draw/ManipulationAreaView.js"></script>
-<script src= "../js/draw/Point.js"></script>
+
+<script src="../js/draw/Point.js"></script>
 <script src= "../js/draw/line.js"></script>
-<script src= "../js/draw/space.js"></script>
 <script src= "../js/draw/Polygon.js"></script>
-
-
-<script src="../js/draw/floor.js"></script>
+<script src= "../js/draw/space.js"></script>
+<script src="../js/draw/landmark.js"></script>
 <script src="../js/draw/building.js"></script>
+<script src="../js/draw/floor.js"></script>
+
+<script src="../js/lib/kinetic.js"></script>
+<script src="../js/lib/globals.js"></script>
+<script src="../js/draw/Draw.js"></script>
+<script src="../js/draw/RoomClosed.js"></script>
+<script src="../js/draw/Exception.js"></script>
+
+
+<script src="../js/graph/buildingGraph.js"></script>
+<script src="../js/graph/floorGraph.js"></script>
+<script src="../js/graph/floorNode.js"></script>
+<script src="../js/graph/spaceNode.js"></script>
+<script src="../js/graph/pswNode.js"></script>
+<script src="../js/graph/landmarkNode.js"></script>
+<script src="../js/text/room.js"></script>
+<!--<script src="../js/text/sector2.js"></script>-->
+<script src="../js/text/map.js"></script>
   
 <script src="../js/main.js"></script>
 
@@ -76,8 +75,14 @@ var s1 = newTestSpace([lines1[0], lines1[1], lines1[2], lines1[3]], doors1, "roo
 
 var s2 = newTestSpace([lines1[3], lines1[4], lines1[5], lines1[6]], doors1, "room", "s2");
 
-var spaces1 = [s1, s2];
-var g1 = new FloorGraph({spaces: spaces1});
+var floor1 = new Floor("1", "safdsa", 30);
+floor1.spaces = [s1, s2];
+
+var l1 = new Landmark("candyman", "Asdfafa", new Point(3,3));
+var l2 = new Landmark("42", "1as", new Point(20,25));
+floor1.landmarks = [l1, l2];
+
+var g1 = new FloorGraph(floor1);
 
 
 var lines2 = [];

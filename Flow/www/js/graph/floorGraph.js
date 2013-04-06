@@ -47,9 +47,16 @@ function FloorGraph(floor, callback, callbackVars) {
   if(util.exists(floor)) {
     this.imageId = floor.imageId;
     this.imageScale = floor.imageScale;
+    this.width = floor.width;
     if(util.exists(floor.spaces)) {
       for(var s = 0; s < floor.spaces.length; s++) {
         this.addSpaceNode(floor.spaces[s]);
+      }
+    }
+    
+    if(util.exists(floor.landmarks)) {
+      for(var l = 0; l < floor.landmarks.length; l++) {
+        this.addLandmarkNode(floor.landmarks[l]);
       }
     }
   }
@@ -124,7 +131,7 @@ FloorGraph.prototype.addSpaceNode = function(space) {
 		}
 		else {
 			//TODO: check and make sure the newId function returns in time for adding to pswIds
-			var newDoor = new PswNode("psw", "door", null, lineRep);
+			var newDoor = new PswNode(this.pswType, "door", null, lineRep);
 			psws.push(newDoor);
 			pswIds.push(newDoor.id);
 			this.psws.push(newDoor);
@@ -138,6 +145,30 @@ FloorGraph.prototype.addSpaceNode = function(space) {
 		psws[p].edges.push(spaceNode.id);
 	}
 	this.spaces.push(spaceNode);
+};
+
+/**
+ * Summary: Adds a new LandmarkNode.
+ * Parameters: landmark: Landmark object.
+ * Returns: undefined
+**/
+FloorGraph.prototype.addLandmarkNode = function(landmark) {
+  var space = null;
+  var edge = null;
+  for(var s = 0; s < this.spaces.length; s++) {
+    if(this.spaces[s].pointInSpace(landmark.pointRep, this.width, true)) {
+      space = this.spaces[s];
+      break;
+    }
+  }
+  
+  if(util.exists(space)) {edge = space.id;}
+  var landmark = new LandmarkNode(this.landmarkType, landmark.label, 
+                          landmark.description, [edge], landmark.pointRep);
+  
+  if(util.exists(space)) {space.edges.push(landmark.id);}
+  
+  this.landmarks.push(landmark);
 };
 
 /**
