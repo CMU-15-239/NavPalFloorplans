@@ -4,11 +4,30 @@
 */
 
 /**
+ * Summary: Handles response of login request to server
+ * Parameters: response.errorCode - type of error that occurred
+ 	0 - success, 1 - invalid email/pass pairing, 2 - other errors
+ * Returns: redirect if successful orelse error message
+**/
+function handleLogin (response) {
+	switch (response.errorCode) {
+		case 0:
+			window.location = "/floorUploads.html";
+			break;
+		default:
+			$("#loginButton").spin(false).removeClass('disabled');
+			loginForm.addClass('error');
+			loginInfo.removeClass('hidden').text('Login failed, please try again');
+	}
+}
+
+/**
  * Summary: Sends post /login request to server
  * Parameters: valid email and password combo
  * Returns: redirect if successful orelse error message
 **/
 $("#loginButton").click(function() {
+	$(this).spin('small').addClass('disabled');
 	// make all error messages hidden
 	$(".help-block").addClass('hidden');
 	// grab input email and password
@@ -24,23 +43,44 @@ $("#loginButton").click(function() {
 		data: {
 			username: logEmail,
 			password: logPass
-		},
-		success: function() {
-			console.log(window.location)
-			window.location = "/floorUploads.html";
-		},
-		error: function() {
-			loginForm.addClass('error');
-			loginInfo.removeClass('hidden').text('Login failed, please try again');
-		},
-	});
+		}
+	}).done(handleLogin);
 })
 
 
 /**
+ * Summary: Handles response of registration request to server
+ * Parameters: response.errorCode - type of error that occurred
+ 	0 - success, 1 - invalid data, 2 - email exists, 3 - auto login failed
+ * Returns: redirect if successful orelse error message
+**/
+function handleRegistration(response) {
+	$("#regButton").spin(false).removeClass('disabled');
+	console.log(response);
+	// deal with server response
+	switch (response.errorCode) {
+		case 0:
+			alert('success!');
+			break;
+		case 1:
+			matchEmails.addClass('error');
+			regEmailInfo.removeClass('hidden').text('Invalid Email');
+			break
+		case 2:
+			matchEmails.addClass('info');
+			regEmailInfo.removeClass('hidden').text('Email already registered');
+			break
+		case 3:
+			matchEmails.addClass('success');
+			regEmailInfo.removeClass('hidden').text('Account created! Please login.');
+			break
+	}
+}
+
+/**
  * Summary: Sends post /register request to server
  * Parameters: valid email and password combo
- * Returns: redirect if successful orelse error message
+ * Returns: ajax request if data is valid orelse error message
 **/
 $("#regButton").click(function() {
 	// make all error messages hidden
@@ -67,6 +107,7 @@ $("#regButton").click(function() {
 	}
 	// send post request to server
 	else {
+		$(this).spin('small').addClass('disabled');
 		$.ajax({
 			type: "POST",
 			url: '/register',
@@ -74,23 +115,6 @@ $("#regButton").click(function() {
 				username: regEmail,
 				password: regPass
 			},
-		}).done(function(response) {
-			// deal with server response
-			switch (response.errorCode) {
-				case 0:
-					alert ("success");
-					break
-				case 1:
-					matchEmails.addClass('info');
-					regEmailInfo.removeClass('hidden').text('Invalid Email');
-					break
-				case 2:
-					matchEmails.addClass('info');
-					regEmailInfo.removeClass('hidden').text('Email already registered');
-					break
-				case 3:
-					break
-			}
-		});
+		}).done(handleRegistration);
 	}
-})
+});

@@ -4,8 +4,18 @@
 */
 
 $(document).ready(function () 
-    { $('#toolIcon').tooltip();}
+    { 
+        $('#toolIcon').tooltip();
+        $('#myModal').modal({
+        backdrop: false
+    })
+
+}
+
+
 );
+
+
 
 /**
  * Summary: Connects preview pane to floorplan carousel by linking two carousels

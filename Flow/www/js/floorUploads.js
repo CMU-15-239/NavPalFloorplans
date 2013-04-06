@@ -22,62 +22,70 @@ var wrapper = $('<div/>').css({height:0,width:0,'overflow':'hidden'});
 var fileInput = $(':file').wrap(wrapper);
 
 /**
+ * Summary: logic to place popover such that it never appears off screen
+ * Parameters: element - element that popover is being applied to
+ * Returns: n/a
+**/
+function popoverPlacement(element) {
+    var $element, above, actualHeight, actualWidth, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
+    var isWithinBounds = function(elementPosition) {
+      return (	boundTop < elementPosition.top &&
+		      	boundLeft < elementPosition.left &&
+		      	boundRight > (elementPosition.left + actualWidth) &&
+		      	boundBottom > (elementPosition.top + actualHeight));
+    };
+    $element = $(element);
+    pos = $.extend({}, $element.offset(), {
+      width: element.offsetWidth,
+      height: element.offsetHeight
+    });
+    actualWidth = 550;
+    actualHeight = 315;
+    boundTop = $(document).scrollTop();
+    boundLeft = $(document).scrollLeft();
+    boundRight = boundLeft + $(window).width();
+    boundBottom = boundTop + $(window).height();
+    elementAbove = {
+      top: pos.top - actualHeight,
+      left: pos.left + pos.width / 2 - actualWidth / 2
+    };
+    elementBelow = {
+      top: pos.top + pos.height,
+      left: pos.left + pos.width / 2 - actualWidth / 2
+    };
+    elementLeft = {
+      top: pos.top + pos.height / 2 - actualHeight / 2,
+      left: pos.left - actualWidth
+    };
+    elementRight = {
+      top: pos.top + pos.height / 2 - actualHeight / 2,
+      left: pos.left + pos.width
+    };
+    above = isWithinBounds(elementAbove);
+    below = isWithinBounds(elementBelow);
+    left = isWithinBounds(elementLeft);
+    right = isWithinBounds(elementRight);
+    if (above) return "top";
+    else if (below) return "bottom";
+    else if (left) return "left";
+    else if (right) return "right";
+    else return "right";
+}
+
+/**
  * Summary: options for boostrap popover a.k.a hoverzoom
  			uses postion of image to decide where popup should appear
  * Parameters: imgSrc-location of image, width-image width, height-image height
  * Returns: html template of popover
 **/
-
 function popoverOptions(imgSrc, width, height) { 
 	return {
 		html: true,
 		animation: false,
-		// logic to place popover such that it never appears off screen
-		placement: function(tip, element) {
-		    var $element, above, actualHeight, actualWidth, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
-		    isWithinBounds = function(elementPosition) {
-		      return boundTop < elementPosition.top && boundLeft < elementPosition.left && boundRight > (elementPosition.left + actualWidth) && boundBottom > (elementPosition.top + actualHeight);
-		    };
-		    $element = $(element);
-		    pos = $.extend({}, $element.offset(), {
-		      width: element.offsetWidth,
-		      height: element.offsetHeight
-		    });
-		    actualWidth = 550;
-		    actualHeight = 315;
-		    boundTop = $(document).scrollTop();
-		    boundLeft = $(document).scrollLeft();
-		    boundRight = boundLeft + $(window).width();
-		    boundBottom = boundTop + $(window).height();
-		    elementAbove = {
-		      top: pos.top - actualHeight,
-		      left: pos.left + pos.width / 2 - actualWidth / 2
-		    };
-		    elementBelow = {
-		      top: pos.top + pos.height,
-		      left: pos.left + pos.width / 2 - actualWidth / 2
-		    };
-		    elementLeft = {
-		      top: pos.top + pos.height / 2 - actualHeight / 2,
-		      left: pos.left - actualWidth
-		    };
-		    elementRight = {
-		      top: pos.top + pos.height / 2 - actualHeight / 2,
-		      left: pos.left + pos.width
-		    };
-		    above = isWithinBounds(elementAbove);
-		    below = isWithinBounds(elementBelow);
-		    left = isWithinBounds(elementLeft);
-		    right = isWithinBounds(elementRight);
-		    if (above) return "top";
-		    else if (below) return "bottom";
-		    else if (left) return "left";
-		    else if (right) return "right";
-		    else return "right";
-		},
-	  trigger: 'hover',
-	  content: function (width, height) {
-	    return $('<img class="hoverzoom" src="'+ imgSrc + '" />').height(height*2 + 'px').width(width*2 + 'px');
+		placement: popoverPlacement,
+		trigger: 'hover',
+		content: function (width, height) {
+		return $('<img class="hoverzoom" src="'+ imgSrc + '" />').height(height*2 + 'px').width(width*2 + 'px');
 	  }
 	}
 }
@@ -113,7 +121,6 @@ function labelTemplate(fileName) {
  * Parameters: floorPlanImg-img object of uploaded floorplan
  * Returns: formatted image of floorplan
 **/
-
 function formatFloorPlan(floorPlanImg) {
 	var widthRatio = THUMBWIDTH / floorPlanImg.width;
 	var heightRatio = THUMBHEIGHT / floorPlanImg.height;
@@ -128,6 +135,11 @@ function formatFloorPlan(floorPlanImg) {
 	return floorPlan
 }
 
+/**
+ * Summary: creates a hash for a string
+ * Parameters: none
+ * Returns: hash value
+**/
 String.prototype.hashCode = function(){
     var hash = 0, i, char;
     if (this.length == 0) return hash;
@@ -144,7 +156,6 @@ String.prototype.hashCode = function(){
  * Parameters: file-uploaded image of floorplan
  * Returns: n/a, appends element directly to image gallary
 **/
-
 function createThumb(file) {
 	var id = file.name.hashCode();
 	var reader = new FileReader();
@@ -171,6 +182,11 @@ function createThumb(file) {
     reader.readAsDataURL(file);
 }
 
+/**
+ * Summary: goes through all selected files and creates thumbnail
+ * Parameters: n/a
+ * Returns: appends images into image gallary
+**/
 function processFiles(files) {
 	for (var i=0; i < files.length; i++) {
 		var file = files[i]
@@ -201,12 +217,10 @@ function processFiles(files) {
 	$('#done').toggleClass('disabled');
 }
 
-
-
 /**
- * Summary: goes through all selected files and creates thumbnail
- * Parameters: n/a
- * Returns: appends images into image gallary
+ * Summary: checks if files are valid, if so calls createThumb
+ * Parameters: event - change event on file input button
+ * Returns: n/a
 **/
 fileInput.change( 
 	function(e) {
@@ -226,9 +240,8 @@ fileInput.change(
  			hides input button (ugly) and paris clicking of pretty button
  			to click event of old button 
  * Parameters: none
- * Returns:
+ * Returns: n/a
 **/
-
 $('#file').click(function(){
     fileInput.click();
 }).show();
