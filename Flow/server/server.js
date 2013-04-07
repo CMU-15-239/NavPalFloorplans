@@ -423,7 +423,7 @@ app.get('/building', function(request, response) {
 **/
 function preprocessor(imagePath, dataPath, callback) {
   dataPath = 'json.txt';
-  var child = exec('python ./python/preprocessing.py ' + imagePath, function (error, stdout, stderr) {
+  var child = exec('python ./python/preprocessing.py ' + imagePath + ' ' + dataPath, function (error, stdout, stderr) {
     fs.readFile(imagePath, function(err, imageStr) {
       if(err) {
         console.log("failed to read processed image: "+err);
