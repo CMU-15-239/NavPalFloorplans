@@ -4,24 +4,6 @@
 */
 
 /**
- * Summary: Handles response of login request to server
- * Parameters: response.errorCode - type of error that occurred
- 	0 - success, 1 - invalid email/pass pairing, 2 - other errors
- * Returns: redirect if successful orelse error message
-**/
-function handleLogin (response) {
-	switch (response.errorCode) {
-		case 0:
-			window.location = "/floorUploads.html";
-			break;
-		default:
-			$("#loginButton").spin(false).removeClass('disabled');
-			loginForm.addClass('error');
-			loginInfo.removeClass('hidden').text('Login failed, please try again');
-	}
-}
-
-/**
  * Summary: Sends post /login request to server
  * Parameters: valid email and password combo
  * Returns: redirect if successful orelse error message
@@ -43,8 +25,17 @@ $("#loginButton").click(function() {
 		data: {
 			username: logEmail,
 			password: logPass
+		},
+		success: function() {
+			console.log(window.location)
+			window.location = "/floorUploads.html";
+		},
+		error: function() {
+			$("#loginButton").spin(false).removeClass('disabled');
+			loginForm.addClass('error');
+			loginInfo.removeClass('hidden').text('Login failed, please try again');
 		}
-	}).done(handleLogin);
+	});
 })
 
 
@@ -52,11 +43,15 @@ $("#loginButton").click(function() {
  * Summary: Handles response of registration request to server
  * Parameters: response.errorCode - type of error that occurred
  	0 - success, 1 - invalid data, 2 - email exists, 3 - auto login failed
- * Returns: redirect if successful orelse error message
+ * Returns: rect if successful orelse error message
 **/
 function handleRegistration(response) {
-	$("#regButton").spin(false).removeClass('disabled');
 	console.log(response);
+	$("#regButton").spin(false).removeClass('disabled');
+	var matchMails = $('#matchEmails');
+	console.log(response);
+	var matchEmails = $('#matchEmails').attr('class', 'control-group');
+	var regEmailInfo = $('#regEmailInfo');
 	// deal with server response
 	switch (response.errorCode) {
 		case 0:

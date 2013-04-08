@@ -1,4 +1,3 @@
-
 /**
  * Handles clicking events and creating of dynamic content for
    floor upload page
@@ -12,6 +11,9 @@
 **/
 var THUMBWIDTH = 280.0;
 var THUMBHEIGHT = 200.0;
+var POPOVERWIDTH = 550;
+var POPOVERHEIGHT = 315;
+var PROCESSEDFLOORS = [];
 
 /**
  * Summary: hides origonal file input button because it is ugly
@@ -27,24 +29,31 @@ var fileInput = $(':file').wrap(wrapper);
  * Returns: n/a
 **/
 function popoverPlacement(element) {
-    var $element, above, actualHeight, actualWidth, below, boundBottom, boundLeft, boundRight, boundTop, elementAbove, elementBelow, elementLeft, elementRight, isWithinBounds, left, pos, right;
+	// instantiate local variables
+    var $element, above, actualHeight, actualWidth, below, boundBottom,
+    	boundLeft, boundRight, boundTop, elementAbove, elementBelow,
+    	elementLeft, elementRight, isWithinBounds, left, pos, right;
+    // local function to compute if element will be diaplayed on the bage
     var isWithinBounds = function(elementPosition) {
-      return (	boundTop < elementPosition.top &&
-		      	boundLeft < elementPosition.left &&
-		      	boundRight > (elementPosition.left + actualWidth) &&
-		      	boundBottom > (elementPosition.top + actualHeight));
+    return (boundTop < elementPosition.top &&
+		    boundLeft < elementPosition.left &&
+		    boundRight > (elementPosition.left + actualWidth) &&
+		    boundBottom > (elementPosition.top + actualHeight));
     };
     $element = $(element);
     pos = $.extend({}, $element.offset(), {
       width: element.offsetWidth,
       height: element.offsetHeight
     });
-    actualWidth = 550;
-    actualHeight = 315;
+    // grab actual dimensions of popover element
+    actualWidth = POPOVERWIDTH;
+    actualHeight = POPOVERHEIGHT;
+    // grab current vertices of document
     boundTop = $(document).scrollTop();
     boundLeft = $(document).scrollLeft();
     boundRight = boundLeft + $(window).width();
     boundBottom = boundTop + $(window).height();
+    // construct positions based on potentional placements
     elementAbove = {
       top: pos.top - actualHeight,
       left: pos.left + pos.width / 2 - actualWidth / 2
@@ -61,10 +70,12 @@ function popoverPlacement(element) {
       top: pos.top + pos.height / 2 - actualHeight / 2,
       left: pos.left + pos.width
     };
+    // check if image is within the window if placement is chosen
     above = isWithinBounds(elementAbove);
     below = isWithinBounds(elementBelow);
     left = isWithinBounds(elementLeft);
     right = isWithinBounds(elementRight);
+    // default to above/below before left/right
     if (above) return "top";
     else if (below) return "bottom";
     else if (left) return "left";
@@ -85,8 +96,8 @@ function popoverOptions(imgSrc, width, height) {
 		placement: popoverPlacement,
 		trigger: 'hover',
 		content: function (width, height) {
-		return $('<img class="hoverzoom" src="'+ imgSrc + '" />').height(height*2 + 'px').width(width*2 + 'px');
-	  }
+			return $('<img class="hoverzoom" src="'+ imgSrc + '" />').height(height*2 + 'px').width(width*2 + 'px');
+		}
 	}
 }
 
@@ -140,7 +151,7 @@ function formatFloorPlan(floorPlanImg) {
  * Parameters: none
  * Returns: hash value
 **/
-String.prototype.hashCode = function(){
+String.prototype.hashCode = function() {
     var hash = 0, i, char;
     if (this.length == 0) return hash;
     for (i = 0; i < this.length; i++) {
@@ -159,14 +170,17 @@ String.prototype.hashCode = function(){
 function createThumb(file) {
 	var id = file.name.hashCode();
 	var reader = new FileReader();
-    reader.onload = function(event){
+    reader.onload = function(event) {
         var floorPlanImg = new Image();
         floorPlanImg.onload = function() {
-        	var li = $('<li></li>').addClass('span4').addClass('thumb-li')
+        	// construct list element
+        	var li = $('<li></li>').addClass('span4').addClass('thumb-li');
         	var thumb = $('<div></div>').addClass('thumbnail');
         	var imgHolder = $('<div></div>').addClass('imgHolder').addClass(id);
         	var caption = $('<div></div>').addClass('caption');
+        	// constructs form template for labeling
         	var label = labelTemplate(file.name);
+        	// directly holds image
         	var floorPlan = formatFloorPlan(floorPlanImg).addClass('loading').addClass(id);
         	imgHolder.append(floorPlan);
         	caption.append(label);
@@ -191,7 +205,9 @@ function processFiles(files) {
 	for (var i=0; i < files.length; i++) {
 		var file = files[i]
 		var reader = new FileReader();
+		// get unique id for spinner
 		var id = file.name.hashCode();
+		// start a loading spinner
 		$('.imgHolder.'+id).spin();
 	    reader.onload = function(event) {
 			$.ajax({
@@ -204,11 +220,13 @@ function processFiles(files) {
 				success: function(response) {
 					console.log(response);
 					var id = this.name.hashCode();
+					// save preprocessor data into array for future use
+					PROCESSEDFLOORS.add.push({id: response})
 					$("."+ id).removeClass('loading').spin(false);
 				}.bind(this),
 				error: function(response) {
-					console.log(response);
 					var id = this.name.hashCode();
+					// stop spinner
 					$("."+ id).removeClass('loading').spin(false);
 				}.bind(this)
 			})}.bind(file)
@@ -245,3 +263,44 @@ fileInput.change(
 $('#file').click(function(){
     fileInput.click();
 }).show();
+
+function getFloorLabels(processedFloors) {
+	for (var i = 0; i < processedFloors.length; i++) {
+		var floor = processedFloors[i]
+		var id = floor.id
+	};
+}
+
+$('#done').click(function() {
+	if (PROCESSEDFLOORS.length === 0) {
+		alert('You must upload floorplans before pressing done.')
+	}
+	else if ($('buildingNameInput').val() === "") {
+		alert('You must give your building a name before pressing done.')
+	}
+	else {
+		var floors = getFloorLabels(PROCESSEDFLOORS);
+		var building = constructBuildingFromPreprocess(PROCESSEDFLOORS);
+		// start a loading spinner to indicate processing
+		$(this).spin('small').addClass('disabled');
+		$.ajax({
+			type: "POST",
+			url: '/savePublish',
+			data: {
+				building: building,
+				publishData: false
+			},
+			success: function(response) {
+				//save in local storage and redirect
+				localStorage.setItem('building', JSON.stringify(building));
+				window.location = "/authoringTool.html";
+			}.bind(this),
+			error: function(response) {
+				// remove loading spinner
+				$('#done').spin(false).removeClass('disabled');
+				//alert user to their error
+				alert('An error occurred, please try again.')
+			}.bind(this)
+		})
+	}
+})
