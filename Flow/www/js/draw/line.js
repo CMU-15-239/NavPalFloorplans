@@ -31,7 +31,7 @@ Line.prototype.toOutput = function() {
 		p1: this.p1.toOutput(),
 		p2: this.p2.toOutput()
 	};
-}
+};
 
 /**
  * Summary: Put the line in standard form (ax + by = c)
@@ -48,7 +48,7 @@ Line.prototype.calculateForm = function(p1, p2) {
 	this.b = p2.x - p1.x;
 	this.c = p1.x * (p2.y - p1.y) - p1.y * (p2.x - p1.x);
 	this.distConst = Math.sqrt(this.a * this.a + this.b * this.b);
-}
+};
 
 /**
  * Summary: Get the string form of the line.
@@ -57,7 +57,7 @@ Line.prototype.calculateForm = function(p1, p2) {
 **/
 Line.prototype.toString = function() {
 	return "<" + this.p1.toString() + "," + this.p2.toString() + ">";
-}
+};
 
 /**
  * Summary: Checks whether the given line is equal to the current object.
@@ -79,7 +79,7 @@ Line.prototype.equals = function (l) {
  * Parameters: this
  * Returns: undefined.
 **/
-Line.prototype.draw = function () {	
+Line.prototype.draw = function (lineColor) {	
 	canvasP1 = GLOBALS.view.toCanvasWorld(this.p1);
 	canvasP2 = GLOBALS.view.toCanvasWorld(this.p2);
 	
@@ -92,6 +92,7 @@ Line.prototype.draw = function () {
 	if (this.isSelected === true) {
 		GLOBALS.canvas.strokeStyle = "yellow"; // Yellow
 	}
+	if (lineColor !== undefined) GLOBALS.canvas.strokeStyle = lineColor;
 	GLOBALS.canvas.lineWidth = WALL_WIDTH;
 	GLOBALS.canvas.beginPath();
 	GLOBALS.canvas.moveTo(canvasP1.x, canvasP1.y);
@@ -145,7 +146,7 @@ Line.prototype.pointNearLine = function(point, radius) {
 		 (this.p1.y <= point.y+radius && point.y-radius <= this.p2.y));
 		 
 	return close && onLine;
-}
+};
 
 /**
  * Summary: Snap the given point to the line.
@@ -234,6 +235,7 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	if (this.p1.equals(line.p1) || this.p1.equals(line.p2) || this.p2.equals(line.p1) || this.p2.equals(line.p2)){
 		return null;
 	}
+  
 	var epsilon = .00001;
 	
 	//The following can't be 0
@@ -260,7 +262,7 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	
 	//There is no valid point of intersection.
 	return null;
-}
+};
 
 Line.prototype.splitUpLine = function(setOfPoints) {
 	var sortedPoints = this.sortPoints(setOfPoints);
@@ -273,7 +275,7 @@ Line.prototype.splitUpLine = function(setOfPoints) {
 	}
 	newLineSegments.push(newSegs.l2);
 	return newLineSegments;
-}
+};
 
 Line.prototype.sortPoints = function(points) {
 	points.unshift(this.p1);
@@ -298,12 +300,12 @@ Line.prototype.sortPoints = function(points) {
 	}
 	//Remove this.p1
 	return points.splice(1, points.length - 1);
-}
+};
 
 Line.prototype.containsPoint = function(pointList, point) {
 	for (var i = 0; i < pointList.length; i++) {
 		if (pointList[i].equals(point)) return true;
 	}
 	return false;
-}
+};
 

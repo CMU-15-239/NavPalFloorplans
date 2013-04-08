@@ -7,7 +7,7 @@
  * Some good example code (from 15-237 Fall 12): 
       kosbie.net/cmu/fall-12/15-237/handouts/notes-server-side-part1.html
       kosbie.net/cmu/fall-12/15-237/handouts/notes-server-side-part2.html
-*/
+**/
 
 // Initialize middleware and global variables.
 var path = require('path');
@@ -159,34 +159,33 @@ app.post('/logout', function(request, response) {
  * request: {username : String, password : String}
  * response: {errorCode : Number}
  * errorCode: success 0, invalid data 1, user already exists 2, failed to auto login 3
- * httpCode: success 200, invalid data 400, user already exists 200, failed to auto login 200
+ * httpCode: success 200, invalid data 400, user already exists 400, failed to auto login 200
 **/
 app.post('/register', function(request, response) {
-   var responseData = {errorCode: 1};
-   if(Util.exists(request) && Util.isValidUsername(request.body.username) 
-      && Util.isValidPassword(request.body.password)) {
-     
-      flowDB.register(request.body.username, request.body.password, function(newUser) {
-         if(Util.exists(newUser)) {
-            responseData.errorCode = 0;
-            response.status(200);
-            request.login(newUser, function(err) {
-               if (err) {
-                  console.log("server.js 134");
-                  responseData.errorCode = 3;
-               }
-               request.session.userId = newUser._id;
-               return response.send(responseData);
-            });
-         } else {
-            responseData.errorCode = 2;
-            return response.send(responseData);
-         }
-     });
-   } else {
-     response.status(400);
-     return response.send(responseData);
-   }
+  if(Util.exists(request) && Util.isValidUsername(request.body.username) 
+    && Util.isValidPassword(request.body.password)) {
+   
+    flowDB.register(request.body.username, request.body.password, function(newUser) {
+      if(Util.exists(newUser)) {
+        var responseData = {errorCode: 0}
+        //response.status(200);
+        request.login(newUser, function(err) {
+          if (err) {
+          console.log("server.js register: failed to login");
+          responseData.errorCode = 3;
+          }
+          request.session.userId = newUser._id;
+          return response.send(responseData);
+        });
+      } else {
+        //response.status(400);
+        return response.send({errorCode: 2});
+      }
+   });
+  } else {
+    //response.status(400);
+    return response.send({errorCode: 1});
+  }
 });
 
 //-------------------
@@ -236,39 +235,47 @@ app.post('/changePassword', function(request, response) {
  * httpCode: success 200, invalid data 400, preprocessing failed 500, unauthorized 401
 **/
 app.post('/preprocess', function (request, response) {
+  console.log("\n***Preprocessing***");
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
-      var base64Data = request.body.image;       
-      if(Util.exists(base64Data)) {
-        var imageDir = '/temp/images/';
+      var imageData = request.body.image;       
+      if(Util.exists(imageData)) {
+        var imageDir = './temp/';
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
         var imagePath = imageDir + 'image'+randFileNum+'.jpg';
+        var dataPath = imageDir + 'data'+randFileNum+'.json';
          
-        var index = base64Data.indexOf('base64,') + 'base64,'.length;
-        base64Data = base64Data.substring(index, base64Data.length);
-        fs.writeFile(imagePath, new Buffer(base64Data, "base64"), function(err) {
+        var index = imageData.indexOf('base64,') + 'base64,'.length;
+        var base64Data = imageData.substring(index, imageData.length);
+        var base64DataBuffer = new Buffer(base64Data, "base64");
+        fs.writeFile(imagePath, base64DataBuffer, function(err) {
           if(Util.exists(err)) {
             console.log("failed to write inital image: "+err);
             response.status(500);
             return response.send({errorCode: 2});
           } else {
-            preprocessor(imagePath, function(preprocessData) {
+            preprocessor(imagePath, dataPath, function(preprocessData) {
               if(Util.exists(preprocessData)) {
                 preprocessData.result.errorCode = 0;
                 preprocessData.result.imageId = null;
                 response.status(200);
-
-                user.saveImage(preprocessData.image, function(imageObj) {
-                  if(util.exists(imageObj)) {
+                
+                console.log("Going to save image...");
+                user.saveImage(preprocessData.image, null, function(imageObj) {
+                  if(Util.exists(imageObj)) {
+                    console.log("sucessful");
                     preprocessData.result.imageId = imageObj.imageId;
+                    //preprocessData.result.image = base64Data;                    
                     return response.send(preprocessData.result);
                   } else {
+                    console.log("unable to save image");
                     response.status(500);
                     return response.send({errorCode: 2});
                   }
                 });
                   
               } else {
+                console.log("unable to preprocess data");
                 response.status(500);
                 return response.send({errorCode: 2});
               }
@@ -276,10 +283,12 @@ app.post('/preprocess', function (request, response) {
           }
         });
       } else {
+        console.log("bad request");
         response.status(400);
        return response.send({errorCode: 1});
       }
     } else {
+      console.log("unauthorized");
       response.status(401);
       return response.send({errorCode: 401});
     }
@@ -289,42 +298,44 @@ app.post('/preprocess', function (request, response) {
 /**
  * Summary: Route to get the preprocessed image.
  * request: {imageId : String}
- * response: {errorCode : Number, image : String}
+ * response: {errorCode : Number, image : String, imageId : String}
  * errorCode: success 0, invalid data 1, image not found 404, unauthorized 401
  * httpCode: success 200, invalid data 400, image not found 404, unauthorized 401
 **/
 app.get('/image', function(request, response) {
-   flowDB.getUserById(request.session.userId, function(user) {
-      if(Util.exists(user)) {
-        if(Util.exists(request.query.imageId)) {
-          user.getImage(request.query.imageId, function(imageObj) {
-            if(Util.exists(image)) {
-               response.status(200);
-               return response.send({
-                  errorCode: 0,
-                  image: imageObj.image
-               });
-            } else {
-               response.status(404);
-               return response.send({errorCode: 404});
-            }
-          });
-        } else {
-          response.status(400);
-          return response.send({errorCode: 1});
-        }
+  console.log("\n***Get Image***");
+  flowDB.getUserById(request.session.userId, function(user) {
+    if(Util.exists(user)) {
+      if(Util.exists(request.query.imageId)) {
+        user.getImage(request.query.imageId, function(imageObj) {
+          if(Util.exists(imageObj)) {
+            response.status(200);
+            return response.send({
+              errorCode: 0,
+              image: imageObj.imageStr,
+              imageId: imageObj.imageId
+            });
+          } else {
+            response.status(404);
+            return response.send({errorCode: 404});
+          }
+        });
       } else {
-         response.status(401);
-         return response.send({errorCode: 401});
+        response.status(400);
+        return response.send({errorCode: 1});
       }
-   });
+    } else {
+       response.status(401);
+       return response.send({errorCode: 401});
+    }
+  });
 });
 
 /**
  * Summary: Route to save or publish building plans.
  * request: {
-               building : {name : string, authoData : Object, graph : Object, id : String}
-               publishData: boolean
+              building : {name : string, authoData : Object, graph : Object, id : String}
+              publishData: boolean
             }
             id is undefined if this is a new building
  * response: {errorCode : Number, buildingId : String}
@@ -405,28 +416,36 @@ app.get('/building', function(request, response) {
 // =========== PREPROCESSOR ==========
 /**
  * Summary: calls python script to extract lines from image and convert to gray scale
- * Parameters:  imagePath: path to image to be processsed
-                response: responseponse to be sent to user 
- * Returns: response with json of identified lines and src of thresholded image
+ * Parameters:  imagePath: String, path to image to be processsed
+                dataPath: String, path to store processed data
+                callback: function
+ * Returns: calls callback with preprocessed data and image
 **/
-function preprocessor(imagePath, callback) {
-  var child = exec('python preprocessing.py ' + imagePath, function (error, stdout, stderr) {
-    fs.readFile('json.txt', function read(err, dataStr) {
-      if (err) {
-        console.log("failed to preprocess: "+err);
+function preprocessor(imagePath, dataPath, callback) {
+  dataPath = 'json.txt';
+  var child = exec('python ./python/preprocessing.py ' + imagePath, function (error, stdout, stderr) {
+    fs.readFile(imagePath, function(err, imageStr) {
+      if(err) {
+        console.log("failed to read processed image: "+err);
         if(Util.exists(callback)) {return callback(null)}
       } else {
-        var dataStrUTF8 = dataStr.toString('utf8');
-        var data = JSON.parse(dataStrUTF8);
+        fs.unlink(imagePath);
+        var base64ImageStr = new Buffer(imageStr, 'base64').toString('base64');
         
-        fs.readFile(imagePath, function(err, imageStr) {
-          if(err) {
-            console.log("failed to read processed image: "+err);
-            if(Util.exists(callback)) {return callback(null)}
-          } else {
-            fs.unlink(imagePath);
-            if(Util.exists(callback)) {return callback({result: data, image: imageStr})}
-          }
+        fs.exists(dataPath, function(exists) {
+          if(exists) {
+            fs.readFile(dataPath, function read(err, dataStr) {
+              if (err) {
+                console.log("failed to preprocess: "+err);
+                if(Util.exists(callback)) {return callback(null)}
+              } else {
+                var dataStrUTF8 = dataStr.toString('utf8');
+                var data = JSON.parse(dataStrUTF8);
+                fs.unlink(dataPath);
+                if(Util.exists(callback)) {return callback({result: data, image: base64ImageStr});}
+              }
+            });
+          } else if(Util.exists(callback)) {return callback(null);}
         });
       }
     });

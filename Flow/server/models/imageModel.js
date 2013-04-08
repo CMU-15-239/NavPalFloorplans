@@ -5,18 +5,18 @@ var Util = require('../util.js');
 var ImageSchema = new mongoose.Schema({
 	_creatorId: String,
    imageId: String,
-   image: String
+   imageStr: String
 });
 
 /**
  * Summary: Extract the data to output. Removes sensitive data (e.g. this._id).
  * Parameters: undefined
- * Returns: {id : String, image: String}
+ * Returns: {imageId : String, image: String}
 **/
 ImageSchema.methods.toOutput = function() {
    return {
-      id: this.imageId,
-      image: this.image
+      imageId: this.imageId,
+      imageStr: this.imageStr
    };
 };
 

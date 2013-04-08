@@ -1,12 +1,14 @@
 var mongoose = require('mongoose');
-var BuildingController = require('../controllers/buildingController.js');
-var Util = require('../util.js');
 var passportLocalMongoose = require('passport-local-mongoose');
+var BuildingController = require('../controllers/buildingController.js');
+var ImageController = require('../controllers/imageController.js');
+var Util = require('../util.js');
 
 var UserSchema = new mongoose.Schema({
    registeredTimestamp: Date,
    lastLoginTimestamp: Date,
-   buildingRefs: Array
+   buildingRefs: Array,
+   imageRefs: Array
 });
 
 //Plugs in passport to User, adds username and password to UserSchema
@@ -36,6 +38,83 @@ UserSchema.methods.changePassword = function(newPassword, callback) {
         }
    });
 };
+
+//-------------------
+// User Image Methods
+//-------------------
+
+/**
+ * Summary: Edits and saves imageStr and creates a new image if imageId is undefined/null.
+ * Parameters: imageStr: String
+               imageId: String
+               callback: function
+ * Returns: calls callback with null or building.
+**/
+UserSchema.methods.saveImage = function(imageStr, imageId, callback) {
+  if(Util.exists(imageStr)) {
+    if(!Util.exists(imageId)) {
+       return this.createNewImage(imageStr, callback);
+    } else {
+       return this.getImage(imageId, function(imageObj) {
+          if(Util.exists(imageObj)) {
+             imageObj.imageStr = imageStr;
+             imageObj.save(function(err) {
+                if(err) {
+                   console.log("userModel.js 29 failed to save imageObj");
+                   if(Util.exists(callback)) {return callback(null);}
+                } else if(Util.exists(callback)) {
+                   return callback(imageObj);
+                }
+             });
+          } else if(Util.exists(callback)) {
+            return callback(null);
+          }
+       });
+    }
+  } else if(Util.exists(callback)) {
+    return callback(null);
+  }
+};
+
+/**
+ * Summary: Creates a new image from inputs.
+ * Parameters: imageStr : String
+               callback: function
+ * Returns: calls callback with null or building.
+**/
+UserSchema.methods.createNewImage = function(imageStr, callback) {
+	console.log("userModel line18");
+	var user = this;
+	ImageController.newImage(this._id, imageStr, function(imageObj) {
+    //console.log("userModel line87: created image: "+JSON.stringify(imageObj));
+    if(Util.exists(imageObj)) {
+      user.imageRefs.push(imageObj.imageId);
+      user.save(function(err) {
+        if(err) {
+          console.log("\n--userMode.js 31 ERR: "+err+"--\n");
+          if(Util.exists(callback)) {return callback(null);}
+        }
+        else if(Util.exists(callback)) {return callback(imageObj);}
+      });
+    } else if(Util.exists(callback)) {return callback(null);}
+	});
+};
+
+/**
+ * Summary: Finds the image with imageId if the user has access to it.
+ * Parameters: imageId: String
+               callback: function
+ * Returns: calls callback with building or null if none found.
+**/
+UserSchema.methods.getImage = function(imageId, callback) {
+	console.log("--getting Image--: "+imageId);
+	ImageController.findOne({_creatorId: this._id, imageId: imageId}, callback);
+};
+
+
+//----------------------
+// User Building Methods
+//----------------------
 
 /**
  * Summary: Saves buildingData.
@@ -84,24 +163,19 @@ UserSchema.methods.createNewBuilding = function(buildingName, graph, authoData, 
 	console.log("userModel line18");
 	var user = this;
 	BuildingController.newBuilding(this._id, buildingName, graph, authoData, function(buildingObj) {
-		//console.log("userModel line87: created building: "+JSON.stringify(buildingObj));
-		user.buildingRefs.push({name: buildingObj.getUserBuildingName(),
-                              id: buildingObj.getUserBuildingId()});
-      buildingObj.save(function(err) {
-			if(err) {
-				console.log("\n--userMode.js 26 ERR: "+err+"--\n");
-				if(Util.exists(callback)) {return callback(null);}
-			}
-			else {
-				user.save(function(err) {
-					if(err) {
-                  console.log("\n--userMode.js 31 ERR: "+err+"--\n");
-                  if(Util.exists(callback)) {return callback(null);}
-					}
-					else if(Util.exists(callback)) {return callback(buildingObj);}
-				});
-			}
-		});
+		if(Util.exists(buildingObj)) {
+      //console.log("userModel line87: created building: "+JSON.stringify(buildingObj));
+      user.buildingRefs.push({name: buildingObj.getUserBuildingName(),
+                                id: buildingObj.getUserBuildingId()});
+                                
+      user.save(function(err) {
+        if(err) {
+          console.log("\n--userMode.js 31 ERR: "+err+"--\n");
+          if(Util.exists(callback)) {return callback(null);}
+        }
+        else if(Util.exists(callback)) {return callback(buildingObj);}
+      });
+    } else if(Util.exists(callback)) {return callback(null);}
 	});
 };
 

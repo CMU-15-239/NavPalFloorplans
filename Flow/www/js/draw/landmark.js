@@ -1,14 +1,14 @@
 //landmark.js
 
-function Landmark(name, description, pointRep) {
-   this.name = name; //string
+function Landmark(label, description, pointRep) {
+   this.label = label; //string
    this.description = description; //string
    this.pointRep = pointRep; //point
 }
 
 Landmark.prototype.toOutput = function() {
    return {
-      name: this.name,
+      label: this.label,
       description: this.description,
       pointRep: this.pointRep.toOutput()
    };

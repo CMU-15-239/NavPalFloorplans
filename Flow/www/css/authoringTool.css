@@ -4,8 +4,8 @@
     Written by Daniel Muller
 */
 html {
-    min-width: 800px;
-    height: 100%;
+    display: block;
+    height: auto;
 }
 
 body {
@@ -102,15 +102,17 @@ html, body {
 -------------------------------------------------- */
 .connected-carousels .navigation {
 	position: relative;
-	left: 15px;
 	width: auto;
 	height: 160px;
+    margin: 0px 0px 0px 260px;
+
 }
 
 /** Shared carousel styles
 -------------------------------------------------- */
 .connected-carousels .carousel {
     overflow: hidden;
+    margin-bottom: 0px;
 }
 
 .connected-carousels .carousel ul {
@@ -135,7 +137,7 @@ html, body {
 /** Navigation carousel specific styles
 -------------------------------------------------- */
 .connected-carousels .carousel-navigation {
-    height: 200px;
+    height: 160px;
 }
 
 .connected-carousels .carousel-navigation li {
@@ -173,7 +175,7 @@ html, body {
 }
 
 .connected-carousels .prev-navigation {
-    left: 224px;
+    left: 4px;
     top: 65px;
     text-indent: 6px;
 }

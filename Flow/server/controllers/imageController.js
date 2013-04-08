@@ -9,17 +9,17 @@ var ImageController = {
                   image: String
     * Returns: undefined. Calls callback with created Image or null if it fails.
    **/   
-	newImage: function(creatorId, image, callback) {
+	newImage: function(creatorId, imageStr, callback) {
 		var IC = this; //the image controller
-		var userImageId = this.generateImageId();
-		console.log("imageController line10: "+userImageId);
+		var imageId = this.generateImageId();
+		console.log("imageController line10: "+imageId);
     
-		this.findOne({_creatorId: creatorId, image: image}, function(imageObj) {
+		this.findOne({_creatorId: creatorId, imageId: imageId}, function(imageObj) {
 			if(!Util.exists(imageObj)) {
             imageObj = new Image({
                _creatorId: creatorId,
-               imageId: userImageId,
-               image: image
+               imageStr: imageStr,
+               imageId: imageId
             });
 				
             imageObj.save(function(err) {
@@ -31,7 +31,7 @@ var ImageController = {
             });
 			}
 			else {
-				return IC.newImage(creatorId, image, callback);
+				return IC.newImage(creatorId, imageStr, callback);
 			}
 		});
 	},
@@ -70,7 +70,7 @@ var ImageController = {
     * Returns: undefined. Calls callback with found Image or null if none found.
    **/
 	findOne: function(searchJSON, callback) {
-		console.log('line63 :'+JSON.stringify(searchJSON));
+		//console.log('ImageController.js line73 :'+JSON.stringify(searchJSON));
 		Image.findOne(searchJSON, function(err, imageObj) {
 			//console.log("BC findone: "+JSON.stringify(imageObj));
 			if(err) {

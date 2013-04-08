@@ -8,7 +8,7 @@ function FloorConnection(label, pointRep, floorConnectionType) {
 
 FloorConnection.prototype.toOutput = function() {
    return {
-      name: this.name,
+      label: this.label,
       location: this.location.toOutput()
    };
 };

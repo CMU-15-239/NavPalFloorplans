@@ -18,12 +18,13 @@ StateManager.prototype.changeState = function(newState) {
 		this.currentState.exit();
 		this.currentState = this.avaliableStates[newState];
 		this.currentState.enter();
+		this.redraw();
 	}
 }
 
 StateManager.prototype.redraw = function() {
 	//First, delete everything from the canvas.
-	console.log(GLOBALS.view.offsetX);
+	//console.log(GLOBALS.view.offsetX);
     GLOBALS.canvas.clearRect(0, 0, GLOBALS.canvas.width, GLOBALS.canvas.height);
 	
 	sx = GLOBALS.view.offsetX;
