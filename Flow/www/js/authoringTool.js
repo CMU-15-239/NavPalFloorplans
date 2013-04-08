@@ -5,9 +5,6 @@
 
 $(document).ready(function () { 
     $('#toolIcon').tooltip();
-    $('#myModal').modal({
-        backdrop: false
-    });
     var buildingJSON = localStorage.getItem('building');
     var building = $.parseJSON(buildingJSON);
     
