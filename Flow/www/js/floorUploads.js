@@ -308,5 +308,6 @@ $('#done').click(function() {
 })
 
 function constructBuildingFromPreprocess(buildingName, buildingData) {
-	return -1;
+	console.log("Building name: " + buildingName);
+	console.log(buildingData);
 }

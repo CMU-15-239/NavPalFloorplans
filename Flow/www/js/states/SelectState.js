@@ -137,10 +137,13 @@ SelectState.prototype.selectBoxUndefined = function() {
 }
 
 SelectState.prototype.removeFromSelectPoints = function(pointToRemove) {
+	console.log("remove point");
 	var index = this.selectedPoints.indexOf(pointToRemove);
 	if (index >= 0) {
+		console.log("point hit!");
 		this.selectedPoints.splice(index, 1);
 	}
+	this.stateManager.redraw();
 }
 
 SelectState.prototype.removeFromSelectLines = function(lineToRemove) {
