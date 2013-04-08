@@ -53,7 +53,7 @@ SelectState.prototype.mouseMove = function(event) {
 		var p1 = this.selectBox.p1;
 		var p2 = this.selectBox.p2;
 		//Select points
-		for (var i = 0; i < GLOBALS.points.length; i ++) {
+		for (var i = 0; i < GLOBALS.points.length; i++) {
 			var p = GLOBALS.points[i];
 			if (this.pointInRect(p, p1, p2)) {
 				this.selectedPoints.push(p);
@@ -121,8 +121,8 @@ SelectState.prototype.draw = function() {
 	
 	//Draw the selection rectangle if appropriate.
 	if (this.isSelectBox && !this.selectBoxUndefined()) {
-		var p1 = this.selectBox.p1;
-		var p2 = this.selectBox.p2;
+		var p1 = GLOBALS.view.toCanvasWorld(this.selectBox.p1);
+		var p2 = GLOBALS.view.toCanvasWorld(this.selectBox.p2);
 		var width = p2.x - p1.x;
 		var height = p2.y - p1.y;
 		GLOBALS.canvas.beginPath();

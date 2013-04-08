@@ -304,3 +304,7 @@ $('#done').click(function() {
 		})
 	}
 })
+
+function constructBuildingFromPreprocess(buildingName, buildingData) {
+	return -1;
+}
