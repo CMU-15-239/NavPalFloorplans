@@ -25,11 +25,26 @@ StateManager.prototype.redraw = function() {
 	//First, delete everything from the canvas.
 	console.log(GLOBALS.view.offsetX);
     GLOBALS.canvas.clearRect(0, 0, GLOBALS.canvas.width, GLOBALS.canvas.height);
+	
+	sx = GLOBALS.view.offsetX;
+	sy = GLOBALS.view.offsetY;
+	dx = 0;
+	dy = 0;
+	
+	if (GLOBALS.view.offsetX < 0) {
+		dx = -1 * GLOBALS.view.offsetX;
+		sx = 0
+	}
+	if (GLOBALS.view.offsetY < 0) {
+		dy = -1 * GLOBALS.view.offsetY;
+		sy = 0
+	}
+	
 	GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
-	GLOBALS.view.offsetX, GLOBALS.view.offsetY,
-	GLOBALS.canvas.image.width - GLOBALS.view.offsetX, GLOBALS.canvas.image.height - GLOBALS.view.offsetY,
-	50,50,
-	GLOBALS.canvas.image.width -  GLOBALS.view.offsetX, GLOBALS.canvas.image.height -  GLOBALS.view.offsetY);
+	sx, sy,
+	GLOBALS.canvas.image.width - sx, GLOBALS.canvas.image.height - sy,
+	dx,dy,
+	GLOBALS.canvas.image.width -  sx, GLOBALS.canvas.image.height -  sy);
 	
 	GLOBALS.drawWalls();
 	GLOBALS.drawPoints();
