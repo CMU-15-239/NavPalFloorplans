@@ -42,15 +42,17 @@ StateManager.prototype.redraw = function() {
 		dy = -1 * GLOBALS.view.offsetY;
 		sy = 0
 	}
-	
-	
-	
-	GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
-	sx, sy,
-	GLOBALS.canvas.image.width - sx, GLOBALS.canvas.image.height - sy,
-	dx * zoom,dy * zoom,
-	zoom * (GLOBALS.canvas.image.width -  sx), zoom * (GLOBALS.canvas.image.height -  sy));
-	
+
+	if (GLOBALS.canvas.image === undefined) {
+		;
+	}
+	else {
+		GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
+		sx, sy,
+		GLOBALS.canvas.image.width - sx, GLOBALS.canvas.image.height - sy,
+		dx * zoom,dy * zoom,
+		zoom * (GLOBALS.canvas.image.width -  sx), zoom * (GLOBALS.canvas.image.height -  sy));
+	}
 	GLOBALS.drawWalls();
 	GLOBALS.drawPoints();
 	//Let the state draw itself
