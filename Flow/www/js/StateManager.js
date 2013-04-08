@@ -41,11 +41,11 @@ StateManager.prototype.redraw = function() {
 		sy = 0
 	}
 	
-	GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
+	/*GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
 	sx, sy,
 	GLOBALS.canvas.image.width - sx, GLOBALS.canvas.image.height - sy,
 	dx,dy,
-	GLOBALS.canvas.image.width -  sx, GLOBALS.canvas.image.height -  sy);
+	GLOBALS.canvas.image.width -  sx, GLOBALS.canvas.image.height -  sy);*/
 	
 	GLOBALS.drawWalls();
 	GLOBALS.drawPoints();
