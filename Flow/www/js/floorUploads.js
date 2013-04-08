@@ -35,10 +35,7 @@ function popoverPlacement(element) {
     	elementLeft, elementRight, isWithinBounds, left, pos, right;
     // local function to compute if element will be diaplayed on the bage
     var isWithinBounds = function(elementPosition) {
-    return (boundTop < elementPosition.top &&
-		    boundLeft < elementPosition.left &&
-		    boundRight > (elementPosition.left + actualWidth) &&
-		    boundBottom > (elementPosition.top + actualHeight));
+    return (boundTop < elementPosition.top && boundLeft < elementPosition.left && boundRight > (elementPosition.left + actualWidth) && boundBottom > (elementPosition.top + actualHeight));
     };
     $element = $(element);
     pos = $.extend({}, $element.offset(), {
@@ -107,7 +104,7 @@ function popoverOptions(imgSrc, width, height) {
  * Parameters: fileName-name of uploaded floorplan 
  * Returns: html string of form feilds for a floorplan
 **/
-function labelTemplate(fileName) {
+function labelTemplate(fileName, id) {
 	return $(
 		'<form class="form-horizontal well form-inline">\
 			<div class="control-group">\
@@ -119,7 +116,7 @@ function labelTemplate(fileName) {
 			<div class="control-group">\
 				<label class="control-label" for="floorLabel">Floor Number:</label>\
 				<div class="controls">\
-					<input class="span1" type="text">\
+					<input class="span1 ' + id + '" type="text">\
 				</div>\
 			</div>\
 		</form>');
@@ -179,7 +176,7 @@ function createThumb(file) {
         	var imgHolder = $('<div></div>').addClass('imgHolder').addClass(id);
         	var caption = $('<div></div>').addClass('caption');
         	// constructs form template for labeling
-        	var label = labelTemplate(file.name);
+        	var label = labelTemplate(file.name, id);
         	// directly holds image
         	var floorPlan = formatFloorPlan(floorPlanImg).addClass('loading').addClass(id);
         	imgHolder.append(floorPlan);
@@ -221,7 +218,7 @@ function processFiles(files) {
 					console.log(response);
 					var id = this.name.hashCode();
 					// save preprocessor data into array for future use
-					PROCESSEDFLOORS.add.push({id: response})
+					PROCESSEDFLOORS.add.push([id, response])
 					$("."+ id).removeClass('loading').spin(false);
 				}.bind(this),
 				error: function(response) {
@@ -265,9 +262,14 @@ $('#file').click(function(){
 }).show();
 
 function getFloorLabels(processedFloors) {
+	var building = {}
 	for (var i = 0; i < processedFloors.length; i++) {
 		var floor = processedFloors[i]
-		var id = floor.id
+		var id = floor[0]
+		var data = floor[1]
+		var label = $("input.span1."+id).val()
+		building.label = data
+		console.log(label);
 	};
 }
 
