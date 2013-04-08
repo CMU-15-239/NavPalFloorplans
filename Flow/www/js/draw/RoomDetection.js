@@ -1,18 +1,34 @@
+/**
+	RoomDetection.js
+	Written by Paul Davis
+	pjbdavis@gmail.com
+	Spring 2013
+	
+	This file takes a list of lines and determines which areas constitute
+	different rooms. The basic algorithm uses depth first search 
+	
+	NEED TO FINISH WRITING...
+	
+*/
+
 var targetPoint;
 var visitedPoints = {};
 
 /**
  * Summary: Automatically detects the tightest bound around all 
-			closed off rooms, and updates the global list of spaces
+			closed off rooms.
  * Parameters: lines: a list of all the lines that define walls
- * Returns: undefined
+			   spaces: a list of all spaces (on this floor)
+ * Returns: A new list of spaces
 **/
-function detectRooms(lines) {
+function detectRooms(lines, spaces) {
 	var rooms = [];
+	spaces = ALL_CLOSED_ROOMS;
 	
 	// Check if this line is part of a closed off room
 	for (var i = 0; i < lines.length; i++) {
 		searchRoom(lines[i], rooms);
+		console.log(rooms.length);
 	}
 	
 	var newRooms = [];
@@ -21,8 +37,8 @@ function detectRooms(lines) {
 		var room = rooms[i];
 		
 		var alreadyExist = false;
-		for (var j = 0; j < ALL_CLOSED_ROOMS.length; j ++) {
-			var prevRoom = ALL_CLOSED_ROOMS[j];
+		for (var j = 0; j < spaces.length; j ++) {
+			var prevRoom = spaces[j];
 			
 			// The room already exists, don't overwrite it
 			if (prevRoom.sameRoomWalls(room)) {
@@ -36,8 +52,10 @@ function detectRooms(lines) {
 			newRooms.push(room);
 		}
 	}
-
+	
 	ALL_CLOSED_ROOMS = newRooms;
+	console.log(newRooms.length);
+	return newRooms;
 }
 
 /**
@@ -60,7 +78,7 @@ function distance(lines) {
  *			moving in a cw or ccw direction
  * Parameters: lines: A set of lines that represent a path
  *			   counterClock: true if path follows the lines ccw 
- * Returns: The sum of the anlges
+ * Returns: The sum of the angles
 **/
 function sumAngles(lines, counterClock) {
 	sum = 0;
@@ -113,7 +131,7 @@ function searchRoom(line, rooms) {
 	var validRevRoute = false;
 	targetPoint = line.p2;
 	
-	// Starting at one of the points, DFS to ge to the other, going ccw
+	// Starting at one of the points, DFS to get to the other, going ccw
 	var route = new Array();
 	visitedPoints = {}
 	if (followWalls(true, line.p1, line, route)) { // DFS
@@ -132,14 +150,14 @@ function searchRoom(line, rooms) {
 		}
 	}
 	
-	// If going counterclockwise did not find a path, try clockwise
-	if (validRoute == false) {
+	// Let's also try clockwise
+	if (true) {
 		visitedPoints = {}
 		var revRoute = new Array();
 		if (followWalls(false, line.p1, line, revRoute)) { // DFS
 			revRoute.push(line);
 			validRevRoute = true;
-			route = revRoute;
+			//route = revRoute;
 			
 			//var angles = sumAngles(route, true);
 			//var expectedInternalAngle = sumInternalAngle(route.length); 
@@ -147,21 +165,32 @@ function searchRoom(line, rooms) {
 	}
 	
 	// If a valid room was found
-	if (validRoute || validRevRoute) {
-		var newRoom = new Space(route);
-		
-		var found = false;
-		for (var i = 0; i < rooms.length; i ++) {
-			if (rooms[i].sameRoomWalls(newRoom)) {
-				found = true;
-			}
-		}
-		
-		// If a room with the same walls has not been found, this room is new
-		if (!found) {
-			rooms.push(newRoom);
+	if (validRoute) {
+		addRouteAsRoom(route, rooms);
+	}
+	
+	if (validRevRoute) {
+		addRouteAsRoom(revRoute, rooms);
+	}
+	
+}
+
+function addRouteAsRoom(route, rooms) {
+
+	var newRoom = new Space(route);
+	
+	var found = false;
+	for (var i = 0; i < rooms.length; i ++) {
+		if (rooms[i].sameRoomWalls(newRoom)) {
+			found = true;
 		}
 	}
+	
+	// If a room with the same walls has not been found, this room is new
+	if (!found) {
+		rooms.push(newRoom);
+	}
+	
 }
 
 

@@ -6,7 +6,7 @@ $(document).ready(function ()
 {
 	var generateData = window.generateData = function(spaces, width, height) {
 		return {
-			graph: (new Graph(spaces)).toOutput(),
+			graph: (new FloorGraph(spaces)).toOutput(),
 			map: generateMap(spaces, width, height),
 			//sector: generateSector(spaces, width, height),
 			room: generateRoom(spaces, '\n')
@@ -71,6 +71,11 @@ $(document).ready(function ()
 		keyPressed(event);
 	});
 	$("canvas").keydown(function(event) {
+		var keyCode = event.keyCode;
+		if (keyCode === 32) {
+			alert("hur");
+			event.preventDefault();
+		}
 		keyDown(event);
 	});
 	$("canvas").keyup(function(event) {

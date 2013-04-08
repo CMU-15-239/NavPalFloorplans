@@ -1,13 +1,25 @@
-$(document).ready( 
-    function() {
-        $('.toolIcon').click(
-            function() {
-                $('.toolIcon').removeClass('active');
-                $(this).addClass('active');
-            })
-    }
-);
+/**
+ * Initializes layout of authoring tool page
+ * Written by: Daniel Muller
+*/
 
+$(document).ready(function () { 
+    $('#toolIcon').tooltip();
+    $('#myModal').modal({
+        backdrop: false
+    });
+    var buildingJSON = localStorage.getItem('building');
+    var building = $.parseJSON(buildingJSON);
+    
+});
+
+/**
+ * Summary: Connects preview pane to floorplan carousel by linking two carousels
+            together and only showing 1 image of one carousel to create our
+            preview pane
+ * Parameters:  n/a
+ * Returns: n/a
+**/
 (function($) {
     // This is the connector function.
     // It connects one item from the navigation carousel to one item from the

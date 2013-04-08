@@ -31,7 +31,7 @@ Line.prototype.toOutput = function() {
 		p1: this.p1.toOutput(),
 		p2: this.p2.toOutput()
 	};
-}
+};
 
 /**
  * Summary: Put the line in standard form (ax + by = c)
@@ -48,7 +48,7 @@ Line.prototype.calculateForm = function(p1, p2) {
 	this.b = p2.x - p1.x;
 	this.c = p1.x * (p2.y - p1.y) - p1.y * (p2.x - p1.x);
 	this.distConst = Math.sqrt(this.a * this.a + this.b * this.b);
-}
+};
 
 /**
  * Summary: Get the string form of the line.
@@ -57,7 +57,7 @@ Line.prototype.calculateForm = function(p1, p2) {
 **/
 Line.prototype.toString = function() {
 	return "<" + this.p1.toString() + "," + this.p2.toString() + ">";
-}
+};
 
 /**
  * Summary: Checks whether the given line is equal to the current object.
@@ -79,23 +79,27 @@ Line.prototype.equals = function (l) {
  * Parameters: this
  * Returns: undefined.
 **/
-Line.prototype.draw = function () {	
+Line.prototype.draw = function (lineColor) {	
+	canvasP1 = GLOBALS.view.toCanvasWorld(this.p1);
+	canvasP2 = GLOBALS.view.toCanvasWorld(this.p2);
+	
 	//Save the old stroke, so that we can restore it when we're done
-	var oldStroke = CANVAS.strokeStyle;
-	CANVAS.strokeStyle = 'rgba(0,180,0,1)';
+	var oldStroke = GLOBALS.canvas.strokeStyle;
+	GLOBALS.canvas.strokeStyle = 'rgba(0,180,0,1)';
 	if (this.isDoor === true) {
-		CANVAS.strokeStyle = "pink";
+		GLOBALS.canvas.strokeStyle = "pink";
 	}
 	if (this.isSelected === true) {
-		CANVAS.strokeStyle = "yellow"; // Yellow
+		GLOBALS.canvas.strokeStyle = "yellow"; // Yellow
 	}
-	CANVAS.lineWidth = WALL_WIDTH;
-	CANVAS.beginPath();
-	CANVAS.moveTo(this.p1.x,this.p1.y);
-	CANVAS.lineTo(this.p2.x,this.p2.y);
-	CANVAS.stroke();
+	if (lineColor !== undefined) GLOBALS.canvas.strokeStyle = lineColor;
+	GLOBALS.canvas.lineWidth = WALL_WIDTH;
+	GLOBALS.canvas.beginPath();
+	GLOBALS.canvas.moveTo(canvasP1.x, canvasP1.y);
+	GLOBALS.canvas.lineTo(canvasP2.x, canvasP2.y);
+	GLOBALS.canvas.stroke();
 	//Reset the stroke style
-	CANVAS.strokeStyle = oldStroke;
+	GLOBALS.canvas.strokeStyle = oldStroke;
 };
 
 /**
@@ -142,7 +146,7 @@ Line.prototype.pointNearLine = function(point, radius) {
 		 (this.p1.y <= point.y+radius && point.y-radius <= this.p2.y));
 		 
 	return close && onLine;
-}
+};
 
 /**
  * Summary: Snap the given point to the line.
@@ -224,5 +228,84 @@ Line.prototype.magnitutde = function() {
 	var dx = Math.abs(this.p1.x - this.p2.x);
 	var dy = Math.abs(this.p1.y - this.p2.y);
 	return Math.sqrt(dx * dx + dy * dy);
+};
+
+Line.prototype.pointOfLineIntersection = function(line) {
+	//If they have a common endpoint, they don't intersect in any meaningful way.
+	if (this.p1.equals(line.p1) || this.p1.equals(line.p2) || this.p2.equals(line.p1) || this.p2.equals(line.p2)){
+		return null;
+	}
+  
+	var epsilon = .00001;
+	
+	//The following can't be 0
+	var checkOne = Math.abs(line.a*this.b - this.a*line.b) > epsilon;
+	var checkTwo = Math.abs(line.b * this.b) > epsilon;
+	
+	if (!checkOne || !checkTwo) return null;
+	
+	//The equation for checking the x-value of the intersection of two lines in standard form.
+	var xIntersect = -1*(line.b*this.c - this.b*line.c)/(this.a*line.b - line.a*this.b);
+	
+	//Now check that the x-value falls on both lines.
+	var fallsOnThis = ((this.p1.x >= xIntersect && xIntersect >= this.p2.x) || 
+		(this.p1.x <= xIntersect && xIntersect <= this.p2.x));
+		
+	var fallsOnLine = ((line.p1.x >= xIntersect && xIntersect >= line.p2.x) || 
+		(line.p1.x <= xIntersect && xIntersect <= line.p2.x));
+		
+	if (fallsOnThis && fallsOnLine) {
+		//Doesn't matter which line we use to calculate y-value, because they're equal at this x.
+		var yIntersect = (-1*this.c - this.a*xIntersect)/(this.b);
+		return new Point(xIntersect, yIntersect);
+	}
+	
+	//There is no valid point of intersection.
+	return null;
+};
+
+Line.prototype.splitUpLine = function(setOfPoints) {
+	var sortedPoints = this.sortPoints(setOfPoints);
+	var newLineSegments = [];
+	var lineToSplit = this;
+	for (var i = 0; i < sortedPoints.length; i++) {
+		var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
+		newLineSegments.push(newSegs.l1);
+		lineToSplit = newSegs.l2;
+	}
+	newLineSegments.push(newSegs.l2);
+	return newLineSegments;
+};
+
+Line.prototype.sortPoints = function(points) {
+	points.unshift(this.p1);
+	var closestPoint;
+	var closestDistance = 100000000000;
+	var numSorted = 0;
+	var sortedPoints = [];
+	while (numSorted < points.length) {
+		var pointToCheck = points[numSorted];
+		for (var j = 0; j < points.length; j++) {
+			var curPoint = points[j];
+			if (!curPoint.equals(pointToCheck) &&
+				!this.containsPoint(sortedPoints, curPoint) && 
+				pointToCheck.distance(curPoint) < closestDistance) {
+				closestPoint = curPoint;
+				closestDistance = pointToCheck.distance(curPoint);
+			}
+		}
+		sortedPoints.push(closestPoint);
+		closestDistance = 10000000000000;
+		numSorted += 1;
+	}
+	//Remove this.p1
+	return points.splice(1, points.length - 1);
+};
+
+Line.prototype.containsPoint = function(pointList, point) {
+	for (var i = 0; i < pointList.length; i++) {
+		if (pointList[i].equals(point)) return true;
+	}
+	return false;
 };
 

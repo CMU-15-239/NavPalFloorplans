@@ -20,7 +20,8 @@ function importSpaceNode(simpleSpaceNode) {
 
 /**
  * Summary: Constructor for the SpaceNode object.
- * Parameters: spaceType: String, type of space (room, hallway, etc...)
+ * Parameters: type: String, type of floor node (e.g. space, psw, floorConnection)
+        spaceType: String, type of space (room, hallway, etc...)
 				label: String, label for room (e.g. room number)
 				edges: List of Strings (GraphNodes ids)
 				walls: List of Line objects, walls of SpaceNode (unordered)
@@ -33,10 +34,10 @@ function SpaceNode(type, spaceType, label, edges, walls) {
 	if(util.exists(walls)) {this.walls = walls;}
 	else {this.walls = [];}
 	
-	GraphNode.call(this, type, edges, type);
+	FloorNode.call(this, type, edges, type);
 }
 
-SpaceNode.prototype = new GraphNode();
+SpaceNode.prototype = new FloorNode();
 SpaceNode.prototype.constructor = SpaceNode;
 
 /**
@@ -84,6 +85,81 @@ SpaceNode.prototype.equals = function(otherSpaceNode) {
   }
   
   return false;
+};
+
+
+/**
+ * Summary: Find the first wall that is within radius distance of the given point.
+ * Parameters: point: the point to find a match for, 
+ *	radius: the maximum distance the wall can be away from the point
+ * Returns: The first wall that is close to the point if there is one, and null otherwise.
+**/
+SpaceNode.prototype.pointOnWalls = function(point, radius) {
+	for(var w = 0; w < this.walls.length; w++) {
+		if(this.walls[w].pointNearLine(point, radius)) {
+			return this.walls[w];
+		}
+	}
+	return null;
+};
+
+/**
+ * Summary: Check whether the given point is within the defining walls of the space.
+ * Parameters: point: the point we're checking, 
+ * 		width: int,
+ * 		includeLine: Should we include the lines that define the walls in our check? 
+ * Returns: true iff the given point is within the defining walls of the space.
+**/
+SpaceNode.prototype.pointInSpace = function(point, width, includeLine) {
+	//console.log("params: "+JSON.stringify(point)+" width: "+width+" includeLine: "+includeLine);
+	//If point is very close to a line, then it's only in the space if we should include the walls' lines.
+	if (util.exists(this.pointOnWalls(point, 0.5))) {
+		return (includeLine === true);
+	}
+	else {
+		//console.log("jere");
+		//compile intersecting lines
+		var inShapeSegments = [];
+		var lastLineIntersected = null;
+		var currP1 = null;
+		for(var xr = 0; xr < width; xr++) {
+			var currRayPt = {x: xr, y: point.y};
+			//console.log("checkingPt: "+JSON.stringify(currRayPt));
+			var intersectLine = this.pointOnWalls(currRayPt, 0.5);
+			if(util.exists(intersectLine)) {
+				//console.log("found intersection pt: "+JSON.stringify(currRayPt));
+				if(!intersectLine.equals(lastLineIntersected)) {
+					lastLineIntersected = intersectLine;
+					if(util.exists(currP1)) {
+						//deep cpy
+						var inShapeSegment = new Line(new Point(currP1.x, currP1.y) , new Point(currRayPt.x, currRayPt.y));
+						inShapeSegments.push(inShapeSegment);
+						if(inShapeSegment.pointNearLine(point, 0.5)) {
+							return true;
+						}
+						currP1 = null;
+						//console.log("interLine: "+JSON.stringify(inShapeSegments[inShapeSegments.length-1]));
+					}
+					else {
+						currP1 = {x:currRayPt.x, y:currRayPt.y};
+						//console.log("p1: "+JSON.stringify(currP1))
+					}
+				}
+			}
+		}
+		
+		//console.log(inShapeSegments);
+		//determine if point is on one of these intersected lines
+		return false;
+		/*
+		for(var s = 0; s < inShapeSegments.length; s++) {
+			if(inShapeSegments[s].pointNearLine(point, 0)) {
+				return true;
+			}
+		}
+		return false;
+		*/
+	}
 };
 
 

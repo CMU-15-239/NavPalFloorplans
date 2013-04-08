@@ -13,7 +13,8 @@ function importPswNode(simplePswNode) {
 
 /**
  * Summary: Constructor for the PswNode object.
- * Parameters: pswType: String, type of passageway (door, sliding, opening, etc...)
+ * Parameters: type: String, type of floor node (e.g. space, psw, floorConnection)
+        pswType: String, type of passageway (door, sliding, opening, etc...)
 				edges: List of Strings (GraphNodes ids)
 				lineRep: Line object, 2d line represenation of passageway
  * Returns: undefined
@@ -22,10 +23,10 @@ function PswNode(type, pswType, edges, lineRep) {
 	this.pswType = pswType;
 	this.lineRep = lineRep;
 
-	GraphNode.call(this, type, edges, type);
+	FloorNode.call(this, type, edges, type);
 }
 
-PswNode.prototype = new GraphNode();
+PswNode.prototype = new FloorNode();
 PswNode.prototype.constructor = PswNode;
 
 /**

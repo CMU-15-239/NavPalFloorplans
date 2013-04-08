@@ -1,0 +1,21 @@
+/*
+  Styles for navpal homepage
+  Written by Daniel Muller
+*/
+
+.instructions h2 {
+  font-size: 40px;
+  margin: 40px 0px;
+}
+
+.instructions {
+  text-align: center;
+}
+
+.instructions h5 {
+  font-size: 16px;
+}
+
+.icon {
+  margin: 20px;
+}
