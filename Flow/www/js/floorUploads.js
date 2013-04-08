@@ -218,7 +218,7 @@ function processFiles(files) {
 					console.log(response);
 					var id = this.name.hashCode();
 					// save preprocessor data into array for future use
-					PROCESSEDFLOORS.add.push([id, response])
+					PROCESSEDFLOORS.push([id, response])
 					$("."+ id).removeClass('loading').spin(false);
 				}.bind(this),
 				error: function(response) {
@@ -271,6 +271,7 @@ function getFloorLabels(processedFloors) {
 		building.label = data
 		console.log(label);
 	};
+	return building;
 }
 
 $('#done').click(function() {
