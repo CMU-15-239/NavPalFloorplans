@@ -27,8 +27,7 @@ Landmark.prototype.toOutput = function() {
 
 Landmark.prototype.draw = function() {
 	if (this.pointRep === undefined) return;
-	stateManager.currentFloor.globals.canvas.fillStyle = "blue";
-	stateManager.currentFloor.globals.canvas.beginPath();
-    stateManager.currentFloor.globals.canvas.arc(this.pointRep.x, this.pointRep.y, 5, 0, 2*Math.PI, false);
-    stateManager.currentFloor.globals.canvas.fill();
+	GLOBALS.canvas.beginPath();
+    GLOBALS.canvas.arc(this.pointRep.x, this.pointRep.y, 20, 0, 2*Math.PI, false);
+    GLOBALS.canvas.fill();
 }
