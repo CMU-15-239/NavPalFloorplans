@@ -78,16 +78,22 @@ SelectState.prototype.mouseUp = function(event) {
 			var curPoint = this.selectedPoints[numSeen];
 			var snapPoint = this.stateManager.aboutToSnapToPoint(curPoint);
 			if (snapPoint != null && snapPoint !== curPoint) {
-				console.log(snapPoint.x + ", " + snapPoint.y);
-				console.log(curPoint.x + ", " + curPoint.y);
 				this.changeLineEndpoints(curPoint, snapPoint);
 				this.removeFromSelectPoints(curPoint);
 				GLOBALS.removePoint(curPoint);
-				console.log("MATCH!");
 			}
 			else {
 				numSeen += 1;
 			}
+		}
+		//Remove duplicate lines
+		var numWallsSeen = 0;
+		while (numWallsSeen < GLOBALS.walls.length) {
+			var curWall = GLOBALS.walls[numWallsSeen];
+			if (GLOBALS.isWallDuplicate(curWall)) {
+				GLOBALS.removeWall(curWall);
+			}
+			else numWallsSeen += 1;
 		}
 	}
 	this.isMouseDown = false;
