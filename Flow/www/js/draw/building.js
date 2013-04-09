@@ -1,29 +1,33 @@
 //building.js
 
+function importBuilding(simpleBuilding) {
+  var newBuilding = null;
+  if(util.exists(simpleBuilding)) {
+    newBuilding = new Building(simpleBuilding.name);
+    
+    if(util.exists(simpleBuilding.floors)) {
+      for(var f = 0; f < simpleBuilding.floors.length; f++) {
+        newBuilding.floors.push(importFloor(simpleBuilding.floors[f]));
+      }
+    }    
+  }
+  
+  return newBuilding;
+};
+
 function Building(name) {
   this.name = name;
-  this.id;
   this.floors = [];
-  this.floorConnections = [];
 }
 
 Building.prototype.toOutput = function() {
    var outFloors = [];
    for(var f = 0; f < this.floors.length; f++) {
-      outFloors.push(this.floor[f].toOutput());
+      outFloors.push(this.floors[f].toOutput());
    }
-   
-   var outFloorConnections = [];
-   for(var fc = 0; fc < this.floorConnections.length; fc++) {
-      outFloorConnections.push(this.floorConnections[fc].toOutput());
-   }
-   
-   //output landmarks
    
    return {
       name: this.name,
-      id: this.id,
-      floors: outFloors,
-      floorConnections: outFloorConnections
+      floors: outFloors
    };
 };

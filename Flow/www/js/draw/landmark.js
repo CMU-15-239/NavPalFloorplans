@@ -1,5 +1,16 @@
 //landmark.js
 
+function importLandmark(simpleLandmark) {
+  var newLandmark = null;
+  if(util.exists(simpleLandmark)) {
+    newLandmark = new Landmark(simpleLandmark.label,
+                            simpleLandmark.description,
+                            importPoint(simpleLandmark.pointRep));
+  }
+  
+  return newLandmark;
+}
+
 function Landmark(label, description, pointRep) {
    this.label = label; //string
    this.description = description; //string

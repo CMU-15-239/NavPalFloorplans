@@ -1,5 +1,43 @@
 //floor.js
 
+function importFloor(simpleFloor) {
+  var newFloor = null;
+  if(util.exists(simpleFloor)) {
+    newFloor = new Floor(simpleFloor.name, simpleFloor.imageId, simpleFloor.width, null);
+    newFloor.imageScale = simpleFloor.imageScale;
+    
+    newFloor.globals = importGlobalsContainer(simpleFloor.globals);
+    //console.log(newFloor.globals);
+    
+    if(util.exists(simpleFloor.spaces)) {
+      for(var s = 0; s < simpleFloor.spaces.length; s++) {
+        newFloor.spaces.push(importSpace(simpleFloor.spaces[s], newFloor.globals));
+      }
+    }
+    
+    if(util.exists(simpleFloor.obstacles)) {
+      for(var o = 0; o < simpleFloor.obstacles.length; o++) {
+        newFloor.obstacles.push(importSpace(simpleFloor.obstacles[o], newFloor.globals));
+      }
+    }
+    
+    if(util.exists(simpleFloor.landmarks)) {
+      for(var l = 0; l < simpleFloor.landmarks.length; l++) {
+        newFloor.landmarks.push(importLandmark(simpleFloor.landmarks[l]));
+      }
+    }
+    
+    if(util.exists(simpleFloor.floorConnections)) {
+      for(var fc = 0; fc < simpleFloor.floorConnections.length; fc++) {
+        newFloor.floorConnections.push(importFloorConnection(simpleFloor.floorConnections[fc]));
+      }
+    }
+    
+  }
+  
+  return newFloor;
+}
+
 function Floor(name, imageId, width, canvas) {
   this.name = name;
   this.imageId = imageId;
@@ -27,9 +65,9 @@ Floor.prototype.toOutput = function() {
       outSpaces.push(this.spaces[s].toOutput());
    }
    
-   var outObsticals = [];
-   for(var o = 0; o < this.obsticals.length; o++) {
-      outObsticals.push(this.obsticals[o].toOutput());
+   var outObstacles = [];
+   for(var o = 0; o < this.obstacles.length; o++) {
+      outObstacles.push(this.obstacles[o].toOutput());
    }
    
    var outLandmarks = [];
@@ -47,8 +85,9 @@ Floor.prototype.toOutput = function() {
       imageId: this.imageId,
       imageScale: this.imageScale,
       spaces: outSpaces,
-      obsticals: outObsticals,
+      obstacles: outObstacles,
       landmarks: outLandmarks,
-      floorConnections: outFloorConnections      
+      floorConnections: outFloorConnections,
+      globals: this.globals.toOutput()
    };
 };

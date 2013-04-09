@@ -1,6 +1,37 @@
 //space.js
 //Object for categorizing an open space (rooms and hallways)
 
+function importSpace(simpleSpace, globalsContainer) {
+  var newSpace = null;
+  if(util.exists(simpleSpace)) {
+    newSpace = new Space();
+    newSpace.type = simpleSpace.type;
+    newSpace.label = simpleSpace.label;
+    
+    if(util.exists(simpleSpace.walls)) {
+      for(var w = 0; w < simpleSpace.walls.length; w++) {
+        var wall = simpleSpace.walls[w];
+        var isDoor = wall.isDoor;
+        var wall = globalsContainer.importWall(wall);
+        //console.log(wall);
+        //console.log("isDoor: "+isDoor);
+        
+        if(util.exists(wall)) {
+          wall = newSpace.addWall(wall);
+          if(wall.isDoor) {
+            newSpace.doors.push(wall);
+          }
+        }
+      }
+    }
+    
+    //newSpace.selectPoly = new Polygon($.extend([], newSpace.walls));
+  }
+  
+  return newSpace;
+}
+
+
 /**
  * Summary: Create a new space when we have an enclosed area.
  * Parameters: walls: The walls that define the space.
@@ -12,7 +43,7 @@ function Space(walls) {
 	//The walls that define the space
 	this.walls = $.extend([], walls);
 	this.points = [];
-	//The classification of the space ("room", "hallway", "stairs", etc.)
+	//The classification of the space ("room", "hallway", "obstacle", etc.)
 	this.type = "";
 	//The space's room number (if any)
 	this.label = "";
@@ -20,8 +51,11 @@ function Space(walls) {
 	this.isClosed = false;
 	
 	//A polygon that appears when the user selects the space.
-	this.selectPoly = new Polygon(this.walls);
-	this.walls = walls;
+  this.selectPoly = null;
+  if(util.exists(walls)) {
+    this.selectPoly = new Polygon(walls);
+  }
+  
 	this.drawPoly = false;
 };
 
@@ -77,12 +111,26 @@ Space.prototype.isHallway = function() {
  * Paremters: l: The line to add.
  * Returns: undefined
 **/
-Space.prototype.addWall = function(l) {
-	this.walls.push(l);
+Space.prototype.addWall = function(wallToAdd) {
+	//Check to make sure that the wall being added isn't a duplicate.
+	for (var i = 0; i < this.walls.length; i++) {
+		if (this.walls[i].equals(wallToAdd)) return this.walls[i];
+	}
+  
+  wallToAdd.p1 = this.addPoint(wallToAdd.p1);
+  wallToAdd.p2 = this.addPoint(wallToAdd.p2);
+	this.walls.push(wallToAdd);
+  
+  return wallToAdd;
 };
 
-Space.prototype.addPoint = function(p) {
-	this.points.push(p);
+Space.prototype.addPoint = function(pointToAdd) {
+	//Check to make sure that the point being added isn't a duplicate
+	for (var i = 0; i < this.points.length; i++) {
+		if (this.points[i].equals(pointToAdd)) return this.points[i];
+	}
+	this.points.push(pointToAdd);
+  return pointToAdd;
 };
 
 /**

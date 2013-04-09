@@ -1,12 +1,53 @@
+function importGlobalsContainer(simpleGlobalsContainer) {
+  var newGlobalsContainer = null;
+  if(util.exists(simpleGlobalsContainer)) {
+    newGlobalsContainer = new GlobalsContainer(null);
+    if(util.exists(simpleGlobalsContainer.points)) {
+      for(var p = 0; p < simpleGlobalsContainer.points.length; p++) {
+        newGlobaslContainer.addPoint(importPoint(simpleGlobalsContainer.points[p]));
+      }
+    }
+    
+    if(util.exists(simpleGlobalsContainer.walls)) {
+      for(var w = 0; w < simpleGlobalsContainer.walls.length; w++) {
+        var wall = simpleGlobalsContainer.walls[w];
+        newGlobalsContainer.importWall(wall);
+      }
+    }
+  }
+  
+  return newGlobalsContainer;
+};
+
 var GlobalsContainer = function(canvas) {
 	this.canvas = canvas;
 	this.walls = [];
 	//Points stored as real-world coordinates
 	this.points = [];
-	this.view = new ManipulationAreaView(this.canvas.x, this.canvas.y, 1.05);
+	this.view = null;
+  if(util.exists(canvas)) {
+    this.view = new ManipulationAreaView(this.canvas.x, this.canvas.y, 1.05);
+  }
 	this.snapRadius = 15;
 	this.image;
 }
+
+GlobalsContainer.prototype.toOutput = function() {
+  var outWalls = [];
+  for(var w = 0; w < this.walls.length; w++) {
+    outWalls.push(this.walls[w].toOutput());
+  }
+  
+  var outPoints = [];
+  for(var p = 0; p < this.points.length; p++) {
+    outWalls.push(this.points[p].toOutput());
+  }
+  
+  return {
+    walls: outWalls,
+    points: outPoints
+  };
+};
 
 GlobalsContainer.prototype.drawPoints = function() {
 	for (var i = 0; i < this.points.length; i++) {
@@ -26,34 +67,66 @@ GlobalsContainer.prototype.addPoint = function(pointToAdd) {
 		if (this.points[i].equals(pointToAdd)) return;
 	}
 	this.points.push(pointToAdd);
-}
+};
+
+GlobalsContainer.prototype.importWall = function(wall) {
+  if(util.exists(wall)) {
+    return this.addWall(importLine(wall));
+  }
+  
+  return null;
+};
 
 GlobalsContainer.prototype.addWall = function(wallToAdd) {
 	//Check to make sure that the wall being added isn't a duplicate.
 	for (var i = 0; i < this.walls.length; i++) {
-		if (this.walls[i].equals(wallToAdd)) return;
+		if (this.walls[i].equals(wallToAdd)) {
+      if(wallToAdd.isDoor) {
+        this.walls[i].isDoor = true;
+      }
+      return this.walls[i];
+    }
 	}
-	if (!this.pointExists(wallToAdd.p1)) this.points.push(wallToAdd.p1);
-	if (!this.pointExists(wallToAdd.p2)) this.points.push(wallToAdd.p2);
+	if (!this.pointExists(wallToAdd.p1)) {
+    this.points.push(wallToAdd.p1);
+  }
+  
+	if (!this.pointExists(wallToAdd.p2)) {
+    this.points.push(wallToAdd.p2);
+  }
+  
+  console.log("wall didn't exists");
 	this.walls.push(wallToAdd);
-}
+  
+  return wallToAdd;
+};
 
 GlobalsContainer.prototype.pointExists = function(point) {
-	for (var i = 0; i < this.points.length; i++) {
+	return this.indexOfPoint(point) !== -1;
+};
+
+GlobalsContainer.prototype.indexOfPoint = function(point) {
+  for (var i = 0; i < this.points.length; i++) {
 		var curPoint = this.points[i];
-		if (curPoint.equals(point)) return true;
+		if (curPoint.equals(point)) {return i;}
 	}
-	return false;
-}
+	return -1;
+};
 
 GlobalsContainer.prototype.isWallDuplicate = function(wallToCheck) {
-	var index = this.walls.indexOf(wallToCheck);
+	return this.indexOfWall(wallToCheck) !== -1;
+};
+
+GlobalsContainer.prototype.indexOfWall = function(wallToCheck) {
+  var index = this.walls.indexOf(wallToCheck);
 	for (var i = 0; i < this.walls.length; i++) {
 		if (i == index) continue;
 		if (this.walls[i].equals(wallToCheck)) return true;
 	}
 	return false;
-}
+};
+
+
 
 GlobalsContainer.prototype.removeWall = function(wallToRemove, shouldRemoveIsolatedPoints) {
 	var index = this.walls.indexOf(wallToRemove);

@@ -1,9 +1,20 @@
 //line.js
 
-function importLine(simpleLine, isDoor) {
+function importLine(simpleLine) {
+  
   if(util.exists(simpleLine)) {
-    var line = new Line(importPoint(simpleLine.p1), importPoint(simpleLine.p2));
-    line.isDoor = (isDoor === true);
+    var p1 = importPoint(simpleLine.p1);
+    var p2 = importPoint(simpleLine.p2);
+    
+    return new Line(p1, p2, simpleLine.isDoor);
+  }
+  
+  return null;
+}
+
+function importLineFromPoints(p1, p2, isDoor) {
+  if(util.exists(p1) && util.exists(p2)) {
+    var line = new Line(p1, p2, isDoor);
     return line;
   }
   
@@ -11,16 +22,17 @@ function importLine(simpleLine, isDoor) {
 }
 
 
+
 /**
  * Summary: Constructor for the Line object.
  * Parameters: p1, p2: The points that comprise the start and end of the line.
  * Returns: undefined.
 **/
-function Line(p1, p2) {
+function Line(p1, p2, isDoor) {
 	this.p1 = p1;
 	this.p2 = p2;
 	this.isSelected = false;
-	this.isDoor = false;
+	this.isDoor = (isDoor === true);
 	this.definesRoom = false;
 	
 	this.calculateForm(p1, p2);
@@ -29,7 +41,8 @@ function Line(p1, p2) {
 Line.prototype.toOutput = function() {
 	return {
 		p1: this.p1.toOutput(),
-		p2: this.p2.toOutput()
+		p2: this.p2.toOutput(),
+    isDoor: this.isDoor
 	};
 };
 
