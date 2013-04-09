@@ -285,6 +285,42 @@ $('#done').click(function() {
 })
 
 function constructBuildingFromPreprocess(buildingName, buildingData) {
-	console.log("Building name: " + buildingName);
-	window.bitch = buildingData;
+	var buildingObject = new Building(buildingName);
+	for (var i = 0; i < buildingData.length; i++) {
+		var curFloor = buildingData[i];
+		var curFloorName = curFloor.floor.label;
+		var curFloorImageID = curFloor.floor.imageId;
+		var curFloorLines = curFloor.floor.lines;
+		var floorObject = new Floor(curFloorName, curFloorImageID);
+		for (var j = 0; j < curFloorLines.length; j++) {
+			var curLine = curFloorLines[j];
+			var p1 = curLine.line[0];
+			p1 = new Point(p1.p1[0], p1.p1[1]);
+			var p1Duplicate = floorObject.globals.duplicatePoint(p1);
+			if (p1Duplicate !== null) {
+				p1 = p1Duplicate;
+			}
+			var p2 = curLine.line[1];
+			p2 = new Point(p2.p2[0], p2.p2[1]);
+			var p2Duplicate = floorObject.globals.duplicatePoint(p2);
+			if (p2Duplicate !== null) {
+				p2 = p2Duplicate;
+			}
+			
+			var newLine = new Line(p1, p2);
+			floorObject.globals.addWall(newLine);
+			floorObject.globals.addPoint(p1);
+			floorObject.globals.addPoint(p2);
+			
+		}
+		var curFloorText = curFloor.floor.text;
+		for (var k = 0; k < curFloorText.length; k++) {
+			var curText = curFloorText[k];
+			var curValue = curText.value;
+			var x = curText.point[0];
+			var y = curText.point[1];
+			floorObject.globals.preprocessedText.push({value: curValue, location: new Point(x,y)});
+		}
+		buildingObject.floors.push(floorObject);
+	}
 }

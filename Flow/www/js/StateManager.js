@@ -7,12 +7,15 @@ var StateManager = function(building) {
 		"ZoomIn": new ZoomInState(this),
 		"ZoomOut": new ZoomOutState(this),
 		"Pan": new PanState(this),
-		"Landmark": new LandmarkState(this)
+		"Landmark": new LandmarkState(this),
+		"Door": new DoorState(this)
 	};
 	
-	this.building = building;
-	this.floors = building.floors;
-	this.currentFloor = floors[0];
+	if (building !== undefined) {
+		this.building = building;
+		this.floors = building.floors;
+		this.currentFloor = floors[0];
+	}
 	this.currentState = this.avaliableStates["Draw"];
 	this.currentState.enter();
 }

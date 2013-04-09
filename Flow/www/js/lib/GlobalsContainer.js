@@ -28,6 +28,7 @@ var GlobalsContainer = function(canvas) {
   if(util.exists(canvas)) {
     this.view = new ManipulationAreaView(this.canvas.x, this.canvas.y, 1.05);
   }
+	this.preprocessedText = [];
 	this.snapRadius = 15;
 	this.image;
 }
@@ -95,7 +96,6 @@ GlobalsContainer.prototype.addWall = function(wallToAdd) {
     this.points.push(wallToAdd.p2);
   }
   
-  console.log("wall didn't exists");
 	this.walls.push(wallToAdd);
   
   return wallToAdd;
@@ -112,6 +112,14 @@ GlobalsContainer.prototype.indexOfPoint = function(point) {
 	}
 	return -1;
 };
+
+GlobalsContainer.prototype.duplicatePoint = function(point) {
+	for (var i = 0; i < this.points.length; i++) {
+		var curPoint = this.points[i];
+		if (curPoint.equals(point)) return curPoint;
+	}
+	return null;
+}
 
 GlobalsContainer.prototype.isWallDuplicate = function(wallToCheck) {
 	return this.indexOfWall(wallToCheck) !== -1;

@@ -81,13 +81,13 @@ Floor.prototype.toOutput = function() {
    }
    
    return {
-      name: this.name,
-      imageId: this.imageId,
-      imageScale: this.imageScale,
-      spaces: outSpaces,
-      obstacles: outObstacles,
-      landmarks: outLandmarks,
-      floorConnections: outFloorConnections,
-      globals: this.globals.toOutput()
+    name: this.name,
+    imageId: this.imageId,
+    imageScale: this.imageScale,
+    spaces: outSpaces,
+    obstacles: outObstacles,
+    landmarks: outLandmarks,
+    floorConnections: outFloorConnections,
+	  globals: this.globals.toOutput()
    };
 };
