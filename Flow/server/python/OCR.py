@@ -123,6 +123,25 @@ def OCR(im, imageDir,destpath):
                     
                 count+=1
 
+    text=[]    
+    for (x,y,w,h) in bboxs:
+        center=(x+w/2.0, y+h/2.0)
+        #extract the rectangle region of the original floor plan image
+        patch=cv2.getRectSubPix(originalImage,(w,h),center)
+        patch=cv2.resize(patch, (int(w*3), int(h*3)))
+        #extract texts
+        text,conf=getText(patch)
+        #filter certain text extractions based on the confidence level
+        i=text.find("\n")
+
+        if (conf>70 and 47< ord(text[0])<58 ):
+            text+='{\"value\": \"%s\", \"point\": [%d,%d]},\n'\
+                        %(text[:i],x,y)
+            #fd.write('%s----------%d\n'%(text,conf))
+            textList.append((text,conf))
+            count+=1
+    text=text[:-1]
+    fd.write(text)
     fd.write("]\n")
     fd.write("}")
     fd.close()
