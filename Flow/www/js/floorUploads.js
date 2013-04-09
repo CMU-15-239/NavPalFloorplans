@@ -77,7 +77,7 @@ function popoverPlacement(element) {
     else if (below) return "bottom";
     else if (left) return "left";
     else if (right) return "right";
-    else return "right";
+    else return "top";
 }
 
 /**
@@ -218,7 +218,7 @@ function processFiles(files) {
 					console.log(response);
 					var id = this.name.hashCode();
 					// save preprocessor data into array for future use
-					PROCESSEDFLOORS.add.push([id, response])
+					PROCESSEDFLOORS.push([id, response])
 					$("."+ id).removeClass('loading').spin(false);
 				}.bind(this),
 				error: function(response) {
@@ -264,13 +264,14 @@ $('#file').click(function(){
 function getFloorLabels(processedFloors) {
 	var building = {}
 	for (var i = 0; i < processedFloors.length; i++) {
-		var floor = processedFloors[i]
-		var id = floor[0]
-		var data = floor[1]
-		var label = $("input.span1."+id).val()
-		building.label = data
+		var floor = processedFloors[i];
+		var id = floor[0];
+		var data = floor[1];
+		var label = $("input.span1."+id).val();
+		building.label = data;
 		console.log(label);
 	};
+	return building;
 }
 
 $('#done').click(function() {
@@ -301,7 +302,7 @@ $('#done').click(function() {
 				// remove loading spinner
 				$('#done').spin(false).removeClass('disabled');
 				//alert user to their error
-				alert('An error occurred, please try again.')
+				alert('An error occurred, please try again.');
 			}.bind(this)
 		})
 	}

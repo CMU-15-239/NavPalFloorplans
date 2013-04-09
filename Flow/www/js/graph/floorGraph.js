@@ -39,10 +39,10 @@ function FloorGraph(floor, callback, callbackVars) {
 	this.floorConnections = [];
   this.landmarks = [];
   
-  this.spaceType = "space";
-  this.pswType = "psw";
-  this.floorConnectionType = "floorConnection";
-  this.landmarkType = "landmark";
+  this.typeForSpaceNode = "space";
+  this.typeForPswNode = "psw";
+  this.typeforFloorConnectionNode = "floorConnection";
+  this.typeforLandmarkNode = "landmark";
 	
   if(util.exists(floor)) {
     this.imageId = floor.imageId;
@@ -61,6 +61,7 @@ function FloorGraph(floor, callback, callbackVars) {
     }
   }
 	
+  this.id = "floorGraph_"+JSON.stringify(this).hashCode();
 	if(util.exists(callback)) {callback.apply(callbackVars);}
 }
 
@@ -131,7 +132,7 @@ FloorGraph.prototype.addSpaceNode = function(space) {
 		}
 		else {
 			//TODO: check and make sure the newId function returns in time for adding to pswIds
-			var newDoor = new PswNode(this.pswType, "door", null, lineRep);
+			var newDoor = new PswNode(this.typeForPswNode, "door", null, lineRep);
 			psws.push(newDoor);
 			pswIds.push(newDoor.id);
 			this.psws.push(newDoor);
@@ -139,7 +140,7 @@ FloorGraph.prototype.addSpaceNode = function(space) {
 	}
 	
 	
-	var spaceNode = new SpaceNode(this.spaceType, space.type, space.label, pswIds, space.walls);
+	var spaceNode = new SpaceNode(this.typeForSpaceNode, space.type, space.label, pswIds, space.walls);
 	//TODO: check and make sure the newId function returns in time for adding to psws
 	for(var p = 0; p < psws.length; p++) {
 		psws[p].edges.push(spaceNode.id);
@@ -153,22 +154,46 @@ FloorGraph.prototype.addSpaceNode = function(space) {
  * Returns: undefined
 **/
 FloorGraph.prototype.addLandmarkNode = function(landmark) {
-  var space = null;
-  var edge = null;
-  for(var s = 0; s < this.spaces.length; s++) {
-    if(this.spaces[s].pointInSpace(landmark.pointRep, this.width, true)) {
-      space = this.spaces[s];
-      break;
+  if(util.exists(landmark)) {
+    var spaceNode = null;
+    var edges = [];
+    for(var s = 0; s < this.spaces.length; s++) {
+      if(this.spaces[s].pointInSpace(landmark.pointRep, this.width, true)) {
+        spaceNode = this.spaces[s];
+        break;
+      }
     }
+  
+    if(util.exists(spaceNode)) {edges = [spaceNode.id];}
+    var landmarkNode = new LandmarkNode(this.typeforLandmarkNode, landmark.label, 
+                            landmark.description, edges, landmark.pointRep);
+    
+    if(util.exists(spaceNode)) {spaceNode.edges.push(landmarkNode.id);}
+    
+    this.landmarks.push(landmarkNode);
   }
-  
-  if(util.exists(space)) {edge = space.id;}
-  var landmark = new LandmarkNode(this.landmarkType, landmark.label, 
-                          landmark.description, [edge], landmark.pointRep);
-  
-  if(util.exists(space)) {space.edges.push(landmark.id);}
-  
-  this.landmarks.push(landmark);
+};
+
+FloorGraph.prototype.addFloorConnectionNode = function(floorConnection, nodeId) {
+  if(util.exists(floorConnection)) {
+    var spaceNode = null;
+    var edges = [];
+    for(var s = 0; s < this.spaces.length; s++) {
+      if(this.spaces[s].pointInSpace(floorConnection.pointRep, this.width, true)) {
+        spaceNode = this.spaces[s];
+        break;
+      }
+    }
+    
+    if(util.exists(spaceNode)) {edges = [spaceNode.id];}
+    var floorConnectionNode = new FloorConnectionNode(this.typeforFloorConnectionNode,
+                                    floorConnection.floorConnectionType, floorConnection.label,
+                                    edges, floorConnection.pointRep);
+    if(util.exists(nodeId)) {floorConnectionNode.id = nodeId;}
+    if(util.exists(spaceNode)) {spaceNode.edges.push(floorConnectionNode.id);}
+    
+    this.floorConnections.push(floorConnectionNode);
+  }
 };
 
 /**
@@ -178,10 +203,10 @@ FloorGraph.prototype.addLandmarkNode = function(landmark) {
 **/
 FloorGraph.prototype.getFloorNodeById = function(id) {
 	var searchArr = [];
-	if(id.indexOf(this.pswType+"_") === 0) {
+	if(id.indexOf(this.typeForPswNode+"_") === 0) {
 		searchArr = this.psws;
 	}
-	else if(id.indexOf(this.spaceType+"_") === 0) {
+	else if(id.indexOf(this.typeForSpaceNode+"_") === 0) {
 		searchArr = this.spaces;
 	}
 	
