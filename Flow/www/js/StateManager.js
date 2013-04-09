@@ -1,4 +1,4 @@
-var StateManager = function() {
+var StateManager = function(building) {
 	this.avaliableStates = {
 		"Preprocess": new PreprocessState(this),
 		"Draw": new DrawState(this),
@@ -10,6 +10,9 @@ var StateManager = function() {
 		"Landmark": new LandmarkState(this)
 	};
 	
+	this.building = building;
+	this.floors = building.floors;
+	this.currentFloor = floors[0];
 	this.currentState = this.avaliableStates["Draw"];
 	this.currentState.enter();
 }
@@ -20,6 +23,16 @@ StateManager.prototype.changeState = function(newState) {
 		this.currentState = this.avaliableStates[newState];
 		this.currentState.enter();
 		this.redraw();
+	}
+}
+
+StateManager.prototype.changeFloor = function(newFloor) {
+	if (this.currentFloor !== newFloor) {
+	}
+}
+
+StateManager.prototype.changeBuilding = function(newBuilding) {
+	if (this.currentBuilding !== newBuilding) {
 	}
 }
 
