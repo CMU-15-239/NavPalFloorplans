@@ -114,10 +114,10 @@ def OCR(im, imageDir,destpath):
             i=text.find("\n")
             if (conf>70 and 47< ord(text[0])<58):
                 if first==0:
-                    fd.write(',\n{\"value\": %s, \"point\": [%d,%d]}'\
+                    fd.write(',\n{\"value\": \"%s\", \"point\": [%d,%d]}'\
                             %(text[:i],x,y))
                 else:
-                    fd.write('{\"value\": %s, \"point\": [%d,%d]}'\
+                    fd.write('{\"value\": \"%s\", \"point\": [%d,%d]}'\
                             %(text[:i],x,y))
                     first=0
                     
