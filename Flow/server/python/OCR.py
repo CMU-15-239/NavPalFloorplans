@@ -122,8 +122,7 @@ def OCR(im, imageDir,destpath):
                     first=0
                     
                 count+=1
-
-    fd.write("]\n")
+    fd.write("]")
     fd.write("}")
     fd.close()
     print "total number of texts identified=%s\n"% count

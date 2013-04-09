@@ -242,19 +242,20 @@ app.post('/preprocess', function (request, response) {
       if(Util.exists(imageData)) {
         var imageDir = './temp/';
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
-        var imagePath = imageDir + 'image'+randFileNum+'.jpg';
+        var oldImagePath = imageDir + 'oldImage'+randFileNum+'.jpg';
+        var newImagePath = imageDir + 'newImage'+randFileNum+'.jpg';
         var dataPath = imageDir + 'data'+randFileNum+'.json';
          
         var index = imageData.indexOf('base64,') + 'base64,'.length;
         var base64Data = imageData.substring(index, imageData.length);
         var base64DataBuffer = new Buffer(base64Data, "base64");
-        fs.writeFile(imagePath, base64DataBuffer, function(err) {
+        fs.writeFile(oldimagePath, base64DataBuffer, function(err) {
           if(Util.exists(err)) {
             console.log("failed to write inital image: "+err);
             response.status(500);
             return response.send({errorCode: 2});
           } else {
-            preprocessor(imagePath, dataPath, function(preprocessData) {
+            preprocessor(oldImagePath, newImagePath, dataPath, function(preprocessData) {
               if(Util.exists(preprocessData)) {
                 preprocessData.result.errorCode = 0;
                 preprocessData.result.imageId = null;
@@ -421,41 +422,74 @@ app.get('/building', function(request, response) {
                 callback: function
  * Returns: calls callback with preprocessed data and image
 **/
-function preprocessor(imagePath, dataPath, callback) {
+function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
   console.log("\n+++Running Preprocess+++");
-  dataPath = 'json.txt';
-  var child = exec('python ./python/preprocessing.py ' + imagePath /*+ ' ' + dataPath*/, function (err, stdout, stderr) {
+  //dataPath = 'json.txt';
+  var child = exec('python ./python/preprocessing.py ' + oldImagePath + ' ' 
+                    + newImagePath + ' ' + dataPath, function (err, stdout, stderr) {
     console.log("+++Preprocess errors+++");
     console.log("err: " + err);
     console.log("stdout: " + stdout);
     console.log("stderr: " + stderr);
     console.log("+++Preprocess logging complete+++\n");
-    
-    fs.readFile(imagePath, function(err, imageStr) {
-      if(err) {
-        console.log("failed to read processed image: "+err);
-        if(Util.exists(callback)) {return callback(null)}
-      } else {
-        fs.unlink(imagePath);
-        var base64ImageStr = new Buffer(imageStr, 'base64').toString('base64');
-        
-        fs.exists(dataPath, function(exists) {
-          if(exists) {
-            fs.readFile(dataPath, function read(err, dataStr) {
-              if (err) {
-                console.log("failed to preprocess: "+err);
-                if(Util.exists(callback)) {return callback(null)}
-              } else {
-                var dataStrUTF8 = dataStr.toString('utf8');
-                var data = JSON.parse(dataStrUTF8);
-                fs.unlink(dataPath);
-                if(Util.exists(callback)) {return callback({result: data, image: base64ImageStr});}
-              }
-            });
-          } else if(Util.exists(callback)) {return callback(null);}
-        });
+    fs.exists(oldImagePath, function(exists) {
+      if(exists) {
+        fs.unlink(oldImagePath);
       }
     });
+    
+    var readOtherFile = false;
+    var returned = false;
+    var data;
+    var base64ImageStr;
+    
+    fs.exists(imagePath, function (exists) {
+      if(exists) {
+        fs.readFile(imagePath, function(err, imageStr) {
+          if(err) {
+            console.log("failed to read processed image: "+err);
+            if(Util.exists(callback)) {return callback(null)}
+          } else {
+            fs.unlink(imagePath);
+            base64ImageStr = new Buffer(imageStr, 'base64').toString('base64');
+            
+            if(!returned && readOtherFile && Util.exists(callback)) {
+              returned = true;
+              return callback({result: data, image: base64ImageStr});
+            }
+            readOtherFile = true;
+          }
+        });
+      } else if(!returned && Util.exists(callback)) {
+        returned = true;
+        return callback(null);
+      }
+    });
+    
+    fs.exists(dataPath, function(exists) {
+      if(exists) {
+        fs.readFile(dataPath, function read(err, dataStr) {
+          if (err) {
+            console.log("failed to preprocess: "+err);
+            if(Util.exists(callback)) {return callback(null)}
+          } else {
+            fs.unlink(dataPath);
+            var dataStrUTF8 = dataStr.toString('utf8');
+            data = JSON.parse(dataStrUTF8);
+            
+            if(!returned && readOtherFile && Util.exists(callback)) {
+              returned = true;
+              return callback({result: data, image: dataStrUTF8});
+            }
+            readOtherFile = true;
+          }
+        });
+      } else if(!returned && Util.exists(callback)) {
+        returned = true;
+        return callback(null);
+      }
+    });
+    
   });
 }
 
