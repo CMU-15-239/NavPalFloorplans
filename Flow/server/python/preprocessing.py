@@ -20,10 +20,10 @@ def process_img(sourcepath,destpath, datapath):
     reverseColor(IMG)
     #saveImage(destpath,IMG) 
     
-    #saveRemoveLines(IMG,vlines,hlines)    
+    saveRemoveLines(IMG,vlines,hlines)    
     
     img=cv2.imread("temp.png") 
-    #writeVertexList(hlines,vlines,datapath) 
+    writeVertexList(hlines,vlines,datapath) 
     OCR(img,sourcepath,datapath)
     
     #merge lines in close proximity
