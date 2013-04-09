@@ -44,7 +44,6 @@ $(window).ready(function ()
 	});
 	
 	initCanvasEventHandlers(stateManager);
-	testImport();
 });
 
 function testImport() {
