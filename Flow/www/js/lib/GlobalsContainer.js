@@ -4,7 +4,7 @@ function importGlobalsContainer(simpleGlobalsContainer) {
     newGlobalsContainer = new GlobalsContainer(null);
     if(util.exists(simpleGlobalsContainer.points)) {
       for(var p = 0; p < simpleGlobalsContainer.points.length; p++) {
-        newGlobaslContainer.addPoint(importPoint(simpleGlobalsContainer.points[p]));
+        newGlobalsContainer.addPoint(importPoint(simpleGlobalsContainer.points[p]));
       }
     }
     
