@@ -59,6 +59,12 @@ Floor.prototype.calcScale = function(space, userSqFt) {
   this.imageScale = 1.0;
 };
 
+Floor.prototype.drawLandmarks = function() {
+	for (var i = 0; i < this.landmarks.length; i+=1 ) {
+		this.landmarks[i].draw();
+	}
+}
+
 Floor.prototype.toOutput = function() {
    var outSpaces = [];
    for(var s = 0; s < this.spaces.length; s++) {

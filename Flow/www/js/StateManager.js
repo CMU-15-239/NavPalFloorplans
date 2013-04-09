@@ -79,6 +79,8 @@ StateManager.prototype.redraw = function() {
 	}
 	this.currentFloor.globals.drawWalls();
 	this.currentFloor.globals.drawPoints();
+	this.currentFloor.drawLandmarks();
+	
 	//Let the state draw itself
 	this.currentState.draw();
 }

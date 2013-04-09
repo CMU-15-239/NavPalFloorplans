@@ -3,13 +3,6 @@
  * Written by: Daniel Muller
 */
 
-$(document).ready(function () { 
-    $('#toolIcon').tooltip();
-    var buildingJSON = localStorage.getItem('building');
-    var building = $.parseJSON(buildingJSON);
-    
-});
-
 /**
  * Summary: Connects preview pane to floorplan carousel by linking two carousels
             together and only showing 1 image of one carousel to create our
@@ -17,7 +10,7 @@ $(document).ready(function () {
  * Parameters:  n/a
  * Returns: n/a
 **/
-(function($) {
+function carousels() {
     // This is the connector function.
     // It connects one item from the navigation carousel to one item from the
     // stage carousel.
@@ -77,4 +70,73 @@ $(document).ready(function () {
                 target: '+=2'
             });
     });
-})(jQuery);
+};
+
+function addFloorToCarousel(floor) {
+    $.ajax({ 
+        type: "GET",
+        url: '/image',
+        async: true, 
+        data:{
+            imageId: floor.imageId,
+        }, 
+        success: function(response) {
+            var carouselStage = $('.carousel-stage');
+            var carouselNavigation = $('.carousel-navigation');
+            var dataURL = response.dataURL;
+            var imageStr = response.imageStr;
+            var stageImage = '<li><img class="currentImage" src="' + dataURL + imageStr + '"></li>';
+            var navImage = '<li><img class="navigationImage" src="' + dataURL + imageStr + '"></li>';
+            console.log(stageImage);
+
+            carouselStage.append(stageImage);
+            carouselNavigation.append(navImage);
+        }
+    }).done(carousels);
+}
+
+$(document).ready(function () { 
+    $('#toolIcon').tooltip();
+    var buildingJSON = localStorage.getItem('building');
+    var building = $.parseJSON(buildingJSON);
+    var labelToFloor = {};
+    var labels = [];
+    console.log(building);
+    for (var i = 0; i < building.floors.length; i++) {
+        labels.push(building.floors[i].name);
+        labelToFloor[building.floors[i].name] = building.floors[i];
+    };
+    console.log(labels);
+    labels.alphanumSort(true);
+    for (var i = 0; i < labels.length; i++) {
+        var label = labels[i];
+        var floor = labelToFloor[label];
+        console.log(floor);
+        addFloorToCarousel(floor);
+    };
+
+
+
+
+
+    /* Initialize the canvas */
+    var canvas = resizeCanvas();
+    
+    //GLOBALS = new GlobalsContainer(canvas);
+    
+    //JSON.parse(simpleBuiildingfromlocal data)
+    
+    stateManager = initStateManager(building, canvas);//new StateManager();
+    
+    /* The event handler for when a new state is clicked */
+    $(".tool").click(function() {
+        $(".tool").removeClass("active");
+        $(this).addClass("active");
+        
+        var newState = $(this).attr("id");
+        stateManager.changeState(newState);
+    });
+    
+    initCanvasEventHandlers(stateManager);
+    //testImport();
+});
