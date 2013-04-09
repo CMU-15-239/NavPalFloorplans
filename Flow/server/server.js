@@ -242,14 +242,14 @@ app.post('/preprocess', function (request, response) {
       if(Util.exists(imageData)) {
         var imageDir = './temp/';
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
-        var oldImagePath = imageDir + 'oldImage'+randFileNum+'.jpg';
-        var newImagePath = imageDir + 'newImage'+randFileNum+'.jpg';
+        var oldImagePath = imageDir + 'oldImage'+randFileNum+'.png';
+        var newImagePath = imageDir + 'newImage'+randFileNum+'.png';
         var dataPath = imageDir + 'data'+randFileNum+'.json';
          
         var index = imageData.indexOf('base64,') + 'base64,'.length;
         var base64Data = imageData.substring(index, imageData.length);
         var base64DataBuffer = new Buffer(base64Data, "base64");
-        fs.writeFile(oldimagePath, base64DataBuffer, function(err) {
+        fs.writeFile(oldImagePath, base64DataBuffer, function(err) {
           if(Util.exists(err)) {
             console.log("failed to write inital image: "+err);
             response.status(500);
@@ -311,11 +311,9 @@ app.get('/image', function(request, response) {
         user.getImage(request.query.imageId, function(imageObj) {
           if(Util.exists(imageObj)) {
             response.status(200);
-            return response.send({
-              errorCode: 0,
-              image: imageObj.imageStr,
-              imageId: imageObj.imageId
-            });
+            var responseData = imageObj.toOutput();
+            responseData.errorCode = 0;
+            return response.send(responseData);
           } else {
             response.status(404);
             return response.send({errorCode: 404});
@@ -443,19 +441,19 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
     var data;
     var base64ImageStr;
     
-    fs.exists(imagePath, function (exists) {
+    fs.exists(newImagePath, function (exists) {
       if(exists) {
-        fs.readFile(imagePath, function(err, imageStr) {
+        fs.readFile(newImagePath, function(err, imageStr) {
           if(err) {
             console.log("failed to read processed image: "+err);
             if(Util.exists(callback)) {return callback(null)}
           } else {
-            fs.unlink(imagePath);
+            fs.unlink(newImagePath);
             base64ImageStr = new Buffer(imageStr, 'base64').toString('base64');
             
             if(!returned && readOtherFile && Util.exists(callback)) {
               returned = true;
-              return callback({result: data, image: base64ImageStr});
+              return callback({result: data, image: base64ImageStr, dataURL: 'data:image/png;base64,'});
             }
             readOtherFile = true;
           }
@@ -479,7 +477,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
             
             if(!returned && readOtherFile && Util.exists(callback)) {
               returned = true;
-              return callback({result: data, image: dataStrUTF8});
+              return callback({result: data, image: base64ImageStr, dataURL: 'data:image/png;base64,'});
             }
             readOtherFile = true;
           }
