@@ -125,6 +125,12 @@
 			<br><input type="submit" value="Add Landmark" id="landmark_submit">
 				<input type="submit" value="Cancel" id="landmark_cancel">
 		</form>
+		<form id="classification_pop">
+			<input type="radio" name="type" value="Room" id="room" checked>Room
+			<input type="radio" name="type" value="Hallway" id="hallway">Hallway
+			<br>Label:<input type="text" name="label" id="label">
+			<br><input type="submit" value="Done" id="label_submit">
+		</form>
 
 
       </div>
@@ -149,6 +155,7 @@
 	<script src = "js/states/ZoomOutState.js"></script>
     <script src = "js/states/PanState.js"></script>
 	<script src = "js/states/LandmarkState.js"></script>
+	<script src = "js/states/ClassificatoinState.js"></script>
     <script src="js/lib/Util.js"></script>
     <script src = "js/lib/globals.js"></script>
     <script src="js/lib/GlobalsContainer.js"></script>
