@@ -5,7 +5,7 @@ $(".navigationImage").click(function() {
 		var image = new Image(); 
 		image.src = domImage.src;
 		console.log(image.width);
-		GLOBALS.canvas.drawImage(image,0,0,GLOBALS.canvas.width,GLOBALS.canvas.height);
+		//GLOBALS.canvas.drawImage(image,0,0,GLOBALS.canvas.width,GLOBALS.canvas.height);
 		GLOBALS.canvas.image = image;
 	}
 )

@@ -55,7 +55,7 @@ function handleRegistration(response) {
 	// deal with server response
 	switch (response.errorCode) {
 		case 0:
-			alert('success!');
+			window.location = '/floorUploads.html';
 			break;
 		case 1:
 			matchEmails.addClass('error');

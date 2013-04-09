@@ -9,11 +9,11 @@ from utilities import *
 #Lines are represented by Starting and End Point, each is 2-tuple
 
 
-def process_img(sourcepath, destpath):
+def process_img(sourcepath,destpath, datapath):
 
     IMG=parseInputFile(sourcepath)    
     
-    saveImage(sourcepath,IMG) 
+
     (hlines,vlines)=extractLines(IMG)
     
     
@@ -26,23 +26,24 @@ def process_img(sourcepath, destpath):
     #mergeVertex(hlines,vlines)
     
     #visualizeLines(IMG,vlines,hlines)
+    reverseColor(IMG)
+    saveImage(destpath,IMG) 
     
     saveRemoveLines(IMG,vlines,hlines)    
     
     img=cv2.imread("temp.png")  
-    
-    writeVertexList(hlines,vlines,destpath) 
-    OCR(img,sourcepath,destpath)
+    writeVertexList(hlines,vlines,datapath) 
+    OCR(img,sourcepath,datapath)
    
 def init():
     start=clock()
     args=sys.argv[1:]
-    if len(args)<2:
-        print "two inputs are required"
+    if len(args)<3:
+        print "three inputs are required\n"
     #numOfImage=len(args)
     #pool=Pool(processes=4)
     #pages=pool.map(process_img,args)
-    else: process_img(args[0],args[1])
+    else: process_img(args[0],args[1],args[2])
     elapsed=clock() - start
     print elapsed
 init()

@@ -4,9 +4,10 @@ var StateManager = function() {
 		"Draw": new DrawState(this),
 		"Select": new SelectState(this),
 		"Move": new MoveState(this),
-		"ZoomIn": new ZoomState(this),
-		"ZoomOut": new ZoomState(this),
-		"Pan": new PanState(this)
+		"ZoomIn": new ZoomInState(this),
+		"ZoomOut": new ZoomOutState(this),
+		"Pan": new PanState(this),
+		"Landmark": new LandmarkState(this)
 	};
 	
 	this.currentState = this.avaliableStates["Draw"];
@@ -32,6 +33,8 @@ StateManager.prototype.redraw = function() {
 	dx = 0;
 	dy = 0;
 	
+	zoom = GLOBALS.view.scale;
+	
 	if (GLOBALS.view.offsetX < 0) {
 		dx = -1 * GLOBALS.view.offsetX;
 		sx = 0
@@ -40,13 +43,17 @@ StateManager.prototype.redraw = function() {
 		dy = -1 * GLOBALS.view.offsetY;
 		sy = 0
 	}
-	
-	/*GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
-	sx, sy,
-	GLOBALS.canvas.image.width - sx, GLOBALS.canvas.image.height - sy,
-	dx,dy,
-	GLOBALS.canvas.image.width -  sx, GLOBALS.canvas.image.height -  sy);*/
-	
+
+	if (GLOBALS.canvas.image === undefined) {
+		;
+	}
+	else {
+		GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
+		sx, sy,
+		GLOBALS.canvas.image.width - sx, GLOBALS.canvas.image.height - sy,
+		dx * zoom,dy * zoom,
+		zoom * (GLOBALS.canvas.image.width -  sx), zoom * (GLOBALS.canvas.image.height -  sy));
+	}
 	GLOBALS.drawWalls();
 	GLOBALS.drawPoints();
 	//Let the state draw itself
