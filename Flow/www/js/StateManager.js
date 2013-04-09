@@ -10,9 +10,11 @@ var StateManager = function(building) {
 		"Landmark": new LandmarkState(this)
 	};
 	
-	this.building = building;
-	this.floors = building.floors;
-	this.currentFloor = floors[0];
+	if (building !== undefined) {
+		this.building = building;
+		this.floors = building.floors;
+		this.currentFloor = floors[0];
+	}
 	this.currentState = this.avaliableStates["Draw"];
 	this.currentState.enter();
 }
