@@ -19,7 +19,7 @@ DoorState.prototype.mouseMove = function(event) {
 }
 
 DoorState.prototype.click = function(event) {
-	var pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, event.pageY - GLOBALS.canvas.y));
+	var pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, event.pageY - stateManager.currentFloor.globals.canvas.y));
 	var snapLine = this.stateManager.aboutToSnapToLine(pointAtCursor);
 	if (snapLine != null) {
 		snapLine.isDoor = !snapLine.isDoor;

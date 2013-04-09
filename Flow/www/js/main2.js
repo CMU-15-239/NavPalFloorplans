@@ -22,6 +22,82 @@ function resizeCanvas() {
 	return canvas;
 }
 
+var stateManager;
+
+
+//testing code:
+function newTestSpace(walls, doors, type, label) {
+	var space = new Space(walls);
+	space.doors = doors;
+	space.type = type;
+	space.label = label;
+	return space;
+}
+
+var lines1_1 = [];
+lines1_1[0] = new Line(new Point(0,0), new Point(0,10));
+lines1_1.push(new Line(new Point(0,10), new Point(10,10)));
+lines1_1.push(new Line(new Point(0,0), new Point(10,0)));
+lines1_1.push(new Line(new Point(10,0), new Point(10,1)));
+lines1_1.push(new Line(new Point(10,0), new Point(20,0)));
+lines1_1.push(new Line(new Point(20,0), new Point(20,25)));
+lines1_1.push(new Line(new Point(10,10), new Point(20,25)));
+
+lines1_1.push(new Line(new Point(10,5), new Point(10,10)));
+
+var doors1_1 = [new Line(new Point(10,1), new Point(10,5), true)];
+
+var s1_1 = newTestSpace([lines1_1[0], lines1_1[1], lines1_1[3], doors1_1[0], lines1_1[7], lines1_1[2]], doors1_1, "room", "s1");
+
+var s1_2 = newTestSpace([lines1_1[4], lines1_1[5], lines1_1[6], lines1_1[7], doors1_1[0], lines1_1[3]], doors1_1, "room", "s2");
+
+var floor1_1 = new Floor("1", "safdsa", 30);
+floor1_1.spaces = [s1_1, s1_2];
+
+var l1_1 = new Landmark("candyman", "Asdfafa", new Point(3,3));
+var l1_2 = new Landmark("42", "1as", new Point(20,25));
+floor1_1.landmarks = [l1_1, l1_2];
+
+var fc1_1 = new FloorConnection("evil stairs", new Point(10,10), "stairs");
+var fc1_2 = new FloorConnection("good stairs", new Point(20,20), "stairs");
+floor1_1.floorConnections = [fc1_1, fc1_2];
+
+var lines1_2 = [];
+lines1_2[0] = new Line(new Point(0,0), new Point(0,10));
+lines1_2.push(new Line(new Point(0,10), new Point(10,10)));
+lines1_2.push(new Line(new Point(0,0), new Point(10,0)));
+lines1_2.push(new Line(new Point(10,0), new Point(10,1)));
+lines1_2.push(new Line(new Point(10,0), new Point(20,0)));
+lines1_2.push(new Line(new Point(20,0), new Point(20,25)));
+lines1_2.push(new Line(new Point(10,10), new Point(20,25)));
+
+lines1_2.push(new Line(new Point(10,5), new Point(10,10)));
+
+var doors1_2 = [new Line(new Point(10,1), new Point(10,5), true)];
+
+var s1_3 = newTestSpace([lines1_1[0], lines1_1[1], lines1_1[3], doors1_1[0], lines1_1[7], lines1_1[2]], doors1_1, "room", "s3");
+
+var s1_4 = newTestSpace([lines1_1[4], lines1_1[5], lines1_1[6], lines1_1[7], doors1_1[0], lines1_1[3]], doors1_1, "room", "s4");
+
+var floor1_2 = new Floor("2", "safdsa2", 30);
+floor1_2.spaces = [s1_3, s1_4];
+
+var l1_3 = new Landmark("candyman", "Asdfafa", new Point(3,3));
+var l1_4 = new Landmark("42", "1as", new Point(20,25));
+floor1_2.landmarks = [l1_3, l1_4];
+
+var fc1_3 = new FloorConnection("evil stairs", new Point(10,15), "stairs");
+var fc1_4 = new FloorConnection("good stairs", new Point(10,10), "stairs");
+floor1_2.floorConnections = [fc1_3, fc1_4];
+
+
+var building1 = new Building("buiding1");
+building1.floors.push(floor1_1);
+building1.floors.push(floor1_2);
+building1.floorConnections = [fc1_1, fc1_2, fc1_3, fc1_4];
+var simpleBuilding = building1.toOutput();
+//end testing
+
 /**
  * Summary: Initialize everything, but only when the document is fully loaded.
 **/
@@ -30,9 +106,11 @@ $(window).ready(function ()
 	/* Initialize the canvas */
     var canvas = resizeCanvas();
 	
-	GLOBALS = new GlobalsContainer(canvas);
+	//GLOBALS = new GlobalsContainer(canvas);
 	
-	var stateManager = new StateManager();
+	//JSON.parse(simpleBuiildingfromlocal data)
+	
+	stateManager = initStateManager(simpleBuilding, canvas);//new StateManager();
 	
 	/* The event handler for when a new state is clicked */
 	$(".tool").click(function() {
@@ -52,6 +130,11 @@ function testImport() {
 	constructBuildingFromPreprocess("jacky boy", json);
 }
 
+function initStateManager(buildingJSON, canvas) {
+	var newBuilding = importBuilding(buildingJSON);
+	var newStateManager = new StateManager(newBuilding, canvas);
+	return newStateManager;
+}
 
 $(window).resize(function() {
 	resizeCanvas();

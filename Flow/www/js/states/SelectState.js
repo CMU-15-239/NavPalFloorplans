@@ -25,8 +25,8 @@ SelectState.prototype.exit = function() {
 }
 
 SelectState.prototype.mouseDown = function(event) {
-	var pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, event.pageY - GLOBALS.canvas.y));
-	this.lastReferencePoint = GLOBALS.view.toCanvasWorld(pointAtCursor);
+	var pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, event.pageY - stateManager.currentFloor.globals.canvas.y));
+	this.lastReferencePoint = stateManager.currentFloor.globals.view.toCanvasWorld(pointAtCursor);
 	this.isMouseDown = true;
 	//Snapping to a point takes precedence over snapping to a line
 	var snapPoint = this.stateManager.aboutToSnapToPoint(pointAtCursor);
@@ -80,7 +80,7 @@ SelectState.prototype.mouseUp = function(event) {
 			if (snapPoint != null && snapPoint !== curPoint) {
 				this.changeLineEndpoints(curPoint, snapPoint);
 				this.removeFromSelectPoints(curPoint);
-				GLOBALS.removePoint(curPoint);
+				stateManager.currentFloor.globals.removePoint(curPoint);
 			}
 			else {
 				numSeen += 1;
@@ -88,18 +88,19 @@ SelectState.prototype.mouseUp = function(event) {
 		}
 		//Remove duplicate lines
 		var numWallsSeen = 0;
-		while (numWallsSeen < GLOBALS.walls.length) {
-			var curWall = GLOBALS.walls[numWallsSeen];
-			if (GLOBALS.isWallDuplicate(curWall)) {
-				GLOBALS.removeWall(curWall);
+		while (numWallsSeen < stateManager.currentFloor.globals.walls.length) {
+			var curWall = stateManager.currentFloor.globals.walls[numWallsSeen];
+			if (stateManager.currentFloor.globals.isWallDuplicate(curWall)) {
+				console.log("HERE");
+				stateManager.currentFloor.globals.removeWall(curWall);
 			}
 			else numWallsSeen += 1;
 		}
 		
-		for (var i = 0; i < GLOBALS.walls.length; i++) {
-			var p1 = GLOBALS.walls[i].p1;
-			var p2 = GLOBALS.walls[i].p2;
-			GLOBALS.walls[i].calculateForm(p1, p2);
+		for (var i = 0; i < stateManager.currentFloor.globals.walls.length; i++) {
+			var p1 = stateManager.currentFloor.globals.walls[i].p1;
+			var p2 = stateManager.currentFloor.globals.walls[i].p2;
+			stateManager.currentFloor.globals.walls[i].calculateForm(p1, p2);
 		}
 	}
 	this.isMouseDown = false;
@@ -107,8 +108,8 @@ SelectState.prototype.mouseUp = function(event) {
 }
 
 SelectState.prototype.changeLineEndpoints = function(oldPoint, newPoint) {
-	for (var i = 0; i < GLOBALS.walls.length; i++) {
-		var curWall = GLOBALS.walls[i];
+	for (var i = 0; i < stateManager.currentFloor.globals.walls.length; i++) {
+		var curWall = stateManager.currentFloor.globals.walls[i];
 		if (curWall.p1.equals(oldPoint)) curWall.p1 = newPoint;
 		else if (curWall.p2.equals(oldPoint)) curWall.p2 = newPoint;
 	}
@@ -122,14 +123,14 @@ SelectState.prototype.mouseMove = function(event) {
 			b) mouse isn't down, which means we just highlight things we're near that
 				are unselected
 	*/
-	var pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, event.pageY - GLOBALS.canvas.y));
+	var pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, event.pageY - stateManager.currentFloor.globals.canvas.y));
 	if (this.isSelectBox) {
 		this.selectBox.p2 = pointAtCursor;
 		var p1 = this.selectBox.p1;
 		var p2 = this.selectBox.p2;
 		//Select points
-		for (var i = 0; i < GLOBALS.points.length; i++) {
-			var p = GLOBALS.points[i];
+		for (var i = 0; i < stateManager.currentFloor.globals.points.length; i++) {
+			var p = stateManager.currentFloor.globals.points[i];
 			if (this.pointInRect(p, p1, p2)) {
 				this.addSelectedPoint(p);
 			}
@@ -138,8 +139,8 @@ SelectState.prototype.mouseMove = function(event) {
 			}
 		}
 		//Select lines
-		for (var i = 0; i < GLOBALS.walls.length; i++) {
-			var l = GLOBALS.walls[i];
+		for (var i = 0; i < stateManager.currentFloor.globals.walls.length; i++) {
+			var l = stateManager.currentFloor.globals.walls[i];
 			if (this.pointInRect(l.p1, p1, p2) && this.pointInRect(l.p2, p1, p2)) {
 				this.addSelectedLine(l);
 			}
@@ -152,21 +153,21 @@ SelectState.prototype.mouseMove = function(event) {
 	else {
 		if (this.isMouseDown) {
 			//move selected stuff
-			var deltaX = GLOBALS.view.toCanvasWorld(pointAtCursor).x - this.lastReferencePoint.x;
-			var deltaY = GLOBALS.view.toCanvasWorld(pointAtCursor).y - this.lastReferencePoint.y;
+			var deltaX = stateManager.currentFloor.globals.view.toCanvasWorld(pointAtCursor).x - this.lastReferencePoint.x;
+			var deltaY = stateManager.currentFloor.globals.view.toCanvasWorld(pointAtCursor).y - this.lastReferencePoint.y;
 			for (var i = 0; i < this.selectedPoints.length; i++) {
-				var currentPoint = GLOBALS.view.toCanvasWorld(this.selectedPoints[i]);
+				var currentPoint = stateManager.currentFloor.globals.view.toCanvasWorld(this.selectedPoints[i]);
 				currentPoint.x += deltaX;
 				currentPoint.y += deltaY;
-				var currentPointRealWorld = GLOBALS.view.toRealWorld(currentPoint);
+				var currentPointRealWorld = stateManager.currentFloor.globals.view.toRealWorld(currentPoint);
 				this.selectedPoints[i].x = currentPointRealWorld.x;
 				this.selectedPoints[i].y = currentPointRealWorld.y;
 				//TO DO: Have setter methods for line instead of doing this.
 			}
-			for (var i = 0; i < GLOBALS.walls.length; i++) {
-				var p1 = GLOBALS.walls[i].p1;
-				var p2 = GLOBALS.walls[i].p2;
-				GLOBALS.walls[i].calculateForm(p1, p2);
+			for (var i = 0; i < stateManager.currentFloor.globals.walls.length; i++) {
+				var p1 = stateManager.currentFloor.globals.walls[i].p1;
+				var p2 = stateManager.currentFloor.globals.walls[i].p2;
+				stateManager.currentFloor.globals.walls[i].calculateForm(p1, p2);
 			}
 		}
 		else {
@@ -185,7 +186,7 @@ SelectState.prototype.mouseMove = function(event) {
 		}
 	}
 	
-	this.lastReferencePoint = GLOBALS.view.toCanvasWorld(pointAtCursor);
+	this.lastReferencePoint = stateManager.currentFloor.globals.view.toCanvasWorld(pointAtCursor);
 	this.stateManager.redraw();
 }
 
@@ -242,16 +243,16 @@ SelectState.prototype.keyDown = function(event) {
 SelectState.prototype.deleteSelectedItems = function() {
 	var pointsToDelete = [];
 	for (var i = 0; i < this.selectedPoints.length; i++) {
-		GLOBALS.removePoint(this.selectedPoints[i]);
+		stateManager.currentFloor.globals.removePoint(this.selectedPoints[i]);
 	}
 	for (var j = 0; j < this.selectedLines.length; j++) {
-		GLOBALS.removeWall(this.selectedLines[j], true);
+		stateManager.currentFloor.globals.removeWall(this.selectedLines[j], true);
 	}
 	var numWallsSeen = 0;
-	while (numWallsSeen < GLOBALS.walls.length) {
-		var l = GLOBALS.walls[numWallsSeen];
+	while (numWallsSeen < stateManager.currentFloor.globals.walls.length) {
+		var l = stateManager.currentFloor.globals.walls[numWallsSeen];
 		if (this.containsSelectedPoint(l)) {
-			GLOBALS.removeWall(l);
+			stateManager.currentFloor.globals.removeWall(l);
 		}
 		else numWallsSeen += 1;
 	}
@@ -295,14 +296,14 @@ SelectState.prototype.draw = function() {
 	
 	//Draw the selection rectangle if appropriate.
 	if (this.isSelectBox && !this.selectBoxUndefined()) {
-		var p1 = GLOBALS.view.toCanvasWorld(this.selectBox.p1);
-		var p2 = GLOBALS.view.toCanvasWorld(this.selectBox.p2);
+		var p1 = stateManager.currentFloor.globals.view.toCanvasWorld(this.selectBox.p1);
+		var p2 = stateManager.currentFloor.globals.view.toCanvasWorld(this.selectBox.p2);
 		var width = p2.x - p1.x;
 		var height = p2.y - p1.y;
-		GLOBALS.canvas.beginPath();
-		GLOBALS.canvas.rect(p1.x, p1.y, width, height);
-		GLOBALS.canvas.fillStyle = 'rgba(51,153,255,.5)';
-		GLOBALS.canvas.fill();
+		stateManager.currentFloor.globals.canvas.beginPath();
+		stateManager.currentFloor.globals.canvas.rect(p1.x, p1.y, width, height);
+		stateManager.currentFloor.globals.canvas.fillStyle = 'rgba(51,153,255,.5)';
+		stateManager.currentFloor.globals.canvas.fill();
 	}
 }
 

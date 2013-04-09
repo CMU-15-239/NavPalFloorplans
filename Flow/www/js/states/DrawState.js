@@ -21,7 +21,7 @@ DrawState.prototype.exit = function() {
 }
 
 DrawState.prototype.mouseMove = function(event) {
-	this.pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, event.pageY - GLOBALS.canvas.y));
+	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.canvas.x, event.pageY - stateManager.canvas.y));
 	//Snapping to a point takes precedence over snapping to a line
 	var snapPoint = this.stateManager.aboutToSnapToPoint(this.pointAtCursor, this.pointsAddedInSession);
 	var snapLine = this.stateManager.aboutToSnapToLine(this.pointAtCursor);
@@ -48,10 +48,10 @@ DrawState.prototype.click = function(event) {
 			this.mergeIntersectingLines(newWall);
 		}
 	}
-	//if (!GLOBALS.pointExists(this.pointAtCursor)) 
+	//if (!stateManager.currentFloor.globals.pointExists(this.pointAtCursor)) 
 	this.addPoint(this.pointAtCursor);
-	//console.log("Number of points: " + GLOBALS.points.length);
-	//console.log("Number of walls: " + GLOBALS.walls.length);
+	//console.log("Number of points: " + stateManager.currentFloor.globals.points.length);
+	//console.log("Number of walls: " + stateManager.currentFloor.globals.walls.length);
 	this.stateManager.redraw();
 }
 
@@ -61,16 +61,16 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 	var newPoints = [];
 	var deletedLines = [];
 	var i = 0;
-	while (i < GLOBALS.walls.length) {
-		curWall = GLOBALS.walls[i];
+	while (i < stateManager.currentFloor.globals.walls.length) {
+		curWall = stateManager.currentFloor.globals.walls[i];
 		//Check if the newest point is on a line
-		if (curWall.pointNearLine(line.p1, GLOBALS.snapRadius / GLOBALS.view.scale)) {
+		if (curWall.pointNearLine(line.p1, stateManager.currentFloor.globals.snapRadius / stateManager.currentFloor.globals.view.scale)) {
 			//console.log("Clicked near line!");
 			var twoNewLines = curWall.breakIntoTwo(line.p1);
 			newLines.push(twoNewLines.l1);
 			newLines.push(twoNewLines.l2);
 			deletedLines.push(curWall);
-			GLOBALS.removeWall(curWall, false);
+			stateManager.currentFloor.globals.removeWall(curWall, false);
 			continue;
 		}
 		var pointOfIntersect = curWall.pointOfLineIntersection(line);
@@ -83,7 +83,7 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 			newLines.push(twoNewLines.l1);
 			newLines.push(twoNewLines.l2);
 			deletedLines.push(curWall);
-			GLOBALS.removeWall(curWall, false);
+			stateManager.currentFloor.globals.removeWall(curWall, false);
 		}
 		else {
 			i += 1;
@@ -100,10 +100,10 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 			newLines.push(splitUpLineSegs[i]);
 		}
 	}
-	for (var i = 0; i < GLOBALS.walls.length; i++) {
-		var p1 = GLOBALS.walls[i].p1;
-		var p2 = GLOBALS.walls[i].p2;
-		GLOBALS.walls[i].calculateForm(p1, p2);
+	for (var i = 0; i < stateManager.currentFloor.globals.walls.length; i++) {
+		var p1 = stateManager.currentFloor.globals.walls[i].p1;
+		var p2 = stateManager.currentFloor.globals.walls[i].p2;
+		stateManager.currentFloor.globals.walls[i].calculateForm(p1, p2);
 	}
 	//Now add in all the new lines
 	for (var k = 0; k < newLines.length; k++) {
@@ -121,11 +121,11 @@ DrawState.prototype.addActionSetToStack = function(recentAction) {
 
 DrawState.prototype.addPoint = function(pointToAdd) {
 	this.pointsAddedInSession.push(pointToAdd);
-	GLOBALS.addPoint(pointToAdd);
+	stateManager.currentFloor.globals.addPoint(pointToAdd);
 }
 
 DrawState.prototype.addWall = function(wallToAdd) {
-	GLOBALS.addWall(wallToAdd);
+	stateManager.currentFloor.globals.addWall(wallToAdd);
 }
 
 //NEED TO HAVE
@@ -177,13 +177,13 @@ DrawState.prototype.undo = function() {
 	var numLinesRemoved = 0;
 	while (numLinesRemoved < actionToUndo.newlyAddedLines.length) {
 		var wallToRemove = actionToUndo.newlyAddedLines[numLinesRemoved];
-		GLOBALS.removeWall(wallToRemove, true);
+		stateManager.currentFloor.globals.removeWall(wallToRemove, true);
 		numLinesRemoved += 1;
 	}
 	var numPointsRemoved = 0;
 	while (numPointsRemoved < actionToUndo.newlyAddedPoints.length) {
 		var pointToRemove = actionToUndo.newlyAddedPoints[numPointsRemoved];
-		GLOBALS.removePoint(pointToRemove);
+		stateManager.currentFloor.globals.removePoint(pointToRemove);
 		numPointsRemoved += 1;
 	}
 	var numAddedBack = 0;
@@ -209,13 +209,13 @@ DrawState.prototype.redo = function() {
 	/*var numPoints = 0;
 	while (numPointsRemoved < actionToUndo.newlyAddedPoints.length) {
 		var pointToRemove = actionToUndo.newlyAddedPoints[numPointsRemoved];
-		GLOBALS.removePoint(pointToRemove);
+		stateManager.currentFloor.globals.removePoint(pointToRemove);
 		numPointsRemoved += 1;
 	}*/
 	var numLinesRemoved = 0;
 	while (numLinesRemoved < actionToRedo.deletedLines.length) {
 		var wallToRemove = actionToRedo.deletedLines[numLinesRemoved];
-		GLOBALS.removeWall(wallToRemove, true);
+		stateManager.currentFloor.globals.removeWall(wallToRemove, true);
 		numLinesRemoved += 1;
 	}
 	

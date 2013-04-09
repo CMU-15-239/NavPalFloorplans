@@ -19,18 +19,26 @@ function importGlobalsContainer(simpleGlobalsContainer) {
   return newGlobalsContainer;
 };
 
-var GlobalsContainer = function(canvas) {
-	this.canvas = canvas;
+var GlobalsContainer = function() {
+	this.canvas = null;
 	this.walls = [];
 	//Points stored as real-world coordinates
 	this.points = [];
 	this.view = null;
-  if(util.exists(canvas)) {
-    this.view = new ManipulationAreaView(this.canvas.x, this.canvas.y, 1.05);
-  }
+	//console.log("HERE");
+	//if(util.exists(stateManager)) {
+	//	this.view = new ManipulationAreaView(stateManager.canvas.x, stateManager.canvas.y, 1.05);
+	//}
 	this.preprocessedText = [];
 	this.snapRadius = 15;
 	this.image;
+}
+
+GlobalsContainer.prototype.setCanvas = function(canvas) {
+	if (this.view === null && canvas !== undefined) {
+		this.canvas = canvas;
+		this.view = new ManipulationAreaView(this.canvas.x, this.canvas.y, 1.05);
+	}
 }
 
 GlobalsContainer.prototype.toOutput = function() {
@@ -122,7 +130,7 @@ GlobalsContainer.prototype.duplicatePoint = function(point) {
 }
 
 GlobalsContainer.prototype.isWallDuplicate = function(wallToCheck) {
-	return this.indexOfWall(wallToCheck) !== -1;
+	return this.indexOfWall(wallToCheck);
 };
 
 GlobalsContainer.prototype.indexOfWall = function(wallToCheck) {
@@ -133,8 +141,6 @@ GlobalsContainer.prototype.indexOfWall = function(wallToCheck) {
 	}
 	return false;
 };
-
-
 
 GlobalsContainer.prototype.removeWall = function(wallToRemove, shouldRemoveIsolatedPoints) {
 	var index = this.walls.indexOf(wallToRemove);

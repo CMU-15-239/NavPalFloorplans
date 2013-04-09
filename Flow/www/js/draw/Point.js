@@ -46,28 +46,28 @@ Point.prototype.equals = function(p) {
  * Returns: undefined
 **/
 Point.prototype.draw = function(pointColor) {
-	if (pointColor === undefined) GLOBALS.canvas.fillStyle = "black";
-	else GLOBALS.canvas.fillStyle = pointColor;
+	if (pointColor === undefined) stateManager.currentFloor.globals.canvas.fillStyle = "black";
+	else stateManager.currentFloor.globals.canvas.fillStyle = pointColor;
 	
-	canvasPoint = GLOBALS.view.toCanvasWorld(this);
+	canvasPoint = stateManager.currentFloor.globals.view.toCanvasWorld(this);
 
 	//If the point is being snapped to, draw a larger circle around it to make this fact clear to the user.
 	/*if (this.isSnap) {
-		GLOBALS.canvas.beginPath();
-		GLOBALS.canvas.strokeStyle = "black";
-		GLOBALS.canvas.arc(canvasPoint.x, canvasPoint.y, SNAP_RADIUS, 0, 2*Math.PI, false);
-		GLOBALS.canvas.lineWidth = WALL_WIDTH;
-		GLOBALS.canvas.stroke();
-		GLOBALS.canvas.fillStyle = "rgb(255,0,255)";
+		stateManager.currentFloor.globals.canvas.beginPath();
+		stateManager.currentFloor.globals.canvas.strokeStyle = "black";
+		stateManager.currentFloor.globals.canvas.arc(canvasPoint.x, canvasPoint.y, SNAP_RADIUS, 0, 2*Math.PI, false);
+		stateManager.currentFloor.globals.canvas.lineWidth = WALL_WIDTH;
+		stateManager.currentFloor.globals.canvas.stroke();
+		stateManager.currentFloor.globals.canvas.fillStyle = "rgb(255,0,255)";
 		this.isSnap = false;
 	}*/
 	//Color the point yellow if it's currently selected.
 	/*if (this.isSelected) {
-		GLOBALS.canvas.fillStyle = "rgb(255,0,0)";
+		stateManager.currentFloor.globals.canvas.fillStyle = "rgb(255,0,0)";
 	}*/
-	GLOBALS.canvas.beginPath();
-    GLOBALS.canvas.arc(canvasPoint.x, canvasPoint.y, 5, 0, 2*Math.PI, false);
-    GLOBALS.canvas.fill();
+	stateManager.currentFloor.globals.canvas.beginPath();
+    stateManager.currentFloor.globals.canvas.arc(canvasPoint.x, canvasPoint.y, 5, 0, 2*Math.PI, false);
+    stateManager.currentFloor.globals.canvas.fill();
 }
 
 /**

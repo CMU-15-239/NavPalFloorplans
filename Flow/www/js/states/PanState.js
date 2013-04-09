@@ -27,18 +27,18 @@ PanState.prototype.mouseDown = function(event) {
 }
 
 PanState.prototype.mouseMove = function(event) {
-	//this.pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, 
-	//														event.pageY - GLOBALS.canvas.y));
+	//this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
+	//														event.pageY - stateManager.currentFloor.globals.canvas.y));
 	
-	this.pointAtCursor = new Point(event.pageX - GLOBALS.canvas.x,
-									event.pageY - GLOBALS.canvas.y);
+	this.pointAtCursor = new Point(event.pageX - stateManager.currentFloor.globals.canvas.x,
+									event.pageY - stateManager.currentFloor.globals.canvas.y);
 									
 	// If the mouse is being dragged, pan
 	if (this.drag) {
 		dx = this.oldPoint.x - this.pointAtCursor.x;
 		dy = this.oldPoint.y - this.pointAtCursor.y;
 		
-		GLOBALS.view.pan(dx, dy);
+		stateManager.currentFloor.globals.view.pan(dx, dy);
 		
 		this.oldPoint = this.pointAtCursor;
 		

@@ -40,6 +40,7 @@ LandmarkState.prototype.enter = function() {
 
 //NEED TO HAVE
 LandmarkState.prototype.exit = function() {
+	$("#landmark_pop").css("display", "none");
 }
 
 
@@ -53,8 +54,8 @@ LandmarkState.prototype.click = function(event) {
 		top: event.pageY + "px",
 		left: event.pageX + "px"
 	});
-	this.pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, 
-															event.pageY - GLOBALS.canvas.y));
+	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
+															event.pageY - stateManager.currentFloor.globals.canvas.y));
 	console.log("Set point: " + this.pointAtCursor.toString());
 	this.stateManager.redraw();
 }
