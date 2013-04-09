@@ -9,7 +9,7 @@ var ImageController = {
                   image: String
     * Returns: undefined. Calls callback with created Image or null if it fails.
    **/   
-	newImage: function(creatorId, imageStr, callback) {
+	newImage: function(creatorId, imageStr, dataURL, callback) {
 		var IC = this; //the image controller
 		var imageId = this.generateImageId();
 		console.log("imageController line10: "+imageId);
@@ -19,6 +19,7 @@ var ImageController = {
             imageObj = new Image({
                _creatorId: creatorId,
                imageStr: imageStr,
+               dataURL: dataURL,
                imageId: imageId
             });
 				
@@ -31,7 +32,7 @@ var ImageController = {
             });
 			}
 			else {
-				return IC.newImage(creatorId, imageStr, callback);
+				return IC.newImage(creatorId, imageStr, dataURL, callback); 
 			}
 		});
 	},

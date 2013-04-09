@@ -222,6 +222,9 @@ function processFiles(files) {
 						async: true,
 						data: {
 							imageId: response.imageId,
+						},
+						success: function(res) {
+							console.log(res);
 						}
 					})
 					var id = this.name.hashCode();
@@ -283,13 +286,27 @@ function getFloorLabels(processedFloors) {
 	return building;
 }
 
+function hasDuplicates(array) {
+    var valuesSoFar = {};
+    for (var i = 0; i < array.length; ++i) {
+        var value = array[i];
+        if (Object.prototype.hasOwnProperty.call(valuesSoFar, value)) {
+            return true;
+        }
+        valuesSoFar[value] = true;
+    }
+    return false;
+}
+
 $('#done').click(function() {
 	var buildingName = $('#buildingNameInput').val();
-	var labels = $("input.span1");
+	var labelInputs = $("input.span1");
+	var labels = [];
 	var valid = true;
-	labels.each(function(index){ 
+	labelInputs.each(function(index){ 
 		var label = $(this).val();
 		if (label === "") valid = false;
+		labels.push(label);
 	})
 	if (PROCESSEDFLOORS.length === 0) {
 		alert('You must upload floorplans before pressing done.')
@@ -299,6 +316,9 @@ $('#done').click(function() {
 	}
 	else if (!valid) {
 		alert('You must give your each of your floors a label.')
+	}
+	else if (hasDuplicates(labels)) {
+		alert('Floor labels must be unique.')
 	}
 	else {
 		var floors = getFloorLabels(PROCESSEDFLOORS);

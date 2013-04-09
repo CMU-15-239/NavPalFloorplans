@@ -1,8 +1,9 @@
+#Author: Wang Zhiyu. Carnegie Mellon University
 #process each horizontal pixel line and extract straigt line segments
 #out and add them into the list of line segments
 
 from classes import *
-minlen=50
+minlen=15
 
 def process_img_line_horizontal(row, fimage, lines):
     x=0
