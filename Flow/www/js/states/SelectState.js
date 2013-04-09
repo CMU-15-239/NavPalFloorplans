@@ -95,6 +95,12 @@ SelectState.prototype.mouseUp = function(event) {
 			}
 			else numWallsSeen += 1;
 		}
+		
+		for (var i = 0; i < GLOBALS.walls.length; i++) {
+			var p1 = GLOBALS.walls[i].p1;
+			var p2 = GLOBALS.walls[i].p2;
+			GLOBALS.walls[i].calculateForm(p1, p2);
+		}
 	}
 	this.isMouseDown = false;
 	this.stateManager.redraw();
@@ -226,6 +232,39 @@ SelectState.prototype.keyDown = function(event) {
 	if (keyCode === 17) {
 		this.isCntrlDown = true;
 	}
+	//Del key
+	else if (keyCode === 46) {
+		this.deleteSelectedItems();
+		this.stateManager.redraw();
+	}
+}
+
+SelectState.prototype.deleteSelectedItems = function() {
+	var pointsToDelete = [];
+	for (var i = 0; i < this.selectedPoints.length; i++) {
+		GLOBALS.removePoint(this.selectedPoints[i]);
+	}
+	for (var j = 0; j < this.selectedLines.length; j++) {
+		GLOBALS.removeWall(this.selectedLines[j], true);
+	}
+	var numWallsSeen = 0;
+	while (numWallsSeen < GLOBALS.walls.length) {
+		var l = GLOBALS.walls[numWallsSeen];
+		if (this.containsSelectedPoint(l)) {
+			GLOBALS.removeWall(l);
+		}
+		else numWallsSeen += 1;
+	}
+	this.selectedLines = [];
+	this.selectedPoints = [];
+}
+
+SelectState.prototype.containsSelectedPoint = function(line) {
+	for (var i = 0; i < this.selectedPoints.length; i++) {
+		var curPoint = this.selectedPoints[i];
+		if (line.p1.equals(curPoint) || line.p2.equals(curPoint)) return true;
+	}
+	return false;
 }
 
 SelectState.prototype.keyUp = function(event) {
