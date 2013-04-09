@@ -70,7 +70,42 @@ SelectState.prototype.mouseUp = function(event) {
 		this.isSelectBox = false;
 		this.selectBox = {p1: undefined, p2: undefined};
 	}
+	//Auto merge everything that was selected, while keeping selection semantics the same
+	else {
+		var numSeen = 0;
+		//Try to snap all the selected points to other points
+		while (numSeen < this.selectedPoints.length) {
+			var curPoint = this.selectedPoints[numSeen];
+			var snapPoint = this.stateManager.aboutToSnapToPoint(curPoint);
+			if (snapPoint != null && snapPoint !== curPoint) {
+				this.changeLineEndpoints(curPoint, snapPoint);
+				this.removeFromSelectPoints(curPoint);
+				GLOBALS.removePoint(curPoint);
+			}
+			else {
+				numSeen += 1;
+			}
+		}
+		//Remove duplicate lines
+		var numWallsSeen = 0;
+		while (numWallsSeen < GLOBALS.walls.length) {
+			var curWall = GLOBALS.walls[numWallsSeen];
+			if (GLOBALS.isWallDuplicate(curWall)) {
+				GLOBALS.removeWall(curWall);
+			}
+			else numWallsSeen += 1;
+		}
+	}
 	this.isMouseDown = false;
+	this.stateManager.redraw();
+}
+
+SelectState.prototype.changeLineEndpoints = function(oldPoint, newPoint) {
+	for (var i = 0; i < GLOBALS.walls.length; i++) {
+		var curWall = GLOBALS.walls[i];
+		if (curWall.p1.equals(oldPoint)) curWall.p1 = newPoint;
+		else if (curWall.p2.equals(oldPoint)) curWall.p2 = newPoint;
+	}
 }
 
 SelectState.prototype.mouseMove = function(event) {
