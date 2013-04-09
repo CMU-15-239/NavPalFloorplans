@@ -20,7 +20,12 @@ from time import clock
 #####################################################
 
 
+def checkBackgroundColor(IMG):
+    w=IMG.width
+    h=IMG.height
 
+    if IMG.rgbs[0][0]==255: return "white"
+    else: return "black"
 
 #Summary: color the lines passed as inputs with green
 #Arguements: (list of hlines, list of vlines, image object)
@@ -75,7 +80,7 @@ def oneToMulti(l,width):
 #input: (image object, list of vlines, list of hlines)
 #output: NONE
 def removeLines(IMG,vlines,hlines): 
-    reverseColor(IMG)
+    #reverseColor(IMG)
     for line in hlines:
         row=line.start.row
         cols=line.start.col
@@ -112,9 +117,10 @@ def saveImage(imagedir,IMG):
     pixels=[]
     for img_line in IMG.rgbs:
         pixels+=img_line
-    print IMG.rgbs[0][0]
-    image.putdata(IMG.rgbs)
-    image.save(imagedir+'.png','png')
+    image.putdata(pixels)
+    image.show()
+    print imagedir
+    image.save(imagedir,'png')
 
 
 #saveRemoveLines: removeLines and save the image without the lines
@@ -182,7 +188,6 @@ def parseInputFile(image_dir):
     img=Image.open(image_dir)
     #convert image to grayscale
     img=img.convert('L')
-
     #extract the pixels
     list_of_pixels=list(img.getdata())
     #extract image size
@@ -191,7 +196,8 @@ def parseInputFile(image_dir):
     IMG=FImage()
     IMG.width=width
     IMG.height=height
-    IMG.rgbs=oneToMulti(list_of_pixels,IMG.width) 
+    IMG.rgbs=oneToMulti(list_of_pixels,IMG.width)
+    if checkBackgroundColor(IMG)=="black":reverseColor(IMG)
     return IMG
 
 
