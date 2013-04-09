@@ -64,3 +64,19 @@ FloorNode.prototype.equals = function(otherFloorNode) {
   
   return false;
 };
+
+FloorNode.prototype.addEdge = function(otherFloorNode) {
+  if(util.exists(otherFloorNode) && util.exists(otherFloorNode.edges)) {
+    if(otherFloorNode.edges.indexOf(this.id) == -1) {
+      this.edges.push(otherFloorNode.id);
+    }
+    
+    if(this.edges.indexOf(otherFloorNode.id) == -1) {
+      otherFloorNode.edges.push(this.id);
+    }
+    
+    var edgeWeight = 1; //for testing, will change later
+    
+    graphGlobals.edgeWeights.add(this.id, otherFloorNode.id, edgeWeight);
+  }
+};

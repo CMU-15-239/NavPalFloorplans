@@ -1,6 +1,6 @@
 //floor.js
 
-function Floor(name, imageId, width) {
+function Floor(name, imageId, width, canvas) {
   this.name = name;
   this.imageId = imageId;
   this.width = width;
@@ -13,11 +13,9 @@ function Floor(name, imageId, width) {
   this.landmarks = [];
   this.floorConnections = [];
   
-  StateManager.call(this);
+  //Unsorted lines, walls, etc.
+  this.globals = new GlobalsContainer(canvas);
 }
-
-Floor.prototype = new StateManager();
-Floor.prototype.constructor = Floor;
 
 Floor.prototype.calcScale = function(space, userSqFt) {
   this.imageScale = 1.0;
