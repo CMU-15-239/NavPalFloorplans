@@ -285,31 +285,33 @@ $('#done').click(function() {
 })
 
 function constructBuildingFromPreprocess(buildingName, buildingData) {
-	for (var i = 0; i < buildingData.floor.length; i++) {
-		var curFloor = buildingData.floor[i];
-		var curFloorName = curFloor.label;
-		var curFloorImageID = curFloor.imageId;
-		var curFloorLines = curFloor.lines;
+	console.log(buildingData);
+	for (var i = 0; i < buildingData.length; i++) {
+		var curFloor = buildingData[i];
+		var curFloorName = curFloor.floor.label;
+		var curFloorImageID = curFloor.floor.imageId;
+		var curFloorLines = curFloor.floor.lines;
 		var floorObject = new Floor(curFloorName, curFloorImageID);
 		for (var j = 0; j < curFloorLines.length; j++) {
 			var curLine = curFloorLines[j];
 			var p1 = curLine.line[0];
 			p1 = new Point(p1.p1[0], p1.p1[1]);
-			var p1Duplicate = floorObjects.globals.duplicatePoint(p1);
+			var p1Duplicate = floorObject.globals.duplicatePoint(p1);
 			if (p1Duplicate !== null) {
 				p1 = p1Duplicate;
 			}
 			var p2 = curLine.line[1];
 			p2 = new Point(p2.p2[0], p2.p2[1]);
-			var p2Duplicate = floorObjects.globals.duplicatePoint(p2);
+			var p2Duplicate = floorObject.globals.duplicatePoint(p2);
 			if (p2Duplicate !== null) {
 				p2 = p2Duplicate;
 			}
 			
 			var newLine = new Line(p1, p2);
+			console.log("p1: (" + p1.x + ", " + p1.y + ")  p2: (" + p2.x + ", " + p2.y + ")");
 			floorObject.globals.addWall(newLine);
-			floorObjects.globals.addPoint(p1);
-			floorObjects.globals.addPoint(p2);
+			floorObject.globals.addPoint(p1);
+			floorObject.globals.addPoint(p2);
 			
 		}
 		var curFloorText = curFloor.text;
