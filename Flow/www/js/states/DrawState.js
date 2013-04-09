@@ -86,7 +86,11 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 			newLines.push(splitUpLineSegs[i]);
 		}
 	}
-	
+	for (var i = 0; i < GLOBALS.walls.length; i++) {
+		var p1 = GLOBALS.walls[i].p1;
+		var p2 = GLOBALS.walls[i].p2;
+		GLOBALS.walls[i].calculateForm(p1, p2);
+	}
 	//Now add in all the new lines
 	for (var k = 0; k < newLines.length; k++) {
 		this.addWall(newLines[k]);

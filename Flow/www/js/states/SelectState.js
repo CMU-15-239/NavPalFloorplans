@@ -6,6 +6,8 @@ var SelectState = function(stateMan) {
 	this.selectBox = {p1: undefined, p2: undefined};
 	this.selectedLines = [];
 	this.selectedPoints = [];
+	this.hoverObjects = [];
+	this.lastReferencePoint = undefined;
 }
 
 SelectState.prototype = new BaseState();
@@ -19,34 +21,66 @@ SelectState.prototype.exit = function() {
 	this.isSelectBox = false;
 	this.selectedLines = [];
 	this.selectedPoints = [];
+	this.lastReferencePoint = undefined;
 }
 
 SelectState.prototype.mouseDown = function(event) {
 	var pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, event.pageY - GLOBALS.canvas.y));
+	this.lastReferencePoint = GLOBALS.view.toCanvasWorld(pointAtCursor);
 	this.isMouseDown = true;
 	//Snapping to a point takes precedence over snapping to a line
-	var snapPoint = this.stateManager.aboutToSnapToPoint(pointAtCursor, GLOBALS.points);
+	var snapPoint = this.stateManager.aboutToSnapToPoint(pointAtCursor);
 	var snapLine = this.stateManager.aboutToSnapToLine(pointAtCursor);
+	/* 3 cases:
+		1) The mouse is close enough to snap to a point
+		2) The mouse is close enough to snap to a line
+		3) If neither 1 or 2, then start drawing the select box
+	*/
 	if (snapPoint !== null) {
-		this.selectedPoints.push(snapPoint);
+		if (this.isPointSelected(snapPoint)) {
+		}
+		else {
+			this.selectedPoints = [];
+			this.selectedLines = [];
+			this.addSelectedPoint(snapPoint);
+		}
 	}
 	else if (snapLine !== null) {
-		this.selectedLines.push(snapLine);
+		if (this.isLineSelected(snapLine)) {
+		}
+		else {
+			this.selectedPoints = [];
+			this.selectedLines = [];
+			this.addSelectedLine(snapLine);
+		}
 	}
 	else {
 		//Start select box
 		this.isSelectBox = true;
 		this.selectBox.p1 = pointAtCursor;
+		this.selectedPoints = [];
+		this.selectedLines = [];
 	}
 	
 	this.stateManager.redraw();
 }
 
 SelectState.prototype.mouseUp = function(event) {
+	if (this.isSelectBox) {
+		this.isSelectBox = false;
+		this.selectBox = {p1: undefined, p2: undefined};
+	}
 	this.isMouseDown = false;
 }
 
 SelectState.prototype.mouseMove = function(event) {
+	/* Cases:
+		1) Select box is currently doing its thing
+		2) Select box isn't around
+			a) mouse is down, which implies we move everything that's selected
+			b) mouse isn't down, which means we just highlight things we're near that
+				are unselected
+	*/
 	var pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, event.pageY - GLOBALS.canvas.y));
 	if (this.isSelectBox) {
 		this.selectBox.p2 = pointAtCursor;
@@ -56,7 +90,7 @@ SelectState.prototype.mouseMove = function(event) {
 		for (var i = 0; i < GLOBALS.points.length; i++) {
 			var p = GLOBALS.points[i];
 			if (this.pointInRect(p, p1, p2)) {
-				this.selectedPoints.push(p);
+				this.addSelectedPoint(p);
 			}
 			else {
 				this.removeFromSelectPoints(p);
@@ -66,7 +100,7 @@ SelectState.prototype.mouseMove = function(event) {
 		for (var i = 0; i < GLOBALS.walls.length; i++) {
 			var l = GLOBALS.walls[i];
 			if (this.pointInRect(l.p1, p1, p2) && this.pointInRect(l.p2, p1, p2)) {
-				this.selectedLines.push(l);
+				this.addSelectedLine(l);
 			}
 			else {
 				this.removeFromSelectLines(l);
@@ -75,9 +109,67 @@ SelectState.prototype.mouseMove = function(event) {
 	}
 	
 	else {
+		if (this.isMouseDown) {
+			//move selected stuff
+			var deltaX = GLOBALS.view.toCanvasWorld(pointAtCursor).x - this.lastReferencePoint.x;
+			var deltaY = GLOBALS.view.toCanvasWorld(pointAtCursor).y - this.lastReferencePoint.y;
+			for (var i = 0; i < this.selectedPoints.length; i++) {
+				var currentPoint = GLOBALS.view.toCanvasWorld(this.selectedPoints[i]);
+				currentPoint.x += deltaX;
+				currentPoint.y += deltaY;
+				var currentPointRealWorld = GLOBALS.view.toRealWorld(currentPoint);
+				this.selectedPoints[i].x = currentPointRealWorld.x;
+				this.selectedPoints[i].y = currentPointRealWorld.y;
+				//TO DO: Have setter methods for line instead of doing this.
+			}
+			for (var i = 0; i < GLOBALS.walls.length; i++) {
+				var p1 = GLOBALS.walls[i].p1;
+				var p2 = GLOBALS.walls[i].p2;
+				GLOBALS.walls[i].calculateForm(p1, p2);
+			}
+		}
+		else {
+			//show hover color if near anything
+			//Snapping to a point takes precedence over snapping to a line
+			var snapPoint = this.stateManager.aboutToSnapToPoint(pointAtCursor);
+			var snapLine = this.stateManager.aboutToSnapToLine(pointAtCursor);
+			if (snapPoint !== null) {
+				this.hoverObjects.push(snapPoint);
+			}
+			else if (snapLine !== null) {
+				this.hoverObjects.push(snapLine);
+				this.hoverObjects.push(snapLine.p1);
+				this.hoverObjects.push(snapLine.p2);
+			}
+		}
 	}
 	
+	this.lastReferencePoint = GLOBALS.view.toCanvasWorld(pointAtCursor);
 	this.stateManager.redraw();
+}
+
+SelectState.prototype.isPointSelected = function(point) {
+	var index = this.selectedPoints.indexOf(point);
+	return (index >= 0);
+}
+
+SelectState.prototype.isLineSelected = function(line) {
+	var index = this.selectedLines.indexOf(line);
+	return (index >= 0);
+}
+
+SelectState.prototype.addSelectedPoint = function(pointToAdd) {
+	if (!this.isPointSelected(pointToAdd)) {
+		this.selectedPoints.push(pointToAdd);
+	}
+}
+
+SelectState.prototype.addSelectedLine = function(lineToAdd) {
+	if (!this.isLineSelected(lineToAdd)) {
+		this.selectedLines.push(lineToAdd);
+		this.addSelectedPoint(lineToAdd.p1);
+		this.addSelectedPoint(lineToAdd.p2);
+	}
 }
 
 /**
@@ -110,9 +202,17 @@ SelectState.prototype.keyUp = function(event) {
 }
 
 SelectState.prototype.draw = function() {
+	//Draw anything that's being hovered over in yellow
+	for (var i = 0; i < this.hoverObjects.length; i++) {
+		this.hoverObjects[i].draw("yellow");
+	}
+	this.hoverObjects = [];
+
 	//Draw the selected lines in red
 	for (var i = 0; i < this.selectedLines.length; i++) {
 		this.selectedLines[i].draw("red");
+		this.selectedLines[i].p1.draw("red");
+		this.selectedLines[i].p2.draw("red");
 	}
 	//Draw the selected points in red
 	for (var j = 0; j < this.selectedPoints.length; j++) {
@@ -137,13 +237,10 @@ SelectState.prototype.selectBoxUndefined = function() {
 }
 
 SelectState.prototype.removeFromSelectPoints = function(pointToRemove) {
-	console.log("remove point");
 	var index = this.selectedPoints.indexOf(pointToRemove);
 	if (index >= 0) {
-		console.log("point hit!");
 		this.selectedPoints.splice(index, 1);
 	}
-	this.stateManager.redraw();
 }
 
 SelectState.prototype.removeFromSelectLines = function(lineToRemove) {
