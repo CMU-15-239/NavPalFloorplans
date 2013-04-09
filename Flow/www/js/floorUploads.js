@@ -11,8 +11,8 @@
 **/
 var THUMBWIDTH = 280.0;
 var THUMBHEIGHT = 200.0;
-var POPOVERWIDTH = 550;
-var POPOVERHEIGHT = 315;
+var POPOVERWIDTH = 400;
+var POPOVERHEIGHT = 250;
 var PROCESSEDFLOORS = [];
 
 /**
@@ -28,57 +28,7 @@ var fileInput = $(':file').wrap(wrapper);
  * Parameters: element - element that popover is being applied to
  * Returns: n/a
 **/
-function popoverPlacement(element) {
-	// instantiate local variables
-    var $element, above, actualHeight, actualWidth, below, boundBottom,
-    	boundLeft, boundRight, boundTop, elementAbove, elementBelow,
-    	elementLeft, elementRight, isWithinBounds, left, pos, right;
-    // local function to compute if element will be diaplayed on the bage
-    var isWithinBounds = function(elementPosition) {
-    return (boundTop < elementPosition.top && boundLeft < elementPosition.left && boundRight > (elementPosition.left + actualWidth) && boundBottom > (elementPosition.top + actualHeight));
-    };
-    $element = $(element);
-    pos = $.extend({}, $element.offset(), {
-      width: element.offsetWidth,
-      height: element.offsetHeight
-    });
-    // grab actual dimensions of popover element
-    actualWidth = POPOVERWIDTH;
-    actualHeight = POPOVERHEIGHT;
-    // grab current vertices of document
-    boundTop = $(document).scrollTop();
-    boundLeft = $(document).scrollLeft();
-    boundRight = boundLeft + $(window).width();
-    boundBottom = boundTop + $(window).height();
-    // construct positions based on potentional placements
-    elementAbove = {
-      top: pos.top - actualHeight,
-      left: pos.left + pos.width / 2 - actualWidth / 2
-    };
-    elementBelow = {
-      top: pos.top + pos.height,
-      left: pos.left + pos.width / 2 - actualWidth / 2
-    };
-    elementLeft = {
-      top: pos.top + pos.height / 2 - actualHeight / 2,
-      left: pos.left - actualWidth
-    };
-    elementRight = {
-      top: pos.top + pos.height / 2 - actualHeight / 2,
-      left: pos.left + pos.width
-    };
-    // check if image is within the window if placement is chosen
-    above = isWithinBounds(elementAbove);
-    below = isWithinBounds(elementBelow);
-    left = isWithinBounds(elementLeft);
-    right = isWithinBounds(elementRight);
-    // default to above/below before left/right
-    if (above) return "top";
-    else if (below) return "bottom";
-    else if (left) return "left";
-    else if (right) return "right";
-    else return "top";
-}
+
 
 /**
  * Summary: options for boostrap popover a.k.a hoverzoom
@@ -90,7 +40,7 @@ function popoverOptions(imgSrc, width, height) {
 	return {
 		html: true,
 		animation: false,
-		placement: popoverPlacement,
+		placement: "top",
 		trigger: 'hover',
 		content: function (width, height) {
 			return $('<img class="hoverzoom" src="'+ imgSrc + '" />').height(height*2 + 'px').width(width*2 + 'px');
@@ -215,18 +165,6 @@ function processFiles(files) {
 					image: event.target.result,
 				},
 				success: function(response) {
-					console.log(response);
-					$.ajax({
-						type: "GET",
-						url: '/image',
-						async: true,
-						data: {
-							imageId: response.imageId,
-						},
-						success: function(res) {
-							console.log(res);
-						}
-					})
 					var id = this.name.hashCode();
 					// save preprocessor data into array for future use
 					PROCESSEDFLOORS.push([id, response])
@@ -273,15 +211,14 @@ $('#file').click(function(){
 }).show();
 
 function getFloorLabels(processedFloors) {
-	var building = {}
+	var building = []
 	for (var i = 0; i < processedFloors.length; i++) {
 		var floor = processedFloors[i];
 		var id = floor[0];
 		var data = floor[1];
 		var label = $("input.span1."+id).val();
-		console.log(label);
-		building[label] = data;
-		console.log(label);
+		data.label = label;
+		building.push({'floor': data});
 	};
 	return building;
 }
