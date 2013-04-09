@@ -78,8 +78,11 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 			i += 1;
 		}
 	}
-	if (intersectionPoints.length === 0) this.addWall(line);
+	if (intersectionPoints.length === 0) {
+		this.addWall(line);
+	}
 	else {
+		console.log("Intersection");
 		//Now split up the line we just drew
 		var splitUpLineSegs = line.splitUpLine(intersectionPoints);
 		for (var i = 0; i < splitUpLineSegs.length; i++) {

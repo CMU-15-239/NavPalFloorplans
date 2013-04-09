@@ -1,7 +1,7 @@
 var LandmarkState = function(stateMan) {
 	this.stateManager = stateMan;
 	
-	this.pointAtCursor;
+	this.pointAtCursor; 
 }
 
 $("#landmark_submit").click(function(event) {
@@ -9,7 +9,9 @@ $("#landmark_submit").click(function(event) {
 	$("#landmark_pop").css("display", "none");
 	var name = $("#name").val();
 	var description = $("#description").val();
-	console.log("Added new landmark! name:" + name + ", description " + description);
+	landmark = new Landmark(name, description);
+	landmark.draw();
+	console.log("Added new landmark! name:" + name + ", description " + description + this.pointAtCursor.toString());
 /*
 		event.preventDefault();
 		BLOCK_CHANGE_ROOM = false;
@@ -42,8 +44,7 @@ LandmarkState.prototype.exit = function() {
 
 
 LandmarkState.prototype.mouseMove = function(event) {
-	this.pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, 
-															event.pageY - GLOBALS.canvas.y));
+	
 }
 
 LandmarkState.prototype.click = function(event) {
@@ -52,23 +53,11 @@ LandmarkState.prototype.click = function(event) {
 		top: event.pageY + "px",
 		left: event.pageX + "px"
 	});
+	this.pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, 
+															event.pageY - GLOBALS.canvas.y));
+	console.log("Set point: " + this.pointAtCursor.toString());
 	this.stateManager.redraw();
 }
 
 LandmarkState.prototype.draw = function() {
-}
-
-// DEPRICATED - moved to state manager
-LandmarkState.prototype.scroll = function(event) {
-	if (event.originalEvent.wheelDeltaY > 0) {
-		GLOBALS.view.zoomCanvasPoint(true, new Point(event.originalEvent.layerX, 
-													 event.originalEvent.layerY));
-	}
-	// Consider: GLOBALS.canvas.width - event.originalEvent.layerX [WLOG Y]
-	// It provices a different feel for zoom out
-	else {
-		GLOBALS.view.zoomCanvasPoint(false, new Point(event.originalEvent.layerX, 
-													  event.originalEvent.layerY));
-	}
-	this.stateManager.redraw();
 }
