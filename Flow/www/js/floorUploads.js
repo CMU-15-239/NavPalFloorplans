@@ -285,7 +285,7 @@ $('#done').click(function() {
 })
 
 function constructBuildingFromPreprocess(buildingName, buildingData) {
-	console.log(buildingData);
+	var buildingObject = new Building(buildingName);
 	for (var i = 0; i < buildingData.length; i++) {
 		var curFloor = buildingData[i];
 		var curFloorName = curFloor.floor.label;
@@ -308,21 +308,19 @@ function constructBuildingFromPreprocess(buildingName, buildingData) {
 			}
 			
 			var newLine = new Line(p1, p2);
-			console.log("p1: (" + p1.x + ", " + p1.y + ")  p2: (" + p2.x + ", " + p2.y + ")");
 			floorObject.globals.addWall(newLine);
 			floorObject.globals.addPoint(p1);
 			floorObject.globals.addPoint(p2);
 			
 		}
-		var curFloorText = curFloor.text;
-		/*
-		TO DO: THIS!!!!!
+		var curFloorText = curFloor.floor.text;
 		for (var k = 0; k < curFloorText.length; k++) {
 			var curText = curFloorText[k];
 			var curValue = curText.value;
-			var p1 = curText.p1;
-			var p2 = curText.p2;
-			
-		}*/
+			var x = curText.point[0];
+			var y = curText.point[1];
+			floorObject.globals.preprocessedText.push({value: curValue, location: new Point(x,y)});
+		}
+		buildingObject.floors.push(floorObject);
 	}
 }

@@ -10,8 +10,6 @@ function Floor(name, imageId, width, canvas) {
   this.spaces = [];
   this.obstacles = [];
   
-  this.preprocessedText = [];
-  
   this.landmarks = [];
   this.floorConnections = [];
   

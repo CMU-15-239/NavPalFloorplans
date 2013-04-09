@@ -3,6 +3,7 @@ var GlobalsContainer = function(canvas) {
 	this.walls = [];
 	//Points stored as real-world coordinates
 	this.points = [];
+	this.preprocessedText = [];
 	if (canvas !== undefined) this.view = new ManipulationAreaView(this.canvas.x, this.canvas.y, 1.05);
 	this.snapRadius = 15;
 	this.image;
