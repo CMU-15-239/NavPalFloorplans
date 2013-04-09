@@ -112,7 +112,7 @@ def OCR(im, imageDir,destpath):
         i=text.find("\n")
 
         if (conf>70 and 47< ord(text[0])<58 ):
-            fd.writelines('{\"value\": %s, \"point\": [%d,%d]},\n'\
+            fd.writelines('{\"value\": \"%s\", \"point\": [%d,%d]},\n'\
                         %(text[:i],x,y))
             #fd.write('%s----------%d\n'%(text,conf))
             textList.append((text,conf))
