@@ -242,8 +242,8 @@ app.post('/preprocess', function (request, response) {
       if(Util.exists(imageData)) {
         var imageDir = './temp/';
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
-        var oldImagePath = imageDir + 'oldImage'+randFileNum+'.jpg';
-        var newImagePath = imageDir + 'newImage'+randFileNum+'.jpg';
+        var oldImagePath = imageDir + 'oldImage'+randFileNum+'.png';
+        var newImagePath = imageDir + 'newImage'+randFileNum+'.png';
         var dataPath = imageDir + 'data'+randFileNum+'.json';
          
         var index = imageData.indexOf('base64,') + 'base64,'.length;
@@ -479,7 +479,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
             
             if(!returned && readOtherFile && Util.exists(callback)) {
               returned = true;
-              return callback({result: data, image: dataStrUTF8});
+              return callback({result: data, image: base64ImageStr});
             }
             readOtherFile = true;
           }
