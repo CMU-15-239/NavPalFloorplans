@@ -82,7 +82,7 @@ StateManager.prototype.aboutToSnapToPoint = function(testPoint, recentlyAddedPoi
 			curPoint = GLOBALS.points[i];
 			// Snap radius depends on the scale
 			if (testPoint.distance(curPoint) <= GLOBALS.snapRadius / GLOBALS.view.scale) {
-				return curPoint;
+				if (curPoint !== testPoint) return curPoint;
 			}
 		}
 		return null;
