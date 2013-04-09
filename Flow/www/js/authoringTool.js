@@ -3,9 +3,12 @@
  * Written by: Daniel Muller
 */
 
-$(document).ready(function () 
-    { $('#toolIcon').tooltip();}
-);
+$(document).ready(function () { 
+    $('#toolIcon').tooltip();
+    var buildingJSON = localStorage.getItem('building');
+    var building = $.parseJSON(buildingJSON);
+    
+});
 
 /**
  * Summary: Connects preview pane to floorplan carousel by linking two carousels

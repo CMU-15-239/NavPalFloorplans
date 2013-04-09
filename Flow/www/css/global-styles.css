@@ -41,7 +41,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Tweak navbar brand link to be super sleek
 -------------------------------------------------- */
-
 body > .navbar {
   font-size: 13px;
 }
@@ -72,7 +71,7 @@ body > .navbar .brand:hover {
 ------------------------- */
 .jumbotron {
   margin-top: 40px;
-  padding: 40px 10px;
+  padding: 45px 10px 30px 10px;
   color: #fff;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);

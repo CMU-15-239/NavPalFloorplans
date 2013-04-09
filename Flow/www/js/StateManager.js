@@ -4,8 +4,8 @@ var StateManager = function() {
 		"Draw": new DrawState(this),
 		"Select": new SelectState(this),
 		"Move": new MoveState(this),
-		"ZoomIn": new ZoomState(this),
-		"ZoomOut": new ZoomState(this),
+		"ZoomIn": new ZoomInState(this),
+		"ZoomOut": new ZoomOutState(this),
 		"Pan": new PanState(this)
 	};
 	
@@ -26,12 +26,33 @@ StateManager.prototype.redraw = function() {
 	//First, delete everything from the canvas.
 	//console.log(GLOBALS.view.offsetX);
     GLOBALS.canvas.clearRect(0, 0, GLOBALS.canvas.width, GLOBALS.canvas.height);
-	/*GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
-	GLOBALS.view.offsetX, GLOBALS.view.offsetY,
-	GLOBALS.canvas.image.width - GLOBALS.view.offsetX, GLOBALS.canvas.image.height - GLOBALS.view.offsetY,
-	50,50,
-	GLOBALS.canvas.image.width -  GLOBALS.view.offsetX, GLOBALS.canvas.image.height -  GLOBALS.view.offsetY);*/
 	
+	sx = GLOBALS.view.offsetX;
+	sy = GLOBALS.view.offsetY;
+	dx = 0;
+	dy = 0;
+	
+	zoom = GLOBALS.view.scale;
+	
+	if (GLOBALS.view.offsetX < 0) {
+		dx = -1 * GLOBALS.view.offsetX;
+		sx = 0
+	}
+	if (GLOBALS.view.offsetY < 0) {
+		dy = -1 * GLOBALS.view.offsetY;
+		sy = 0
+	}
+
+	if (GLOBALS.canvas.image === undefined) {
+		;
+	}
+	else {
+		GLOBALS.canvas.drawImage(GLOBALS.canvas.image,
+		sx, sy,
+		GLOBALS.canvas.image.width - sx, GLOBALS.canvas.image.height - sy,
+		dx * zoom,dy * zoom,
+		zoom * (GLOBALS.canvas.image.width -  sx), zoom * (GLOBALS.canvas.image.height -  sy));
+	}
 	GLOBALS.drawWalls();
 	GLOBALS.drawPoints();
 	//Let the state draw itself
