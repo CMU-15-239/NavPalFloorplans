@@ -61,19 +61,32 @@ StateManager.prototype.redraw = function() {
 }
 
 StateManager.prototype.aboutToSnapToPoint = function(testPoint, recentlyAddedPoints) {
-	var curPoint;
-	var numPoints = recentlyAddedPoints.length;
-	for (var i = 0; i < GLOBALS.points.length; i++) {
-		curPoint = GLOBALS.points[i];
-		// Snap radius depends on the scale
-		if (testPoint.distance(curPoint) <= GLOBALS.snapRadius / GLOBALS.view.scale) {
-			//Make sure that we're not snapping to the point we just added, if it exists.
-			if (numPoints === 0 || (numPoints > 0 && !recentlyAddedPoints[numPoints - 1].equals(curPoint))) {
+	if (recentlyAddedPoints !== undefined) {
+		var curPoint;
+		var numPoints = recentlyAddedPoints.length;
+		for (var i = 0; i < GLOBALS.points.length; i++) {
+			curPoint = GLOBALS.points[i];
+			// Snap radius depends on the scale
+			if (testPoint.distance(curPoint) <= GLOBALS.snapRadius / GLOBALS.view.scale) {
+				//Make sure that we're not snapping to the point we just added, if it exists.
+				if (numPoints === 0 || (numPoints > 0 && !recentlyAddedPoints[numPoints - 1].equals(curPoint))) {
+					return curPoint;
+				}
+			}
+		}
+		return null;
+	}
+	else {
+		var curPoint;
+		for (var i = 0; i < GLOBALS.points.length; i++) {
+			curPoint = GLOBALS.points[i];
+			// Snap radius depends on the scale
+			if (testPoint.distance(curPoint) <= GLOBALS.snapRadius / GLOBALS.view.scale) {
 				return curPoint;
 			}
 		}
+		return null;
 	}
-	return null;
 }
 
 StateManager.prototype.aboutToSnapToLine = function(testPoint) {
