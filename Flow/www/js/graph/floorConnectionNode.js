@@ -5,7 +5,7 @@ function importFloorConnectionNode(simpleFloorConnectionNode) {
     var floorConnectionNode = new FloorConnectionNode(simpleFloorConnectionNode.type,
                     simpleFloorConnectionNode.floorConnectionType, 
                     simpleFloorConnectionNode.edges,
-                    importLine(simpleFloorConnectionNode.lineRep, true));
+                    importLine(simpleFloorConnectionNode.pointRep, true));
     floorConnectionNode.id = simpleFloorConnectionNode.id;
     return floorConnectionNode;
   }
@@ -23,11 +23,13 @@ function importFloorConnectionNode(simpleFloorConnectionNode) {
  * Returns: undefined
 **/
 function FloorConnectionNode(type, floorConnectionType, label, edges, pointRep) {
-  FloorConnection.call(this, label, pointRep, floorConnectionType);
+  this.label = label; //String
+  this.pointRep = pointRep; //Point
+  this.floorConnectionType = floorConnectionType; //String
+   
 	FloorNode.call(this, type, edges, type);
 }
 
-FloorConnectionNode.prototype = new FloorConnection();
 FloorConnectionNode.prototype = new FloorNode();
 FloorConnectionNode.prototype.constructor = FloorConnectionNode;
 
@@ -47,12 +49,18 @@ FloorConnectionNode.prototype.toOutput = function() {
 	};
 };
 
+FloorConnectionNode.prototype.equalsFloorConnection = function(floorConnectionObj) {
+  return util.exists(floorConnectionObj)
+      && floorConnectionObj.type === this.type
+      && this.floorConnectionType === floorConnectionObj.floorConnectionType;
+};
+
 FloorConnectionNode.prototype.equals = function(otherFloorConnectionNode) {
   if(util.exists(otherFloorConnectionNode) && otherFloorConnectionNode.id === this.id
       && otherFloorConnectionNode.type === this.type && util.exists(otherFloorConnectionNode.edges)
       && this.edges.length === otherFloorConnectionNode.edges.length
       && this.floorConnectionType === otherFloorConnectionNode.floorConnectionType
-      && this.lineRep.equals(otherFloorConnectionNode.lineRep)) {
+      && this.pointRep.equals(otherFloorConnectionNode.pointRep)) {
     
     for(var e = 0; e < this.edges.length; e++) {
       if(this.edges[e] !== otherFloorConnectionNode.edges[e]) {
