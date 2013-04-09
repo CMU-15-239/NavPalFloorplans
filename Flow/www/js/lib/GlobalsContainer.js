@@ -46,6 +46,14 @@ GlobalsContainer.prototype.pointExists = function(point) {
 	return false;
 }
 
+GlobalsContainer.prototype.duplicatePoint = function(point) {
+	for (var i = 0; i < this.points.length; i++) {
+		var curPoint = this.points[i];
+		if (curPoint.equals(point)) return curPoint;
+	}
+	return null;
+}
+
 GlobalsContainer.prototype.isWallDuplicate = function(wallToCheck) {
 	var index = this.walls.indexOf(wallToCheck);
 	for (var i = 0; i < this.walls.length; i++) {

@@ -10,6 +10,8 @@ function Floor(name, imageId, width, canvas) {
   this.spaces = [];
   this.obstacles = [];
   
+  this.preprocessedText = [];
+  
   this.landmarks = [];
   this.floorConnections = [];
   
@@ -49,6 +51,7 @@ Floor.prototype.toOutput = function() {
       spaces: outSpaces,
       obsticals: outObsticals,
       landmarks: outLandmarks,
-      floorConnections: outFloorConnections      
+      floorConnections: outFloorConnections,
+	  globals: this.globals.toOutput()
    };
 };
