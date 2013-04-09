@@ -16,6 +16,8 @@ function BuildingGraph(building) {
   for(var f = 0; f < building.floors.length; f++) {
     this.addFloor(building.floors[f]);
   }
+  
+  this.id = "buildingGraph_"+JSON.stringify(this).hashCode();
 };
 
 BuildingGraph.prototype.addFloor = function(floor) {
