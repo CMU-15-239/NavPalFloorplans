@@ -323,4 +323,5 @@ function constructBuildingFromPreprocess(buildingName, buildingData) {
 		}
 		buildingObject.floors.push(floorObject);
 	}
+	return buildingObject;
 }
