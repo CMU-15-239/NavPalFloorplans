@@ -311,11 +311,9 @@ app.get('/image', function(request, response) {
         user.getImage(request.query.imageId, function(imageObj) {
           if(Util.exists(imageObj)) {
             response.status(200);
-            return response.send({
-              errorCode: 0,
-              image: imageObj.imageStr,
-              imageId: imageObj.imageId
-            });
+            var responseData = imageObj.toOutput();
+            responseData.errorCode = 0;
+            return response.send(responseData);
           } else {
             response.status(404);
             return response.send({errorCode: 404});
@@ -455,7 +453,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
             
             if(!returned && readOtherFile && Util.exists(callback)) {
               returned = true;
-              return callback({result: data, image: base64ImageStr});
+              return callback({result: data, image: base64ImageStr, dataURL: 'data:image/png;base64,'});
             }
             readOtherFile = true;
           }
@@ -479,7 +477,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
             
             if(!returned && readOtherFile && Util.exists(callback)) {
               returned = true;
-              return callback({result: data, image: base64ImageStr});
+              return callback({result: data, image: base64ImageStr, dataURL: 'data:image/png;base64,'});
             }
             readOtherFile = true;
           }
