@@ -249,7 +249,7 @@ app.post('/preprocess', function (request, response) {
         var index = imageData.indexOf('base64,') + 'base64,'.length;
         var base64Data = imageData.substring(index, imageData.length);
         var base64DataBuffer = new Buffer(base64Data, "base64");
-        fs.writeFile(oldimagePath, base64DataBuffer, function(err) {
+        fs.writeFile(oldImagePath, base64DataBuffer, function(err) {
           if(Util.exists(err)) {
             console.log("failed to write inital image: "+err);
             response.status(500);
