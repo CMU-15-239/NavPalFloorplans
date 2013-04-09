@@ -262,11 +262,11 @@ app.post('/preprocess', function (request, response) {
                 response.status(200);
                 
                 console.log("Going to save image...");
-                user.saveImage(preprocessData.image, null, function(imageObj) {
+                user.saveImage(null, preprocessData.image, preprocessData.dataURL, function(imageObj) {
                   if(Util.exists(imageObj)) {
                     console.log("sucessful");
                     preprocessData.result.imageId = imageObj.imageId;
-                    //preprocessData.result.image = base64Data;                    
+                    //preprocessData.result.image = imageObj.image;                    
                     return response.send(preprocessData.result);
                   } else {
                     console.log("unable to save image");
