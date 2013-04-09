@@ -48,7 +48,7 @@ DrawState.prototype.click = function(event) {
 			this.mergeIntersectingLines(newWall);
 		}
 	}
-	
+	//if (!GLOBALS.pointExists(this.pointAtCursor)) 
 	this.addPoint(this.pointAtCursor);
 	//console.log("Number of points: " + GLOBALS.points.length);
 	//console.log("Number of walls: " + GLOBALS.walls.length);
@@ -63,8 +63,19 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 	var i = 0;
 	while (i < GLOBALS.walls.length) {
 		curWall = GLOBALS.walls[i];
+		//Check if the newest point is on a line
+		if (curWall.pointNearLine(line.p1, GLOBALS.snapRadius / GLOBALS.view.scale)) {
+			//console.log("Clicked near line!");
+			var twoNewLines = curWall.breakIntoTwo(line.p1);
+			newLines.push(twoNewLines.l1);
+			newLines.push(twoNewLines.l2);
+			deletedLines.push(curWall);
+			GLOBALS.removeWall(curWall, false);
+			continue;
+		}
 		var pointOfIntersect = curWall.pointOfLineIntersection(line);
 		if (pointOfIntersect !== null) {
+			//console.log(pointOfIntersect.toString());
 			this.addPoint(pointOfIntersect);
 			intersectionPoints.push(pointOfIntersect);
 			newPoints.push(pointOfIntersect);
@@ -78,15 +89,22 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 			i += 1;
 		}
 	}
-	if (intersectionPoints.length === 0) this.addWall(line);
+	if (intersectionPoints.length === 0) {
+		this.addWall(line);
+	}
 	else {
+		console.log("Intersection");
 		//Now split up the line we just drew
 		var splitUpLineSegs = line.splitUpLine(intersectionPoints);
 		for (var i = 0; i < splitUpLineSegs.length; i++) {
 			newLines.push(splitUpLineSegs[i]);
 		}
 	}
-	
+	for (var i = 0; i < GLOBALS.walls.length; i++) {
+		var p1 = GLOBALS.walls[i].p1;
+		var p2 = GLOBALS.walls[i].p2;
+		GLOBALS.walls[i].calculateForm(p1, p2);
+	}
 	//Now add in all the new lines
 	for (var k = 0; k < newLines.length; k++) {
 		this.addWall(newLines[k]);

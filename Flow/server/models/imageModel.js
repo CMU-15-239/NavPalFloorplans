@@ -5,7 +5,8 @@ var Util = require('../util.js');
 var ImageSchema = new mongoose.Schema({
 	_creatorId: String,
    imageId: String,
-   imageStr: String
+   imageStr: String,
+   dataURL: String
 });
 
 /**
@@ -16,7 +17,8 @@ var ImageSchema = new mongoose.Schema({
 ImageSchema.methods.toOutput = function() {
    return {
       imageId: this.imageId,
-      imageStr: this.imageStr
+      imageStr: this.imageStr,
+      dataURL: this.dataURL
    };
 };
 

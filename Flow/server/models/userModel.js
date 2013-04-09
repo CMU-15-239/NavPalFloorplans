@@ -50,13 +50,14 @@ UserSchema.methods.changePassword = function(newPassword, callback) {
                callback: function
  * Returns: calls callback with null or building.
 **/
-UserSchema.methods.saveImage = function(imageStr, imageId, callback) {
+UserSchema.methods.saveImage = function(imageStr, imageId, dataURL, callback) {
   if(Util.exists(imageStr)) {
     if(!Util.exists(imageId)) {
-       return this.createNewImage(imageStr, callback);
+       return this.createNewImage(imageStr, dataURL, callback);
     } else {
        return this.getImage(imageId, function(imageObj) {
           if(Util.exists(imageObj)) {
+             imageObj.dataURL = dataURL;
              imageObj.imageStr = imageStr;
              imageObj.save(function(err) {
                 if(err) {
@@ -82,10 +83,10 @@ UserSchema.methods.saveImage = function(imageStr, imageId, callback) {
                callback: function
  * Returns: calls callback with null or building.
 **/
-UserSchema.methods.createNewImage = function(imageStr, callback) {
+UserSchema.methods.createNewImage = function(imageStr, dataURL, callback) {
 	console.log("userModel line18");
 	var user = this;
-	ImageController.newImage(this._id, imageStr, function(imageObj) {
+	ImageController.newImage(this._id, imageStr, dataURL, function(imageObj) {
     //console.log("userModel line87: created image: "+JSON.stringify(imageObj));
     if(Util.exists(imageObj)) {
       user.imageRefs.push(imageObj.imageId);

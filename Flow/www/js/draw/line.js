@@ -236,7 +236,7 @@ Line.prototype.pointOfLineIntersection = function(line) {
 		return null;
 	}
   
-	var epsilon = .00001;
+	var epsilon = .01;
 	
 	//The following can't be 0
 	var checkOne = Math.abs(line.a*this.b - this.a*line.b) > epsilon;
@@ -269,11 +269,13 @@ Line.prototype.splitUpLine = function(setOfPoints) {
 	var newLineSegments = [];
 	var lineToSplit = this;
 	for (var i = 0; i < sortedPoints.length; i++) {
-		var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
-		newLineSegments.push(newSegs.l1);
-		lineToSplit = newSegs.l2;
+		//if (!GLOBALS.pointExists(sortedPoints[i])) {
+			var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
+			newLineSegments.push(newSegs.l1);
+			lineToSplit = newSegs.l2;
+		//}
 	}
-	newLineSegments.push(newSegs.l2);
+	if (newSegs !== undefined) newLineSegments.push(newSegs.l2);
 	return newLineSegments;
 };
 
@@ -298,6 +300,7 @@ Line.prototype.sortPoints = function(points) {
 		closestDistance = 10000000000000;
 		numSorted += 1;
 	}
+	var numSeen = 0;
 	//Remove this.p1
 	return points.splice(1, points.length - 1);
 };

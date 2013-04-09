@@ -216,6 +216,14 @@ function processFiles(files) {
 				},
 				success: function(response) {
 					console.log(response);
+					$.ajax({
+						type: "GET",
+						url: '/image',
+						async: true,
+						data: {
+							imageId: response.imageId,
+						}
+					})
 					var id = this.name.hashCode();
 					// save preprocessor data into array for future use
 					PROCESSEDFLOORS.push([id, response])
@@ -268,22 +276,33 @@ function getFloorLabels(processedFloors) {
 		var id = floor[0];
 		var data = floor[1];
 		var label = $("input.span1."+id).val();
-		building.label = data;
+		console.log(label);
+		building[label] = data;
 		console.log(label);
 	};
 	return building;
 }
 
 $('#done').click(function() {
+	var buildingName = $('#buildingNameInput').val();
+	var labels = $("input.span1");
+	var valid = true;
+	labels.each(function(index){ 
+		var label = $(this).val();
+		if (label === "") valid = false;
+	})
 	if (PROCESSEDFLOORS.length === 0) {
 		alert('You must upload floorplans before pressing done.')
 	}
-	else if ($('buildingNameInput').val() === "") {
+	else if (buildingName === "") {
 		alert('You must give your building a name before pressing done.')
+	}
+	else if (!valid) {
+		alert('You must give your each of your floors a label.')
 	}
 	else {
 		var floors = getFloorLabels(PROCESSEDFLOORS);
-		var building = constructBuildingFromPreprocess(PROCESSEDFLOORS);
+		var building = constructBuildingFromPreprocess(buildingName, floors);
 		// start a loading spinner to indicate processing
 		$(this).spin('small').addClass('disabled');
 		$.ajax({
@@ -310,5 +329,5 @@ $('#done').click(function() {
 
 function constructBuildingFromPreprocess(buildingName, buildingData) {
 	console.log("Building name: " + buildingName);
-	console.log(buildingData);
+	window.bitch = buildingData;
 }
