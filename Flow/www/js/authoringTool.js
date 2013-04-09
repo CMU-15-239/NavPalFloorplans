@@ -96,6 +96,7 @@ function addFloorToCarousel(floor) {
 }
 
 $(document).ready(function () { 
+
     $('#toolIcon').tooltip();
     var buildingJSON = localStorage.getItem('building');
     var building = $.parseJSON(buildingJSON);
@@ -113,6 +114,7 @@ $(document).ready(function () {
         var floor = labelToFloor[label];
         console.log(floor);
         addFloorToCarousel(floor);
+		
     };
 
 
