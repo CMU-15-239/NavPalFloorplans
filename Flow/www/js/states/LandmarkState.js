@@ -9,9 +9,18 @@ $("#landmark_submit").click(function(event) {
 	$("#landmark_pop").css("display", "none");
 	var name = $("#name").val();
 	var description = $("#description").val();
-	landmark = new Landmark(name, description);
-	landmark.draw();
-	console.log("Added new landmark! name:" + name + ", description " + description + this.pointAtCursor.toString());
+	var point = stateManager.currentState.pointAtCursor;
+	if (name === "" || description === "") {
+		;
+	}
+	else {
+		landmark = new Landmark(name, description, point);
+		landmark.draw();
+		stateManager.currentFloor.landmarks.push(landmark);
+		
+		$("#name").val("");
+		$("#description").val("");
+	}
 /*
 		event.preventDefault();
 		BLOCK_CHANGE_ROOM = false;
