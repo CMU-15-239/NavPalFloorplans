@@ -7,7 +7,8 @@ var StateManager = function(building) {
 		"ZoomIn": new ZoomInState(this),
 		"ZoomOut": new ZoomOutState(this),
 		"Pan": new PanState(this),
-		"Landmark": new LandmarkState(this)
+		"Landmark": new LandmarkState(this),
+		"Door": new DoorState(this)
 	};
 	
 	if (building !== undefined) {
