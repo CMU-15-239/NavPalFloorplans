@@ -423,8 +423,8 @@ app.get('/building', function(request, response) {
 **/
 function preprocessor(imagePath, dataPath, callback) {
   console.log("\n+++Running Preprocess+++");
-  dataPath = 'json.txt';
-  var child = exec('python ./python/preprocessing.py ' + imagePath /*+ ' ' + dataPath*/, function (err, stdout, stderr) {
+  //dataPath = 'json.txt';
+  var child = exec('python ./python/preprocessing.py ' + imagePath + ' ' + dataPath, function (err, stdout, stderr) {
     console.log("+++Preprocess errors+++");
     console.log("err: " + err);
     console.log("stdout: " + stdout);
