@@ -103,7 +103,7 @@
             </div>
             <div class="row-fluid toolrow">
               <div class="toolIcon tool left" style="background-image: url(img/labelIcon.svg)" data-toggle="tooltip" title="Classify Tool: Click on an area with closed walls to classify. Give the area a label and classification."></div>
-              <div class="toolIcon tool right" style="background-image: url(img/nailIcon.svg)" data-toggle="tooltip" title="Landmark Tool: Click on a point of interest. Give your POI a short description."></div>
+              <div id="Landmark" class="toolIcon tool right" style="background-image: url(img/nailIcon.svg)" data-toggle="tooltip" title="Landmark Tool: Click on a point of interest. Give your POI a short description."></div>
             </div>
           </div>
           <div class="toolGrouping">
@@ -116,7 +116,15 @@
 
         <!-- Canvas
         ================================================== -->
-        <canvas id="canvas"></canvas>
+        <canvas id="canvas">
+			
+		</canvas>
+		<form id="landmark_pop">
+			<br>Label:<input type="text" name="name" id="name">
+			<br>Description:<input type="text" name="description" id="description">
+			<br><input type="submit" value="Add Landmark" id="landmark_submit">
+				<input type="submit" value="Cancel" id="landmark_cancel">
+		</form>
 
 
       </div>
@@ -140,6 +148,7 @@
 	<script src = "js/states/ZoomInState.js"></script>
 	<script src = "js/states/ZoomOutState.js"></script>
     <script src = "js/states/PanState.js"></script>
+	<script src = "js/states/LandmarkState.js"></script>
     <script src="js/lib/Util.js"></script>
     <script src = "js/lib/globals.js"></script>
     <script src="js/lib/GlobalsContainer.js"></script>

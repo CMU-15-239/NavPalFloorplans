@@ -6,7 +6,8 @@ var StateManager = function() {
 		"Move": new MoveState(this),
 		"ZoomIn": new ZoomInState(this),
 		"ZoomOut": new ZoomOutState(this),
-		"Pan": new PanState(this)
+		"Pan": new PanState(this),
+		"Landmark": new LandmarkState(this)
 	};
 	
 	this.currentState = this.avaliableStates["Draw"];
