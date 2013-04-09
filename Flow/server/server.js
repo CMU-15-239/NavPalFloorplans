@@ -443,14 +443,14 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
     var data;
     var base64ImageStr;
     
-    fs.exists(imagePath, function (exists) {
+    fs.exists(newImagePath, function (exists) {
       if(exists) {
-        fs.readFile(imagePath, function(err, imageStr) {
+        fs.readFile(newImagePath, function(err, imageStr) {
           if(err) {
             console.log("failed to read processed image: "+err);
             if(Util.exists(callback)) {return callback(null)}
           } else {
-            fs.unlink(imagePath);
+            fs.unlink(newImagePath);
             base64ImageStr = new Buffer(imageStr, 'base64').toString('base64');
             
             if(!returned && readOtherFile && Util.exists(callback)) {
