@@ -242,19 +242,20 @@ app.post('/preprocess', function (request, response) {
       if(Util.exists(imageData)) {
         var imageDir = './temp/';
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
-        var imagePath = imageDir + 'image'+randFileNum+'.jpg';
+        var oldImagePath = imageDir + 'oldImage'+randFileNum+'.jpg';
+        var newImagePath = imageDir + 'newImage'+randFileNum+'.jpg';
         var dataPath = imageDir + 'data'+randFileNum+'.json';
          
         var index = imageData.indexOf('base64,') + 'base64,'.length;
         var base64Data = imageData.substring(index, imageData.length);
         var base64DataBuffer = new Buffer(base64Data, "base64");
-        fs.writeFile(imagePath, base64DataBuffer, function(err) {
+        fs.writeFile(oldimagePath, base64DataBuffer, function(err) {
           if(Util.exists(err)) {
             console.log("failed to write inital image: "+err);
             response.status(500);
             return response.send({errorCode: 2});
           } else {
-            preprocessor(imagePath, dataPath, function(preprocessData) {
+            preprocessor(oldImagePath, newImagePath, dataPath, function(preprocessData) {
               if(Util.exists(preprocessData)) {
                 preprocessData.result.errorCode = 0;
                 preprocessData.result.imageId = null;
@@ -421,10 +422,10 @@ app.get('/building', function(request, response) {
                 callback: function
  * Returns: calls callback with preprocessed data and image
 **/
-function preprocessor(imagePath, dataPath, callback) {
+function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
   console.log("\n+++Running Preprocess+++");
   //dataPath = 'json.txt';
-  var child = exec('python ./python/preprocessing.py ' + imagePath + ' ' + dataPath, function (err, stdout, stderr) {
+  var child = exec('python ./python/preprocessing.py ' + oldImagePath + newImagePath + ' ' + dataPath, function (err, stdout, stderr) {
     console.log("+++Preprocess errors+++");
     console.log("err: " + err);
     console.log("stdout: " + stdout);
