@@ -1,4 +1,4 @@
-#Author: Zhiyu Wang
+#author: Zhiyu Wang
 #Email: zhiyuw@andrew.cmu.edu
 ########################################
 #Utility functions
@@ -14,7 +14,6 @@ from OCR import *
 #import urllib2
 #from multiprocessing import Pool
 from time import clock
-
 #####################################################
 #Image Manipulation 
 #####################################################
@@ -66,7 +65,7 @@ def grayToRgb(IMG):
     for i in xrange(len(rgbs)):
         for j in xrange(len(rgbs[0])):
             pixel=rgbs[i][j]
-            IMG.rgbs[i][j]=(255-pixel,255-pixel,255-pixel)
+            IMG.rgbs[i][j]=(pixel,pixel,pixel)
     return
 
 #Utility functions
@@ -113,14 +112,8 @@ def reverseColor(IMG):
 
 #fail points
 def saveImage(imagedir,IMG):
-    image=Image.new('L',(IMG.width,IMG.height))
-    pixels=[]
-    for img_line in IMG.rgbs:
-        pixels+=img_line
-    image.putdata(pixels)
-    image.show()
-    print imagedir
-    image.save(imagedir,'png')
+    im=np.array(np.uint8(IMG.rgbs))
+    cv2.imwrite(imagedir,im)
 
 
 #saveRemoveLines: removeLines and save the image without the lines
@@ -149,13 +142,31 @@ def visualizeLines(IMG,vlines,hlines):
     pixels=[]
     for img_line in IMG.rgbs:
         pixels+=img_line
-    
+   
     #create a new image using PIL library function to
     #visualize the effect of line extraction
     imSize=(IMG.width,IMG.height)
     im2= Image.new('RGB',imSize)
     im2.putdata(pixels)
     im2.show()
+
+
+
+def visualizeDoors(im, sourcepath):
+    im=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY) 
+    img=cv2.threshold(im,5,255,cv2.THRESH_BINARY)[1]
+    image=cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
+    contours,hierarchy=cv2.findContours(img,cv2.RETR_TREE,\
+                                    cv2.CHAIN_APPROX_SIMPLE)
+    for cc in contours:
+        (x,y,w,h)=cv2.boundingRect(cc)
+        if (abs(w-h)<2 and w>10 and h>10):
+            cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),1)
+    cv2.imshow("doors",image)
+    cv2.waitKey(0)
+    cv2.destroyWindow("doors")
+
+
 
 #######################################################
 #File Manipulation Utility functions

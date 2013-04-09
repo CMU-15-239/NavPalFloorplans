@@ -23,8 +23,6 @@ def dilate(img,dilationSize):
     kernel=cv2.getStructuringElement(cv2.MORPH_ELLIPSE,\
                                     (dilationSize,dilationSize))
     dilated=cv2.dilate(img,kernel)
-    #cv2.imshow('dilation demo',dilated)
-    #cv2.waitKey(0)
     return dilated
 
 #fCC: find all connected components in the image
@@ -90,9 +88,9 @@ def getText(image0):
 #input: image
 #output: txt file containing all extracted txts     
 def OCR(im, imageDir,destpath):
-    im=dilate(im,2)
-    connComponents=findConnectedComponents(im)
-    bboxs=getBoundingBoxes(im,connComponents)
+    img=dilate(im,2)
+    connComponents=findConnectedComponents(img)
+    bboxs=getBoundingBoxes(img,connComponents)
     originalImage=cv2.imread(imageDir)
     textList=[]
     fd=open(destpath,'a')

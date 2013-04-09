@@ -17,6 +17,15 @@ def process_img(sourcepath,destpath, datapath):
     (hlines,vlines)=extractLines(IMG)
     
     
+    reverseColor(IMG)
+    saveImage(destpath,IMG) 
+    
+    saveRemoveLines(IMG,vlines,hlines)    
+    
+    img=cv2.imread("temp.png") 
+    writeVertexList(hlines,vlines,datapath) 
+    OCR(img,sourcepath,datapath)
+    
     #merge lines in close proximity
     
     #mergeHlines(hlines)
@@ -26,14 +35,11 @@ def process_img(sourcepath,destpath, datapath):
     #mergeVertex(hlines,vlines)
     
     #visualizeLines(IMG,vlines,hlines)
-    reverseColor(IMG)
-    saveImage(destpath,IMG) 
-    
-    saveRemoveLines(IMG,vlines,hlines)    
-    
-    img=cv2.imread("temp.png")  
-    writeVertexList(hlines,vlines,datapath) 
-    OCR(img,sourcepath,datapath)
+
+
+
+    #cvImg=np.array(np.uint8(IMG.rgbs))
+    #visualizeDoors(img,sourcepath)
    
 def init():
     start=clock()
