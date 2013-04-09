@@ -32,7 +32,7 @@ var ImageController = {
             });
 			}
 			else {
-				return IC.newImage(creatorId, imageStr, callback);
+				return IC.newImage(creatorId, imageStr, dataURL, callback);
 			}
 		});
 	},
