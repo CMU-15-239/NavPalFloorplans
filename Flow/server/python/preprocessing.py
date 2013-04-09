@@ -18,7 +18,7 @@ def process_img(sourcepath,destpath, datapath):
     
     
     reverseColor(IMG)
-    #saveImage(destpath,IMG) 
+    saveImage(destpath,IMG) 
     
     saveRemoveLines(IMG,vlines,hlines)    
     
