@@ -1,9 +1,20 @@
 //line.js
 
-function importLine(simpleLine, isDoor) {
+function importLine(simpleLine) {
+  
   if(util.exists(simpleLine)) {
-    var line = new Line(importPoint(simpleLine.p1), importPoint(simpleLine.p2));
-    line.isDoor = (isDoor === true);
+    var p1 = importPoint(simpleLine.p1);
+    var p2 = importPoint(simpleLine.p2);
+    
+    return new Line(p1, p2, simpleLine.isDoor);
+  }
+  
+  return null;
+}
+
+function importLineFromPoints(p1, p2, isDoor) {
+  if(util.exists(p1) && util.exists(p2)) {
+    var line = new Line(p1, p2, isDoor);
     return line;
   }
   
@@ -11,16 +22,17 @@ function importLine(simpleLine, isDoor) {
 }
 
 
+
 /**
  * Summary: Constructor for the Line object.
  * Parameters: p1, p2: The points that comprise the start and end of the line.
  * Returns: undefined.
 **/
-function Line(p1, p2) {
+function Line(p1, p2, isDoor) {
 	this.p1 = p1;
 	this.p2 = p2;
 	this.isSelected = false;
-	this.isDoor = false;
+	this.isDoor = (isDoor === true);
 	this.definesRoom = false;
 	
 	this.calculateForm(p1, p2);
@@ -29,7 +41,8 @@ function Line(p1, p2) {
 Line.prototype.toOutput = function() {
 	return {
 		p1: this.p1.toOutput(),
-		p2: this.p2.toOutput()
+		p2: this.p2.toOutput(),
+    isDoor: this.isDoor
 	};
 };
 
@@ -80,26 +93,26 @@ Line.prototype.equals = function (l) {
  * Returns: undefined.
 **/
 Line.prototype.draw = function (lineColor) {	
-	canvasP1 = GLOBALS.view.toCanvasWorld(this.p1);
-	canvasP2 = GLOBALS.view.toCanvasWorld(this.p2);
+	canvasP1 = stateManager.currentFloor.globals.view.toCanvasWorld(this.p1);
+	canvasP2 = stateManager.currentFloor.globals.view.toCanvasWorld(this.p2);
 	
 	//Save the old stroke, so that we can restore it when we're done
-	var oldStroke = GLOBALS.canvas.strokeStyle;
-	GLOBALS.canvas.strokeStyle = 'rgba(0,180,0,1)';
+	var oldStroke = stateManager.currentFloor.globals.canvas.strokeStyle;
+	stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(0,180,0,1)';
 	if (this.isDoor === true) {
-		GLOBALS.canvas.strokeStyle = "pink";
+		stateManager.currentFloor.globals.canvas.strokeStyle = "pink";
 	}
 	if (this.isSelected === true) {
-		GLOBALS.canvas.strokeStyle = "yellow"; // Yellow
+		stateManager.currentFloor.globals.canvas.strokeStyle = "yellow"; // Yellow
 	}
-	if (lineColor !== undefined) GLOBALS.canvas.strokeStyle = lineColor;
-	GLOBALS.canvas.lineWidth = WALL_WIDTH;
-	GLOBALS.canvas.beginPath();
-	GLOBALS.canvas.moveTo(canvasP1.x, canvasP1.y);
-	GLOBALS.canvas.lineTo(canvasP2.x, canvasP2.y);
-	GLOBALS.canvas.stroke();
+	if (lineColor !== undefined) stateManager.currentFloor.globals.canvas.strokeStyle = lineColor;
+	stateManager.currentFloor.globals.canvas.lineWidth = WALL_WIDTH;
+	stateManager.currentFloor.globals.canvas.beginPath();
+	stateManager.currentFloor.globals.canvas.moveTo(canvasP1.x, canvasP1.y);
+	stateManager.currentFloor.globals.canvas.lineTo(canvasP2.x, canvasP2.y);
+	stateManager.currentFloor.globals.canvas.stroke();
 	//Reset the stroke style
-	GLOBALS.canvas.strokeStyle = oldStroke;
+	stateManager.currentFloor.globals.canvas.strokeStyle = oldStroke;
 };
 
 /**
@@ -269,7 +282,7 @@ Line.prototype.splitUpLine = function(setOfPoints) {
 	var newLineSegments = [];
 	var lineToSplit = this;
 	for (var i = 0; i < sortedPoints.length; i++) {
-		//if (!GLOBALS.pointExists(sortedPoints[i])) {
+		//if (!stateManager.currentFloor.globals.pointExists(sortedPoints[i])) {
 			var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
 			newLineSegments.push(newSegs.l1);
 			lineToSplit = newSegs.l2;

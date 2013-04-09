@@ -213,6 +213,16 @@ html, body {
     line-height: 200px;
 }
 
+#classification_pop {
+	display:none;
+	border: 1px solid black;
+	width: 220px;
+	height: 120px;
+	background-color: orange;
+	font-size: 15px;
+	position: absolute;
+}
+
 #landmark_pop {
 	display:none;
 	border: 1px solid black;

@@ -18,9 +18,9 @@ var ImageController = {
 			if(!Util.exists(imageObj)) {
             imageObj = new Image({
                _creatorId: creatorId,
+               imageId: imageId,
                imageStr: imageStr,
-               dataURL: dataURL,
-               imageId: imageId
+               dataURL: dataURL
             });
 				
             imageObj.save(function(err) {
@@ -32,7 +32,7 @@ var ImageController = {
             });
 			}
 			else {
-				return IC.newImage(creatorId, imageStr, callback);
+				return IC.newImage(creatorId, imageStr, dataURL, callback); 
 			}
 		});
 	},

@@ -11,8 +11,8 @@
 **/
 var THUMBWIDTH = 280.0;
 var THUMBHEIGHT = 200.0;
-var POPOVERWIDTH = 550;
-var POPOVERHEIGHT = 315;
+var POPOVERWIDTH = 400;
+var POPOVERHEIGHT = 250;
 var PROCESSEDFLOORS = [];
 
 /**
@@ -28,57 +28,7 @@ var fileInput = $(':file').wrap(wrapper);
  * Parameters: element - element that popover is being applied to
  * Returns: n/a
 **/
-function popoverPlacement(element) {
-	// instantiate local variables
-    var $element, above, actualHeight, actualWidth, below, boundBottom,
-    	boundLeft, boundRight, boundTop, elementAbove, elementBelow,
-    	elementLeft, elementRight, isWithinBounds, left, pos, right;
-    // local function to compute if element will be diaplayed on the bage
-    var isWithinBounds = function(elementPosition) {
-    return (boundTop < elementPosition.top && boundLeft < elementPosition.left && boundRight > (elementPosition.left + actualWidth) && boundBottom > (elementPosition.top + actualHeight));
-    };
-    $element = $(element);
-    pos = $.extend({}, $element.offset(), {
-      width: element.offsetWidth,
-      height: element.offsetHeight
-    });
-    // grab actual dimensions of popover element
-    actualWidth = POPOVERWIDTH;
-    actualHeight = POPOVERHEIGHT;
-    // grab current vertices of document
-    boundTop = $(document).scrollTop();
-    boundLeft = $(document).scrollLeft();
-    boundRight = boundLeft + $(window).width();
-    boundBottom = boundTop + $(window).height();
-    // construct positions based on potentional placements
-    elementAbove = {
-      top: pos.top - actualHeight,
-      left: pos.left + pos.width / 2 - actualWidth / 2
-    };
-    elementBelow = {
-      top: pos.top + pos.height,
-      left: pos.left + pos.width / 2 - actualWidth / 2
-    };
-    elementLeft = {
-      top: pos.top + pos.height / 2 - actualHeight / 2,
-      left: pos.left - actualWidth
-    };
-    elementRight = {
-      top: pos.top + pos.height / 2 - actualHeight / 2,
-      left: pos.left + pos.width
-    };
-    // check if image is within the window if placement is chosen
-    above = isWithinBounds(elementAbove);
-    below = isWithinBounds(elementBelow);
-    left = isWithinBounds(elementLeft);
-    right = isWithinBounds(elementRight);
-    // default to above/below before left/right
-    if (above) return "top";
-    else if (below) return "bottom";
-    else if (left) return "left";
-    else if (right) return "right";
-    else return "top";
-}
+
 
 /**
  * Summary: options for boostrap popover a.k.a hoverzoom
@@ -90,7 +40,7 @@ function popoverOptions(imgSrc, width, height) {
 	return {
 		html: true,
 		animation: false,
-		placement: popoverPlacement,
+		placement: "top",
 		trigger: 'hover',
 		content: function (width, height) {
 			return $('<img class="hoverzoom" src="'+ imgSrc + '" />').height(height*2 + 'px').width(width*2 + 'px');
@@ -143,21 +93,7 @@ function formatFloorPlan(floorPlanImg) {
 	return floorPlan
 }
 
-/**
- * Summary: creates a hash for a string
- * Parameters: none
- * Returns: hash value
-**/
-String.prototype.hashCode = function() {
-    var hash = 0, i, char;
-    if (this.length == 0) return hash;
-    for (i = 0; i < this.length; i++) {
-        char = this.charCodeAt(i);
-        hash = ((hash<<5)-hash)+char;
-        hash = hash & hash; // Convert to 32bit integer
-    }
-    return "h" + hash;
-};
+
 
 /**
  * Summary: creates a thumbnail for a given floorplan file
@@ -215,15 +151,6 @@ function processFiles(files) {
 					image: event.target.result,
 				},
 				success: function(response) {
-					console.log(response);
-					$.ajax({
-						type: "GET",
-						url: '/image',
-						async: true,
-						data: {
-							imageId: response.imageId,
-						}
-					})
 					var id = this.name.hashCode();
 					// save preprocessor data into array for future use
 					PROCESSEDFLOORS.push([id, response])
@@ -270,26 +197,39 @@ $('#file').click(function(){
 }).show();
 
 function getFloorLabels(processedFloors) {
-	var building = {}
+	var floors = []
 	for (var i = 0; i < processedFloors.length; i++) {
 		var floor = processedFloors[i];
 		var id = floor[0];
 		var data = floor[1];
 		var label = $("input.span1."+id).val();
-		console.log(label);
-		building[label] = data;
-		console.log(label);
+		data.label = label;
+		floors.push({'floor': data});
 	};
-	return building;
+	return floors;
+}
+
+function hasDuplicates(array) {
+    var valuesSoFar = {};
+    for (var i = 0; i < array.length; ++i) {
+        var value = array[i];
+        if (Object.prototype.hasOwnProperty.call(valuesSoFar, value)) {
+            return true;
+        }
+        valuesSoFar[value] = true;
+    }
+    return false;
 }
 
 $('#done').click(function() {
 	var buildingName = $('#buildingNameInput').val();
-	var labels = $("input.span1");
+	var labelInputs = $("input.span1");
+	var labels = [];
 	var valid = true;
-	labels.each(function(index){ 
+	labelInputs.each(function(index){ 
 		var label = $(this).val();
 		if (label === "") valid = false;
+		labels.push(label);
 	})
 	if (PROCESSEDFLOORS.length === 0) {
 		alert('You must upload floorplans before pressing done.')
@@ -300,23 +240,34 @@ $('#done').click(function() {
 	else if (!valid) {
 		alert('You must give your each of your floors a label.')
 	}
+	else if (hasDuplicates(labels)) {
+		alert('Floor labels must be unique.')
+	}
 	else {
 		var floors = getFloorLabels(PROCESSEDFLOORS);
+		console.log(buildingName, floors);
 		var building = constructBuildingFromPreprocess(buildingName, floors);
+		console.log(building);
 		// start a loading spinner to indicate processing
 		$(this).spin('small').addClass('disabled');
 		$.ajax({
 			type: "POST",
 			url: '/savePublish',
 			data: {
-				building: building,
+				building: {
+					name: building.name,
+					authoData: building.toOutput(),
+					graph: null
+				},
 				publishData: false
 			},
 			success: function(response) {
 				//save in local storage and redirect
-				localStorage.setItem('building', JSON.stringify(building));
+				console.log('here');
+				console.log('this');
+				localStorage.setItem('building', JSON.stringify(this));
 				window.location = "/authoringTool.html";
-			}.bind(this),
+			}.bind(building),
 			error: function(response) {
 				// remove loading spinner
 				$('#done').spin(false).removeClass('disabled');
@@ -328,6 +279,45 @@ $('#done').click(function() {
 })
 
 function constructBuildingFromPreprocess(buildingName, buildingData) {
-	console.log("Building name: " + buildingName);
-	window.bitch = buildingData;
+	var buildingObject = new Building(buildingName);
+	for (var i = 0; i < buildingData.length; i++) {
+		var curFloor = buildingData[i];
+		var curFloorName = curFloor.floor.label;
+		var curFloorImageID = curFloor.floor.imageId;
+		var curFloorLines = curFloor.floor.lines;
+		var floorObject = new Floor(curFloorName, curFloorImageID);
+		for (var j = 0; j < curFloorLines.length; j++) {
+			var curLine = curFloorLines[j];
+			var p1 = curLine.line[0];
+			p1 = new Point(p1.p1[0], p1.p1[1]);
+			var p1Duplicate = floorObject.globals.duplicatePoint(p1);
+			if (p1Duplicate !== null) {
+				p1 = p1Duplicate;
+			}
+			var p2 = curLine.line[1];
+			p2 = new Point(p2.p2[0], p2.p2[1]);
+			console.log(p2);
+			var p2Duplicate = floorObject.globals.duplicatePoint(p2);
+			if (p2Duplicate !== null) {
+				p2 = p2Duplicate;
+			}
+			console.log('after');
+			var newLine = new Line(p1, p2);
+			floorObject.globals.addWall(newLine);
+			floorObject.globals.addPoint(p1);
+			floorObject.globals.addPoint(p2);
+			console.log('here');
+			
+		}
+		var curFloorText = curFloor.floor.text;
+		for (var k = 0; k < curFloorText.length; k++) {
+			var curText = curFloorText[k];
+			var curValue = curText.value;
+			var x = curText.point[0];
+			var y = curText.point[1];
+			floorObject.globals.preprocessedText.push({value: curValue, location: new Point(x,y)});
+		}
+		buildingObject.floors.push(floorObject);
+	}
+	return buildingObject;
 }

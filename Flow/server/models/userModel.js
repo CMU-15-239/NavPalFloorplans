@@ -50,15 +50,15 @@ UserSchema.methods.changePassword = function(newPassword, callback) {
                callback: function
  * Returns: calls callback with null or building.
 **/
-UserSchema.methods.saveImage = function(imageStr, imageId, dataURL, callback) {
+UserSchema.methods.saveImage = function(imageId, imageStr, dataURL, callback) {
   if(Util.exists(imageStr)) {
     if(!Util.exists(imageId)) {
        return this.createNewImage(imageStr, dataURL, callback);
     } else {
        return this.getImage(imageId, function(imageObj) {
           if(Util.exists(imageObj)) {
-             imageObj.dataURL = dataURL;
              imageObj.imageStr = imageStr;
+             imageObj.dataURL = dataURL;
              imageObj.save(function(err) {
                 if(err) {
                    console.log("userModel.js 29 failed to save imageObj");

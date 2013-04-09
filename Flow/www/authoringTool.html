@@ -50,12 +50,15 @@
           <div class="stage span3">
             <div class="carousel carousel-stage">
               <ul>
-                <li><img class="currentImage" src="./img/test/img1.jpg" alt=""></li>
-                <li><img class="currentImage" src="./img/test/img2.jpg" alt=""></li>
-                <li><img class="currentImage" src="./img/test/img3.jpg" alt=""></li>
-                <li><img class="currentImage" src="./img/test/img4.jpg" alt=""></li>
-                <li><img class="currentImage" src="./img/test/img5.jpg" alt=""></li>
-                <li><img class="currentImage" src="./img/test/img6.jpg" alt=""></li>
+                <li><img class="currentImage" src="./img/test/nsh1.png" alt=""></li>
+                <li><img class="currentImage" src="./img/test/nsh2.png" alt=""></li>
+                <li><img class="currentImage" src="./img/test/nsh3.png" alt=""></li>
+                <li><img class="currentImage" src="./img/test/nsh1.png" alt=""></li>
+                <li><img class="currentImage" src="./img/test/nsh2.png" alt=""></li>
+                <li><img class="currentImage" src="./img/test/nsh3.png" alt=""></li>
+                <li><img class="currentImage" src="./img/test/nsh1.png" alt=""></li>
+                <li><img class="currentImage" src="./img/test/nsh2.png" alt=""></li>
+                <li><img class="currentImage" src="./img/test/nsh3.png" alt=""></li>
               </ul>
             </div>
           </div>
@@ -66,12 +69,15 @@
             <a href="#" class="next next-navigation">&rsaquo;</a>
             <div class="carousel carousel-navigation">
               <ul>
-                <li><img class="navigationImage" src="./img/test/img1.jpg" alt=""></li>
-                <li><img class="navigationImage" src="./img/test/img2.jpg" alt=""></li>
-                <li><img class="navigationImage" src="./img/test/img3.jpg" alt=""></li>
-                <li><img class="navigationImage" src="./img/test/img4.jpg" alt=""></li>
-                <li><img class="navigationImage" src="./img/test/img5.jpg" alt=""></li>
-                <li><img class="navigationImage" src="./img/test/img6.jpg" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/nsh1.png" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/nsh2.png" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/nsh3.png" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/nsh1.png" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/nsh2.png" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/nsh3.png" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/nsh1.png" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/nsh2.png" alt=""></li>
+                <li><img class="navigationImage" src="./img/test/nsh3.png" alt=""></li>
               </ul>
             </div>
           </div>
@@ -99,7 +105,7 @@
           <div class="toolGrouping">
             <div class="row-fluid toolrow">
               <div id="Draw" class="active toolIcon tool left" style="background-image: url(img/wallIcon.svg)" data-toggle="tooltip" title="Wall Tool: Click to select the starting point of a wall. Move the mouse to the end of the wall and click to create. Press the space bar to release the tool."></div>
-              <div class="toolIcon tool right" style="background-image: url(img/doorIcon.svg)" data-toggle="tooltip" title="Door Tool: Click to select the starting point of a door. Move the mouse to the end of the door and click to create."></div>
+              <div id="Door" class="toolIcon tool right" style="background-image: url(img/doorIcon.svg)" data-toggle="tooltip" title="Door Tool: Click to select the starting point of a door. Move the mouse to the end of the door and click to create."></div>
             </div>
             <div class="row-fluid toolrow">
               <div class="toolIcon tool left" style="background-image: url(img/labelIcon.svg)" data-toggle="tooltip" title="Classify Tool: Click on an area with closed walls to classify. Give the area a label and classification."></div>
@@ -125,6 +131,12 @@
 			<br><input type="submit" value="Add Landmark" id="landmark_submit">
 				<input type="submit" value="Cancel" id="landmark_cancel">
 		</form>
+		<form id="classification_pop">
+			<input type="radio" name="type" value="Room" id="room" checked>Room
+			<input type="radio" name="type" value="Hallway" id="hallway">Hallway
+			<br>Label:<input type="text" name="label" id="label">
+			<br><input type="submit" value="Done" id="label_submit">
+		</form>
 
 
       </div>
@@ -137,7 +149,7 @@
     <script src="./js/bootstrap/bootstrap.min.js" type="text/javascript"></script>
     <script src="./js/carousel/jquery.jcarousel.js" type="text/javascript"></script>
     <script src="./js/authoringTool.js" type="text/javascript"></script>
-    <script src="js/main2.js"></script>
+	<script src="./js/floorUploads.js" type="text/javascript"></script>
     <script src = "js/StateManager.js"></script>
     <script src = "js/states/BaseState.js"></script>
     <script src = "js/states/PreprocessState.js"></script>
@@ -148,16 +160,23 @@
 	<script src = "js/states/ZoomInState.js"></script>
 	<script src = "js/states/ZoomOutState.js"></script>
     <script src = "js/states/PanState.js"></script>
+	<script src = "js/states/DoorState.js"></script>
 	<script src = "js/states/LandmarkState.js"></script>
+	<script src = "js/states/ClassificatoinState.js"></script>
     <script src="js/lib/Util.js"></script>
     <script src = "js/lib/globals.js"></script>
     <script src="js/lib/GlobalsContainer.js"></script>
     <script src="js/draw/ManipulationAreaView.js"></script>
     <script src = "js/draw/Point.js"></script>
-	<script src = "js/draw/landmark.js"></script>
     <script src = "js/draw/line.js"></script>
+	<script src = "js/draw/landmark.js"></script>
+	<script src = "js/draw/floorConnection.js"></script>
     <script src = "js/draw/space.js"></script>
     <script src = "js/draw/Polygon.js"></script>
+	<script src = "js/draw/floor.js"></script>
+	<script src = "js/draw/building.js"></script>
+	
+	<script src="js/main2.js"></script>
 
 
   </body>

@@ -110,7 +110,7 @@ SpaceNode.prototype.pointOnWalls = function(point, radius) {
  * 		includeLine: Should we include the lines that define the walls in our check? 
  * Returns: true iff the given point is within the defining walls of the space.
 **/
-SpaceNode.prototype.pointInSpace = function(point, width, includeLine) {
+SpaceNode.prototype.pointInSpaceNode = function(point, width, includeLine) {
 	//console.log("params: "+JSON.stringify(point)+" width: "+width+" includeLine: "+includeLine);
 	//If point is very close to a line, then it's only in the space if we should include the walls' lines.
 	if (util.exists(this.pointOnWalls(point, 0.5))) {
