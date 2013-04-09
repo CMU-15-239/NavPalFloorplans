@@ -236,7 +236,7 @@ Line.prototype.pointOfLineIntersection = function(line) {
 		return null;
 	}
   
-	var epsilon = .00001;
+	var epsilon = .01;
 	
 	//The following can't be 0
 	var checkOne = Math.abs(line.a*this.b - this.a*line.b) > epsilon;

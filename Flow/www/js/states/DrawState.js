@@ -65,6 +65,7 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 		curWall = GLOBALS.walls[i];
 		var pointOfIntersect = curWall.pointOfLineIntersection(line);
 		if (pointOfIntersect !== null) {
+			console.log(pointOfIntersect.toString());
 			this.addPoint(pointOfIntersect);
 			intersectionPoints.push(pointOfIntersect);
 			newPoints.push(pointOfIntersect);
