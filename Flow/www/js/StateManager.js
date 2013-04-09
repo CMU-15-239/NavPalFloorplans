@@ -4,8 +4,8 @@ var StateManager = function() {
 		"Draw": new DrawState(this),
 		"Select": new SelectState(this),
 		"Move": new MoveState(this),
-		"ZoomIn": new ZoomState(this),
-		"ZoomOut": new ZoomState(this),
+		"ZoomIn": new ZoomInState(this),
+		"ZoomOut": new ZoomOutState(this),
 		"Pan": new PanState(this)
 	};
 	
