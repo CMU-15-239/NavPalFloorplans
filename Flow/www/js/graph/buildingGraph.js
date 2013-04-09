@@ -1,10 +1,15 @@
 //graphConstructor.js
+var graphGlobals = {
+  edgeWeights: null
+};
 
 function BuildingGraph(building) {
   this.name;
   this.id;
   this.floors = [];
   this.floorConnectionRefs = [];
+  this.edgeWeights = graphGlobals.edgeWeights = new EdgeWeights();
+  
   
   this.typeforFloorConnectionNodeRef = "floorConnection";
   
@@ -51,5 +56,27 @@ BuildingGraph.prototype.indexOfFloorConnectionRef = function(otherFloorConnectio
   }
   
   return -1;
+};
+
+BuildingGraph.prototype.toOutput = function() {
+  var outFloors = [];
+  for(var f = 0; f < this.floors.length; f++) {
+    outFloors.push(this.floors[f].toOutput());
+  }
+  
+  var outFloorConnectionRefs = [];
+  for(var fc = 0; fc < this.floorConnectionRefs.length; fc++) {
+    outFloorConnectionRefs.push(this.floorConnectionRefs[fc].toOutput());
+  }
+  
+  this.edgeWeights = $.extend(graphGlobals.edgeWeights, {});
+  
+  return {
+    name: this.name,
+    id: this.id,
+    floors: outFloors,
+    floorConnectionRefs: outFloorConnectionRefs,
+    edgeWeights: this.edgeWeights.toOutput()
+  }
 };
 
