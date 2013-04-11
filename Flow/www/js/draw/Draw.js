@@ -447,6 +447,7 @@ function drawWalls() {
  * Returns: undefined
 **/
 function drawFloorPlan() {
+	console.log('here');
 	if (window.FLOOR_PLAN != null) {
 		CANVAS.drawImage(FLOOR_PLAN,0,0, CANVAS.width, CANVAS.height);
 	}

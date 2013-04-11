@@ -15,6 +15,17 @@ var activeAJAX = 0;
 var buildingFloors = {};
 var floorImages = {};
 
+function ArrayIndexOf(a, fnc) {
+    if (!fnc || typeof (fnc) != 'function') {
+        return -1;
+    }
+    if (!a || !a.length || a.length < 1) return -1;
+    for (var i = 0; i < a.length; i++) {
+    if (fnc(a[i])) return i;
+    }
+        return -1;
+    }
+
 function initCarousels() {
     // This is the connector function.
     // It connects one item from the navigation carousel to one item from the
@@ -70,6 +81,24 @@ function initCarousels() {
                 target: '+=2'
             });
     });
+
+    $(".navigationImage").click(function() {
+        var domImage = $(this);
+        var floorName = domImage.data().internalid;
+        var image = new Image();
+        var floors = building.floors;
+        var floorIndex = ArrayIndexOf(floors, function(floor) {
+                    return floor.name == floorName;
+                });
+        if (floorIndex !== -1) {
+            image.src = domImage.attr('src');
+            var newFloor = floors[floorIndex];
+            stateManager.changeFloor(stateManager.floors[floorIndex]);
+            var currentFloor = stateManager.getCurrentFloor();
+            currentFloor.globals.canvas.image = image;
+            stateManager.redraw();
+        }
+    });
 };
 
 function getFloorImage(floor) {
@@ -102,16 +131,19 @@ function addFloorImages() {
     var floorNames = Object.keys(buildingFloors);
     floorNames.alphanumSort(true);
     console.log(floorImages);
-    
     for (var i = 0; i < floorNames.length; i++) {
         var floorName = floorNames[i];
         var image = floorImages[floorName];
         var dataURL = image.dataURL;
         var imageStr = image.imageStr;
         var stageImage = $('<li><img class="currentImage" src="' + dataURL + imageStr + '"></li>');
-        var navImage = $('<li><img class="navigationImage" src="' + dataURL + imageStr + '"></li>');
+        var navImage = $('<li><img data-internalid='+floorName+' class="navigationImage" src="' + dataURL + imageStr + '"></li>');
         currentImages.append(stageImage);
         navigationImages.append(navImage);
+        if (i === 0) {
+            var currentFloor = stateManager.getCurrentFloor();
+            currentFloor.globals.canvas.image = $('<img class="currentImage" src="' + dataURL + imageStr + '">')[0];
+        }
     }
     setTimeout(function() {
         initCarousels();
@@ -124,22 +156,22 @@ function init() {
     var buildingJSON = localStorage.getItem('building');
     if (buildingJSON !== null) {
         
-        var building = $.parseJSON(buildingJSON);
+        building = $.parseJSON(buildingJSON);
         var floors = building.floors;
         for (var i = 0; i < floors.length; i++) {
             buildingFloors[floors[i].name] = floors[i];
             getFloorImage(floors[i]);
         };
-    
-    
-
-
+        console.log(building);
+        
         /* Initialize the canvas */
         var canvas = resizeCanvas();
         
-        GLOBALS = new GlobalsContainer(canvas);
+        GLOBALS = new GlobalsContainer();
+        GLOBALS.setCanvas(canvas);
                 
         stateManager = initStateManager(building, canvas);//new StateManager();
+
         
         /* The event handler for when a new state is clicked */
         $(".tool").click(function() {

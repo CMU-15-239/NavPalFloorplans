@@ -197,14 +197,24 @@ $('#file').click(function(){
 }).show();
 
 function getFloorLabels(processedFloors) {
-	var floors = []
+	var labelMap = {};
+	var labels = [];
+	var floors = [];
 	for (var i = 0; i < processedFloors.length; i++) {
 		var floor = processedFloors[i];
 		var id = floor[0];
 		var data = floor[1];
 		var label = $("input.span1."+id).val();
 		data.label = label;
-		floors.push({'floor': data});
+		labelMap[label] = data;
+		labels.push(label);
+	};
+	console.log(labelMap);
+	labels.alphanumSort(true);
+	console.log(labels);
+	for (var i = 0; i < labels.length; i++) {
+		var floor = labelMap[labels[i]];
+		floors.push({'floor': floor});
 	};
 	return floors;
 }
@@ -245,7 +255,6 @@ $('#done').click(function() {
 	}
 	else {
 		var floors = getFloorLabels(PROCESSEDFLOORS);
-		console.log(buildingName, floors);
 		var building = constructBuildingFromPreprocess(buildingName, floors);
 		console.log(building);
 		// start a loading spinner to indicate processing
@@ -289,13 +298,13 @@ function constructBuildingFromPreprocess(buildingName, buildingData) {
 		for (var j = 0; j < curFloorLines.length; j++) {
 			var curLine = curFloorLines[j];
 			var p1 = curLine.line[0];
-			p1 = new Point(p1.p1[0], p1.p1[1]);
+			p1 = new Point(p1.p1[1], p1.p1[0]);
 			var p1Duplicate = floorObject.globals.duplicatePoint(p1);
 			if (p1Duplicate !== null) {
 				p1 = p1Duplicate;
 			}
 			var p2 = curLine.line[1];
-			p2 = new Point(p2.p2[0], p2.p2[1]);
+			p2 = new Point(p2.p2[1], p2.p2[0]);
 			var p2Duplicate = floorObject.globals.duplicatePoint(p2);
 			if (p2Duplicate !== null) {
 				p2 = p2Duplicate;
@@ -310,10 +319,11 @@ function constructBuildingFromPreprocess(buildingName, buildingData) {
 		for (var k = 0; k < curFloorText.length; k++) {
 			var curText = curFloorText[k];
 			var curValue = curText.value;
-			var x = curText.point[0];
-			var y = curText.point[1];
+			var x = curText.point[1];
+			var y = curText.point[0];
 			floorObject.globals.preprocessedText.push({value: curValue, location: new Point(x,y)});
 		}
 		buildingObject.floors.push(floorObject);
 	}
+	return buildingObject;
 }
