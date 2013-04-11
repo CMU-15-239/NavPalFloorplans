@@ -296,17 +296,14 @@ function constructBuildingFromPreprocess(buildingName, buildingData) {
 			}
 			var p2 = curLine.line[1];
 			p2 = new Point(p2.p2[0], p2.p2[1]);
-			console.log(p2);
 			var p2Duplicate = floorObject.globals.duplicatePoint(p2);
 			if (p2Duplicate !== null) {
 				p2 = p2Duplicate;
 			}
-			console.log('after');
 			var newLine = new Line(p1, p2);
 			floorObject.globals.addWall(newLine);
 			floorObject.globals.addPoint(p1);
 			floorObject.globals.addPoint(p2);
-			console.log('here');
 			
 		}
 		var curFloorText = curFloor.floor.text;
