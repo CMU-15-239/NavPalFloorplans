@@ -102,7 +102,6 @@ function addFloorImages() {
     var floorNames = Object.keys(buildingFloors);
     floorNames.alphanumSort(true);
     console.log(floorImages);
-
     
     for (var i = 0; i < floorNames.length; i++) {
         var floorName = floorNames[i];
