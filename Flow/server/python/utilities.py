@@ -264,7 +264,7 @@ def writeVertexList(hlines,vlines,destpath):
     fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
                 (line.start.row, line.start.col, line.end.row,\
                  line.end.col))
-    fd.write("],\n")
+    fd.write("]\n")
 
     fd.close()
     

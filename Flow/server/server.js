@@ -471,7 +471,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
             console.log("failed to preprocess: "+err);
             if(Util.exists(callback)) {return callback(null)}
           } else {
-            fs.unlink(dataPath);
+            // fs.unlink(dataPath);
             var dataStrUTF8 = dataStr.toString('utf8');
             data = JSON.parse(dataStrUTF8);
             
