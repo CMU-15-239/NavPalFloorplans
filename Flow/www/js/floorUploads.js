@@ -272,10 +272,9 @@ $('#done').click(function() {
 			},
 			success: function(response) {
 				//save in local storage and redirect
-				console.log('here');
-				console.log('this');
 				localStorage.setItem('building', JSON.stringify(this));
-				window.location = "/authoringTool.html";
+				// window.location = "/authoringTool.html";
+				console.log(this);
 			}.bind(building),
 			error: function(response) {
 				// remove loading spinner
