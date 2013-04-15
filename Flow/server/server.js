@@ -430,6 +430,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
     console.log("stdout: " + stdout);
     console.log("stderr: " + stderr);
     console.log("+++Preprocess logging complete+++\n");
+    
     fs.exists(oldImagePath, function(exists) {
       if(exists) {
         fs.unlink(oldImagePath);
@@ -471,9 +472,16 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
             console.log("failed to preprocess: "+err);
             if(Util.exists(callback)) {return callback(null)}
           } else {
-            fs.unlink(dataPath);
             var dataStrUTF8 = dataStr.toString('utf8');
-            data = JSON.parse(dataStrUTF8);
+            
+            try {
+              data = JSON.parse(dataStrUTF8);
+              fs.unlink(dataPath);
+            } catch {
+              data = null;
+              fs.move(dataPath, 
+              console.log("failed to parse data at: " + dataPath);
+            }
             
             if(!returned && readOtherFile && Util.exists(callback)) {
               returned = true;
