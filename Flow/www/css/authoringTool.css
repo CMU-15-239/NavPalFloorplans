@@ -4,13 +4,23 @@
     Written by Daniel Muller
 */
 html {
-    display: block;
+    display: inline;
     height: auto;
 }
 
 body {
     display: block;
     height: 100%;
+}
+
+#loading {
+    z-index: 999;
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgb(50, 50, 50);
 }
 
 #carousel {

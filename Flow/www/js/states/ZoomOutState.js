@@ -17,12 +17,12 @@ ZoomOutState.prototype.exit = function() {
 
 
 ZoomOutState.prototype.mouseMove = function(event) {
-	this.pointAtCursor = GLOBALS.view.toRealWorld(new Point(event.pageX - GLOBALS.canvas.x, 
-															event.pageY - GLOBALS.canvas.y));
+	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
+															event.pageY - stateManager.currentFloor.globals.canvas.y));
 }
 
 ZoomOutState.prototype.click = function(event) {
-	GLOBALS.view.zoomCanvasPoint(false, new Point(event.originalEvent.layerX, 
+	stateManager.currentFloor.globals.view.zoomCanvasPoint(false, new Point(event.originalEvent.layerX, 
 												 event.originalEvent.layerY));
 	this.stateManager.redraw();
 }
@@ -33,13 +33,13 @@ ZoomOutState.prototype.draw = function() {
 // DEPRICATED - moved to state manager
 ZoomOutState.prototype.scroll = function(event) {
 	if (event.originalEvent.wheelDeltaY > 0) {
-		GLOBALS.view.zoomCanvasPoint(true, new Point(event.originalEvent.layerX, 
+		stateManager.currentFloor.globals.view.zoomCanvasPoint(true, new Point(event.originalEvent.layerX, 
 													 event.originalEvent.layerY));
 	}
-	// Consider: GLOBALS.canvas.width - event.originalEvent.layerX [WLOG Y]
+	// Consider: stateManager.currentFloor.globals.canvas.width - event.originalEvent.layerX [WLOG Y]
 	// It provices a different feel for zoom out
 	else {
-		GLOBALS.view.zoomCanvasPoint(false, new Point(event.originalEvent.layerX, 
+		stateManager.currentFloor.globals.view.zoomCanvasPoint(false, new Point(event.originalEvent.layerX, 
 													  event.originalEvent.layerY));
 	}
 	this.stateManager.redraw();

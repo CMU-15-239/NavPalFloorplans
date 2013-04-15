@@ -93,26 +93,26 @@ Line.prototype.equals = function (l) {
  * Returns: undefined.
 **/
 Line.prototype.draw = function (lineColor) {	
-	canvasP1 = GLOBALS.view.toCanvasWorld(this.p1);
-	canvasP2 = GLOBALS.view.toCanvasWorld(this.p2);
+	canvasP1 = stateManager.currentFloor.globals.view.toCanvasWorld(this.p1);
+	canvasP2 = stateManager.currentFloor.globals.view.toCanvasWorld(this.p2);
 	
 	//Save the old stroke, so that we can restore it when we're done
-	var oldStroke = GLOBALS.canvas.strokeStyle;
-	GLOBALS.canvas.strokeStyle = 'rgba(0,180,0,1)';
+	var oldStroke = stateManager.currentFloor.globals.canvas.strokeStyle;
+	stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(0,180,0,1)';
 	if (this.isDoor === true) {
-		GLOBALS.canvas.strokeStyle = "pink";
+		stateManager.currentFloor.globals.canvas.strokeStyle = "pink";
 	}
 	if (this.isSelected === true) {
-		GLOBALS.canvas.strokeStyle = "yellow"; // Yellow
+		stateManager.currentFloor.globals.canvas.strokeStyle = "yellow"; // Yellow
 	}
-	if (lineColor !== undefined) GLOBALS.canvas.strokeStyle = lineColor;
-	GLOBALS.canvas.lineWidth = WALL_WIDTH;
-	GLOBALS.canvas.beginPath();
-	GLOBALS.canvas.moveTo(canvasP1.x, canvasP1.y);
-	GLOBALS.canvas.lineTo(canvasP2.x, canvasP2.y);
-	GLOBALS.canvas.stroke();
+	if (lineColor !== undefined) stateManager.currentFloor.globals.canvas.strokeStyle = lineColor;
+	stateManager.currentFloor.globals.canvas.lineWidth = WALL_WIDTH;
+	stateManager.currentFloor.globals.canvas.beginPath();
+	stateManager.currentFloor.globals.canvas.moveTo(canvasP1.x, canvasP1.y);
+	stateManager.currentFloor.globals.canvas.lineTo(canvasP2.x, canvasP2.y);
+	stateManager.currentFloor.globals.canvas.stroke();
 	//Reset the stroke style
-	GLOBALS.canvas.strokeStyle = oldStroke;
+	stateManager.currentFloor.globals.canvas.strokeStyle = oldStroke;
 };
 
 /**
@@ -282,7 +282,7 @@ Line.prototype.splitUpLine = function(setOfPoints) {
 	var newLineSegments = [];
 	var lineToSplit = this;
 	for (var i = 0; i < sortedPoints.length; i++) {
-		//if (!GLOBALS.pointExists(sortedPoints[i])) {
+		//if (!stateManager.currentFloor.globals.pointExists(sortedPoints[i])) {
 			var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
 			newLineSegments.push(newSegs.l1);
 			lineToSplit = newSegs.l2;

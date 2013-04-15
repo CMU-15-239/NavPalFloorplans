@@ -93,21 +93,7 @@ function formatFloorPlan(floorPlanImg) {
 	return floorPlan
 }
 
-/**
- * Summary: creates a hash for a string
- * Parameters: none
- * Returns: hash value
-**/
-String.prototype.hashCode = function() {
-    var hash = 0, i, char;
-    if (this.length == 0) return hash;
-    for (i = 0; i < this.length; i++) {
-        char = this.charCodeAt(i);
-        hash = ((hash<<5)-hash)+char;
-        hash = hash & hash; // Convert to 32bit integer
-    }
-    return "h" + hash;
-};
+
 
 /**
  * Summary: creates a thumbnail for a given floorplan file
@@ -211,16 +197,26 @@ $('#file').click(function(){
 }).show();
 
 function getFloorLabels(processedFloors) {
-	var building = []
+	var labelMap = {};
+	var labels = [];
+	var floors = [];
 	for (var i = 0; i < processedFloors.length; i++) {
 		var floor = processedFloors[i];
 		var id = floor[0];
 		var data = floor[1];
 		var label = $("input.span1."+id).val();
 		data.label = label;
-		building.push({'floor': data});
+		labelMap[label] = data;
+		labels.push(label);
 	};
-	return building;
+	console.log(labelMap);
+	labels.alphanumSort(true);
+	console.log(labels);
+	for (var i = 0; i < labels.length; i++) {
+		var floor = labelMap[labels[i]];
+		floors.push({'floor': floor});
+	};
+	return floors;
 }
 
 function hasDuplicates(array) {
@@ -260,20 +256,27 @@ $('#done').click(function() {
 	else {
 		var floors = getFloorLabels(PROCESSEDFLOORS);
 		var building = constructBuildingFromPreprocess(buildingName, floors);
+		console.log(building);
 		// start a loading spinner to indicate processing
 		$(this).spin('small').addClass('disabled');
 		$.ajax({
 			type: "POST",
 			url: '/savePublish',
 			data: {
-				building: building,
+				building: {
+					name: building.name,
+					authoData: building.toOutput(),
+					graph: null
+				},
 				publishData: false
 			},
 			success: function(response) {
 				//save in local storage and redirect
-				localStorage.setItem('building', JSON.stringify(building));
+				console.log('here');
+				console.log('this');
+				localStorage.setItem('building', JSON.stringify(this));
 				window.location = "/authoringTool.html";
-			}.bind(this),
+			}.bind(building),
 			error: function(response) {
 				// remove loading spinner
 				$('#done').spin(false).removeClass('disabled');
@@ -295,18 +298,17 @@ function constructBuildingFromPreprocess(buildingName, buildingData) {
 		for (var j = 0; j < curFloorLines.length; j++) {
 			var curLine = curFloorLines[j];
 			var p1 = curLine.line[0];
-			p1 = new Point(p1.p1[0], p1.p1[1]);
+			p1 = new Point(p1.p1[1], p1.p1[0]);
 			var p1Duplicate = floorObject.globals.duplicatePoint(p1);
 			if (p1Duplicate !== null) {
 				p1 = p1Duplicate;
 			}
 			var p2 = curLine.line[1];
-			p2 = new Point(p2.p2[0], p2.p2[1]);
+			p2 = new Point(p2.p2[1], p2.p2[0]);
 			var p2Duplicate = floorObject.globals.duplicatePoint(p2);
 			if (p2Duplicate !== null) {
 				p2 = p2Duplicate;
 			}
-			
 			var newLine = new Line(p1, p2);
 			floorObject.globals.addWall(newLine);
 			floorObject.globals.addPoint(p1);
@@ -317,10 +319,11 @@ function constructBuildingFromPreprocess(buildingName, buildingData) {
 		for (var k = 0; k < curFloorText.length; k++) {
 			var curText = curFloorText[k];
 			var curValue = curText.value;
-			var x = curText.point[0];
-			var y = curText.point[1];
+			var x = curText.point[1];
+			var y = curText.point[0];
 			floorObject.globals.preprocessedText.push({value: curValue, location: new Point(x,y)});
 		}
 		buildingObject.floors.push(floorObject);
 	}
+	return buildingObject;
 }
