@@ -41,7 +41,7 @@ def process_img(sourcepath,destpath, datapath):
 
     writeVertexList(hlines,vlines,datapath) 
     OCR(img,sourcepath,datapath)
-	    visualizeLines(IMG,vlines,hlines)
+    visualizeLines(IMG,vlines,hlines)
 	
 def init():
     start=clock()
