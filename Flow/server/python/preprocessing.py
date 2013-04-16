@@ -25,13 +25,10 @@ def process_img(sourcepath,destpath, datapath):
     saveRemoveLines(IMG,vlines,hlines)    
     
     img=cv2.imread("temp.png") 
-    
-    
 
     doorRects=ExtractDoors(img,sourcepath)
-    for bbox in doorRects:
-        doorEdge(bbox,im_bw,hlines,vlines) 
-
+    extractDoors(im,hlines,vlines,doorRects)
+    
     #merge lines in close proximity    
     mergeHlines(hlines)
     #print "Mergeing horizontal lines!"
@@ -39,9 +36,9 @@ def process_img(sourcepath,destpath, datapath):
     
     mergeVertex(hlines,vlines)
 
-    writeVertexList(hlines,vlines,datapath) 
-    OCR(img,sourcepath,datapath)
-    # visualizeLines(IMG,vlines,hlines)
+    #writeVertexList(hlines,vlines,datapath) 
+    #OCR(img,sourcepath,datapath)
+    visualizeLines(IMG,vlines,hlines)
 	
 def init():
     start=clock()

@@ -23,7 +23,7 @@ def checkBackgroundColor(IMG):
     w=IMG.width
     h=IMG.height
 
-    if IMG.rgbs[0][0]==255: return "white"
+    if IMG.rgbs[0][0]>=127 or (127,127,127): return "white"
     else: return "black"
 
 #Summary: color the lines passed as inputs with green
@@ -166,40 +166,49 @@ def ExtractDoors(im, sourcepath):
             cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),1)
     #cv2.imshow("doors",image)
     #cv2.waitKey(0)
-    #cv2.destroyWindow("doors")
     return bboxs
 
-def doorEdge(bbox,img,hlines,vlines):
-    (y,x,w,h)=bbox
-    if x>=1275 or y>=2100: return
-    probe=w/2+2
-    cx=x+w/2 
-    cy=y+h/2
-    counts=[0,0,0,0]
-    for i in xrange(probe):
-        if img[cx-i][cy]>127: counts[0]=-1
-        if img[cx][cy+i]>127: counts[1]=-1
-        if img[cx+i][cy]>127: counts[2]=-1
-        if img[cx][cy-i]>127: counts[3]=-1
-    if counts[0]==0:
-        line=newLine(x,y,x,y+h)
-        hlines.append(line)
-    if counts[1]==0:
-        line=newLine(x,y+h,x+w,y+h)
-        vlines.append(line)
-    if counts[2]==0:
-        line=newLine(x+w,y,x+w,y+h)
-        hlines.append(line)
-    if counts[3]==0:
-        line=newLine(x,y,x+w,y)
-        vlines.append(line)
-    else:print "WTF! that can't happen!"    
-    
-
-
-
-#######################################################
-
+def extractDoors(img,hlines,vlines,doorRects):
+    for bbox in doorRects:
+        (x,y,w,h)=bbox
+        if x>=2100 or y>=1275: 
+            print "messy"
+            return
+        probe=w/2+5
+        cx=x+w/2 
+        cy=y+h/2
+        counts=[0,0,0,0]
+        
+        cv2.line(img,(cx,cy),(cx-probe,cy),255,2)
+        cv2.line(img,(cx,cy),(cx,cy+probe),255,2)        
+        cv2.line(img,(cx,cy),(cx+probe,cy),255,2)
+        cv2.line(img,(cx,cy),(cx,cy-probe),255,2)
+        
+        temp=cx
+        cx=cy
+        cy=cx
+ 
+        for i in xrange(probe):
+            if img[cx-i][cy]>127: counts[0]=-1
+            if img[cx][cy+i]>127: counts[1]=-1
+            if img[cx+i][cy]>127: counts[2]=-1
+            if img[cx][cy-i]>127: counts[3]=-1
+        
+        if counts[0]==0:
+            line=newLine(y,x,y,x+w)
+            hlines.append(line)
+        if counts[1]==0:
+            line=newLine(y,x,y+h,x+w)
+            vlines.append(line)
+        if counts[2]==0:
+            line=newLine(y+h,x,y+h,x+w)
+            hlines.append(line)
+        if counts[3]==0:
+            line=newLine(y,x,y+h,x)
+            vlines.append(line)
+        else: print "WTF! that can't happen!"    
+    #cv2.imshow("img",img)
+    #cv2.waitKey(0) 
 
 
 
