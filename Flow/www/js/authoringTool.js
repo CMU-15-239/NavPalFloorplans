@@ -10,22 +10,31 @@
  * Parameters:  n/a
  * Returns: n/a
 **/
-
 var activeAJAX = 0;
 var buildingFloors = {};
 var floorImages = {};
 
+/**
+ * Summary: Finds index of element inside an array
+ * Parameters:  a: list of elements, fnc: returns true if element is found
+ * Returns: boolean if element exists in array
+**/
 function ArrayIndexOf(a, fnc) {
     if (!fnc || typeof (fnc) != 'function') {
         return -1;
     }
     if (!a || !a.length || a.length < 1) return -1;
     for (var i = 0; i < a.length; i++) {
-    if (fnc(a[i])) return i;
+        if (fnc(a[i])) return i;
     }
-        return -1;
-    }
+    return -1;
+}
 
+/**
+ * Summary: Initializes the linked carousels for floor switching
+ * Parameters: n/a
+ * Returns: initialized preview pane and navigation carousel
+**/
 function initCarousels() {
     // This is the connector function.
     // It connects one item from the navigation carousel to one item from the
@@ -81,7 +90,7 @@ function initCarousels() {
                 target: '+=2'
             });
     });
-
+    // Set up floor switching event handler
     $(".navigationImage").click(function() {
         var domImage = $(this);
         var floorName = domImage.data().internalid;
@@ -101,6 +110,11 @@ function initCarousels() {
     });
 };
 
+/**
+ * Summary: Grabs floor plan image from database
+ * Parameters:  floor: floor object
+ * Returns: adds image to carousels
+**/
 function getFloorImage(floor) {
     activeAJAX++;
     $.ajax({ 
@@ -124,13 +138,20 @@ function getFloorImage(floor) {
     });
 }
 
+/**
+ * Summary: Adds fetched floor images to preview pane and navigation carousel
+ * Parameters:  n/a
+ * Globals: floorNames: list of names, floorImages: mapping of names to images
+ * Returns: boolean if element exists in array
+**/
 function addFloorImages() {
-    console.log('addFloorImages');
+    // images from preview pane
     var currentImages = $('#currentImages');
+    // images from navigation carousel
     var navigationImages = $('#navigationImages');
     var floorNames = Object.keys(buildingFloors);
     floorNames.alphanumSort(true);
-    console.log(floorImages);
+    // add floor images to carousels in alphanumeric order of floor names
     for (var i = 0; i < floorNames.length; i++) {
         var floorName = floorNames[i];
         var image = floorImages[floorName];
@@ -140,6 +161,7 @@ function addFloorImages() {
         var navImage = $('<li><img data-internalid='+floorName+' class="navigationImage" src="' + dataURL + imageStr + '"></li>');
         currentImages.append(stageImage);
         navigationImages.append(navImage);
+        // initialize canvas with lowest floor
         if (i === 0) {
             var currentFloor = stateManager.getCurrentFloor();
             currentFloor.globals.canvas.image = $('<img class="currentImage" src="' + dataURL + imageStr + '">')[0];
@@ -151,28 +173,27 @@ function addFloorImages() {
     }, 0) 
 }    
 
-
+/**
+ * Summary: initializes authoringTool data structures
+ * Parameters: building: localStorage building object json string
+ * Returns: initialized authoring tool
+**/
 function init() {
     var buildingJSON = localStorage.getItem('building');
     if (buildingJSON !== null) {
         
+        // grab building object from local storage and initialize
         building = $.parseJSON(buildingJSON);
         var floors = building.floors;
         for (var i = 0; i < floors.length; i++) {
             buildingFloors[floors[i].name] = floors[i];
             getFloorImage(floors[i]);
-        };
-        console.log(building);
-        
+        };        
         /* Initialize the canvas */
         var canvas = resizeCanvas();
-        
         GLOBALS = new GlobalsContainer();
         GLOBALS.setCanvas(canvas);
-                
         stateManager = initStateManager(building, canvas);//new StateManager();
-
-        
         /* The event handler for when a new state is clicked */
         $(".tool").click(function() {
             $(".tool").removeClass("active");
@@ -181,12 +202,15 @@ function init() {
             var newState = $(this).attr("id");
             stateManager.changeState(newState);
         });
-        
         initCanvasEventHandlers(stateManager);
-        //testImport();
     }
 }
 
+/**
+ * Summary: Initiailize icon tooltips and loading spinner while carousels load images
+ * Parameters: n/a
+ * Returns: n/a
+**/
 $(document).ready(function () {
     $('#toolIcon').tooltip();
     var opts = {
@@ -210,6 +234,4 @@ $(document).ready(function () {
     var target = document.getElementById('loading');
     var spinner = new Spinner(opts).spin(target);
     setTimeout(init, 0);
-
-    
 });

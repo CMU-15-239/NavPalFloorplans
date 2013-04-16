@@ -219,6 +219,11 @@ function getFloorLabels(processedFloors) {
 	return floors;
 }
 
+/**
+ * Summary: Checks if an array has duplicate items
+ * Parameters: array
+ * Returns: bool
+**/
 function hasDuplicates(array) {
     var valuesSoFar = {};
     for (var i = 0; i < array.length; ++i) {
@@ -231,6 +236,13 @@ function hasDuplicates(array) {
     return false;
 }
 
+/**
+ * Summary: Checks if user has filled out all required
+ 			fields in order to initialize building 
+ * Parameters: none
+ * Returns: alert if requirements not met,
+ 			else calls initializeBuilding
+**/
 $('#done').click(function() {
 	var buildingName = $('#buildingNameInput').val();
 	var labelInputs = $("input.span1");
@@ -253,39 +265,45 @@ $('#done').click(function() {
 	else if (hasDuplicates(labels)) {
 		alert('Floor labels must be unique.')
 	}
-	else {
-		var floors = getFloorLabels(PROCESSEDFLOORS);
-		var building = constructBuildingFromPreprocess(buildingName, floors);
-		console.log(building);
-		// start a loading spinner to indicate processing
-		$(this).spin('small').addClass('disabled');
-		$.ajax({
-			type: "POST",
-			url: '/savePublish',
-			data: {
-				building: {
-					name: building.name,
-					authoData: building.toOutput(),
-					graph: null
-				},
-				publishData: false
-			},
-			success: function(response) {
-				//save in local storage and redirect
-				console.log('here');
-				console.log('this');
-				localStorage.setItem('building', JSON.stringify(this));
-				window.location = "/authoringTool.html";
-			}.bind(building),
-			error: function(response) {
-				// remove loading spinner
-				$('#done').spin(false).removeClass('disabled');
-				//alert user to their error
-				alert('An error occurred, please try again.');
-			}.bind(this)
-		})
-	}
+	// if all requirements met 
+	else initializeBuilding()
 })
+
+/**
+ * Summary: Contructs building object, saves building to database
+ 			saves building to local storage then redirects
+ 			to authoringTool page
+ * Parameters: none
+ * Returns: redirect
+**/
+function initializeBuilding() {
+	var floors = getFloorLabels(PROCESSEDFLOORS);
+	var building = constructBuildingFromPreprocess(buildingName, floors);
+	// start a loading spinner to indicate processing
+	$(this).spin('small').addClass('disabled');
+	$.ajax({
+		type: "POST",
+		url: '/savePublish',
+		data: {
+			building: {
+				name: building.name,
+				authoData: building.toOutput(),
+				graph: null
+			},
+			publishData: false
+		},
+		success: function(response) {
+			//save in local storage and redirect
+			localStorage.setItem('building', JSON.stringify(this));
+			window.location = "/authoringTool.html";
+		}.bind(building),
+		error: function(response) {
+			// remove loading spinner and alert user of error
+			$('#done').spin(false).removeClass('disabled');
+			alert('An error occurred, please try again.');
+		}.bind(this)
+	})
+}
 
 function constructBuildingFromPreprocess(buildingName, buildingData) {
 	var buildingObject = new Building(buildingName);
