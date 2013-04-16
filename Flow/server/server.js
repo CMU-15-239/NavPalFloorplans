@@ -478,9 +478,8 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
             try {
               data = JSON.parse(dataStrUTF8);
               fs.unlink(dataPath);
-            } catch {
+            } catch(e) {
               data = null;
-              fs.move(dataPath, 
               console.log("failed to parse data at: " + dataPath);
             }
             
