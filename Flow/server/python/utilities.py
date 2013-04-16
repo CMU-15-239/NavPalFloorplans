@@ -196,15 +196,19 @@ def extractDoors(img,hlines,vlines,doorRects):
         
         if counts[0]==0:
             line=newLine(y,x,y,x+w)
+            cv2.line(img,(x,y),(x,y+h),255,2)
             hlines.append(line)
         if counts[1]==0:
-            line=newLine(y,x,y+h,x+w)
+            line=newLine(y,x+w,y+h,x+w)
+            cv2.line(img,(x,y+h),(x+w,y+h),255,2)
             vlines.append(line)
         if counts[2]==0:
             line=newLine(y+h,x,y+h,x+w)
+            cv2.line(img,(x+w,y),(x+w,y+h),255,2)
             hlines.append(line)
         if counts[3]==0:
             line=newLine(y,x,y+h,x)
+            cv2.line(img,(x,y),(x+w,y),255,2)
             vlines.append(line)
         else: print "WTF! that can't happen!"    
     #cv2.imshow("img",img)

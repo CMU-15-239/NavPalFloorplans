@@ -27,7 +27,7 @@ def process_img(sourcepath,destpath, datapath):
     img=cv2.imread("temp.png") 
 
     doorRects=ExtractDoors(img,sourcepath)
-    extractDoors(im,hlines,vlines,doorRects)
+    extractDoors(im_bw,hlines,vlines,doorRects)
     
     #merge lines in close proximity    
     mergeHlines(hlines)
@@ -36,9 +36,9 @@ def process_img(sourcepath,destpath, datapath):
     
     mergeVertex(hlines,vlines)
 
-    #writeVertexList(hlines,vlines,datapath) 
-    #OCR(img,sourcepath,datapath)
-    visualizeLines(IMG,vlines,hlines)
+    writeVertexList(hlines,vlines,datapath) 
+    OCR(img,sourcepath,datapath)
+    #visualizeLines(IMG,vlines,hlines)
 	
 def init():
     start=clock()
