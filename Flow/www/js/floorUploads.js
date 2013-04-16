@@ -265,8 +265,11 @@ $('#done').click(function() {
 	else if (hasDuplicates(labels)) {
 		alert('Floor labels must be unique.')
 	}
-	// if all requirements met 
-	else initializeBuilding()
+	// if all requirements met
+	else {
+		$(this).spin('small').addClass('disabled');
+		initializeBuilding(buildingName)
+	}
 })
 
 /**
@@ -276,11 +279,10 @@ $('#done').click(function() {
  * Parameters: none
  * Returns: redirect
 **/
-function initializeBuilding() {
+function initializeBuilding(buildingName) {
 	var floors = getFloorLabels(PROCESSEDFLOORS);
 	var building = constructBuildingFromPreprocess(buildingName, floors);
 	// start a loading spinner to indicate processing
-	$(this).spin('small').addClass('disabled');
 	$.ajax({
 		type: "POST",
 		url: '/savePublish',
@@ -301,7 +303,7 @@ function initializeBuilding() {
 			// remove loading spinner and alert user of error
 			$('#done').spin(false).removeClass('disabled');
 			alert('An error occurred, please try again.');
-		}.bind(this)
+		}
 	})
 }
 
