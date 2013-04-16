@@ -111,12 +111,35 @@
         <canvas id="canvas">
 			
 		</canvas>
-		<form id="landmark_pop">
-			<br>Label:<input type="text" name="name" id="name">
-			<br>Description:<input type="text" name="description" id="description">
-			<br><input type="submit" value="Add Landmark" id="landmark_submit">
-				<input type="submit" value="Cancel" id="landmark_cancel">
-		</form>
+    <form class="form-horizontal" id="landmark_pop">
+    <fieldset>
+      <!-- Form Name -->
+      <legend>Landmark</legend>
+      <!-- Text input-->
+      <div class="control-group">
+        <label class="control-label">Label</label>
+        <div class="controls">
+          <input id="name" name="name" type="text" placeholder="What is this?" class="input"> 
+        </div>
+      </div>
+      <!-- Text input-->
+      <div class="control-group">
+        <label class="control-label">Description</label>
+        <div class="controls">
+          <input id="description" name="description" type="text" placeholder="Tell me about it" class="input">
+        </div>
+      </div>
+      <!-- Button (Double) -->
+      <div class="control-group">
+        <label class="control-label">Confirm</label>
+        <div class="controls">
+          <button id="landmark_submit" name="landmark_submit" class="btn btn-info">Save Landmark</button>
+          <button id="landmark_cancel" name="landmark_cancel" class="btn btn-danger">Cancel</button>
+        </div>
+      </div>
+    </fieldset>
+    </form>
+
 		<form id="classification_pop">
 			<input type="radio" name="type" value="Room" id="room" checked>Room
 			<input type="radio" name="type" value="Hallway" id="hallway">Hallway
