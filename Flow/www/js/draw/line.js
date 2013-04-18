@@ -98,12 +98,12 @@ Line.prototype.draw = function (lineColor) {
 	
 	//Save the old stroke, so that we can restore it when we're done
 	var oldStroke = stateManager.currentFloor.globals.canvas.strokeStyle;
-	stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(0,180,0,1)';
+	stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(0,180,0,0.6)';
 	if (this.isDoor === true) {
-		stateManager.currentFloor.globals.canvas.strokeStyle = "pink";
+		stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(188,0,255,0.8)';
 	}
 	if (this.isSelected === true) {
-		stateManager.currentFloor.globals.canvas.strokeStyle = "yellow"; // Yellow
+		stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(0,132,240,1)'; // Yellow
 	}
 	if (lineColor !== undefined) stateManager.currentFloor.globals.canvas.strokeStyle = lineColor;
 	stateManager.currentFloor.globals.canvas.lineWidth = WALL_WIDTH;
