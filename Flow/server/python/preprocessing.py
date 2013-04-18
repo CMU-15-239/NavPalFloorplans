@@ -36,9 +36,9 @@ def process_img(sourcepath,destpath, datapath):
     
     mergeVertex(hlines,vlines)
 
+    visualizeLines(IMG,vlines,hlines)
     writeVertexList(hlines,vlines,datapath) 
     OCR(img,sourcepath,datapath)
-    #visualizeLines(IMG,vlines,hlines)
 	
 def init():
     start=clock()
