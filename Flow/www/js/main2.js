@@ -1,14 +1,3 @@
-$(".navigationImage").click(function() {
-		console.log(this);
-		var domImage = this;
-		stateManager.currentFloor.globals.canvas.image = image;
-		var image = new Image(); 
-		image.src = domImage.src;
-		console.log(image.width);
-		//stateManager.currentFloor.globals.canvas.drawImage(image,0,0,stateManager.currentFloor.globals.canvas.width,stateManager.currentFloor.globals.canvas.height);
-		stateManager.currentFloor.globals.canvas.image = image;
-	}
-)
 
 function resizeCanvas() {
 	var can = document.getElementById("canvas");

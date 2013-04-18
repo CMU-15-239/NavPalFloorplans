@@ -12,35 +12,34 @@ from utilities import *
 def process_img(sourcepath,destpath, datapath):
 
     IMG=parseInputFile(sourcepath)    
-    
 
     (hlines,vlines)=extractLines(IMG)
     
     
     reverseColor(IMG)
-    saveImage(destpath,IMG) 
-    
+    im=saveImage(destpath,IMG) 
+   
+    im_bw=cv2.threshold(im,5,255,cv2.THRESH_BINARY)[1] 
+
+
     saveRemoveLines(IMG,vlines,hlines)    
     
     img=cv2.imread("temp.png") 
+
+    doorRects=ExtractDoors(img,sourcepath)
+    extractDoors(im_bw,hlines,vlines,doorRects)
+    
+    #merge lines in close proximity    
+    mergeHlines(hlines)
+    #print "Mergeing horizontal lines!"
+    mergeVlines(vlines)
+    
+    mergeVertex(hlines,vlines)
+
     writeVertexList(hlines,vlines,datapath) 
     OCR(img,sourcepath,datapath)
-    
-    #merge lines in close proximity
-    
-    #mergeHlines(hlines)
-    #print "Mergeing horizontal lines!"
-    #mergeVlines(vlines)
-    
-    #mergeVertex(hlines,vlines)
-    
     #visualizeLines(IMG,vlines,hlines)
-
-
-
-    #cvImg=np.array(np.uint8(IMG.rgbs))
-    #visualizeDoors(img,sourcepath)
-   
+	
 def init():
     start=clock()
     args=sys.argv[1:]

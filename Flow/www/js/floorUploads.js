@@ -197,18 +197,33 @@ $('#file').click(function(){
 }).show();
 
 function getFloorLabels(processedFloors) {
-	var floors = []
+	var labelMap = {};
+	var labels = [];
+	var floors = [];
 	for (var i = 0; i < processedFloors.length; i++) {
 		var floor = processedFloors[i];
 		var id = floor[0];
 		var data = floor[1];
 		var label = $("input.span1."+id).val();
 		data.label = label;
-		floors.push({'floor': data});
+		labelMap[label] = data;
+		labels.push(label);
+	};
+	console.log(labelMap);
+	labels.alphanumSort(true);
+	console.log(labels);
+	for (var i = 0; i < labels.length; i++) {
+		var floor = labelMap[labels[i]];
+		floors.push({'floor': floor});
 	};
 	return floors;
 }
 
+/**
+ * Summary: Checks if an array has duplicate items
+ * Parameters: array
+ * Returns: bool
+**/
 function hasDuplicates(array) {
     var valuesSoFar = {};
     for (var i = 0; i < array.length; ++i) {
@@ -221,6 +236,13 @@ function hasDuplicates(array) {
     return false;
 }
 
+/**
+ * Summary: Checks if user has filled out all required
+ 			fields in order to initialize building 
+ * Parameters: none
+ * Returns: alert if requirements not met,
+ 			else calls initializeBuilding
+**/
 $('#done').click(function() {
 	var buildingName = $('#buildingNameInput').val();
 	var labelInputs = $("input.span1");
@@ -243,40 +265,47 @@ $('#done').click(function() {
 	else if (hasDuplicates(labels)) {
 		alert('Floor labels must be unique.')
 	}
+	// if all requirements met
 	else {
-		var floors = getFloorLabels(PROCESSEDFLOORS);
-		console.log(buildingName, floors);
-		var building = constructBuildingFromPreprocess(buildingName, floors);
-		console.log(building);
-		// start a loading spinner to indicate processing
 		$(this).spin('small').addClass('disabled');
-		$.ajax({
-			type: "POST",
-			url: '/savePublish',
-			data: {
-				building: {
-					name: building.name,
-					authoData: building.toOutput(),
-					graph: null
-				},
-				publishData: false
-			},
-			success: function(response) {
-				//save in local storage and redirect
-				console.log('here');
-				console.log('this');
-				localStorage.setItem('building', JSON.stringify(this));
-				window.location = "/authoringTool.html";
-			}.bind(building),
-			error: function(response) {
-				// remove loading spinner
-				$('#done').spin(false).removeClass('disabled');
-				//alert user to their error
-				alert('An error occurred, please try again.');
-			}.bind(this)
-		})
+		initializeBuilding(buildingName)
 	}
 })
+
+/**
+ * Summary: Contructs building object, saves building to database
+ 			saves building to local storage then redirects
+ 			to authoringTool page
+ * Parameters: none
+ * Returns: redirect
+**/
+function initializeBuilding(buildingName) {
+	var floors = getFloorLabels(PROCESSEDFLOORS);
+	var building = constructBuildingFromPreprocess(buildingName, floors);
+	// start a loading spinner to indicate processing
+	$.ajax({
+		type: "POST",
+		url: '/savePublish',
+		data: {
+			building: {
+				name: building.name,
+				authoData: building.toOutput(),
+				graph: null
+			},
+			publishData: false
+		},
+		success: function(response) {
+			//save in local storage and redirect
+			localStorage.setItem('building', JSON.stringify(this));
+			window.location = "/authoringTool.html";
+		}.bind(building),
+		error: function(response) {
+			// remove loading spinner and alert user of error
+			$('#done').spin(false).removeClass('disabled');
+			alert('An error occurred, please try again.');
+		}
+	})
+}
 
 function constructBuildingFromPreprocess(buildingName, buildingData) {
 	var buildingObject = new Building(buildingName);
@@ -289,32 +318,29 @@ function constructBuildingFromPreprocess(buildingName, buildingData) {
 		for (var j = 0; j < curFloorLines.length; j++) {
 			var curLine = curFloorLines[j];
 			var p1 = curLine.line[0];
-			p1 = new Point(p1.p1[0], p1.p1[1]);
+			p1 = new Point(p1.p1[1], p1.p1[0]);
 			var p1Duplicate = floorObject.globals.duplicatePoint(p1);
 			if (p1Duplicate !== null) {
 				p1 = p1Duplicate;
 			}
 			var p2 = curLine.line[1];
-			p2 = new Point(p2.p2[0], p2.p2[1]);
-			console.log(p2);
+			p2 = new Point(p2.p2[1], p2.p2[0]);
 			var p2Duplicate = floorObject.globals.duplicatePoint(p2);
 			if (p2Duplicate !== null) {
 				p2 = p2Duplicate;
 			}
-			console.log('after');
 			var newLine = new Line(p1, p2);
 			floorObject.globals.addWall(newLine);
 			floorObject.globals.addPoint(p1);
 			floorObject.globals.addPoint(p2);
-			console.log('here');
 			
 		}
 		var curFloorText = curFloor.floor.text;
 		for (var k = 0; k < curFloorText.length; k++) {
 			var curText = curFloorText[k];
 			var curValue = curText.value;
-			var x = curText.point[0];
-			var y = curText.point[1];
+			var x = curText.point[1];
+			var y = curText.point[0];
 			floorObject.globals.preprocessedText.push({value: curValue, location: new Point(x,y)});
 		}
 		buildingObject.floors.push(floorObject);

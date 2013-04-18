@@ -23,7 +23,7 @@ def checkBackgroundColor(IMG):
     w=IMG.width
     h=IMG.height
 
-    if IMG.rgbs[0][0]==255: return "white"
+    if IMG.rgbs[0][0]>=127 or (127,127,127): return "white"
     else: return "black"
 
 #Summary: color the lines passed as inputs with green
@@ -114,7 +114,7 @@ def reverseColor(IMG):
 def saveImage(imagedir,IMG):
     im=np.array(np.uint8(IMG.rgbs))
     cv2.imwrite(imagedir,im)
-
+    return im
 
 #saveRemoveLines: removeLines and save the image without the lines
 #input: (image object, list of vlines, list of hlines)
@@ -152,26 +152,67 @@ def visualizeLines(IMG,vlines,hlines):
 
 
 
-def visualizeDoors(im, sourcepath):
+def ExtractDoors(im, sourcepath):
     im=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY) 
     img=cv2.threshold(im,5,255,cv2.THRESH_BINARY)[1]
     image=cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
     contours,hierarchy=cv2.findContours(img,cv2.RETR_TREE,\
                                     cv2.CHAIN_APPROX_SIMPLE)
+    bboxs=[]
     for cc in contours:
         (x,y,w,h)=cv2.boundingRect(cc)
         if (abs(w-h)<2 and w>10 and h>10):
+            bboxs.append((x,y,w,h))
             cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),1)
-    cv2.imshow("doors",image)
-    cv2.waitKey(0)
-    cv2.destroyWindow("doors")
+    #cv2.imshow("doors",image)
+    #cv2.waitKey(0)
+    return bboxs
 
-
-
-#######################################################
-#File Manipulation Utility functions
-#######################################################
-
+def extractDoors(img,hlines,vlines,doorRects):
+    for bbox in doorRects:
+        (x,y,w,h)=bbox
+        if x>=2100 or y>=1275: 
+            print "messy"
+            return
+        probe=w/2+5
+        cx=x+w/2 
+        cy=y+h/2
+        counts=[0,0,0,0]
+        
+        cv2.line(img,(cx,cy),(cx-probe,cy),255,2)
+        cv2.line(img,(cx,cy),(cx,cy+probe),255,2)        
+        cv2.line(img,(cx,cy),(cx+probe,cy),255,2)
+        cv2.line(img,(cx,cy),(cx,cy-probe),255,2)
+        
+        temp=cx
+        cx=cy
+        cy=cx
+ 
+        for i in xrange(probe):
+            if img[cx-i][cy]>127: counts[0]=-1
+            if img[cx][cy+i]>127: counts[1]=-1
+            if img[cx+i][cy]>127: counts[2]=-1
+            if img[cx][cy-i]>127: counts[3]=-1
+        
+        if counts[0]==0:
+            line=newLine(y,x,y,x+w)
+            cv2.line(img,(x,y),(x,y+h),255,2)
+            hlines.append(line)
+        if counts[1]==0:
+            line=newLine(y,x+w,y+h,x+w)
+            cv2.line(img,(x,y+h),(x+w,y+h),255,2)
+            vlines.append(line)
+        if counts[2]==0:
+            line=newLine(y+h,x,y+h,x+w)
+            cv2.line(img,(x+w,y),(x+w,y+h),255,2)
+            hlines.append(line)
+        if counts[3]==0:
+            line=newLine(y,x,y+h,x)
+            cv2.line(img,(x,y),(x+w,y),255,2)
+            vlines.append(line)
+        else: print "WTF! that can't happen!"    
+    #cv2.imshow("img",img)
+    #cv2.waitKey(0) 
 
 
 
@@ -236,7 +277,7 @@ def writeVertexList(hlines,vlines,destpath):
     fd.write('{\"line\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}\n' %\
                 (line.start.row, line.start.col, line.end.row,\
                  line.end.col))
-    fd.write("],\n")
+    fd.write("]\n")
 
     fd.close()
     

@@ -35,6 +35,8 @@ StateManager.prototype.changeState = function(newState) {
 }
 
 StateManager.prototype.changeFloor = function(newFloor) {
+	console.log(this.currentFloor);
+	console.log(this.newFloor);
 	if (this.currentFloor !== newFloor) {
 		this.currentFloor = newFloor;
 		this.currentFloor.canvas = this.canvas;
@@ -44,6 +46,10 @@ StateManager.prototype.changeFloor = function(newFloor) {
 StateManager.prototype.changeBuilding = function(newBuilding) {
 	if (this.currentBuilding !== newBuilding) {
 	}
+}
+
+StateManager.prototype.getCurrentFloor = function() {
+	return this.currentFloor;
 }
 
 StateManager.prototype.redraw = function() {
@@ -79,8 +85,6 @@ StateManager.prototype.redraw = function() {
 	}
 	this.currentFloor.globals.drawWalls();
 	this.currentFloor.globals.drawPoints();
-	this.currentFloor.drawLandmarks();
-	
 	//Let the state draw itself
 	this.currentState.draw();
 }
