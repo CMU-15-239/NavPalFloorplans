@@ -59,6 +59,15 @@ Floor.prototype.calcScale = function(space, userSqFt) {
   this.imageScale = 1.0;
 };
 
+Floor.prototype.drawSpaces = function() {
+	if (this.spaces !== undefined) {
+		for (var i = 0; i < this.spaces.length; i++) {
+			var curSpace = this.spaces[i];
+			curSpace.draw();
+		}
+	}
+}
+
 Floor.prototype.toOutput = function() {
    var outSpaces = [];
    for(var s = 0; s < this.spaces.length; s++) {
