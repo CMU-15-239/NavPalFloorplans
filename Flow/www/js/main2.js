@@ -1,12 +1,12 @@
 $(".navigationImage").click(function() {
 		console.log(this);
 		var domImage = this;
-		GLOBALS.canvas.image = image;
+		stateManager.currentFloor.globals.canvas.image = image;
 		var image = new Image(); 
 		image.src = domImage.src;
 		console.log(image.width);
-		//GLOBALS.canvas.drawImage(image,0,0,GLOBALS.canvas.width,GLOBALS.canvas.height);
-		GLOBALS.canvas.image = image;
+		//stateManager.currentFloor.globals.canvas.drawImage(image,0,0,stateManager.currentFloor.globals.canvas.width,stateManager.currentFloor.globals.canvas.height);
+		stateManager.currentFloor.globals.canvas.image = image;
 	}
 )
 
