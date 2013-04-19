@@ -8,7 +8,8 @@ var StateManager = function(building, canvas) {
 		"ZoomOut": new ZoomOutState(this),
 		"Pan": new PanState(this),
 		"Landmark": new LandmarkState(this),
-		"Door": new DoorState(this)
+		"Door": new DoorState(this),
+		"Classify": new ClassifyState(this)
 	};
 	
 	if (building !== undefined) {
@@ -85,6 +86,7 @@ StateManager.prototype.redraw = function() {
 	}
 	this.currentFloor.globals.drawWalls();
 	this.currentFloor.globals.drawPoints();
+	this.currentFloor.drawSpaces();
 	//Let the state draw itself
 	this.currentState.draw();
 }

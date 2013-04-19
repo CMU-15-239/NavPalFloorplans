@@ -1,3 +1,12 @@
+#classification_pop {
+	display:none;
+	border: 1px solid black;
+	width: 160px;
+	height: 80px;
+	background-color: orange;
+	font-size: 15px;
+	position: absolute;
+}
 
 /*
     Styles for authoring tool page

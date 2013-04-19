@@ -23,21 +23,22 @@ function Polygon(lines, color) {
 **/
 Polygon.prototype.draw = function() {
 	//Save the olf fill style so that we can restore it later.
-	var oldStyle = CANVAS.fillStyle;
-	CANVAS.fillStyle = this.color;
-	CANVAS.beginPath();
+	var oldStyle = stateManager.currentFloor.globals.canvas.fillStyle;
+	stateManager.currentFloor.globals.canvas.fillStyle = this.color;
+	var canvas = stateManager.currentFloor.globals.canvas;
+	canvas.beginPath();
 	//Move to the first point
-	CANVAS.moveTo(this.points[0].x, this.points[0].y);
+	canvas.moveTo(this.points[0].x, this.points[0].y);
 	//Draw a line to each point in succession
 	for (var i = 0; i < this.points.length; i++) {
 		var curPoint = this.points[i];
-		CANVAS.lineTo(curPoint.x, curPoint.y);
+		canvas.lineTo(curPoint.x, curPoint.y);
 	}
 	//Close off the polygon
-	CANVAS.closePath();
-	CANVAS.fill();
+	canvas.closePath();
+	canvas.fill();
 	//Restore the olf fill style
-	CANVAS.fillStyle = oldStyle;
+	stateManager.currentFloor.globals.canvas.fillStyle = oldStyle;
 }
 
 /**
@@ -46,6 +47,8 @@ Polygon.prototype.draw = function() {
  * Returns: The ordered set of points.
 **/
 function polySort(lines) {
+	if (lines.length === 0) return;
+	else if (lines.length === 1) return [lines[0].p1, lines[0].p2];
 	var orderedPoints = [];
 	var numSorted = 0;
 	//The initial number of lines.

@@ -89,7 +89,7 @@
               <div id="Door" class="toolIcon tool right" style="background-image: url(img/doorIcon.svg)" data-toggle="tooltip" title="Door Tool: Click to select the starting point of a door. Move the mouse to the end of the door and click to create."></div>
             </div>
             <div class="row-fluid toolrow">
-              <div class="toolIcon tool left" style="background-image: url(img/labelIcon.svg)" data-toggle="tooltip" title="Classify Tool: Click on an area with closed walls to classify. Give the area a label and classification."></div>
+              <div id="Classify" class="toolIcon tool left" style="background-image: url(img/labelIcon.svg)" data-toggle="tooltip" title="Classify Tool: Click on an area with closed walls to classify. Give the area a label and classification."></div>
               <div id="Landmark" class="toolIcon tool right" style="background-image: url(img/nailIcon.svg)" data-toggle="tooltip" title="Landmark Tool: Click on a point of interest. Give your POI a short description."></div>
             </div>
           </div>
@@ -138,6 +138,15 @@
       </div>
     </fieldset>
     </form>
+	<!-- Classification -->
+	<form id="classification_pop">
+		<input type="radio" name="type" value="Room" id="room" checked>Room
+		<input type="radio" name="type" value="Hallway" id="hallway">Hallway
+		<input type="radio" name="type" value="Obstacle" id="obstacle">Obstacle
+		<br>Label:<input type="text" name="label" id="label">
+		<br><button id="classification_submit" name="classification_submit">Submit</button>
+			<button id="classification_cancel" name="classification_cancel">Cancel</button>
+	</form>
 
 		<form id="classification_pop">
 			<input type="radio" name="type" value="Room" id="room" checked>Room
@@ -172,6 +181,7 @@
     <script src = "js/states/PanState.js"></script>
     <script src = "js/states/DoorState.js"></script>
     <script src = "js/states/LandmarkState.js"></script>
+	<script src = "js/states/ClassifyState.js"></script>
     <script src="js/lib/Util.js"></script>
     <script src = "js/lib/globals.js"></script>
     <script src="js/lib/GlobalsContainer.js"></script>
@@ -184,6 +194,8 @@
     <script src = "js/draw/Polygon.js"></script>
     <script src = "js/draw/floor.js"></script>
     <script src = "js/draw/building.js"></script>
+	<script src = "js/draw/RoomDetection.js"></script>
+	<script src = "js/draw/RoomSelect.js"></script>
 	
 	<script src="js/main2.js"></script>
 
