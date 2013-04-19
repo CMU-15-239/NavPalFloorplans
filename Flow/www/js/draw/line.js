@@ -198,8 +198,13 @@ Line.prototype.snapToLine = function(point) {
  * Returns: A data structure containing the two new lines.
 **/	
 Line.prototype.breakIntoTwo = function(p) {
+	//Don't want to split up line on its endpoints.
+	if (this.p1.equals(p) || this.p2.equals(p)) return;
 	var newLine1 = new Line(this.p1, p);
 	var newLine2 = new Line(this.p2, p);
+	newLine1.calculateForm(this.p1, p);
+	newLine2.calculateForm(this.p2, p);
+	this.calculateForm(this.p1, this.p2);
 	return {l1: newLine1, l2: newLine2};
 };
 
@@ -248,6 +253,12 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	if (this.p1.equals(line.p1) || this.p1.equals(line.p2) || this.p2.equals(line.p1) || this.p2.equals(line.p2)){
 		return null;
 	}
+	//Now check to see if one of the endpoints of one of the lines intersects the other line.
+	var smallRadius = .0001;
+	if (this.pointNearLine(line.p1, smallRadius)) return line.p1;
+	else if (this.pointNearLine(line.p2, smallRadius)) return line.p2;
+	else if (line.pointNearLine(this.p1, smallRadius)) return this.p1;
+	else if (line.pointNearLine(this.p2, smallRadius)) return this.p2;
   
 	var epsilon = .01;
 	
@@ -282,29 +293,60 @@ Line.prototype.splitUpLine = function(setOfPoints) {
 	var newLineSegments = [];
 	var lineToSplit = this;
 	for (var i = 0; i < sortedPoints.length; i++) {
-		//if (!stateManager.currentFloor.globals.pointExists(sortedPoints[i])) {
-			var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
-			newLineSegments.push(newSegs.l1);
-			lineToSplit = newSegs.l2;
-		//}
+		var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
+		if (newSegs !== undefined) {
+			//Since we sorted starting at p1, we want to split the segment that includes p2
+			if (newSegs.l1.p1.equals(this.p2) || newSegs.l1.p2.equals(this.p2)) {
+				newLineSegments.push(newSegs.l2);
+				lineToSplit = newSegs.l1;
+				//The last time through, we should add both sections
+				if (i === sortedPoints.length - 1) newLineSegments.push(newSegs.l1);
+			}
+			else if (newSegs.l2.p1.equals(this.p2) || newSegs.l2.p2.equals(this.p2)) {
+				newLineSegments.push(newSegs.l1);
+				lineToSplit = newSegs.l2;
+				//The last time through, we should add both sections
+				if (i === sortedPoints.length - 1) newLineSegments.push(newSegs.l2);
+			}
+		}
+		//Accounts for the case in which p2 of this line lies on an existing line.
+		else if (i === sortedPoints.length - 1) newLineSegments.push(lineToSplit);
 	}
-	if (newSegs !== undefined) newLineSegments.push(newSegs.l2);
 	return newLineSegments;
 };
 
 Line.prototype.sortPoints = function(points) {
-	points.unshift(this.p1);
-	var closestPoint;
+	//First find the closest point to p1 (could be p2 just as well) and put it at the front,
+	//because it will act as our starting point for sorting
 	var closestDistance = 100000000000;
-	var numSorted = 0;
+	var startingPointIndex;
+	for (var i = 0; i < points.length; i++) {
+		var pointToCheck = points[i];
+		var distanceTop1 = pointToCheck.distance(this.p1);
+		if (distanceTop1 < closestDistance) {
+			startingPointIndex = i;
+			closestDistance = distanceTop1;
+		}
+	}
+	//Now remove it and put it at the front. Splice returns an array.
+	var startingPoint = points.splice(startingPointIndex, 1); 
+	startingPoint = startingPoint[0];
+	points.unshift(startingPoint);
+	
+	//Now go through each remaining point and sort it, stopping when all the points are sorted.
+	var closestPoint;
+	var numSorted = 1;
 	var sortedPoints = [];
+	sortedPoints.push(startingPoint);
+	closestDistance = 100000000000;
 	while (numSorted < points.length) {
-		var pointToCheck = points[numSorted];
+		//We want to find the closest point to the most recent one that we've sorted.
+		var pointToCheck = sortedPoints[numSorted - 1];
 		for (var j = 0; j < points.length; j++) {
 			var curPoint = points[j];
 			if (!curPoint.equals(pointToCheck) &&
 				!this.containsPoint(sortedPoints, curPoint) && 
-				pointToCheck.distance(curPoint) < closestDistance) {
+				(pointToCheck.distance(curPoint) < closestDistance)) {
 				closestPoint = curPoint;
 				closestDistance = pointToCheck.distance(curPoint);
 			}
@@ -313,9 +355,7 @@ Line.prototype.sortPoints = function(points) {
 		closestDistance = 10000000000000;
 		numSorted += 1;
 	}
-	var numSeen = 0;
-	//Remove this.p1
-	return points.splice(1, points.length - 1);
+	return sortedPoints;
 };
 
 Line.prototype.containsPoint = function(pointList, point) {

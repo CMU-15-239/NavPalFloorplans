@@ -21,6 +21,7 @@ ClassifyState.prototype = new BaseState();
 
 ClassifyState.prototype.enter = function() {
 	var curSpaces = stateManager.currentFloor.spaces;
+	console.log(curSpaces);
 	var allSpaces = detectRooms(stateManager.currentFloor.globals.walls, curSpaces);
 	console.log(allSpaces);
 	stateManager.currentFloor.spaces = allSpaces;

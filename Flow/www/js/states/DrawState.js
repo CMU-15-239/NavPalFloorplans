@@ -40,7 +40,6 @@ DrawState.prototype.click = function(event) {
 	var recentPoint = undefined;
 	if (numPoints > 0) recentPoint = this.pointsAddedInSession[numPoints - 1];
 	
-	
 	if (recentPoint !== undefined) {
 		//Prevent the user from adding the same point multiple times.
 		if (!recentPoint.equals(this.pointAtCursor)) {
@@ -51,55 +50,47 @@ DrawState.prototype.click = function(event) {
 	//if (!stateManager.currentFloor.globals.pointExists(this.pointAtCursor)) 
 	this.addPoint(this.pointAtCursor);
 	//console.log("Number of points: " + stateManager.currentFloor.globals.points.length);
-	//console.log("Number of walls: " + stateManager.currentFloor.globals.walls.length);
+	//console.log(stateManager.currentFloor.globals.walls);
 	this.stateManager.redraw();
 }
 
 DrawState.prototype.mergeIntersectingLines = function(line) {
 	var intersectionPoints = [];
 	var newLines = [];
-	var newPoints = [];
 	var deletedLines = [];
 	var i = 0;
 	while (i < stateManager.currentFloor.globals.walls.length) {
 		curWall = stateManager.currentFloor.globals.walls[i];
-		//Check if the newest point is on a line
-		if (curWall.pointNearLine(line.p1, stateManager.currentFloor.globals.snapRadius / stateManager.currentFloor.globals.view.scale)) {
-			//console.log("Clicked near line!");
-			var twoNewLines = curWall.breakIntoTwo(line.p1);
-			newLines.push(twoNewLines.l1);
-			newLines.push(twoNewLines.l2);
-			deletedLines.push(curWall);
-			stateManager.currentFloor.globals.removeWall(curWall, false);
-			continue;
-		}
 		var pointOfIntersect = curWall.pointOfLineIntersection(line);
+		//if (pointOfIntersect !== null) console.log(stateManager.currentFloor.globals.pointExists(pointOfIntersect));
 		if (pointOfIntersect !== null) {
-			//console.log(pointOfIntersect.toString());
+			//We now know that the point should be added to the canvas
 			this.addPoint(pointOfIntersect);
 			intersectionPoints.push(pointOfIntersect);
-			newPoints.push(pointOfIntersect);
 			var twoNewLines = curWall.breakIntoTwo(pointOfIntersect);
 			newLines.push(twoNewLines.l1);
 			newLines.push(twoNewLines.l2);
 			deletedLines.push(curWall);
 			stateManager.currentFloor.globals.removeWall(curWall, false);
+			//console.log("Number of new lines: " + newLines.length);
 		}
 		else {
 			i += 1;
 		}
 	}
+	//this.stateManager.redraw();
+	//console.log(stateManager.currentFloor.globals.walls);
 	if (intersectionPoints.length === 0) {
 		this.addWall(line);
 	}
 	else {
-		//console.log("Intersection");
 		//Now split up the line we just drew
 		var splitUpLineSegs = line.splitUpLine(intersectionPoints);
 		for (var i = 0; i < splitUpLineSegs.length; i++) {
 			newLines.push(splitUpLineSegs[i]);
 		}
 	}
+	//Now get the lines to register correctly by updating their forms.
 	for (var i = 0; i < stateManager.currentFloor.globals.walls.length; i++) {
 		var p1 = stateManager.currentFloor.globals.walls[i].p1;
 		var p2 = stateManager.currentFloor.globals.walls[i].p2;
@@ -110,8 +101,8 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 		this.addWall(newLines[k]);
 	}
 	
-	if (newLines.length === 0) this.addActionSetToStack({newlyAddedLines: new Array(line), deletedLines: deletedLines, newlyAddedPoints: newPoints});
-	else this.addActionSetToStack({newlyAddedLines: newLines, deletedLines: deletedLines, newlyAddedPoints: newPoints});
+	//if (newLines.length === 0) this.addActionSetToStack({newlyAddedLines: new Array(line), deletedLines: deletedLines, newlyAddedPoints: newPoints});
+	//else this.addActionSetToStack({newlyAddedLines: newLines, deletedLines: deletedLines, newlyAddedPoints: newPoints});
 }
 
 DrawState.prototype.addActionSetToStack = function(recentAction) {

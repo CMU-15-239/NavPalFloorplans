@@ -29,7 +29,6 @@ function detectRooms(lines, spaces) {
 	// Check if this line is part of a closed off room
 	for (var i = 0; i < lines.length; i++) {
 		searchRoom(lines[i], rooms);
-		console.log(rooms.length);
 	}
 	
 	var newRooms = [];
@@ -54,7 +53,6 @@ function detectRooms(lines, spaces) {
 		}
 	}
 	
-	console.log(newRooms.length);
 	return newRooms;
 }
 

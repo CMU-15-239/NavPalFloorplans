@@ -148,7 +148,7 @@ def visualizeLines(IMG,vlines,hlines):
     imSize=(IMG.width,IMG.height)
     im2= Image.new('RGB',imSize)
     im2.putdata(pixels)
-    im2.show()
+    #im2.show()
 
 
 
@@ -164,9 +164,9 @@ def ExtractDoors(im, sourcepath):
         if (abs(w-h)<2 and 14<w<40 and h>10):
             bboxs.append((x,y,w,h))
             cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),1)
-    cv2.imshow("doors",image)
-    cv2.imwrite("map/doors.png",image)
-    cv2.waitKey(0)
+    #cv2.imshow("doors",image)
+    #cv2.imwrite("map/doors.png",image)
+    #cv2.waitKey(0)
     return bboxs
 
 def extractDoors(img,hlines,vlines,doorRects):
@@ -212,8 +212,8 @@ def extractDoors(img,hlines,vlines,doorRects):
          #   cv2.line(img,(x,y),(x+w,y),255,2)
             vlines.append(line)
         else: print "WTF! that can't happen!"    
-    cv2.imshow("img",img)
-    cv2.waitKey(0) 
+    #cv2.imshow("img",img)
+    #cv2.waitKey(0) 
 
 
 
