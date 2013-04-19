@@ -9,7 +9,7 @@ function importBuilding(simpleBuilding) {
       for(var f = 0; f < simpleBuilding.floors.length; f++) {
         newBuilding.floors.push(importFloor(simpleBuilding.floors[f]));
       }
-    }    
+    }
   }
   
   return newBuilding;
