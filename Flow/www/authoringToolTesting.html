@@ -110,50 +110,68 @@
         <canvas id="canvas">
 			
 		</canvas>
-    <form class="form-horizontal" id="landmark_pop">
-    <fieldset>
-      <!-- Form Name -->
-      <legend>Landmark</legend>
-      <!-- Text input-->
-      <div class="control-group">
-        <label class="control-label">Label</label>
-        <div class="controls">
-          <input id="name" name="name" type="text" placeholder="What is this?" class="input"> 
-        </div>
-      </div>
-      <!-- Text input-->
-      <div class="control-group">
-        <label class="control-label">Description</label>
-        <div class="controls">
-          <input id="description" name="description" type="text" placeholder="Tell me about it" class="input">
-        </div>
-      </div>
-      <!-- Button (Double) -->
-      <div class="control-group">
-        <label class="control-label"></label>
-        <div class="controls">
-          <button id="landmark_submit" name="landmark_submit" class="btn btn-info">Save Landmark</button>
-          <button id="landmark_cancel" name="landmark_cancel" class="btn btn-danger">Cancel</button>
-        </div>
-      </div>
-    </fieldset>
-    </form>
-	<!-- Classification -->
-	<form id="classification_pop">
-		<input type="radio" name="type" value="Room" id="room" checked>Room
-		<input type="radio" name="type" value="Hallway" id="hallway">Hallway
-		<input type="radio" name="type" value="Obstacle" id="obstacle">Obstacle
-		<br>Label:<input type="text" name="label" id="label">
-		<br><button id="classification_submit" name="classification_submit">Submit</button>
-			<button id="classification_cancel" name="classification_cancel">Cancel</button>
-	</form>
 
-		<form id="classification_pop">
-			<input type="radio" name="type" value="Room" id="room" checked>Room
-			<input type="radio" name="type" value="Hallway" id="hallway">Hallway
-			<br>Label:<input type="text" name="label" id="label">
-			<br><input type="submit" value="Done" id="label_submit">
-		</form>
+  <!-- Landmark -->
+  <form class="form-horizontal pop" id="landmark_pop">
+  <fieldset>
+    <!-- Form Name -->
+    <legend>Landmark</legend>
+    <!-- Text input-->
+    <div class="control-group">
+      <label class="control-label">Label</label>
+      <div class="controls">
+        <input id="name" name="name" type="text" placeholder="What is this?" class="input"> 
+      </div>
+    </div>
+    <!-- Text input-->
+    <div class="control-group">
+      <label class="control-label">Description</label>
+      <div class="controls">
+        <input id="description" name="description" type="text" placeholder="Tell me about it" class="input">
+      </div>
+    </div>
+    <!-- Button (Double) -->
+    <div class="control-group">
+      <label class="control-label"></label>
+      <div class="controls">
+        <button id="landmark_submit" name="landmark_submit" class="btn btn-info">Save Landmark</button>
+        <button id="landmark_cancel" name="landmark_cancel" class="btn btn-danger">Cancel</button>
+      </div>
+    </div>
+  </fieldset>
+  </form>
+
+	<!-- Classification -->
+  <form class="form-horizontal pop" id="classification_pop">
+  <fieldset>
+    <!-- Form Name -->
+    <legend>Classify Space</legend>
+    <!-- Multiple Radios (inline) -->
+    <div class="control-group">
+      <label class="control-label">Classification</label>
+      <div class="controls">
+        <label class="radio inline"><input type="radio" name="type" value="Room" checked="checked">Room</label>
+        <label class="radio inline"><input type="radio" name="type" value="Hallway">Hallway</label>
+        <label class="radio inline"><input type="radio" name="type" value="Obstacle">Obstacle</label>
+      </div>
+    </div>
+    <!-- Text input-->
+    <div class="control-group">
+      <label class="control-label">Description</label>
+      <div class="controls">
+        <input id="classifyLabel" name="label" type="text" placeholder="" class="input">
+      </div>
+    </div>
+    <!-- Button (Double) -->
+    <div class="control-group">
+      <label class="control-label"></label>
+      <div class="controls">
+        <button id="classification_submit" name="classification_submit" class="btn btn-info">Save</button>
+        <button id="classification_cancel" name="classification_cancel" class="btn btn-danger">Cancel</button>
+      </div>
+    </div>
+  </fieldset>
+  </form>
 
 
       </div>
