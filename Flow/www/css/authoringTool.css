@@ -270,13 +270,8 @@ html, body {
     box-shadow: 4px 4px 2px #777;
 }
 
-#classification_pop {
-	display:none;
-
-}
-
-#landmark_pop {
-	display:none;
+.hidden {
+    display: none;
 }
 
 .form-horizontal .control-label {

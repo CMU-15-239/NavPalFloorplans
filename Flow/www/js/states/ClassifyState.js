@@ -8,13 +8,13 @@ $("#classification_submit").click(function(event) {
 	var label = $("#label").val();
 	var type = $('input[name=type]:checked', '#classification_pop').val().toLowerCase();
 	this.type = type;
-	$("#classification_pop").css("display", "none");
+	$("#classification_pop").toggleClass("hidden", true);
 });
 
 	
 $("#classification_cancel").click(function(event) {
 	event.preventDefault();
-	$("#classification_pop").css("display", "none");
+	$("#classification_pop").toggleClass("hidden", true);;
 });
 
 ClassifyState.prototype = new BaseState();
@@ -29,7 +29,7 @@ ClassifyState.prototype.enter = function() {
 
 ClassifyState.prototype.exit = function() {
 	this.activeRoom = undefined;
-	$("#classification_pop").css("display", "none");
+	$("#classification_pop").toggleClass("hidden", true);;
 }
 
 ClassifyState.prototype.mouseMove = function(event) {
@@ -42,10 +42,9 @@ ClassifyState.prototype.mouseMove = function(event) {
 
 ClassifyState.prototype.click = function(event) {
 	$("#classification_pop").css({
-		display: "block",
 		top: event.pageY + "px",
 		left: event.pageX + "px"
-	});
+	}).toggleClass("hidden", false);;
 	var pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
 															event.pageY - stateManager.currentFloor.globals.canvas.y));
 	this.stateManager.redraw();
