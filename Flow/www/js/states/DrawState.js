@@ -50,7 +50,7 @@ DrawState.prototype.click = function(event) {
 	//if (!stateManager.currentFloor.globals.pointExists(this.pointAtCursor)) 
 	this.addPoint(this.pointAtCursor);
 	//console.log("Number of points: " + stateManager.currentFloor.globals.points.length);
-	//console.log(stateManager.currentFloor.globals.walls);
+	//console.log(stateManager.currentFloor.globals.walls.length);
 	this.stateManager.redraw();
 }
 

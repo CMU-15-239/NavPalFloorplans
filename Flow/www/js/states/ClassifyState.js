@@ -1,34 +1,44 @@
 var ClassifyState = function(stateMan) {
 	this.stateManager = stateMan;
-	this.activeSpace;
+	this.activeSpace = undefined;
 }
 
 $("#classification_submit").click(function(event) {
 	event.preventDefault();
-	var label = $("#label").val();
+	var label = $("#classifyLabel").val();
 	var type = $('input[name=type]:checked', '#classification_pop').val().toLowerCase();
-	this.type = type;
+	//Update the active space's information.
+	if (stateManager.currentState.activeSpace !== undefined) {
+		stateManager.currentState.activeSpace.type = type;
+		stateManager.currentState.activeSpace.label = label;
+	}
+	$("#classifyLabel").val("");
 	$("#classification_pop").toggleClass("hidden", true);
+	stateManager.currentState.mouseMove(event);
 });
 
 	
 $("#classification_cancel").click(function(event) {
 	event.preventDefault();
-	$("#classification_pop").toggleClass("hidden", true);;
+	$("#classification_pop").toggleClass("hidden", true);
 });
 
 ClassifyState.prototype = new BaseState();
 
 ClassifyState.prototype.enter = function() {
 	var curSpaces = stateManager.currentFloor.spaces;
-	console.log(curSpaces);
 	var allSpaces = detectRooms(stateManager.currentFloor.globals.walls, curSpaces);
-	console.log(allSpaces);
+	//console.log(allSpaces);
 	stateManager.currentFloor.spaces = allSpaces;
 }
 
 ClassifyState.prototype.exit = function() {
 	this.activeRoom = undefined;
+	var allSpaces = stateManager.currentFloor.spaces;
+	for (var i = 0; i < allSpaces.length; i++) {
+		var curSpace = allSpaces[i];
+		curSpace.drawPoly = false;
+	}
 	$("#classification_pop").toggleClass("hidden", true);;
 }
 
@@ -36,8 +46,7 @@ ClassifyState.prototype.mouseMove = function(event) {
 	var pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
 															event.pageY - stateManager.currentFloor.globals.canvas.y));
 	this.roomSelect(pointAtCursor);
-	
-	
+	this.stateManager.redraw();
 }
 
 ClassifyState.prototype.click = function(event) {
@@ -54,23 +63,19 @@ ClassifyState.prototype.draw = function() {
 }
 
 ClassifyState.prototype.roomSelect = function(point) {
-	var point = new Point(x,y);
 	var allSpaces = stateManager.currentFloor.spaces;
 	for (var i = 0; i < allSpaces.length; i++) {
 		var curSpace = allSpaces[i];
-		if (this.activeSpace !== curSpace) drawPoly = false;
+		if (this.activeSpace !== curSpace) curSpace.drawPoly = false;
 	}
-	for (var i = 0; i < allSpaces.length; i ++) {
+	for (var i = 0; i < allSpaces.length; i++) {
 		var curSpace = allSpaces[i];
-		//var width = stateManager.currentFloor.globals.canvas.width;
-		if (curSpace.pointInSpace(point, 5000, false)) {
-			console.log("point in space!");
+		var width = stateManager.currentFloor.globals.canvas.width;
+		if (curSpace.pointInSpace(point, width, false)) {
 			curSpace.drawPoly = true;
 			this.activeSpace = curSpace;
-			console.log(this.activeSpace);
 			return; // only select one room
 		}
 	}
-	
 	this.activeSpace = undefined;
 }
