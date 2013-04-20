@@ -46,7 +46,7 @@ Point.prototype.equals = function(p) {
  * Returns: undefined
 **/
 Point.prototype.draw = function(pointColor) {
-	if (pointColor === undefined) stateManager.currentFloor.globals.canvas.fillStyle = "black";
+	if (pointColor === undefined) stateManager.currentFloor.globals.canvas.fillStyle = 'rgba(255,255,255,.6)';
 	else stateManager.currentFloor.globals.canvas.fillStyle = pointColor;
 	
 	canvasPoint = stateManager.currentFloor.globals.view.toCanvasWorld(this);

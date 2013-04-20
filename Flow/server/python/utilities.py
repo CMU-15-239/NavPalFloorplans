@@ -148,7 +148,7 @@ def visualizeLines(IMG,vlines,hlines):
     imSize=(IMG.width,IMG.height)
     im2= Image.new('RGB',imSize)
     im2.putdata(pixels)
-    im2.show()
+    #im2.show()
 
 
 
@@ -161,10 +161,11 @@ def ExtractDoors(im, sourcepath):
     bboxs=[]
     for cc in contours:
         (x,y,w,h)=cv2.boundingRect(cc)
-        if (abs(w-h)<2 and w>10 and h>10):
+        if (abs(w-h)<2 and 14<w<40 and h>10):
             bboxs.append((x,y,w,h))
             cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),1)
     #cv2.imshow("doors",image)
+    #cv2.imwrite("map/doors.png",image)
     #cv2.waitKey(0)
     return bboxs
 
@@ -196,19 +197,19 @@ def extractDoors(img,hlines,vlines,doorRects):
         
         if counts[0]==0:
             line=newLine(y,x,y,x+w)
-            cv2.line(img,(x,y),(x,y+h),255,2)
+      #      cv2.line(img,(x,y),(x,y+h),255,2)
             hlines.append(line)
         if counts[1]==0:
             line=newLine(y,x+w,y+h,x+w)
-            cv2.line(img,(x,y+h),(x+w,y+h),255,2)
+       #     cv2.line(img,(x,y+h),(x+w,y+h),255,2)
             vlines.append(line)
         if counts[2]==0:
             line=newLine(y+h,x,y+h,x+w)
-            cv2.line(img,(x+w,y),(x+w,y+h),255,2)
+        #    cv2.line(img,(x+w,y),(x+w,y+h),255,2)
             hlines.append(line)
         if counts[3]==0:
             line=newLine(y,x,y+h,x)
-            cv2.line(img,(x,y),(x+w,y),255,2)
+         #   cv2.line(img,(x,y),(x+w,y),255,2)
             vlines.append(line)
         else: print "WTF! that can't happen!"    
     #cv2.imshow("img",img)

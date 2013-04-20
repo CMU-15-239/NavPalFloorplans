@@ -9,7 +9,8 @@ var StateManager = function(building, canvas) {
 		"Pan": new PanState(this),
 		"Landmark": new LandmarkState(this),
 		"Door": new DoorState(this),
-		"Stair": new StairState(this)
+		"Stair": new StairState(this),
+		"Classify": new ClassifyState(this)
 	};
 	
 	if (building !== undefined) {
@@ -61,6 +62,7 @@ StateManager.prototype.getCurrentFloor = function() {
 }
 
 StateManager.prototype.redraw = function() {
+	this.updateSpaces();
 	//First, delete everything from the canvas.
 	//console.log(this.currentFloor.globals.view.offsetX);
     this.currentFloor.globals.canvas.clearRect(0, 0, this.currentFloor.globals.canvas.width, this.currentFloor.globals.canvas.height);
@@ -94,6 +96,7 @@ StateManager.prototype.redraw = function() {
 	this.currentFloor.globals.drawWalls();
 	this.currentFloor.globals.drawPoints();
 	this.currentFloor.globals.drawLandmarks();
+	this.currentFloor.drawSpaces();
 	//Let the state draw itself
 	this.currentState.draw();
 }
@@ -149,5 +152,34 @@ StateManager.prototype.scroll = function(event) {
 										   event.originalEvent.layerY));
 	
 	this.redraw();
+}
+
+StateManager.prototype.updateSpaces = function () {
+	var curSpaces = stateManager.currentFloor.spaces;
+	var curWalls = stateManager.currentFloor.globals.walls;
+	var allSpaces = detectRooms(curWalls, curSpaces);
+	stateManager.currentFloor.spaces = allSpaces;
+}
+
+StateManager.prototype.hoverRoomLabel = function(realWorldPoint, canvasPoint) {
+	var xOffset = 15;
+	var yOffset = 10;
+	var allSpaces = stateManager.currentFloor.spaces;
+	for (var i = 0; i < allSpaces.length; i++) {
+		var curSpace = allSpaces[i];
+		//var width = stateManager.currentFloor.globals.canvas.width; TOO SMALL WHEN ZOOMING
+		var width = 5000;
+		if (curSpace.pointInSpace(canvasPoint, width, false)) {
+			var label = curSpace.label;
+			$("#room_label").html(label);
+			$("#room_label").css({
+				top: (realWorldPoint.y + yOffset) + "px",
+				left: (realWorldPoint.x + xOffset) + "px",
+				display: "inline-block"
+			});
+			return;
+		}
+	}
+	$("#room_label").css("display", "none");
 }
 

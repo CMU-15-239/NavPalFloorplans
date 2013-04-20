@@ -1,3 +1,4 @@
+
 function resizeCanvas() {
 	var can = document.getElementById("canvas");
 	can.width = window.innerWidth - 95;

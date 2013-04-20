@@ -172,3 +172,68 @@ body > .navbar .brand:hover {
 .subhead h1 {
   font-size: 60px;
 }
+
+/* Tablet
+------------------------- */
+@media (max-width: 767px) {
+  /* Remove any padding from the body */
+  body {
+    padding-top: 0;
+  }
+
+  /* Widen masthead and social buttons to fill body padding */
+  .jumbotron {
+    padding: 40px 20px;
+  }
+  .masthead h1 {
+    font-size: 90px;
+  }
+  .masthead p,
+  .masthead .btn {
+    font-size: 24px;
+  }
+  .marketing .span4 {
+    margin-bottom: 40px;
+  }
+}
+
+/* Landscape phones
+------------------------- */
+@media (max-width: 480px) {
+  .masthead .btn {
+    padding: 10px 16px;
+  }
+  /* Change up some type stuff */
+  h2 small {
+    display: block;
+  }
+
+  /* Downsize the jumbotrons */
+  .jumbotron h1 {
+    font-size: 45px;
+  }
+  .jumbotron p,
+  .jumbotron .btn {
+    font-size: 18px;
+  }
+  .jumbotron .btn {
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* center align subhead text like the masthead */
+  .subhead h1,
+  .subhead p {
+    text-align: center;
+  }
+
+  /* Marketing on home */
+  .marketing h1 {
+    font-size: 30px;
+  }
+  .marketing-byline {
+    font-size: 18px;
+  }
+
+
+}

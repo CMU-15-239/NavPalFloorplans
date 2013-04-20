@@ -13,6 +13,7 @@
 
 var targetPoint;
 var visitedPoints = {};
+var epsilon = .0001;
 
 /**
  * Summary: Automatically detects the tightest bound around all 
@@ -23,12 +24,10 @@ var visitedPoints = {};
 **/
 function detectRooms(lines, spaces) {
 	var rooms = [];
-	spaces = ALL_CLOSED_ROOMS;
 	
 	// Check if this line is part of a closed off room
 	for (var i = 0; i < lines.length; i++) {
 		searchRoom(lines[i], rooms);
-		console.log(rooms.length);
 	}
 	
 	var newRooms = [];
@@ -53,8 +52,6 @@ function detectRooms(lines, spaces) {
 		}
 	}
 	
-	ALL_CLOSED_ROOMS = newRooms;
-	console.log(newRooms.length);
 	return newRooms;
 }
 
@@ -166,10 +163,12 @@ function searchRoom(line, rooms) {
 	
 	// If a valid room was found
 	if (validRoute) {
+		//console.log(route);
 		addRouteAsRoom(route, rooms);
 	}
 	
 	if (validRevRoute) {
+		//console.log(revRoute);
 		addRouteAsRoom(revRoute, rooms);
 	}
 	
@@ -178,7 +177,6 @@ function searchRoom(line, rooms) {
 function addRouteAsRoom(route, rooms) {
 
 	var newRoom = new Space(route);
-	
 	var found = false;
 	for (var i = 0; i < rooms.length; i ++) {
 		if (rooms[i].sameRoomWalls(newRoom)) {
@@ -335,9 +333,9 @@ function angleBetween(counterClock, point, line0, line1) {
 // TODO: improve efficiency with hash-map
 function getEdgeNeighbors(point, includedLine) {
 	var edges = [];
-	
-	for (var i = 0; i < ALL_WALLS.length; i++) {
-		var line = ALL_WALLS[i];
+	var allWalls = stateManager.currentFloor.globals.walls;
+	for (var i = 0; i < allWalls.length; i++) {
+		var line = allWalls[i];
 		if (line.p1 == point || line.p2 == point) {
 			if (line != includedLine) {
 				edges.push(line);

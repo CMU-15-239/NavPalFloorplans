@@ -96,18 +96,26 @@ GlobalsContainer.prototype.addWall = function(wallToAdd) {
 	//Check to make sure that the wall being added isn't a duplicate.
 	for (var i = 0; i < this.walls.length; i++) {
 		if (this.walls[i].equals(wallToAdd)) {
+      //console.log("Tried to add a wall that already exists, no problem though");
       if(wallToAdd.isDoor) {
         this.walls[i].isDoor = true;
       }
       return this.walls[i];
     }
 	}
-	if (!this.pointExists(wallToAdd.p1)) {
+  
+  var p1Idx = this.indexOfPoint(wallToAdd.p1);
+	if (p1Idx === -1) {
     this.points.push(wallToAdd.p1);
+  } else {
+    wallToAdd.p1 = this.points[p1Idx];
   }
   
-	if (!this.pointExists(wallToAdd.p2)) {
+	var p2Idx = this.indexOfPoint(wallToAdd.p2);
+	if (p2Idx === -1) {
     this.points.push(wallToAdd.p2);
+  } else {
+    wallToAdd.p2 = this.points[p2Idx];
   }
   
 	this.walls.push(wallToAdd);
