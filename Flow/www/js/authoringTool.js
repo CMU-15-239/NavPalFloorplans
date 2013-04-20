@@ -171,7 +171,20 @@ function addFloorImages() {
         initCarousels();
         $('#loading').css('display', 'none');
     }, 0) 
-}    
+}
+
+function initKeyboardShortcuts() {
+    Mousetrap.bind({
+        'v': function() { $('#Select').click(); },
+        'h': function() { $('#Pan').click(); },
+        '/': function() { $('#Draw').click(); },
+        'd': function() { $('#Door').click(); },
+        'c': function() { $('#Classify').click(); },
+        'l': function() { $('#Landmark').click(); },
+        's': function() { $('#Stiar').click(); },
+        'e': function() { $('#Elevator').click(); }
+    });
+}   
 
 /**
  * Summary: initializes authoringTool data structures
@@ -203,6 +216,7 @@ function init() {
             stateManager.changeState(newState);
         });
         initCanvasEventHandlers(stateManager);
+        initKeyboardShortcuts();
     }
 }
 
