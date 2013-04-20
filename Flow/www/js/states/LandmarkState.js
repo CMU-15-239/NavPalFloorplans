@@ -61,10 +61,7 @@ LandmarkState.prototype.click = function(event) {
 						 
 	$("#landmark_pop").css({
 		top: event.pageY + "px",
-		left: event.pageX + "px"
-	});
-	
-						 
+		left: event.pageX + "px"					 
 	}).toggleClass("hidden", false);
 	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
 															event.pageY - stateManager.currentFloor.globals.canvas.y));
