@@ -27,7 +27,10 @@ Landmark.prototype.toOutput = function() {
 
 Landmark.prototype.draw = function() {
 	if (this.pointRep === undefined) return;
-	GLOBALS.canvas.beginPath();
-    GLOBALS.canvas.arc(this.pointRep.x, this.pointRep.y, 20, 0, 2*Math.PI, false);
-    GLOBALS.canvas.fill();
+	canvasPoint = stateManager.currentFloor.globals.view.toCanvasWorld(this.pointRep);
+	
+	width = 50
+	height = 50
+	GLOBALS.canvas.drawImage(stateManager.landmarkImage, 0, 0, stateManager.landmarkImage.width, stateManager.landmarkImage.height - 30,
+	canvasPoint.x - width/2, canvasPoint.y - height, width, height);
 }

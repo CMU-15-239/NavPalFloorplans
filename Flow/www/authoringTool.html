@@ -96,8 +96,8 @@
           </div>
           <div class="toolGrouping">
             <div class="row-fluid toolrow">
-              <div class="toolIcon tool left" style="background-image: url(img/stairIcon.svg)" data-toggle="tooltip" title="Stair Tool: Click on the location of a stairway. Give your staircase a name or select stair as a part of a staircase you previously created."></div>
-              <div class="toolIcon tool right" style="background-image: url(img/elevatorIcon.svg)" data-toggle="tooltip" title="Stair Tool: Click on the location of an elevator. Give your elevator a name or select stair as a part of an elevator you previously created."></div>
+              <div id="Stair" class="toolIcon tool left" style="background-image: url(img/stairIcon.svg)" data-toggle="tooltip" title="Stair Tool: Click on the location of a stairway. Give your staircase a name or select stair as a part of a staircase you previously created."></div>
+              <div id="elevator" class="toolIcon tool right" style="background-image: url(img/elevatorIcon.svg)" data-toggle="tooltip" title="Elevator Tool: Click on the location of an elevator. Give your elevator a name or select stair as a part of an elevator you previously created."></div>
             </div>
           </div>
             <div id="saveExport" class="row-fluid toolrow">
@@ -111,34 +111,63 @@
         <canvas id="canvas">
 			
 		</canvas>
-    <form class="form-horizontal" id="landmark_pop">
-    <fieldset>
-      <!-- Form Name -->
-      <legend>Landmark</legend>
-      <!-- Text input-->
-      <div class="control-group">
-        <label class="control-label">Label</label>
-        <div class="controls">
-          <input id="name" name="name" type="text" placeholder="What is this?" class="input"> 
-        </div>
-      </div>
-      <!-- Text input-->
-      <div class="control-group">
-        <label class="control-label">Description</label>
-        <div class="controls">
-          <input id="description" name="description" type="text" placeholder="Tell me about it" class="input">
-        </div>
-      </div>
-      <!-- Button (Double) -->
-      <div class="control-group">
-        <label class="control-label"></label>
-        <div class="controls">
-          <button id="landmark_submit" name="landmark_submit" class="btn btn-info">Save Landmark</button>
-          <button id="landmark_cancel" name="landmark_cancel" class="btn btn-danger">Cancel</button>
-        </div>
-      </div>
-    </fieldset>
-    </form>
+		<form class="form-horizontal" id="landmark_pop">
+			<fieldset>
+			  <!-- Form Name -->
+			  <legend>Landmark</legend>
+			  <!-- Text input-->
+			  <div class="control-group">
+				<label class="control-label">Label</label>
+				<div class="controls">
+				  <input id="name" name="name" type="text" placeholder="What is this?" class="input"> 
+				</div>
+			  </div>
+			  <!-- Text input-->
+			  <div class="control-group">
+				<label class="control-label">Description</label>
+				<div class="controls">
+				  <input id="description" name="description" type="text" placeholder="Tell me about it" class="input">
+				</div>
+			  </div>
+			  <!-- Button (Double) -->
+			  <div class="control-group">
+				<label class="control-label"></label>
+				<div class="controls">
+				  <button id="landmark_submit" name="landmark_submit" class="btn btn-info">Save Landmark</button>
+				  <button id="landmark_cancel" name="landmark_cancel" class="btn btn-danger">Cancel</button>
+				</div>
+			  </div>
+			</fieldset>
+		</form>
+		<!-- Lankmark Update -->
+		<form class="form-horizontal" id="landmark_update">
+			<fieldset>
+			  <!-- Form Name -->
+			  <legend>Landmark</legend>
+			  <!-- Text input-->
+			  <div class="control-group">
+				<label class="control-label">Label</label>
+				<div class="controls">
+				  <input id="name" name="name" type="text" placeholder="What is this?" class="input"> 
+				</div>
+			  </div>
+			  <!-- Text input-->
+			  <div class="control-group">
+				<label class="control-label">Description</label>
+				<div class="controls">
+				  <input id="description" name="description" type="text" placeholder="Tell me about it" class="input">
+				</div>
+			  </div>
+			  <!-- Button (Double) -->
+			  <div class="control-group">
+				<label class="control-label"></label>
+				<div class="controls">
+				  <button id="landmark_submit" name="landmark_update" class="btn btn-info">Update</button>
+				  <button id="landmark_cancel" name="landmark_delete" class="btn btn-danger">Delete</button>
+				</div>
+			  </div>
+			</fieldset>
+		</form>
 
 		<form id="classification_pop">
 			<input type="radio" name="type" value="Room" id="room" checked>Room
@@ -172,6 +201,7 @@
     <script src = "js/states/ZoomOutState.js"></script>
     <script src = "js/states/PanState.js"></script>
     <script src = "js/states/DoorState.js"></script>
+	<script src = "js/states/StairState.js"></script>
     <script src = "js/states/LandmarkState.js"></script>
     <script src="js/lib/Util.js"></script>
     <script src = "js/lib/globals.js"></script>

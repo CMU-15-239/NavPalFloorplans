@@ -8,7 +8,8 @@ var StateManager = function(building, canvas) {
 		"ZoomOut": new ZoomOutState(this),
 		"Pan": new PanState(this),
 		"Landmark": new LandmarkState(this),
-		"Door": new DoorState(this)
+		"Door": new DoorState(this),
+		"Stair": new StairState(this)
 	};
 	
 	if (building !== undefined) {
@@ -23,6 +24,13 @@ var StateManager = function(building, canvas) {
 	this.currentState = this.avaliableStates["Draw"];
 	this.currentState.enter();
 	if (canvas !== undefined) this.canvas = canvas;
+	
+	// Global images
+	this.landmarkImage = new Image();
+	this.landmarkImage.src = "./img/landmark.png";
+	
+	this.stairImage = new Image();
+	this.elevatorImage = new Image();
 }
 
 StateManager.prototype.changeState = function(newState) {
@@ -85,6 +93,7 @@ StateManager.prototype.redraw = function() {
 	}
 	this.currentFloor.globals.drawWalls();
 	this.currentFloor.globals.drawPoints();
+	this.currentFloor.globals.drawLandmarks();
 	//Let the state draw itself
 	this.currentState.draw();
 }
