@@ -138,9 +138,9 @@
         <!-- Multiple Radios (inline) -->
         <div class="control-group"><label class="control-label">Classification</label>
           <div class="controls">
-            <label class="radio inline"><input type="radio" name="type" value="Room" checked="checked">Room</label>
-            <label class="radio inline"><input type="radio" name="type" value="Hallway">Hallway</label>
-            <label class="radio inline"><input type="radio" name="type" value="Obstacle">Obstacle</label>
+            <label class="radio inline"><input id="classify_room" type="radio" name="type" value="Room" checked="checked">Room</label>
+            <label class="radio inline"><input id="classify_hallway" type="radio" name="type" value="Hallway">Hallway</label>
+            <label class="radio inline"><input id="classify_obstacle" type="radio" name="type" value="Obstacle">Obstacle</label>
           </div>
         </div>
         <!-- Text input-->
@@ -186,6 +186,9 @@
       </fieldset>
     </form>
 
+	<!-- Room label -->
+	<h1 id="room_label"></h1>
+	
     <form class="form-horizontal pop hidden" id="elevator_pop">
       <fieldset><legend>Elevator</legend>
         <!-- Add new-->
