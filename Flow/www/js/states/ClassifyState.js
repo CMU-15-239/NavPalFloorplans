@@ -30,6 +30,7 @@ $("#classification_cancel").click(function(event) {
 ClassifyState.prototype = new BaseState();
 
 ClassifyState.prototype.enter = function() {
+	console.log("Number of points: " + stateManager.currentFloor.globals.points.length);
 	stateManager.updateSpaces();
 }
 
@@ -74,7 +75,7 @@ ClassifyState.prototype.draw = function() {
 }
 
 ClassifyState.prototype.roomSelect = function(point) {
-	if (point.x < 0 || point.y < 0) console.log("negative point");
+	//if (point.x < 0 || point.y < 0) console.log("negative point");
 	var allSpaces = stateManager.currentFloor.spaces;
 	for (var i = 0; i < allSpaces.length; i++) {
 		var curSpace = allSpaces[i];
