@@ -15,19 +15,67 @@ var buildingFloors = {};
 var floorImages = {};
 
 /**
- * Summary: Finds index of element inside an array
- * Parameters:  a: list of elements, fnc: returns true if element is found
- * Returns: boolean if element exists in array
+ * Summary: Initiailize icon tooltips and loading spinner while carousels load images
+ * Parameters: n/a
+ * Returns: n/a
 **/
-function ArrayIndexOf(a, fnc) {
-    if (!fnc || typeof (fnc) != 'function') {
-        return -1;
+$(document).ready(function () {
+    $('#toolIcon').tooltip();
+    var opts = {
+      lines: 13, // The number of lines to draw
+      length: 30, // The length of each line
+      width: 20, // The line thickness
+      radius: 60, // The radius of the inner circle
+      corners: 1, // Corner roundness (0..1)
+      rotate: 0, // The rotation offset
+      direction: 1, // 1: clockwise, -1: counterclockwise
+      color: '#fff', // #rgb or #rrggbb
+      speed: 0.75, // Rounds per second
+      trail: 60, // Afterglow percentage
+      shadow: false, // Whether to render a shadow
+      hwaccel: false, // Whether to use hardware acceleration
+      className: 'spinner', // The CSS class to assign to the spinner
+      zIndex: 2e9, // The z-index (defaults to 2000000000)
+      top: 'auto', // Top position relative to parent in px
+      left: 'auto' // Left position relative to parent in px
+    };
+    var target = document.getElementById('loading');
+    var spinner = new Spinner(opts).spin(target);
+    setTimeout(init, 0);
+});
+
+/**
+ * Summary: initializes authoringTool data structures
+ * Parameters: building: localStorage building object json string
+ * Returns: initialized authoring tool
+**/
+function init() {
+    var buildingJSON = localStorage.getItem('building');
+    if (buildingJSON !== null) {
+        
+        // grab building object from local storage and initialize
+        building = $.parseJSON(buildingJSON);
+        var floors = building.floors;
+        for (var i = 0; i < floors.length; i++) {
+            buildingFloors[floors[i].name] = floors[i];
+            getFloorImage(floors[i]);
+        };        
+        /* Initialize the canvas */
+        var canvas = resizeCanvas();
+        GLOBALS = new GlobalsContainer();
+        GLOBALS.setCanvas(canvas);
+        stateManager = initStateManager(building, canvas);//new StateManager();
+        /* The event handler for when a new state is clicked */
+        $(".tool").click(function() {
+            $(".tool").removeClass("active");
+            $(this).addClass("active");
+            
+            var newState = $(this).attr("id");
+            stateManager.changeState(newState);
+        });
+        initCanvasEventHandlers(stateManager);
+        initKeyboardShortcuts();
     }
-    if (!a || !a.length || a.length < 1) return -1;
-    for (var i = 0; i < a.length; i++) {
-        if (fnc(a[i])) return i;
-    }
-    return -1;
 }
 
 /**
@@ -110,6 +158,19 @@ function initCarousels() {
     });
 };
 
+function initKeyboardShortcuts() {
+    Mousetrap.bind({
+        'v': function() { $('#Select').click(); },
+        'h': function() { $('#Pan').click(); },
+        '/': function() { $('#Draw').click(); },
+        'd': function() { $('#Door').click(); },
+        'c': function() { $('#Classify').click(); },
+        'l': function() { $('#Landmark').click(); },
+        's': function() { $('#Stair').click(); },
+        'e': function() { $('#Elevator').click(); }
+    });
+}
+
 /**
  * Summary: Grabs floor plan image from database
  * Parameters:  floor: floor object
@@ -173,79 +234,83 @@ function addFloorImages() {
     }, 0) 
 }
 
-function initKeyboardShortcuts() {
-    Mousetrap.bind({
-        'v': function() { $('#Select').click(); },
-        'h': function() { $('#Pan').click(); },
-        '/': function() { $('#Draw').click(); },
-        'd': function() { $('#Door').click(); },
-        'c': function() { $('#Classify').click(); },
-        'l': function() { $('#Landmark').click(); },
-        's': function() { $('#Stair').click(); },
-        'e': function() { $('#Elevator').click(); }
-    });
-}   
-
 /**
- * Summary: initializes authoringTool data structures
- * Parameters: building: localStorage building object json string
- * Returns: initialized authoring tool
+ * Summary: Finds index of element inside an array
+ * Parameters:  a: list of elements, fnc: returns true if element is found
+ * Returns: boolean if element exists in array
 **/
-function init() {
-    var buildingJSON = localStorage.getItem('building');
-    if (buildingJSON !== null) {
-        
-        // grab building object from local storage and initialize
-        building = $.parseJSON(buildingJSON);
-        var floors = building.floors;
-        for (var i = 0; i < floors.length; i++) {
-            buildingFloors[floors[i].name] = floors[i];
-            getFloorImage(floors[i]);
-        };        
-        /* Initialize the canvas */
-        var canvas = resizeCanvas();
-        GLOBALS = new GlobalsContainer();
-        GLOBALS.setCanvas(canvas);
-        stateManager = initStateManager(building, canvas);//new StateManager();
-        /* The event handler for when a new state is clicked */
-        $(".tool").click(function() {
-            $(".tool").removeClass("active");
-            $(this).addClass("active");
-            
-            var newState = $(this).attr("id");
-            stateManager.changeState(newState);
-        });
-        initCanvasEventHandlers(stateManager);
-        initKeyboardShortcuts();
+function ArrayIndexOf(a, fnc) {
+    if (!fnc || typeof (fnc) != 'function') {
+        return -1;
     }
+    if (!a || !a.length || a.length < 1) return -1;
+    for (var i = 0; i < a.length; i++) {
+        if (fnc(a[i])) return i;
+    }
+    return -1;
 }
 
 /**
- * Summary: Initiailize icon tooltips and loading spinner while carousels load images
- * Parameters: n/a
- * Returns: n/a
+ * Summary: Saves building to database and local storage
+ * Parameters: none
+ * Returns: none
 **/
-$(document).ready(function () {
-    $('#toolIcon').tooltip();
-    var opts = {
-      lines: 13, // The number of lines to draw
-      length: 30, // The length of each line
-      width: 20, // The line thickness
-      radius: 60, // The radius of the inner circle
-      corners: 1, // Corner roundness (0..1)
-      rotate: 0, // The rotation offset
-      direction: 1, // 1: clockwise, -1: counterclockwise
-      color: '#fff', // #rgb or #rrggbb
-      speed: 0.75, // Rounds per second
-      trail: 60, // Afterglow percentage
-      shadow: false, // Whether to render a shadow
-      hwaccel: false, // Whether to use hardware acceleration
-      className: 'spinner', // The CSS class to assign to the spinner
-      zIndex: 2e9, // The z-index (defaults to 2000000000)
-      top: 'auto', // Top position relative to parent in px
-      left: 'auto' // Left position relative to parent in px
-    };
-    var target = document.getElementById('loading');
-    var spinner = new Spinner(opts).spin(target);
-    setTimeout(init, 0);
+$('#save').click(function() {
+    $(this).spin('small', '#fff');
+    var building = stateManager.building;
+    $.ajax({
+        type: "POST",
+        url: '/savePublish',
+        data: {
+            building: {
+                name: building.name,
+                authoData: building.toOutput(),
+                graph: null
+            },
+            publishData: false
+        },
+        success: function(response) {
+            //save in local storage and redirect
+            $('#save').spin(false);
+            localStorage.setItem('building', JSON.stringify(this));
+        }.bind(building),
+        error: function(response) {
+            // remove loading spinner and alert user of error
+            $('#save').spin(false);
+            alert('An error occurred, please try again.');
+        }
+    })
+});
+
+/**
+ * Summary: Publishes building to database and saves to local storage
+ * Parameters: none
+ * Returns: none
+**/
+$('#publish').click(function() {
+    $(this).spin('small', '#fff');
+    var building = stateManager.building;
+    $.ajax({
+        type: "POST",
+        url: '/savePublish',
+        data: {
+            building: {
+                name: building.name,
+                authoData: building.toOutput(),
+                graph: new BuildingGraph(building)
+            },
+            publishData: true
+        },
+        success: function(response) {
+            //save in local storage and redirect
+            $('#publish').spin(false);
+            localStorage.setItem('building', JSON.stringify(this));
+            alert('Building has been published successfully!')
+        }.bind(building),
+        error: function(response) {
+            // remove loading spinner and alert user of error
+            $('#publish').spin(false);
+            alert('An error occurred, please try again.');
+        }
+    })
 });
