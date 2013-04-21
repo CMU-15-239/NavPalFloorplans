@@ -1,12 +1,13 @@
-var LandmarkState = function(stateMan) {
+var StairState = function(stateMan) {
 	this.stateManager = stateMan;
 	
 	this.pointAtCursor; 
 }
 
-$("#landmark_submit").click(function(event) {
+$("#stair_submit").click(function(event) {
+/*
 	event.preventDefault();
-	$("#landmark_pop").toggleClass("hidden", true);
+	$("#landmark_pop").css("display", "none");
 	var name = $("#name").val();
 	var description = $("#description").val();
 	landmark = new Landmark(name, description, stateManager.currentState.pointAtCursor);
@@ -18,7 +19,7 @@ $("#landmark_submit").click(function(event) {
 	// Clear values for next time
 	$("#name").val("");
 	$("#description").val("");
-	
+	*/
 /*
 		event.preventDefault();
 		BLOCK_CHANGE_ROOM = false;
@@ -33,42 +34,43 @@ $("#landmark_submit").click(function(event) {
 });
 
 	
-$("#landmark_cancel").click(function(event) {
+$("#stair_cancel").click(function(event) {
 	event.preventDefault();
-	$("#landmark_pop").toggleClass("hidden", true);
+	//$("#landmark_pop").css("display", "none");
 });
 
 //NEED TO HAVE
-LandmarkState.prototype = new BaseState();
+StairState.prototype = new BaseState();
 
 //NEED TO HAVE
-LandmarkState.prototype.enter = function() {
+StairState.prototype.enter = function() {
 }
 
 //NEED TO HAVE
-LandmarkState.prototype.exit = function() {
-	$("#landmark_pop").toggleClass("hidden", true);
+StairState.prototype.exit = function() {
+	//$("#landmark_pop").css("display", "none");
 }
 
 
-LandmarkState.prototype.mouseMove = function(event) {
+StairState.prototype.mouseMove = function(event) {
 	
 }
 
-LandmarkState.prototype.click = function(event) {
+StairState.prototype.click = function(event) {
 	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
 						 event.pageY - stateManager.currentFloor.globals.canvas.y));
 						 
+	/*
 	$("#landmark_pop").css({
+		display: "block",
 		top: event.pageY + "px",
-		left: event.pageX + "px"					 
-	}).toggleClass("hidden", false);
-	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
-															event.pageY - stateManager.currentFloor.globals.canvas.y));
-
+		left: event.pageX + "px"
+	});
+	*/
+						 
 	this.stateManager.redraw();
 }
 
-LandmarkState.prototype.draw = function() {
+StairState.prototype.draw = function() {
 
 }

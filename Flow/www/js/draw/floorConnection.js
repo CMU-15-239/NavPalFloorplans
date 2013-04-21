@@ -24,3 +24,14 @@ FloorConnection.prototype.toOutput = function() {
       pointRep: this.pointRep.toOutput()
    };
 };
+
+FloorConnection.prototype.draw = function() {
+	if (this.pointRep === undefined) return;
+	canvasPoint = stateManager.currentFloor.globals.view.toCanvasWorld(this.pointRep);
+
+	
+	width = 50
+	height = 50
+	GLOBALS.canvas.drawImage(stateManager.landmarkImage, 0, 0, stateManager.landmarkImage.width, stateManager.landmarkImage.height - 30,
+	canvasPoint.x - width/2, canvasPoint.y - height, width, height);
+}
