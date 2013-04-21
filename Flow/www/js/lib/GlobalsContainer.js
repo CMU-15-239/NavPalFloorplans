@@ -49,7 +49,7 @@ GlobalsContainer.prototype.toOutput = function() {
   
   var outPoints = [];
   for(var p = 0; p < this.points.length; p++) {
-    outWalls.push(this.points[p].toOutput());
+    outPoints.push(this.points[p].toOutput());
   }
   
   return {
