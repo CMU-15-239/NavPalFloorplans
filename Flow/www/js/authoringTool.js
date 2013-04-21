@@ -181,7 +181,7 @@ function initKeyboardShortcuts() {
         'd': function() { $('#Door').click(); },
         'c': function() { $('#Classify').click(); },
         'l': function() { $('#Landmark').click(); },
-        's': function() { $('#Stiar').click(); },
+        's': function() { $('#Stair').click(); },
         'e': function() { $('#Elevator').click(); }
     });
 }   
