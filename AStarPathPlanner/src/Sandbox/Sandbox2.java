@@ -70,6 +70,6 @@ public class Sandbox2
 	SparseGraph g = SparseGraph.importGraph(b);
 	DisplayGraph.DisplayGraphNodesToConsole(g, false);
 	System.out.println(g.isEdgePresent(0, 2));
-	testAStarAlgorithm(g, 0, 3);
+	testAStarAlgorithm(g, 4, 6);
     }
 }
