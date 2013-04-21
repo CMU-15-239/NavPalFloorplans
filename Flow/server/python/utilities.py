@@ -148,7 +148,8 @@ def visualizeLines(IMG,vlines,hlines):
     imSize=(IMG.width,IMG.height)
     im2= Image.new('RGB',imSize)
     im2.putdata(pixels)
-    #im2.show()
+    im2.save("lineExtration.png",'png')
+    im2.show()
 
 
 
@@ -180,38 +181,36 @@ def extractDoors(img,hlines,vlines,doorRects):
         cy=y+h/2
         counts=[0,0,0,0]
         
-        cv2.line(img,(cx,cy),(cx-probe,cy),255,2)
-        cv2.line(img,(cx,cy),(cx,cy+probe),255,2)        
-        cv2.line(img,(cx,cy),(cx+probe,cy),255,2)
-        cv2.line(img,(cx,cy),(cx,cy-probe),255,2)
-        
         temp=cx
         cx=cy
-        cy=cx
+        cy=temp
  
         for i in xrange(probe):
-            if img[cx-i][cy]>127: counts[0]=-1
-            if img[cx][cy+i]>127: counts[1]=-1
-            if img[cx+i][cy]>127: counts[2]=-1
-            if img[cx][cy-i]>127: counts[3]=-1
+            if img[cx-i][cy]>127: 
+                counts[0]=-1
+            if img[cx][cy+i]>127: 
+                counts[1]=-1
+            if img[cx+i][cy]>127: 
+                counts[2]=-1
+            if img[cx][cy-i]>127: 
+                counts[3]=-1
         
         if counts[0]==0:
-            line=newLine(y,x,y,x+w)
-      #      cv2.line(img,(x,y),(x,y+h),255,2)
+            line=newLine(y,x,y+h,x)
+            cv2.line(img,(x,y),(x+w,y),255,2)
             hlines.append(line)
         if counts[1]==0:
-            line=newLine(y,x+w,y+h,x+w)
-       #     cv2.line(img,(x,y+h),(x+w,y+h),255,2)
+            line=newLine(y+h,x,y+h,x+w)
+            cv2.line(img,(x+w,y),(x+w,y+h),255,2)
             vlines.append(line)
         if counts[2]==0:
-            line=newLine(y+h,x,y+h,x+w)
-        #    cv2.line(img,(x+w,y),(x+w,y+h),255,2)
+            line=newLine(y,x+w,y+h,x+w)
+            cv2.line(img,(x,y+h),(x+w,y+h),255,2)
             hlines.append(line)
         if counts[3]==0:
-            line=newLine(y,x,y+h,x)
-         #   cv2.line(img,(x,y),(x+w,y),255,2)
+            line=newLine(y,x,y,x+w)
+            cv2.line(img,(x,y),(x,y+h),255,2)
             vlines.append(line)
-        else: print "WTF! that can't happen!"    
     #cv2.imshow("img",img)
     #cv2.waitKey(0) 
 

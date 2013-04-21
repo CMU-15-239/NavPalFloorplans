@@ -35,8 +35,8 @@ def process_img(sourcepath,destpath, datapath):
     mergeVlines(vlines)
     
     mergeVertex(hlines,vlines)
+    #visualizeLines(IMG,vlines,hlines)
 
-    visualizeLines(IMG,vlines,hlines)
     writeVertexList(hlines,vlines,datapath) 
     OCR(img,sourcepath,datapath)
 	
