@@ -64,7 +64,7 @@ LandmarkState.prototype.mouseMove = function(event) {
 }
 
 LandmarkState.prototype.click = function(event) {
-<<<<<<< HEAD
+
 
 	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
 						 event.pageY - stateManager.currentFloor.globals.canvas.y));
@@ -73,13 +73,6 @@ LandmarkState.prototype.click = function(event) {
 	$("#landmark_pop").css({
 		top: event.pageY + "px",
 
-=======
-	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
-						 event.pageY - stateManager.currentFloor.globals.canvas.y));
-						 
-	$("#landmark_pop").css({
-		top: event.pageY + "px",
->>>>>>> c0856a76502265fb3b347231cf557c6c43506a92
 		left: event.pageX + "px"					 
 	}).toggleClass("hidden", false);
 	
