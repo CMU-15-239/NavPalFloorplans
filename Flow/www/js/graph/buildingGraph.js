@@ -14,10 +14,12 @@ function BuildingGraph(building) {
   this.typeforFloorConnectionNodeRef = "floorConnection";
   
   for(var f = 0; f < building.floors.length; f++) {
+    console.log("Adding floor " + f + " " + building.floors[f].name + "...");
     this.addFloor(building.floors[f]);
   }
   
   this.id = "buildingGraph_"+JSON.stringify(this).hashCode();
+  console.log("constructing building complete");
 };
 
 BuildingGraph.prototype.addFloor = function(floor) {
@@ -34,7 +36,11 @@ BuildingGraph.prototype.addFloor = function(floor) {
 BuildingGraph.prototype.addFloorConnectionRef = function(floorConnection, floorGraphId) {
   var floorConnectionRef;
   if(util.exists(floorConnection)) {
+    console.log("Adding floor connection: ");
+    console.log(floorConnection);
+    
     var index = this.indexOfFloorConnectionRef(floorConnection);
+    console.log("sadf");
     if(index != -1) {
       floorConnectionRef = this.floorConnectionRefs[index];
       floorConnectionRef.edges.push(floorGraphId);

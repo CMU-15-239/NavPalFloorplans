@@ -50,17 +50,20 @@ function FloorGraph(floor, callback, callbackVars) {
     this.width = floor.width;
     if(util.exists(floor.spaces)) {
       for(var s = 0; s < floor.spaces.length; s++) {
+        console.log("Adding space " + s + "...");
         this.addSpaceNode(floor.spaces[s]);
       }
     }
     
     if(util.exists(floor.landmarks)) {
       for(var l = 0; l < floor.landmarks.length; l++) {
+        console.log("Adding landmark " + l + "...");
         this.addLandmarkNode(floor.landmarks[l]);
       }
     }
   }
 	
+  console.log
   this.id = "floorGraph_"+JSON.stringify(this).hashCode();
 	if(util.exists(callback)) {callback.apply(callbackVars);}
 }
@@ -188,7 +191,7 @@ FloorGraph.prototype.addFloorConnectionNode = function(floorConnection, nodeId) 
     if(util.exists(spaceNode)) {
       
       spaceNode.addEdge(floorConnectionNode);
-      if(this.name === "1") {
+      if(this.name === "2") {
         var sIdx = spaceNode.edges.indexOf(floorConnectionNode.id);
         var fIdx = floorConnectionNode.edges.indexOf(spaceNode.id);
         console.log("floorConnection edge success: " + (sIdx !== -1)
