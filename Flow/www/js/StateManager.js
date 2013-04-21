@@ -24,6 +24,10 @@ var StateManager = function(building, canvas) {
 	this.currentState = this.avaliableStates["Draw"];
 	this.currentState.enter();
 	if (canvas !== undefined) this.canvas = canvas;
+	
+	this.landmarkImage = new Image();
+	this.landmarkImage.src = './img/landmark.png';
+	
 }
 
 StateManager.prototype.changeState = function(newState) {
@@ -87,6 +91,7 @@ StateManager.prototype.redraw = function() {
 	}
 	this.currentFloor.globals.drawWalls();
 	this.currentFloor.globals.drawPoints();
+	this.currentFloor.drawLandmarks();
 	this.currentFloor.drawSpaces();
 	//Let the state draw itself
 	this.currentState.draw();

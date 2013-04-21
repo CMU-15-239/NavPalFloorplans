@@ -9,9 +9,16 @@ $("#landmark_submit").click(function(event) {
 	$("#landmark_pop").toggleClass("hidden", true);
 	var name = $("#name").val();
 	var description = $("#description").val();
-	landmark = new Landmark(name, description);
+	var point = stateManager.currentState.pointAtCursor;
+	landmark = new Landmark(name, description, point);
 	landmark.draw();
-	console.log("Added new landmark! name:" + name + ", description " + description + this.pointAtCursor.toString());
+	//console.log("Added new landmark! name:" + name + ", description " + description + point.toString());
+	stateManager.currentFloor.landmarks.push(landmark);
+	
+	// Clear fields
+	$("#description").val("");
+	$("#name").val("");
+	
 /*
 		event.preventDefault();
 		BLOCK_CHANGE_ROOM = false;
@@ -29,6 +36,11 @@ $("#landmark_submit").click(function(event) {
 $("#landmark_cancel").click(function(event) {
 	event.preventDefault();
 	$("#landmark_pop").toggleClass("hidden", true);
+	
+	// Clear fields
+	$("#description").val("");
+	$("#name").val("");
+	
 });
 
 //NEED TO HAVE
@@ -49,13 +61,20 @@ LandmarkState.prototype.mouseMove = function(event) {
 }
 
 LandmarkState.prototype.click = function(event) {
+
+	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
+						 event.pageY - stateManager.currentFloor.globals.canvas.y));
+						 
+
 	$("#landmark_pop").css({
 		top: event.pageY + "px",
-		left: event.pageX + "px"
+
+		left: event.pageX + "px"					 
 	}).toggleClass("hidden", false);
+	
 	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
 															event.pageY - stateManager.currentFloor.globals.canvas.y));
-	console.log("Set point: " + this.pointAtCursor.toString());
+
 	this.stateManager.redraw();
 }
 
