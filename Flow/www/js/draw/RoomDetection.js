@@ -51,7 +51,6 @@ function detectRooms(lines, spaces) {
 			newRooms.push(room);
 		}
 	}
-	
 	return newRooms;
 }
 
@@ -156,8 +155,15 @@ function searchRoom(line, rooms) {
 			validRevRoute = true;
 			//route = revRoute;
 			
-			//var angles = sumAngles(route, true);
-			//var expectedInternalAngle = sumInternalAngle(route.length); 
+			var angles = sumAngles(revRoute, false);
+			var expectedInternalAngle = sumInternalAngle(revRoute.length);
+
+			if (!almostEqual(expectedInternalAngle, angles)) {
+				validRevRoute = false;
+			}
+			else {
+				validRevRoute = true;
+			}
 		}
 	}
 	

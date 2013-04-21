@@ -18,7 +18,7 @@ $("#classification_submit").click(function(event) {
 	stateManager.currentState.mouseMove(event);
 });
 
-	
+//Cancel button clicked	
 $("#classification_cancel").click(function(event) {
 	event.preventDefault();
 	$("#classifyLabel").val("");
@@ -74,7 +74,7 @@ ClassifyState.prototype.draw = function() {
 }
 
 ClassifyState.prototype.roomSelect = function(point) {
-	if (point.x < 0 || point.y < 0) console.log("negative point");
+	//if (point.x < 0 || point.y < 0) console.log("negative point");
 	var allSpaces = stateManager.currentFloor.spaces;
 	for (var i = 0; i < allSpaces.length; i++) {
 		var curSpace = allSpaces[i];
