@@ -104,7 +104,7 @@ Point.prototype.setXY = function(x,y) {
  * Returns: true iff this point and the given point have the same x- and y-coordinates.
 **/
 Point.prototype.equals = function(p) {
-	return (this.x == p.x && this.y == p.y);
+	return util.exists(p) && (this.x == p.x && this.y == p.y);
 }
 
 /**

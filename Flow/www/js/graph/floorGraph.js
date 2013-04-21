@@ -30,9 +30,9 @@ function importFloorGraph(simpleFloorGraph) {
  * Returns: undefined
 **/
 function FloorGraph(floor, callback, callbackVars) {
-	this.name;
-  this.imageId;
-  this.imageScale = 1.0;
+	this.name = floor.name;
+  this.imageId = floor.imageId;
+  this.imageScale = floor.imageScale;
   
   this.spaces = [];
 	this.psws = [];
@@ -50,17 +50,20 @@ function FloorGraph(floor, callback, callbackVars) {
     this.width = floor.width;
     if(util.exists(floor.spaces)) {
       for(var s = 0; s < floor.spaces.length; s++) {
+        console.log("Adding space " + s + "...");
         this.addSpaceNode(floor.spaces[s]);
       }
     }
     
     if(util.exists(floor.landmarks)) {
       for(var l = 0; l < floor.landmarks.length; l++) {
+        console.log("Adding landmark " + l + "...");
         this.addLandmarkNode(floor.landmarks[l]);
       }
     }
   }
 	
+  console.log
   this.id = "floorGraph_"+JSON.stringify(this).hashCode();
 	if(util.exists(callback)) {callback.apply(callbackVars);}
 }
@@ -126,31 +129,23 @@ FloorGraph.prototype.getPswNodeByLine = function(line) {
 FloorGraph.prototype.addSpaceNode = function(space) {
   if(space.type === "room" || space.type === "hallway") {
     //first check and add doors
-    var psws = [];
-    var pswIds = [];
+    //var psws = [];
+    //var pswIds = [];
+    var spaceNode = new SpaceNode(this.typeForSpaceNode, space.type, space.label, [], space.walls);
     for(var d = 0; d < space.doors.length; d++) {
       var lineRep = space.doors[d];
-      var existingDoor = this.getPswNodeByLine(lineRep);
-      if(util.exists(existingDoor)) {
-        psws.push(existingDoor);
-        pswIds.push(existingDoor.id);
-      }
-      else {
+      var door = this.getPswNodeByLine(lineRep);
+      if(!util.exists(door)) {
         //TODO: check and make sure the newId function returns in time for adding to pswIds
-        var newDoor = new PswNode(this.typeForPswNode, "door", null, lineRep);
-        psws.push(newDoor);
-        pswIds.push(newDoor.id);
-        this.psws.push(newDoor);
+        door = new PswNode(this.typeForPswNode, "door", null, lineRep);
+        this.psws.push(door);
       }
+      
+      //psws.push(newDoor);
+      //pswIds.push(newDoor.id);
+      door.addEdge(spaceNode);
     }
     
-    
-    var spaceNode = new SpaceNode(this.typeForSpaceNode, space.type, space.label, pswIds, space.walls);
-    //TODO: check and make sure the newId function returns in time for adding to psws
-    for(var p = 0; p < psws.length; p++) {
-      psws[p].addEdge(spaceNode);
-      //psws[p].edges.push(spaceNode.id);
-    }
     this.spaces.push(spaceNode);
   }
 };
@@ -182,7 +177,7 @@ FloorGraph.prototype.addLandmarkNode = function(landmark) {
 FloorGraph.prototype.addFloorConnectionNode = function(floorConnection, nodeId) {
   if(util.exists(floorConnection)) {
     var spaceNode = null;
-    for(var s = 0; s < this.spaces.length; s++) {
+    for(var s = 0; !util.exists(spaceNode) && s < this.spaces.length; s++) {
       if(this.spaces[s].pointInSpaceNode(floorConnection.pointRep, this.width, true)) {
         spaceNode = this.spaces[s];
         break;
@@ -193,7 +188,16 @@ FloorGraph.prototype.addFloorConnectionNode = function(floorConnection, nodeId) 
                                     floorConnection.floorConnectionType, floorConnection.label,
                                     [], floorConnection.pointRep);
     if(util.exists(nodeId)) {floorConnectionNode.id = nodeId;}
-    if(util.exists(spaceNode)) {spaceNode.addEdge(floorConnectionNode);}
+    if(util.exists(spaceNode)) {
+      
+      spaceNode.addEdge(floorConnectionNode);
+      if(this.name === "2") {
+        var sIdx = spaceNode.edges.indexOf(floorConnectionNode.id);
+        var fIdx = floorConnectionNode.edges.indexOf(spaceNode.id);
+        console.log("floorConnection edge success: " + (sIdx !== -1)
+          + " " + (fIdx !== -1));
+      }
+    }
     
     this.floorConnections.push(floorConnectionNode);
   }

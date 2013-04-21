@@ -71,6 +71,7 @@ GlobalsContainer.prototype.drawWalls = function() {
 }
 
 
+
 GlobalsContainer.prototype.addPoint = function(pointToAdd) {
 	//Check to make sure that the point being added isn't a duplicate
 	for (var i = 0; i < this.points.length; i++) {

@@ -9,6 +9,7 @@ var StateManager = function(building, canvas) {
 		"Pan": new PanState(this),
 		"Landmark": new LandmarkState(this),
 		"Door": new DoorState(this),
+		"Stair": new StairState(this),
 		"Classify": new ClassifyState(this)
 	};
 	
@@ -25,9 +26,12 @@ var StateManager = function(building, canvas) {
 	this.currentState.enter();
 	if (canvas !== undefined) this.canvas = canvas;
 	
+	// Global images
 	this.landmarkImage = new Image();
-	this.landmarkImage.src = './img/landmark.png';
+	this.landmarkImage.src = "./img/landmark.png";
 	
+	this.stairImage = new Image();
+	this.elevatorImage = new Image();
 }
 
 StateManager.prototype.changeState = function(newState) {
