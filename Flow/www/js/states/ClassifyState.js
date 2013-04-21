@@ -18,7 +18,7 @@ $("#classification_submit").click(function(event) {
 	stateManager.currentState.mouseMove(event);
 });
 
-	
+//Cancel button clicked	
 $("#classification_cancel").click(function(event) {
 	event.preventDefault();
 	$("#classifyLabel").val("");
