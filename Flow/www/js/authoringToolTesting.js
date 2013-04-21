@@ -302,7 +302,7 @@ $('#publish').click(function() {
         data: {
             building: {
                 name: building.name,
-                authoData: building.toOutput(),
+                authoData: buildingOut,
                 graph: graphOut
             },
             publishData: true
