@@ -23,13 +23,11 @@ var epsilon = .0001;
  * Returns: A new list of spaces
 **/
 function detectRooms(lines, spaces) {
-	console.log(lines);
 	var rooms = [];
 	
 	// Check if this line is part of a closed off room
 	for (var i = 0; i < lines.length; i++) {
 		searchRoom(lines[i], rooms);
-		console.log(rooms.length);
 	}
 	
 	var newRooms = [];
@@ -54,7 +52,6 @@ function detectRooms(lines, spaces) {
 		}
 	}
 	
-	console.log(newRooms.length);
 	return newRooms;
 }
 
@@ -166,12 +163,12 @@ function searchRoom(line, rooms) {
 	
 	// If a valid room was found
 	if (validRoute) {
-		console.log(route);
+		//console.log(route);
 		addRouteAsRoom(route, rooms);
 	}
 	
 	if (validRevRoute) {
-		console.log(revRoute);
+		//console.log(revRoute);
 		addRouteAsRoom(revRoute, rooms);
 	}
 	
@@ -336,9 +333,9 @@ function angleBetween(counterClock, point, line0, line1) {
 // TODO: improve efficiency with hash-map
 function getEdgeNeighbors(point, includedLine) {
 	var edges = [];
-	
-	for (var i = 0; i < ALL_WALLS.length; i++) {
-		var line = ALL_WALLS[i];
+	var allWalls = stateManager.currentFloor.globals.walls;
+	for (var i = 0; i < allWalls.length; i++) {
+		var line = allWalls[i];
 		if (line.p1 == point || line.p2 == point) {
 			if (line != includedLine) {
 				edges.push(line);

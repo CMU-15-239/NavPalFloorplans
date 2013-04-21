@@ -171,6 +171,8 @@ SelectState.prototype.mouseMove = function(event) {
 			}
 		}
 		else {
+			//Display the room label
+			stateManager.hoverRoomLabel(new Point(event.pageX, event.pageY), pointAtCursor);
 			//show hover color if near anything
 			//Snapping to a point takes precedence over snapping to a line
 			var snapPoint = this.stateManager.aboutToSnapToPoint(pointAtCursor);
@@ -243,7 +245,10 @@ SelectState.prototype.keyDown = function(event) {
 SelectState.prototype.deleteSelectedItems = function() {
 	var pointsToDelete = [];
 	for (var i = 0; i < this.selectedPoints.length; i++) {
-		stateManager.currentFloor.globals.removePoint(this.selectedPoints[i]);
+		var curPoint = this.selectedPoints[i];
+		if (!this.pointInSelectedLine(curPoint)) {
+			stateManager.currentFloor.globals.removePoint(this.selectedPoints[i]);
+		}
 	}
 	for (var j = 0; j < this.selectedLines.length; j++) {
 		stateManager.currentFloor.globals.removeWall(this.selectedLines[j], true);
@@ -251,13 +256,25 @@ SelectState.prototype.deleteSelectedItems = function() {
 	var numWallsSeen = 0;
 	while (numWallsSeen < stateManager.currentFloor.globals.walls.length) {
 		var l = stateManager.currentFloor.globals.walls[numWallsSeen];
-		if (this.containsSelectedPoint(l)) {
+		if (this.containsSelectedPoint(l)
+			&& !this.pointInSelectedLine(l.p1)
+			&& !this.pointInSelectedLine(l.p2)) {
 			stateManager.currentFloor.globals.removeWall(l);
 		}
 		else numWallsSeen += 1;
 	}
 	this.selectedLines = [];
 	this.selectedPoints = [];
+}
+
+SelectState.prototype.pointInSelectedLine = function(point) {
+	for (var i = 0; i < this.selectedLines.length; i++) {
+		var curLine = this.selectedLines[i];
+		if (curLine.p1.equals(point) || curLine.p2.equals(point)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 SelectState.prototype.containsSelectedPoint = function(line) {

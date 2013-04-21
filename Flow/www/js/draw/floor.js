@@ -8,12 +8,14 @@ function importFloor(simpleFloor) {
     
     newFloor.globals = importGlobalsContainer(simpleFloor.globals);
     //console.log(newFloor.globals);
-    
+    //alert(13);
     if(util.exists(simpleFloor.spaces)) {
       for(var s = 0; s < simpleFloor.spaces.length; s++) {
         newFloor.spaces.push(importSpace(simpleFloor.spaces[s], newFloor.globals));
       }
     }
+    //console.log(simpleFloor.spaces);
+    //alert(12);
     
     if(util.exists(simpleFloor.obstacles)) {
       for(var o = 0; o < simpleFloor.obstacles.length; o++) {

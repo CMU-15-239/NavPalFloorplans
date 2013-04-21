@@ -22,16 +22,18 @@ function Polygon(lines, color) {
  * Returns: undefined
 **/
 Polygon.prototype.draw = function() {
-	//Save the olf fill style so that we can restore it later.
+	//Save the old fill style so that we can restore it later.
 	var oldStyle = stateManager.currentFloor.globals.canvas.fillStyle;
 	stateManager.currentFloor.globals.canvas.fillStyle = this.color;
 	var canvas = stateManager.currentFloor.globals.canvas;
 	canvas.beginPath();
+	var startingPoint = stateManager.currentFloor.globals.view.toCanvasWorld(this.points[0]);
 	//Move to the first point
-	canvas.moveTo(this.points[0].x, this.points[0].y);
+	canvas.moveTo(startingPoint.x, startingPoint.y);
 	//Draw a line to each point in succession
 	for (var i = 0; i < this.points.length; i++) {
 		var curPoint = this.points[i];
+		curPoint = stateManager.currentFloor.globals.view.toCanvasWorld(curPoint);
 		canvas.lineTo(curPoint.x, curPoint.y);
 	}
 	//Close off the polygon
