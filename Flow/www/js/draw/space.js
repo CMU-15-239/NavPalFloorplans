@@ -185,7 +185,7 @@ Space.prototype.pointInSpace = function(point, width, includeLine) {
 		var inShapeSegments = [];
 		var lastLineIntersected = null;
 		var currP1 = null;
-		for(var xr = 0; xr < width; xr++) {
+		for(var xr = (-1*width); xr < width; xr++) {
 			var currRayPt = {x: xr, y: point.y};
 			//console.log("checkingPt: "+JSON.stringify(currRayPt));
 			var intersectLine = this.pointOnWalls(currRayPt, 0.5);
