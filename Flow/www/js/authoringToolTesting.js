@@ -260,13 +260,14 @@ function ArrayIndexOf(a, fnc) {
 $('#save').click(function() {
     $(this).spin('small', '#fff');
     var building = stateManager.building;
+    var buildingOut = building.toOutput();
     $.ajax({
         type: "POST",
         url: '/savePublish',
         data: {
             building: {
                 name: building.name,
-                authoData: building.toOutput(),
+                authoData: buildingOut,
                 graph: null
             },
             publishData: false
@@ -275,7 +276,7 @@ $('#save').click(function() {
             //save in local storage and redirect
             $('#save').spin(false);
             localStorage.setItem('building', JSON.stringify(this));
-        }.bind(building),
+        }.bind(buildingOut),
         error: function(response) {
             // remove loading spinner and alert user of error
             $('#save').spin(false);
@@ -292,14 +293,17 @@ $('#save').click(function() {
 $('#publish').click(function() {
     $(this).spin('small', '#fff');
     var building = stateManager.building;
+    var buildingOut = building.toOutput();
+    var graph = new BuildingGraph(building);
+    var graphOut = graph.toOutput();
     $.ajax({
         type: "POST",
         url: '/savePublish',
         data: {
             building: {
                 name: building.name,
-                authoData: building.toOutput(),
-                graph: new BuildingGraph(building)
+                authoData: buildingOut,
+                graph: graphOut
             },
             publishData: true
         },
@@ -308,7 +312,7 @@ $('#publish').click(function() {
             $('#publish').spin(false);
             localStorage.setItem('building', JSON.stringify(this));
             alert('Building has been published successfully!')
-        }.bind(building),
+        }.bind(buildingOut),
         error: function(response) {
             // remove loading spinner and alert user of error
             $('#publish').spin(false);
