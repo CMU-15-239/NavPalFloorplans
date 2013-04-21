@@ -4,7 +4,7 @@ var graphGlobals = {
 };
 
 function BuildingGraph(building) {
-  this.name;
+  this.name = building.name;
   this.id;
   this.floors = [];
   this.floorConnectionRefs = [];

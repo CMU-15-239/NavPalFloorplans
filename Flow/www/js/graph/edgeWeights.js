@@ -19,9 +19,9 @@ EdgeWeights.prototype.add = function(node1Id, node2Id, edgeWeight) {
   var idx = this.indexOf(node1Id, node2Id);
   if(idx === -1) {
     this.edges.push(new EdgeWeight(node1Id, node2Id, edgeWeight));
+  } else {
+    this.edges[idx].weight = edgeWeight;
   }
-  
-  return edgeWeight;
 };
 
 EdgeWeights.prototype.getWeight = function(node1Id, node2Id) {
