@@ -30,7 +30,6 @@ $("#classification_cancel").click(function(event) {
 ClassifyState.prototype = new BaseState();
 
 ClassifyState.prototype.enter = function() {
-	console.log("Number of points: " + stateManager.currentFloor.globals.points.length);
 	stateManager.updateSpaces();
 }
 

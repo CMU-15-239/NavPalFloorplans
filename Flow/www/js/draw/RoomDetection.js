@@ -51,7 +51,6 @@ function detectRooms(lines, spaces) {
 			newRooms.push(room);
 		}
 	}
-	console.log(newRooms);
 	return newRooms;
 }
 

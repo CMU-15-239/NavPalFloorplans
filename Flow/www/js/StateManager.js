@@ -54,7 +54,7 @@ StateManager.prototype.getCurrentFloor = function() {
 }
 
 StateManager.prototype.redraw = function() {
-	//this.updateSpaces();
+	this.updateSpaces();
 	//First, delete everything from the canvas.
 	//console.log(this.currentFloor.globals.view.offsetX);
     this.currentFloor.globals.canvas.clearRect(0, 0, this.currentFloor.globals.canvas.width, this.currentFloor.globals.canvas.height);
