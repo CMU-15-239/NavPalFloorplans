@@ -10,24 +10,26 @@ $("#saveStair").click(function(event) {
 	var newStair = $("#newStair").val();
 	var existingStair = $("#selectmultiple").val();
 	
-	console.log("New : " + newStair);
-	console.log("existing: " + existingStair);
+	
 	// Use an existing stair
 	if (newStair === "") {
 		// Nothing choosen
 		if (existingStair === null) {
-			return
-			;
+			return;
 		}
+		var connection = new FloorConnection(existingStair, stateManager.currentState.pointAtCursor, FloorConnection.STAIR);
+		stateManager.currentFloor.floorConnections.push(connection);
 	}
 	
 	// Add a new stair
 	else {
-			
+		var connection = new FloorConnection(newStair, stateManager.currentState.pointAtCursor, FloorConnection.STAIR);
+		stateManager.currentFloor.floorConnections.push(connection);
 	}
 	
+	$("#newStair").val("")
 	//var description = $("#description").val();
-	console.log("stair");
+	stateManager.redraw();
 /*
 	console.log("Added new landmark! name:" + name + ", description " + description + stateManager.currentState.pointAtCursor.toString());
 	stateManager.currentFloor.landmarks.push(landmark);
@@ -53,7 +55,7 @@ $("#saveStair").click(function(event) {
 	
 $("#cancelStair").click(function(event) {
 	event.preventDefault();
-	$("#stair_pop").css("display", "none");
+	$("#stair_pop").toggleClass("hidden", true);
 });
 
 //NEED TO HAVE
@@ -65,7 +67,7 @@ StairState.prototype.enter = function() {
 
 //NEED TO HAVE
 StairState.prototype.exit = function() {
-	$("#stair_pop").css("display", "none");
+	$("#stair_pop").toggleClass("hidden", true);
 }
 
 
@@ -73,8 +75,33 @@ StairState.prototype.mouseMove = function(event) {
 	
 }
 
-StairState.prototype.getExistingStairs = function() {
+StairState.prototype.inList = function(list, element) {
+	for (var i = 0; i < list.length; i ++) {
+		if (list[i] == element) {
+			return true;
+		}
+	}
+	return false;
+}
 
+StairState.prototype.getExistingStairs = function() {
+	var stairs = [];
+	for (var i = 0; i < stateManager.building.floors.length; i ++) {
+		for (var j = 0; j < stateManager.building.floors[i].floorConnections.length; j ++) {
+			var connection = stateManager.building.floors[i].floorConnections[j];
+			// We found an existing stair case
+			if (connection.floorConnectionType === FloorConnection.STAIR) {
+				if (!this.inList(stairs, connection.label)) {
+					stairs.push(connection.label);
+				}
+			}
+		}
+	}
+	var uniqueStairs = []
+	$.each(stairs, function(i, el){
+		if($.inArray(el, uniqueStairs) === -1) uniqueStairs.push(el);
+	});
+	return uniqueStairs;
 }
 
 StairState.prototype.click = function(event) {
@@ -83,7 +110,7 @@ StairState.prototype.click = function(event) {
 						 
 	var stairList = $('#selectmultiple');
 	stairList.empty();
-	var existingStairs = getExistingStairs();
+	var existingStairs = this.getExistingStairs();
 	for (var i = 0; i < existingStairs.length; i ++) {
 		stairList.append("<option>" + existingStairs[i] + "</option>");
 	}

@@ -31,6 +31,7 @@ var StateManager = function(building, canvas) {
 	this.landmarkImage.src = "./img/landmark.png";
 	
 	this.stairImage = new Image();
+	this.stairImage.src = "./img/stairs.png";
 	this.elevatorImage = new Image();
 }
 
@@ -96,6 +97,7 @@ StateManager.prototype.redraw = function() {
 	this.currentFloor.globals.drawWalls();
 	this.currentFloor.globals.drawPoints();
 	this.currentFloor.drawLandmarks();
+	this.currentFloor.drawStairs();
 	this.currentFloor.drawSpaces();
 	//Let the state draw itself
 	this.currentState.draw();

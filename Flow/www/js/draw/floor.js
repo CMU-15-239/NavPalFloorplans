@@ -67,6 +67,12 @@ Floor.prototype.drawLandmarks = function() {
 	}
 }
 
+Floor.prototype.drawStairs = function() {
+	for (var i = 0; i < this.floorConnections.length; i ++) {
+		this.floorConnections[i].draw();
+	}
+}
+
 Floor.prototype.drawSpaces = function() {
 	if (this.spaces !== undefined) {
 		for (var i = 0; i < this.spaces.length; i++) {
