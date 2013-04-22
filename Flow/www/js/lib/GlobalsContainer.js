@@ -70,11 +70,7 @@ GlobalsContainer.prototype.drawWalls = function() {
 	}
 }
 
-GlobalsContainer.prototype.drawLandmarks = function() {
-	for (var i = 0; i < stateManager.currentFloor.landmarks.length; i += 1) {
-		stateManager.currentFloor.landmarks[i].draw();
-	}
-}
+
 
 GlobalsContainer.prototype.addPoint = function(pointToAdd) {
 	//Check to make sure that the point being added isn't a duplicate

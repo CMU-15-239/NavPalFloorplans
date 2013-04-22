@@ -61,6 +61,18 @@ Floor.prototype.calcScale = function(space, userSqFt) {
   this.imageScale = 1.0;
 };
 
+Floor.prototype.drawLandmarks = function() {
+	for (var i = 0; i < this.landmarks.length; i ++) {
+		this.landmarks[i].draw();
+	}
+}
+
+Floor.prototype.drawStairs = function() {
+	for (var i = 0; i < this.floorConnections.length; i ++) {
+		this.floorConnections[i].draw();
+	}
+}
+
 Floor.prototype.drawSpaces = function() {
 	if (this.spaces !== undefined) {
 		for (var i = 0; i < this.spaces.length; i++) {

@@ -11,10 +11,14 @@ function importFloorConnection(simpleFloorConnection) {
   return newFloorConnection;
 }
 
+
+FloorConnection.STAIR = "STAIR";
+FloorConnection.ELEVATOR = "ELEVATOR";
+
 function FloorConnection(label, pointRep, floorConnectionType) {
-   this.label = label; //String
-   this.pointRep = pointRep; //Point
-   this.floorConnectionType = floorConnectionType; //String
+	this.label = label; //String
+	this.pointRep = pointRep; //Point
+	this.floorConnectionType = floorConnectionType; //String
 }
 
 FloorConnection.prototype.toOutput = function() {
@@ -29,9 +33,13 @@ FloorConnection.prototype.draw = function() {
 	if (this.pointRep === undefined) return;
 	canvasPoint = stateManager.currentFloor.globals.view.toCanvasWorld(this.pointRep);
 
+	imgSize = 30;
 	
-	width = 50
-	height = 50
-	GLOBALS.canvas.drawImage(stateManager.landmarkImage, 0, 0, stateManager.landmarkImage.width, stateManager.landmarkImage.height - 30,
-	canvasPoint.x - width/2, canvasPoint.y - height, width, height);
+	if (this.floorConnectionType == FloorConnection.STAIR) {
+		stateManager.currentFloor.globals.canvas.drawImage(stateManager.stairImage, 
+		0, 0, stateManager.stairImage.width, stateManager.stairImage.height,
+		canvasPoint.x - imgSize/2, canvasPoint.y - imgSize/2, imgSize, imgSize);
+	}
+	
+	
 }
