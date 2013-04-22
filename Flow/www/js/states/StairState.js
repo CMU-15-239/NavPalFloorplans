@@ -1,17 +1,34 @@
 var StairState = function(stateMan) {
 	this.stateManager = stateMan;
-	
 	this.pointAtCursor; 
 }
 
-$("#stair_submit").click(function(event) {
-/*
-	event.preventDefault();
-	$("#landmark_pop").css("display", "none");
-	var name = $("#name").val();
-	var description = $("#description").val();
-	landmark = new Landmark(name, description, stateManager.currentState.pointAtCursor);
+$("#saveStair").click(function(event) {
 
+	event.preventDefault();
+	$("#stair_pop").toggleClass("hidden", true);
+	var newStair = $("#newStair").val();
+	var existingStair = $("#selectmultiple").val();
+	
+	console.log("New : " + newStair);
+	console.log("existing: " + existingStair);
+	// Use an existing stair
+	if (newStair === "") {
+		// Nothing choosen
+		if (existingStair === null) {
+			return
+			;
+		}
+	}
+	
+	// Add a new stair
+	else {
+			
+	}
+	
+	//var description = $("#description").val();
+	console.log("stair");
+/*
 	console.log("Added new landmark! name:" + name + ", description " + description + stateManager.currentState.pointAtCursor.toString());
 	stateManager.currentFloor.landmarks.push(landmark);
 	stateManager.redraw();
@@ -34,9 +51,9 @@ $("#stair_submit").click(function(event) {
 });
 
 	
-$("#stair_cancel").click(function(event) {
+$("#cancelStair").click(function(event) {
 	event.preventDefault();
-	//$("#landmark_pop").css("display", "none");
+	$("#stair_pop").css("display", "none");
 });
 
 //NEED TO HAVE
@@ -48,7 +65,7 @@ StairState.prototype.enter = function() {
 
 //NEED TO HAVE
 StairState.prototype.exit = function() {
-	//$("#landmark_pop").css("display", "none");
+	$("#stair_pop").css("display", "none");
 }
 
 
@@ -56,19 +73,29 @@ StairState.prototype.mouseMove = function(event) {
 	
 }
 
+StairState.prototype.getExistingStairs = function() {
+
+}
+
 StairState.prototype.click = function(event) {
 	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
 						 event.pageY - stateManager.currentFloor.globals.canvas.y));
 						 
-	/*
-	$("#landmark_pop").css({
-		display: "block",
-		top: event.pageY + "px",
-		left: event.pageX + "px"
-	});
-	*/
-						 
-	this.stateManager.redraw();
+	var stairList = $('#selectmultiple');
+	stairList.empty();
+	var existingStairs = getExistingStairs();
+	for (var i = 0; i < existingStairs.length; i ++) {
+		stairList.append("<option>" + existingStairs[i] + "</option>");
+	}
+	
+	setTimeout(function() {
+		$("#stair_pop").css({
+			top: event.pageY + "px",
+			left: event.pageX + "px"
+		}).toggleClass("hidden", false);
+							 
+		this.stateManager.redraw();
+	}, 0)
 }
 
 StairState.prototype.draw = function() {
