@@ -1,15 +1,15 @@
-#room_label {
-	display: none;
-	position: absolute;
-	font-size: 11px;
-	letter-spacing: 2.5px;
-	color: white;
-}
-
 /*
     Styles for authoring tool page
     Written by Daniel Muller
 */
+
+/* Body and structure
+-------------------------------------------------- */
+
+html, body {
+    background-image: url(../img/black-Linen.png);
+}
+
 html {
     display: inline;
     height: auto;
@@ -20,16 +20,6 @@ body {
     height: 100%;
 }
 
-#loading {
-    z-index: 999;
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    background-color: rgb(50, 50, 50);
-}
-
 #carousel {
     width: 100%;
     padding: 15px;
@@ -37,18 +27,6 @@ body {
     background-image: url(../img/whitey.png);
     vertical-align: middle;
     width: auto;
-}
-
-#toolHolder {
-    position: absolute;
-    top: 230px;
-    left:0px;
-    bottom: 0px;
-    padding-top: 15px;
-    padding-left: 2px;
-    padding-right: 2px;
-    background-color: #494949;
-    min-height: 400px;
 }
 
 #canvas {
@@ -61,18 +39,19 @@ body {
 }
 
 #carouselHolder {
-    height: 100%;
+    padding: 0px;
 }
 
-#toolRow {
-    height: 100%;
-}
-
-/* Body and structure
+/* Loading spinner
 -------------------------------------------------- */
-
-html, body {
-    background-image: url(../img/black-Linen.png);
+#loading {
+    z-index: 999;
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgb(50, 50, 50);
 }
 
 /* Toolbar icons
@@ -132,18 +111,25 @@ html, body {
 
 /* Toolbar icon containers
 -------------------------------------------------- */
-.toolRow {
-    display: inline-block;
+#toolbarRow {
+    height: 100%;
+}
+
+#toolHolder {
+    position: absolute;
+    top: 230px;
+    left:0px;
+    bottom: 0px;
+    padding-top: 15px;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: #494949;
+    min-height: 400px;
 }
 
 .toolGrouping {
     border-bottom: 5px solid #222;
     margin-bottom: 5px
-}
-
-.authoringTool {
-	padding: 0px;
-	height: 190px;
 }
 
 /** Stage container
@@ -267,6 +253,9 @@ html, body {
     line-height: 200px;
 }
 
+
+/* For popup forms for authoring tool
+-------------------------------------------------- */
 .pop {
     border: 1px solid black;
     font-size: 15px;
@@ -278,20 +267,16 @@ html, body {
     box-shadow: 4px 4px 2px #777;
 }
 
-.hidden {
-    display: none;
-}
-
 .form-horizontal .control-label {
     width: 75px;
 }
 
 .form-horizontal .controls {
-margin-left: 90px;
+    margin-left: 90px;
 }
 
 .form-horizontal .control-group {
-margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 
 legend {
@@ -299,5 +284,15 @@ legend {
 }
 
 legend+.control-group {
-margin-top: 5px;
+    margin-top: 5px;
+}
+
+/* For room label when hovering over a classified space
+-------------------------------------------------------- */
+#room_label {
+    display: none;
+    position: absolute;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    color: white;
 }
