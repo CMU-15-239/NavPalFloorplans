@@ -37,9 +37,9 @@ p {
 	overflow: hidden;
 }
 
+/* darkens floorplans to indicate preprocessor is running */
 .loading {
 	-webkit-filter: invert(0.4);
-
 }
 
 .thumbnail {
@@ -102,12 +102,9 @@ p {
 	}
 
 /* used for image popout when hovering over thumbnail*/
-
 .popover {
 	max-width: 560px;
 	max-height: 410px;
-	opacity: .99;
-    filter: alpha(opacity=1000); /* msie */
     z-index: 2000000002;
 }
 
