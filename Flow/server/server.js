@@ -194,7 +194,7 @@ app.post('/register', function(request, response) {
 //-------------------
 
 // This is Dan's starter code
-app.post('/getBuildingsRefs', function(request, response) {
+app.post('/getBuildingRefs', function(request, response) {
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
       //console.log("---user exists");
