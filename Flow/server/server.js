@@ -193,12 +193,7 @@ app.post('/register', function(request, response) {
 // Application Routes
 //-------------------
 
-/**
- * Summary: Route to login an existing user.
- * request: {username : String, password : String}
- * response: {buildings : [{buildingId : String, buildingName : String}]}
- * httpCode: success 200, unauthorized 401
-**/
+// This is Dan's starter code
 app.post('/getBuildingsRefs', function(request, response) {
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
