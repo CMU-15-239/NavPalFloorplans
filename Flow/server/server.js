@@ -194,6 +194,27 @@ app.post('/register', function(request, response) {
 //-------------------
 
 /**
+ * Summary: Route to login an existing user.
+ * request: {username : String, password : String}
+ * response: {buildings : [{buildingId : String, buildingName : String}]}
+ * httpCode: success 200, unauthorized 401
+**/
+app.post('/getBuildings', function(request, response) {
+  flowDB.getUserById(request.session.userId, function(user) {
+    if(Util.exists(user)) {
+      //console.log("---user exists");
+      return response.send({
+         buildings: user.getBuildingRefs()
+      });
+    } else {
+       console.log("---unable to find user");
+       response.status(401);
+       return response.send({errorCode: 401});
+    }
+  });
+});
+
+/**
  * Summary: Route to change the current user's password.
  * request: {newPassword : String}
  * response: {errorCode : Number}
