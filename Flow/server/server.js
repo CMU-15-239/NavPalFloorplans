@@ -199,7 +199,7 @@ app.post('/register', function(request, response) {
  * response: {buildings : [{buildingId : String, buildingName : String}]}
  * httpCode: success 200, unauthorized 401
 **/
-app.post('/getBuildings', function(request, response) {
+app.post('/getBuildingsRefs', function(request, response) {
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
       //console.log("---user exists");
