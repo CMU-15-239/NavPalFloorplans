@@ -193,22 +193,6 @@ app.post('/register', function(request, response) {
 // Application Routes
 //-------------------
 
-// This is Dan's starter code
-app.post('/getBuildingsRefs', function(request, response) {
-  flowDB.getUserById(request.session.userId, function(user) {
-    if(Util.exists(user)) {
-      //console.log("---user exists");
-      return response.send({
-         buildings: user.getBuildingRefs()
-      });
-    } else {
-       console.log("---unable to find user");
-       response.status(401);
-       return response.send({errorCode: 401});
-    }
-  });
-});
-
 /**
  * Summary: Route to change the current user's password.
  * request: {newPassword : String}
@@ -428,6 +412,26 @@ app.get('/building', function(request, response) {
    });
 });
 
+/**
+ * Summary: Route to get the buildingRefs.
+ * request: void
+ * response: buildings :  [{name: String, id: String}]
+ * errorCode: success 0, unauthorized 401
+ * httpCode: success 200, unauthorized 401
+**/
+app.get('/buildingsRefs', function(request, response) {
+  flowDB.getUserById(request.session.userId, function(user) {
+    if(Util.exists(user)) {
+      response.status(200);
+      return response.send({
+         buildings: user.getBuildingRefs()
+      });
+    } else {
+       response.status(401);
+       return response.send({errorCode: 401});
+    }
+  });
+});
 
 // =========== PREPROCESSOR ==========
 /**
