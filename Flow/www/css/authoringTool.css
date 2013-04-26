@@ -70,15 +70,18 @@ body {
     background-color: #6E6E6E;
 }
 
+/* selected tool */
 .toolIcon.active {
     background-color: #353535;
 }
 
+/* container for save and export buttons */
 #saveExport {
     position: absolute;
     bottom: 5px;
 }
 
+/* styles for save and export buttons */
 .btn-saveExport {
     margin: 5px 2.5px;
     width: 57px;
@@ -254,7 +257,8 @@ body {
 }
 
 
-/* For popup forms for authoring tool
+/* For popup forms for authoring tool, mostly to
+   override bootstrap default form styles
 -------------------------------------------------- */
 .pop {
     border: 1px solid black;

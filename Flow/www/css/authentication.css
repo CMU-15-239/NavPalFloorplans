@@ -1,8 +1,14 @@
+/*
+    Styles for authentication page
+    Written by Daniel Muller
+*/
+
 #formRow {
 	text-align:center;
 	padding-top: 30px;
 }
 
+/* override for bootstrap defauls t*/
 .authentication-btn {
 	width: 220px;
 	padding-left: 0px;
