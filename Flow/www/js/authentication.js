@@ -100,6 +100,10 @@ $("#registrationButton").click(function() {
 		matchPasswords.addClass('error');
 		registrationPasswordInfo.removeClass('hidden').text('Passwords do not match');
 	}
+	else if (!util.isValidInput(registrationPass)) {
+		matchPasswords.addClass('error');
+		registrationPasswordInfo.removeClass('hidden').text('Not a valid password.');
+	}
 	// send post request to server with username and password
 	else {
 		$(this).spin('small').addClass('disabled');

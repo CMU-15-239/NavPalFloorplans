@@ -53,10 +53,10 @@
       <ul class="nav nav-tabs">
         <li class="active"><a href="#buildingsTab" data-toggle="tab">Buildings</a></li>
         <li><a href="#passwordTab" data-toggle="tab">Change Password</a></li>
-        <li><a href="#deleteAccountTab" data-toggle="tab">Delete Account</a></li>
       </ul>
-      <div class="tab-content">
-        <div id="buildingsTab" class="tab-pane active">
+      <div class="tab-content container">
+        <div id="buildingsTab" class="tab-pane active row">
+          <div class="span12">
           <a href="floorUploads.html">
             <button href="floorUploads.html" class="btn btn-large btn-block" type="button">
             Create New Building
@@ -71,14 +71,37 @@
 
             </tbody>
           </table>
-        </div>
+        </div></div>
         <div id="passwordTab" class="tab-pane">
-          <div class="subhead"><h2>Change Your Password</h2></div>
-          <p>inputs here</p>
-        </div>
-        <div id="deleteAccountTab" class="tab-pane">
-          <div class="subhead"><h2>Delete Account</h2></div>
-          <p>inputs here</p>        
+          <div class="subhead"><h2>Change Your Password</h2></div></br></br>
+          <form class="form-horizontal"><fieldset>
+
+          <!-- Form Name -->
+              <!-- Password input-->
+              <div class="control-group newPasswordForm">
+                <label class="control-label">New Password</label>
+                <div class="controls">
+                  <input id="newPassword" name="newPassword" type="password" placeholder="" class="input-xlarge" required="">
+                </div>
+              </div>
+              <!-- Confirm Password input-->
+              <div class="control-group newPasswordForm">
+                <label class="control-label">Confirm Password</label>
+                <div class="controls">
+                  <input id="confirmPassword" name="confirmPassword" type="password" placeholder="" class="input-xlarge" required="">
+                  <div id="passwordInfo" class="help-block hidden"></div>
+                </div>
+              </div>
+              <!-- Submit -->
+              <div class="control-group">
+                <label class="control-label"></label>
+                <div class="controls">
+                  <div id="submitChange" name="submitChange" class="btn input-xlarge">Submit</div>
+                </div>
+              </div>
+
+          </fieldset></form>
+
         </div>
       </div>
     </div><!-- /.tabbable -->
@@ -88,60 +111,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./js/jquery.js"></script>
     <script src="./js/bootstrap/bootstrap.min.js"></script>
-    <script>
-    $(document).ready(function() {
-        // Initialize tabs and pills
-        $('.note-tabs').tab();
-        function editBuilding() {
-          $.ajax({
-            type: "GET",
-            url: '/building',
-            data: {
-              buildingId: this
-            },
-            success: function(response) {
-              var building = response.building
-              console.log(building);
-              //save in local storage and redirect
-              localStorage.setItem('building', JSON.stringify(building.authoData));
-              window.location = "/authoringTool.html";
-            },
-            error: function() {alert('Something bad happened')}
-          })
-        }
-        function removeBuilding() {
-          console.log(this);
-        }
-        $.ajax({
-          type: "GET",
-          url: '/buildingRefs',
-          success: function(response) {
-            var buildings = response.buildings
-            console.log(buildings);
-            for (var i = 0; i < buildings.length; i++) {
-              var building = buildings[i]
-              console.log(building.name);
-              var tableRow = $('<tr></tr>')
-              var number = $('<td></td>').text(i);
-              var name = $('<td></td>').text(building.name);
-              var edit = $('<td></td>').html('<div class="btn btn-info">Edit</div>');
-              edit.click(editBuilding.bind(building.id))
-              var remove = $('<td></td>').html('<div class="btn btn-danger">Remove</div>');
-              remove.click(removeBuilding.bind(building.id))
-              tableRow.append(number);
-              tableRow.append(name);
-              tableRow.append(edit);
-              tableRow.append(remove);
-              $('#buildings').append(tableRow);
-            };
-          },
-          error: function(error) {
-            alert('there was an error')
-            console.log(error);
-          }
-        });
-      });
-    </script>
+    <script src="./js/image/spin.min.js"></script>
+    <script src="./js/image/jquery.spin.js"></script>
+    <script src="./js/lib/Util.js"></script>
+    <script src="./js/account.js"></script>
 
   </body>
 </html>

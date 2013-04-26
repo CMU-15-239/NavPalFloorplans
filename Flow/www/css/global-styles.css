@@ -205,12 +205,16 @@ body > .navbar .brand:hover {
     padding-top: 0;
   }
 
+  .container {
+        padding: 10px 10px 0px 10px;
+  }
+
   /* Widen masthead and social buttons to fill body padding */
   .jumbotron {
-    padding: 40px 20px;
+    padding: 40px 0px 30px 0px;
   }
   .masthead h1 {
-    font-size: 90px;
+    font-size: 70px;
   }
   .masthead p,
   .masthead .btn {
@@ -218,6 +222,14 @@ body > .navbar .brand:hover {
   }
   .instructions .span4 {
     margin-bottom: 40px;
+  }
+
+  .masthead .btn {
+    padding: 15px;
+  }
+
+  p, .masthead .btn {
+    font-size: 18px;
   }
 }
 
@@ -241,8 +253,7 @@ body > .navbar .brand:hover {
     font-size: 18px;
   }
   .jumbotron .btn {
-    display: block;
-    margin: 0 auto;
+    margin: 5px auto 0px auto;
   }
 
   /* center align subhead text like the masthead */
