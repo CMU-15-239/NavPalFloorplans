@@ -236,6 +236,36 @@ Line.prototype.otherPoint = function(point) {
 	}
 };
 
+Line.prototype.getPointsRep = function() {
+  var pts = [];
+  
+  var xr = Math.min(this.p1.x, this.p2.x);
+  var pt;
+  while((pt = this.getYAtX(xr)) !== null) {
+    pts.push(pt);
+    xr++;
+  }
+  
+  return pts;
+};
+
+Line.prototype.getYAtX = function(xr) {
+  var minPt = this.p1;
+  var maxPt = this.p2;
+  if(maxPt.x < minPt.x) {
+    minPt = this.p2;
+    maxPt = this.p1;
+  }
+  
+  if(minPt.x <= xr && xr <= maxPt.x) {
+    var slope = this.getSlope();
+    var dx = xr - minPt.x;
+    var dy = slope * dx;
+    return new Point(xr, minPt.y + dy);
+  }
+  
+  return null;
+};
 
 /**
  * Summary: Get the magnitude of the line (i.e. its length).

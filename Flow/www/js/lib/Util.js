@@ -1,4 +1,4 @@
-window.util = function(){ }
+window.util = {}
 
 window.util.exists = function(obj){
     return obj !== undefined && obj !== null;
@@ -110,6 +110,19 @@ window.util.isValidInput = function(input) {
         return "";
     }
 
+};
+
+window.util.pointNearLines = function(lines, point, radius) {
+  var numLines = 0;
+  if(util.exists(lines)) {
+    for(var l = 0; l < lines.length; l++) {
+      if(lines[l].pointNearLine(point, radius)) {
+        numLines++;
+      }
+    }
+  }
+  
+	return numLines;
 };
 
 window.util.distanceSquared = function(x1, y1, x2, y2) {

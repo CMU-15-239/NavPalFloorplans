@@ -30,14 +30,17 @@ function importFloorGraph(simpleFloorGraph) {
  * Returns: undefined
 **/
 function FloorGraph(floor, callback, callbackVars) {
-	this.name = floor.name;
-  this.imageId = floor.imageId;
-  this.imageScale = floor.imageScale;
+	this.name;
+  this.imageId;
+  this.imageScale;
+  this.width;
   
   this.spaces = [];
 	this.psws = [];
 	this.floorConnections = [];
   this.landmarks = [];
+  
+  this.tempObstacles = [];
   
   this.typeForSpaceNode = "space";
   this.typeForPswNode = "psw";
@@ -45,19 +48,21 @@ function FloorGraph(floor, callback, callbackVars) {
   this.typeforLandmarkNode = "landmark";
 	
   if(util.exists(floor)) {
+    this.name = floor.name;
     this.imageId = floor.imageId;
     this.imageScale = floor.imageScale;
     this.width = floor.width;
+    
     if(util.exists(floor.spaces)) {
       for(var s = 0; s < floor.spaces.length; s++) {
-        console.log("Adding space " + s + "...");
+        //console.log("Adding space " + s + "...");
         this.addSpaceNode(floor.spaces[s]);
       }
     }
     
     if(util.exists(floor.landmarks)) {
       for(var l = 0; l < floor.landmarks.length; l++) {
-        console.log("Adding landmark " + l + "...");
+        //console.log("Adding landmark " + l + "...");
         this.addLandmarkNode(floor.landmarks[l]);
       }
     }
@@ -131,7 +136,7 @@ FloorGraph.prototype.addSpaceNode = function(space) {
     //first check and add doors
     //var psws = [];
     //var pswIds = [];
-    var spaceNode = new SpaceNode(this.typeForSpaceNode, space.type, space.label, [], space.walls);
+    var spaceNode = new SpaceNode(this.typeForSpaceNode, space.type, space.label, [], space.walls, this.width);
     for(var d = 0; d < space.doors.length; d++) {
       var lineRep = space.doors[d];
       var door = this.getPswNodeByLine(lineRep);
@@ -143,10 +148,12 @@ FloorGraph.prototype.addSpaceNode = function(space) {
       
       //psws.push(newDoor);
       //pswIds.push(newDoor.id);
-      door.addEdge(spaceNode);
+      spaceNode.addEdge(door);
     }
     
     this.spaces.push(spaceNode);
+  } else if(space.type === "obstacle") {
+    
   }
 };
 
@@ -194,8 +201,8 @@ FloorGraph.prototype.addFloorConnectionNode = function(floorConnection, nodeId) 
       if(this.name === "2") {
         var sIdx = spaceNode.edges.indexOf(floorConnectionNode.id);
         var fIdx = floorConnectionNode.edges.indexOf(spaceNode.id);
-        console.log("floorConnection edge success: " + (sIdx !== -1)
-          + " " + (fIdx !== -1));
+        //console.log("floorConnection edge success: " + (sIdx !== -1)
+        //  + " " + (fIdx !== -1));
       }
     }
     

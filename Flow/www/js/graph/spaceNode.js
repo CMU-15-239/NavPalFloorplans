@@ -27,11 +27,15 @@ function importSpaceNode(simpleSpaceNode) {
 				walls: List of Line objects, walls of SpaceNode (unordered)
  * Returns: undefined
 **/
-function SpaceNode(type, spaceType, label, edges, walls) {
+function SpaceNode(type, spaceType, label, edges, walls, width) {
 	this.spaceType = spaceType;
 	this.label = label;
+  this.grid = null;
 	
-	if(util.exists(walls)) {this.walls = walls;}
+	if(util.exists(walls)) {
+    this.walls = walls;
+    this.grid = new Grid(this.walls, width);
+  }
 	else {this.walls = [];}
 	
 	FloorNode.call(this, type, edges, type);
@@ -59,6 +63,11 @@ SpaceNode.prototype.toOutput = function() {
 		label: this.label,
 		walls: outWalls
 	};
+};
+
+SpaceNode.prototype.addEdge = function(otherFloorNode) {
+  FloorNode.prototype.addEdge.call(this, otherFloorNode);
+  this.grid.addEdge(otherFloorNode);
 };
 
 SpaceNode.prototype.equals = function(otherSpaceNode) {
