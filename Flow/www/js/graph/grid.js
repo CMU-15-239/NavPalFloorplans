@@ -66,8 +66,6 @@ Grid.prototype.addEdge = function(otherNode) {
       if(util.exists(this.layout[y]) && x < this.layout[y].length) {
         this.layout[y][x] = otherNode.id;
       }
-    } else {
-      console.log("edge not in layout");
     }
   }
 };
@@ -75,23 +73,25 @@ Grid.prototype.addEdge = function(otherNode) {
 Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
   var inShape = false;
   var filled = false;
-  var row = 1;
+  var row = 10;
   layout[at] = [];
   for(var xr = 0; xr < width; xr++) {
-    var numLines = util.pointNearLines(this.walls, new Point(xr, y), 0);
+    var numLines = this.pointNearLines(this.walls, new Point(xr, y), 0.5);
     //console.log(numLines);
     if(numLines > 0) {
       if(numLines === 1) {
-        inShape = !inShape
+        inShape = !inShape;
+        if(y == row) {
+          console.log("inShape: " + inShape + " " + xr + ", " + y);
+        }
       } else {
         inShape = false;
-        console.log("numLines: " + numLines + " " + xr + ", " + y);
+        if(y == row) {
+          console.log("numLines: " + numLines + " " + xr + ", " + y);
+        }
       }
       
       layout[at][xr] = outSign; //walls are obstacles too!
-      if(y == row) {
-        console.log('out1 ' + xr + ', ' + y);
-      }
     } else if(inShape) {
       if(y == row) {
         console.log('numLines: ' + numLines + ' in ' + xr + ', ' + y);
@@ -107,6 +107,38 @@ Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
   }
   
   return filled;
+};
+
+Grid.prototype.isDifferentLine = function(line, lines) {
+  if(line.isParallelToOne(lines)) {return false;}
+  
+  var lineLeftMostX = Math.min(line.p1.x, line.p2.x);
+  
+  for(var l = 0; l < lines.length; l++) {
+    var thisLeftMostX = Math.min(lines[l].p1.x, lines[l].p2.x);
+    if(lineLeftMostX === thisLeftMostX) {
+      return false;
+    }
+  }
+  
+  return true;
+};
+
+Grid.prototype.pointNearLines = function(lines, point, radius) {
+  var nearLines = [];
+  if(util.exists(lines)) {
+    for(var l = 0; l < lines.length; l++) {
+      if(lines[l].pointNearLine(point, radius)) {
+        
+        if(this.isDifferentLine(lines[l], nearLines)) {
+          nearLines.push(lines[l]);
+        }
+      }
+    }
+  }
+  
+  
+	return nearLines.length;
 };
 
 Grid.prototype.toOutput = function() {

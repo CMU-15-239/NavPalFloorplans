@@ -222,6 +222,17 @@ Line.prototype.getSlope = function() {
 	return -1.0 * this.a / b;
 };
 
+Line.prototype.getSlope2 = function() {
+  var leftPt = this.p1;
+  var rightPt = this.p2;
+  if(leftPt.x > rightPt.x) {
+    leftPt = this.p2;
+    rightPt = this.p1;
+  }
+  
+  return (rightPt.y - leftPt.y)/(rightPt.x - leftPt.x);
+};
+
 /**
  * Summary: Assuming that the given point is one endpoint of the line, return the other endpoint.
  * Parameters: point: One endpoint of the line.
@@ -239,11 +250,25 @@ Line.prototype.otherPoint = function(point) {
 Line.prototype.getPointsRep = function() {
   var pts = [];
   
-  var xr = Math.min(this.p1.x, this.p2.x);
-  var pt;
-  while((pt = this.getYAtX(xr)) !== null) {
-    pts.push(pt);
-    xr++;
+  if(this.getSlope2() === Infinity) {
+    //is a vertical line
+    var minY = this.p1.y;
+    var maxY = this.p2.y;
+    if(maxY < minY) {
+      minY = this.p2.y;
+      maxY = this.p1.y;
+    }
+    
+    for(var yr = minY + 1; yr < maxY; yr++) {
+      pts.push(new Point(this.p1.x, yr));
+    }
+  } else {
+    var xr = Math.min(this.p1.x, this.p2.x);
+    var pt;
+    while((pt = this.getYAtX(xr)) !== null) {
+      pts.push(pt);
+      xr++;
+    }
   }
   
   return pts;
@@ -394,4 +419,18 @@ Line.prototype.containsPoint = function(pointList, point) {
 	}
 	return false;
 };
+
+Line.prototype.isParallelTo = function(otherLine) {
+  return this.getSlope2() === otherLine.getSlope2();
+};
+
+Line.prototype.isParallelToOne = function(lines) {
+  for(var l = 0; l < lines.length; l++) {
+    if(this.isParallelTo(lines[l])) {
+      return true;
+    }
+  }
+  
+  return false;
+}
 

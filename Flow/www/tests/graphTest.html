@@ -132,10 +132,10 @@ building1.floors.push(floor1_1);
 building1.floors.push(floor1_2);
 building1.floorConnections = [fc1_1, fc1_2, fc1_3, fc1_4];
 
-//var g1 = new BuildingGraph(building1);
+var g1 = new BuildingGraph(building1);
 
 var $out = $("#testOutput");
-/*
+
 for(var f = 0; f < g1.floors.length; f++) {
   $out.append('<br><br><h2>Floor: ' + f + '</h2>');
   var spaces = g1.floors[f].spaces;
@@ -145,12 +145,7 @@ for(var f = 0; f < g1.floors.length; f++) {
     space.grid.draw($out);
   }
   
-}*/
-
-$out.html('');
-
-var grid = new Grid(building1.floors[0].spaces[0].walls, 30);
-grid.draw($out);
+}
 
 
 
