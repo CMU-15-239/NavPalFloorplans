@@ -209,7 +209,7 @@ Line.prototype.breakIntoTwo = function(p) {
 };
 
 /**
- * Summary: Get the slop of the line.
+ * Summary: Get the slope of the line. (approximates vertical lines to large numbers)
  * Parameters: this
  * Returns: The slope of the line.
 **/	
@@ -222,6 +222,11 @@ Line.prototype.getSlope = function() {
 	return -1.0 * this.a / b;
 };
 
+/**
+  * Summary: Get the slope of the line.
+  * Parameters: void
+  * Returns: int (Infinity if it is a vertical line).
+**/
 Line.prototype.getSlope2 = function() {
   var leftPt = this.p1;
   var rightPt = this.p2;
@@ -247,6 +252,11 @@ Line.prototype.otherPoint = function(point) {
 	}
 };
 
+/**
+  * Summary: Creates a sampleing of the line at regular intervals.
+  * Parameters: void
+  * Returns: [Point], Array of Points
+**/
 Line.prototype.getPointsRep = function() {
   var pts = [];
   
@@ -274,6 +284,12 @@ Line.prototype.getPointsRep = function() {
   return pts;
 };
 
+/**
+  * Summary: Finds the y values for the given x values.
+        If it is a vertical line returns the top point.
+  * Parameters: xr : int
+  * Returns: Point
+**/
 Line.prototype.getYAtX = function(xr) {
   var minPt = this.p1;
   var maxPt = this.p2;
@@ -302,6 +318,7 @@ Line.prototype.magnitutde = function() {
 	var dy = Math.abs(this.p1.y - this.p2.y);
 	return Math.sqrt(dx * dx + dy * dy);
 };
+
 
 Line.prototype.pointOfLineIntersection = function(line) {
 	//If they have a common endpoint, they don't intersect in any meaningful way.
@@ -420,13 +437,23 @@ Line.prototype.containsPoint = function(pointList, point) {
 	return false;
 };
 
+/**
+  * Summary: Determines if this is parallel to the given line.
+  * Parameters: otherLine: Line
+  * Returns: boolean
+**/
 Line.prototype.isParallelTo = function(otherLine) {
   return this.getSlope2() === otherLine.getSlope2();
 };
 
-Line.prototype.isParallelToOne = function(lines) {
-  for(var l = 0; l < lines.length; l++) {
-    if(this.isParallelTo(lines[l])) {
+/**
+  * Summary: Determines if this is parallel to one of the given lines.
+  * Parameters: otherLines: [Line], Array of Lines
+  * Returns: boolean
+**/
+Line.prototype.isParallelToOne = function(otherLines) {
+  for(var l = 0; l < otherLines.length; l++) {
+    if(this.isParallelTo(otherLines[l])) {
       return true;
     }
   }

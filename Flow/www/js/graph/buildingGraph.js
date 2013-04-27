@@ -1,4 +1,11 @@
-//graphConstructor.js
+/*
+BuildingGraph.js
+By Vansi Vallabhaneni
+*/
+
+/**
+  * Temporary globals for constructing a graph.
+**/
 var graphGlobals = {
   edgeWeights: null
 };
@@ -11,17 +18,20 @@ function BuildingGraph(building) {
   this.edgeWeights = graphGlobals.edgeWeights = new EdgeWeights();
   
   
-  this.typeforFloorConnectionNodeRef = "floorConnection";
+  this.typeforFloorConnectionNodeRef = "floorConnectionRef";
   
   for(var f = 0; f < building.floors.length; f++) {
-    //console.log("Adding floor " + f + " " + building.floors[f].name + "...");
     this.addFloor(building.floors[f]);
   }
   
   this.id = "buildingGraph_"+JSON.stringify(this).hashCode();
-  //console.log("constructing building complete");
 };
 
+/**
+  * Summary: Constructs a floor graph and floor connection nodes, adding it to this.
+  * Parameter: floor: Floor
+  * Returns: undefined
+**/
 BuildingGraph.prototype.addFloor = function(floor) {
   var floorGraph = new FloorGraph(floor);
   this.floors.push(floorGraph);
@@ -33,14 +43,17 @@ BuildingGraph.prototype.addFloor = function(floor) {
   }
 };
 
+/**
+  * Summary: Adds or updates an existing floor connection reference with the floor graph id.
+  * Parameter: floorConnection: FloorConnection,
+                floorGraphId: String
+  * Returns: undefined
+**/
 BuildingGraph.prototype.addFloorConnectionRef = function(floorConnection, floorGraphId) {
   var floorConnectionRef;
   if(util.exists(floorConnection)) {
-    //console.log("Adding floor connection: ");
-    //console.log(floorConnection);
-    
     var index = this.indexOfFloorConnectionRef(floorConnection);
-    //console.log("sadf");
+    
     if(index != -1) {
       floorConnectionRef = this.floorConnectionRefs[index];
       floorConnectionRef.edges.push(floorGraphId);
@@ -56,6 +69,11 @@ BuildingGraph.prototype.addFloorConnectionRef = function(floorConnection, floorG
   return floorConnectionRef;
 };
 
+/**
+  * Summary: Finds the index of the floor connection reference which corresponds to the given floor connection.
+  * Parameter: otherFloorConnection: FloorConnection
+  * Returns: int, -1 if none exists
+**/
 BuildingGraph.prototype.indexOfFloorConnectionRef = function(otherFloorConnection) {
   for(var fc = 0; fc < this.floorConnectionRefs.length; fc++) {
     if(this.floorConnectionRefs[fc].equalsFloorConnection(otherFloorConnection)) {
@@ -66,6 +84,11 @@ BuildingGraph.prototype.indexOfFloorConnectionRef = function(otherFloorConnectio
   return -1;
 };
 
+/**
+  * Summary: Constructs a JSON object from this.
+  * Parameters: void
+  * Returns: Object
+**/
 BuildingGraph.prototype.toOutput = function() {
   var outFloors = [];
   for(var f = 0; f < this.floors.length; f++) {

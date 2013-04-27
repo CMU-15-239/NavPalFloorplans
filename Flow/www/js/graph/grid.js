@@ -10,7 +10,6 @@ function Grid(walls, width) {
   
   if(util.exists(this.walls) && this.walls.length > 0) {
     var startingPt = this.walls[0].p1;
-    //console.log(startingPt);
     if(util.exists(startingPt)) {
       var tempLayout = [];
       var topLen = -1;
@@ -24,18 +23,13 @@ function Grid(walls, width) {
         topLen--;
       }
       
-      //console.log(topLen);
-      
       
       while(this.fill(startingPt.y + bottomLen, tempLayout, bottomLen,
               width, inSign, outSign)) {
         bottomLen++
       }
       
-      //console.log(bottomLen);
-      
       for(var i = topLen+1; i <= bottomLen; i++) {
-        //console.log(tempLayout[i]);
         this.layout.push(tempLayout[i]);
       }
       
@@ -77,31 +71,18 @@ Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
   layout[at] = [];
   for(var xr = 0; xr < width; xr++) {
     var numLines = this.pointNearLines(this.walls, new Point(xr, y), 0.5);
-    //console.log(numLines);
     if(numLines > 0) {
       if(numLines === 1) {
         inShape = !inShape;
-        if(y == row) {
-          console.log("inShape: " + inShape + " " + xr + ", " + y);
-        }
       } else {
         inShape = false;
-        if(y == row) {
-          console.log("numLines: " + numLines + " " + xr + ", " + y);
-        }
       }
       
       layout[at][xr] = outSign; //walls are obstacles too!
     } else if(inShape) {
-      if(y == row) {
-        console.log('numLines: ' + numLines + ' in ' + xr + ', ' + y);
-      }
       layout[at][xr] = inSign;
       filled = true;
     } else {
-      if(y == row) {
-        console.log('numLines: ' + numLines + ' out2 ' + xr + ', ' + y);
-      }
       layout[at][xr] = outSign;
     }
   }
