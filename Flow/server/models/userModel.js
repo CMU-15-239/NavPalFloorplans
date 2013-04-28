@@ -214,7 +214,7 @@ UserSchema.methods.addBuildingById = function(userBuildingId, callback) {
 **/
 UserSchema.methods.deleteBuilding = function(buildingId, callback) {
   var user;
-  if(this.hadBuilding(buildingId)) {
+  if(this.hasBuilding(buildingId)) {
     BuildingController.findOne({userBuildingId: buildingId}, function(buildingObj) {
       if(Util.exists(buildingObj)) {
         var idx = user.indexOfBuildingRef(buildingObj.getUserBuildingId());
