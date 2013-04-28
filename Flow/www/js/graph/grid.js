@@ -3,22 +3,24 @@ grid.js
 By Vansi Vallabhaneni
 */
 
-function Grid(walls, width) {
+function Grid(spaceNode, width) {
   this.topLeftPt;
   this.layout = [];
-  this.walls = walls;
+  this.spaceNode = spaceNode;
+  this.walls = [];
   
   var inSign = '1';
   var outSign = '0';
   
-  if(util.exists(this.walls) && this.walls.length > 0) {
+  if(util.exists(spaceNode) && util.exists(spaceNode.walls) && spaceNode.walls.length > 0) {
+    this.walls = spaceNode.walls;
     var startingPt = this.walls[0].p1;
     if(util.exists(startingPt)) {
       var tempLayout = [];
       var topLen = -1;
       var bottomLen = 1;
       
-      
+      //this is a special case since the starting point may be a vertex
       this.fill(startingPt.y + 0, tempLayout, 0, width, inSign, outSign);
       
       while(this.fill(startingPt.y + topLen, tempLayout, topLen,
@@ -32,13 +34,17 @@ function Grid(walls, width) {
         bottomLen++
       }
       
-      for(var i = topLen+1; i <= bottomLen; i++) {
+      console.log(bottomLen);
+      
+      for(var i = topLen+1; i < bottomLen; i++) {
         this.layout.push(tempLayout[i]);
       }
       
       this.topLeftPt = new Point(0, startingPt.y + topLen + 1);
     }
   }
+  
+  this.spaceNode = null;
 }
 
 /**
@@ -76,23 +82,38 @@ Grid.prototype.addEdge = function(otherNode) {
                 width: int
                 inSign: String
                 outSign: String
-  * Returns: undefined
+  * Returns: boolean, if it filled anything
 **/
 Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
-  var inShape = false;
   var filled = false;
-  var row = 10;
+  var row = 11;
   layout[at] = [];
+  
+  var wallXs = [];
+  
   for(var xr = 0; xr < width; xr++) {
-    var numLines = this.pointNearLines(this.walls, new Point(xr, y), 0.5);
-    if(numLines > 0) {
-      if(numLines === 1) {
-        inShape = !inShape;
-      } else {
-        inShape = false;
+    if(this.spaceNode.pointOnWalls(new Point(xr, y), 0.5)) {
+      if(wallXs.length > 0 && (xr - wallXs[wallXs.length-1]) === 1) {
+        wallXs.pop();
       }
       
-      layout[at][xr] = outSign; //walls are obstacles too!
+      wallXs.push(xr);
+    }
+  }
+  
+  console.log("y: " + y + " x: " + JSON.stringify(wallXs));
+  
+  var inShape = false;
+  if(wallXs.length % 2 !== 0) {
+    wallXs.pop();
+  }
+  
+  var compareIdx = 0;
+  for(var xr = 0; xr < width; xr++) {
+    if(xr === wallXs[compareIdx]) {
+      inShape = !inShape;
+      layout[at][xr] = outSign;
+      compareIdx++;
     } else if(inShape) {
       layout[at][xr] = inSign;
       filled = true;
@@ -112,7 +133,7 @@ Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
 **/
 Grid.prototype.isDifferentLine = function(line, lines) {
   if(line.isParallelToOne(lines)) {return false;}
-  
+    
   var lineLeftMostX = Math.min(line.p1.x, line.p2.x);
   
   for(var l = 0; l < lines.length; l++) {
@@ -137,7 +158,7 @@ Grid.prototype.pointNearLines = function(lines, point, radius) {
   if(util.exists(lines)) {
     for(var l = 0; l < lines.length; l++) {
       if(lines[l].pointNearLine(point, radius)) {
-        
+      
         if(this.isDifferentLine(lines[l], nearLines)) {
           nearLines.push(lines[l]);
         }

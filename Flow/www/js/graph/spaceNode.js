@@ -34,7 +34,7 @@ function SpaceNode(type, spaceType, label, edges, walls, width) {
 	
 	if(util.exists(walls)) {
     this.walls = walls;
-    this.grid = new Grid(this.walls, width);
+    this.grid = new Grid(this, width);
   }
 	else {this.walls = [];}
 	
