@@ -79,44 +79,6 @@ function configureExpress(app) {
     });
 }
 
-// =========== ROUTES ==========
-
-// creates three text files required by navPal android app
-app.post('/text', function (request, response) {
-    var map = request.body.map;
-    var room = request.body.room;
-    var id = request.body.id;
-    if (map !== undefined && map !== null) {
-        fs.writeFile('../www/text/' + id + '_map.txt', map);
-    }
-    if (room !== undefined && room !== null) {
-        fs.writeFile('../www/text/' + id + '_room.txt', room);
-    }
-    if (sector !== undefined && sector !== null) {
-        fs.writeFile('./www/text/' + id + '_sector.txt', sector);
-    }
-    return response.send('sucess!'); 
-});
-
-// creates json of graph representation of floorplan
-app.post('/graph', function (request, response) {
-    var graph = request.body.graph;
-    var width = request.body.width;
-    var height = request.body.height;
-    var id = request.body.id;
-    if (graph !== undefined && graph !== null) {
-		console.log("************************");
-		console.log(graph.spaceNodes.length);
-        fs.writeFile('../www/text/'+ id + '_graph.txt', JSON.stringify(graph));
-      if(width !== undefined && width !== null && height !== undefined && height !== null
-        && graph.spaceNodes !== undefined && graph.spaceNodes !== null) {
-        
-        var sector = Sector.generateSectorStr(graph.spaceNodes, width, height);
-        fs.writeFile('../www/text/' + id + '_sector.txt', sector);
-      }
-    }
-    return response.send('sucess!');
-});
 
 //-------------------------------
 // User Account Management Routes

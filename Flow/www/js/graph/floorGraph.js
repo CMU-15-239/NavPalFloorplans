@@ -1,5 +1,11 @@
-//floorGraph.js
+/*
+floorGraph.js
+By Vansi Vallabhaneni
+*/
 
+/**
+  * Imports a FloorGraph, for debugging, is outdated
+**/
 function importFloorGraph(simpleFloorGraph) {
   if(util.exists(simpleFloorGraph)) {
     var floorGraph = new FloorGraph();
@@ -133,9 +139,6 @@ FloorGraph.prototype.getPswNodeByLine = function(line) {
 **/
 FloorGraph.prototype.addSpaceNode = function(space) {
   if(space.type === "room" || space.type === "hallway") {
-    //first check and add doors
-    //var psws = [];
-    //var pswIds = [];
     var spaceNode = new SpaceNode(this.typeForSpaceNode, space.type, space.label, [], space.walls, this.width);
     for(var d = 0; d < space.doors.length; d++) {
       var lineRep = space.doors[d];
@@ -146,8 +149,6 @@ FloorGraph.prototype.addSpaceNode = function(space) {
         this.psws.push(door);
       }
       
-      //psws.push(newDoor);
-      //pswIds.push(newDoor.id);
       spaceNode.addEdge(door);
     }
     
@@ -181,6 +182,12 @@ FloorGraph.prototype.addLandmarkNode = function(landmark) {
   }
 };
 
+/**
+  * Summary: Adds a new FloorConnectionNode and sets its id to nodeId.
+  * Parameters: floorConnection: FloorConnection
+                nodeId: String
+  * Returns: undefined
+**/
 FloorGraph.prototype.addFloorConnectionNode = function(floorConnection, nodeId) {
   if(util.exists(floorConnection)) {
     var spaceNode = null;
@@ -236,7 +243,9 @@ FloorGraph.prototype.getFloorNodeById = function(id) {
 	return null;
 };
 
-
+/**
+  * Checks Equality, for debugging, is outdated
+**/
 FloorGraph.prototype.equals = function(otherFloorGraph) {
   if(util.exists(otherFloorGraph) && util.exists(otherFloorGraph.spaces)
       && otherFloorGraph.name === this.name

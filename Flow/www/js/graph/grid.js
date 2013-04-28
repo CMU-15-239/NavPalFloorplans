@@ -89,8 +89,9 @@ Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
   var row = 11;
   layout[at] = [];
   
-  var wallXs = [];
+  var wallXs = []; //points of the walls at y
   
+  //generate wallXs
   for(var xr = 0; xr < width; xr++) {
     if(this.spaceNode.pointOnWalls(new Point(xr, y), 0.5)) {
       if(wallXs.length > 0 && (xr - wallXs[wallXs.length-1]) === 1) {
@@ -106,6 +107,7 @@ Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
     wallXs.pop();
   }
   
+  //Fill between the pts in wallXs
   var compareIdx = 0;
   for(var xr = 0; xr < width; xr++) {
     if(xr === wallXs[compareIdx]) {
