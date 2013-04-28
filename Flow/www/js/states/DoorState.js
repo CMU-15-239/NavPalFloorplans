@@ -7,6 +7,8 @@ var DoorState = function(stateMan) {
 DoorState.prototype = new BaseState();
 
 DoorState.prototype.enter = function() {
+	console.log(stateManager.currentFloor.globals.walls);
+	console.log(stateManager.currentFloor.globals.points);
 }
 
 DoorState.prototype.exit = function() {
