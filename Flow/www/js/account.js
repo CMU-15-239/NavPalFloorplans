@@ -11,7 +11,7 @@
 function getUserBuildings() {
   $.ajax({
     type: "GET",
-    url: '/buildingRefs',
+    url: '/buildingsRefs',
     success: function(response) {
       var buildings = response.buildings
       populateUserBuildings(buildings)
@@ -32,16 +32,18 @@ function populateUserBuildings(buildings) {
       var building = buildings[i]
       console.log(building.name);
       var tableRow = $('<tr></tr>').attr('id', building.id)
-      var number = $('<td></td>').text(i).addClass("number");
-      var name = $('<td></td>').text(building.name);
-      var edit = $('<td></td>').html('<div class="btn btn-info">Edit</div>');
-      edit.click(editBuilding.bind(building.id))
-      var remove = $('<td></td>').html('<div class="btn btn-danger">Remove</div>');
-      remove.click(removeBuilding.bind(building.id))
-      tableRow.append(number);
-      tableRow.append(name);
-      tableRow.append(edit);
-      tableRow.append(remove);
+      var numberCell = $('<td></td>').text(i).addClass("number");
+      var nameCell = $('<td></td>').text(building.name);
+      var editButton = $('<div class="btn btn-info">Edit</div>').attr('id','edit'+building.id);
+      editButton.click(editBuilding.bind(building.id));
+      var editCell = $('<td></td>').append(editButton)
+      var removeButton = $('<div class="btn btn-danger">Remove</div>').attr('id','remove'+building.id);
+      removeButton.click(removeBuilding.bind(building.id))
+      var removeCell = $('<td></td>').append(removeButton);
+      tableRow.append(numberCell);
+      tableRow.append(nameCell);
+      tableRow.append(editCell);
+      tableRow.append(removeCell);
       $('#buildings').append(tableRow);
     };
 }
@@ -52,6 +54,7 @@ function populateUserBuildings(buildings) {
  * Returns: redirect to authoring tool
 **/
 function editBuilding() {
+  $("#"+'edit'+this).spin('small','#fff');
   $.ajax({
     type: "GET",
     url: '/building',
@@ -64,7 +67,10 @@ function editBuilding() {
       localStorage.setItem('building', JSON.stringify(building.authoData));
       window.location = "/authoringTool.html";
     },
-    error: function() {alert('Something bad happened')}
+    error: function() {
+      $("#"+'edit'+this).spin(false);
+      alert('An error occurred, please try again.')
+    }.bind(this)
   })
 }
 
@@ -74,15 +80,30 @@ function editBuilding() {
  * Returns: redirect to authoring tool
 **/
 function removeBuilding() {
-  // ajax call to be placed here
-  $("#"+this).remove();
-  // timeout since dom manipulation is async
-  setTimeout(function() {
-    var numberedRows = $('.number');
-    for (var i = 0; i < numberedRows.length; i++) {
-      $(numberedRows[i]).text(i);
-    };
+  $("#"+'remove'+this).spin('small','#fff');
+  $.ajax({
+    type: "GET",
+    url: '/deleteBuilding',
+    data: {
+      buildingId: this
+    },
+    success: function(response) {
+      $("#"+'remove'+this).spin(false);
+      $("#"+this).remove();
+      // timeout since dom manipulation is async
+      setTimeout(function() {
+        var numberedRows = $('.number');
+        for (var i = 0; i < numberedRows.length; i++) {
+          $(numberedRows[i]).text(i);
+        };
+      })
+    }.bind(this),
+    error: function() {
+      $("#"+'remove'+this).spin(false);
+      alert('An error occurred, please try again.')
+    }.bind(this)
   })
+  
 }
 
 function changeUserPassword() {

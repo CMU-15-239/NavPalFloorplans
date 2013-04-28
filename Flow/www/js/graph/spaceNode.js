@@ -1,5 +1,11 @@
-//spaceNode.js
+/*
+spaceNode.js
+By Vansi Vallabhaneni
+*/
 
+/**
+  * Imports a space node, for debugging, is outdated
+**/
 function importSpaceNode(simpleSpaceNode) {
   if(util.exists(simpleSpaceNode)) {
     var spaceNode = new SpaceNode(simpleSpaceNode.type, simpleSpaceNode.spaceType,
@@ -27,11 +33,15 @@ function importSpaceNode(simpleSpaceNode) {
 				walls: List of Line objects, walls of SpaceNode (unordered)
  * Returns: undefined
 **/
-function SpaceNode(type, spaceType, label, edges, walls) {
+function SpaceNode(type, spaceType, label, edges, walls, width) {
 	this.spaceType = spaceType;
 	this.label = label;
+  this.grid = null;
 	
-	if(util.exists(walls)) {this.walls = walls;}
+	if(util.exists(walls)) {
+    this.walls = walls;
+    this.grid = new Grid(this, width);
+  }
 	else {this.walls = [];}
 	
 	FloorNode.call(this, type, edges, type);
@@ -61,32 +71,15 @@ SpaceNode.prototype.toOutput = function() {
 	};
 };
 
-SpaceNode.prototype.equals = function(otherSpaceNode) {
-  if(util.exists(otherSpaceNode) && otherSpaceNode.id === this.id
-      && otherSpaceNode.type === this.type && util.exists(otherSpaceNode.edges)
-      && this.edges.length === otherSpaceNode.edges.length
-      && this.spaceType === otherSpaceNode.spaceType 
-      && util.exists(otherSpaceNode.walls)
-      && this.walls.length === otherSpaceNode.walls.length){
-    
-    for(var e = 0; e < this.edges.length; e++) {
-      if(this.edges[e] !== otherSpaceNode.edges[e]) {
-        return false;
-      }
-    }
-    
-    for(var w = 0; w < this.walls.length; w++) {
-      if(!this.walls[w].equals(otherSpaceNode.walls[w])) {
-        return false;
-      }
-    }
-    
-    return true;
-  }
-  
-  return false;
+/**
+  * Summary: Adds an edge to this space node.
+  * Parameters: otherFloorNode: FloorNode
+  * Returns: undefined
+**/
+SpaceNode.prototype.addEdge = function(otherFloorNode) {
+  FloorNode.prototype.addEdge.call(this, otherFloorNode);
+  this.grid.addEdge(otherFloorNode);
 };
-
 
 /**
  * Summary: Find the first wall that is within radius distance of the given point.
@@ -115,19 +108,14 @@ SpaceNode.prototype.pointInSpaceNode = function(point, width, includeLine) {
 	//If point is very close to a line, then it's only in the space if we should include the walls' lines.
 	if (util.exists(this.pointOnWalls(point, 0.5))) {
 		return (includeLine === true);
-	}
-	else {
-		//console.log("jere");
-		//compile intersecting lines
+	}	else {
 		var inShapeSegments = [];
 		var lastLineIntersected = null;
 		var currP1 = null;
 		for(var xr = 0; xr < width; xr++) {
 			var currRayPt = {x: xr, y: point.y};
-			//console.log("checkingPt: "+JSON.stringify(currRayPt));
 			var intersectLine = this.pointOnWalls(currRayPt, 0.5);
 			if(util.exists(intersectLine)) {
-				//console.log("found intersection pt: "+JSON.stringify(currRayPt));
 				if(!intersectLine.equals(lastLineIntersected)) {
 					lastLineIntersected = intersectLine;
 					if(util.exists(currP1)) {
@@ -138,28 +126,43 @@ SpaceNode.prototype.pointInSpaceNode = function(point, width, includeLine) {
 							return true;
 						}
 						currP1 = null;
-						//console.log("interLine: "+JSON.stringify(inShapeSegments[inShapeSegments.length-1]));
 					}
 					else {
 						currP1 = {x:currRayPt.x, y:currRayPt.y};
-						//console.log("p1: "+JSON.stringify(currP1))
 					}
 				}
 			}
 		}
 		
-		//console.log(inShapeSegments);
-		//determine if point is on one of these intersected lines
 		return false;
-		/*
-		for(var s = 0; s < inShapeSegments.length; s++) {
-			if(inShapeSegments[s].pointNearLine(point, 0)) {
-				return true;
-			}
-		}
-		return false;
-		*/
 	}
 };
 
-
+/**
+  * Checks Equality, for debugging, is outdated
+**/
+SpaceNode.prototype.equals = function(otherSpaceNode) {
+  if(util.exists(otherSpaceNode) && otherSpaceNode.id === this.id
+      && otherSpaceNode.type === this.type && util.exists(otherSpaceNode.edges)
+      && this.edges.length === otherSpaceNode.edges.length
+      && this.spaceType === otherSpaceNode.spaceType 
+      && util.exists(otherSpaceNode.walls)
+      && this.walls.length === otherSpaceNode.walls.length){
+    
+    for(var e = 0; e < this.edges.length; e++) {
+      if(this.edges[e] !== otherSpaceNode.edges[e]) {
+        return false;
+      }
+    }
+    
+    for(var w = 0; w < this.walls.length; w++) {
+      if(!this.walls[w].equals(otherSpaceNode.walls[w])) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  return false;
+};
