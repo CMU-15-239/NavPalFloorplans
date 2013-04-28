@@ -1,22 +1,20 @@
-var DoorState = function(stateMan) {
+var ExitState = function(stateMan) {
 	this.stateManager = stateMan; 
 	this.hoverDoor = undefined;
 	this.needToMoveMouse = false;
 }
 
-DoorState.prototype = new BaseState();
+ExitState.prototype = new BaseState();
 
-DoorState.prototype.enter = function() {
-	console.log(stateManager.currentFloor.globals.walls);
-	console.log(stateManager.currentFloor.globals.points);
+ExitState.prototype.enter = function() {
 }
 
-DoorState.prototype.exit = function() {
+ExitState.prototype.exit = function() {
 	this.hoverDoor = undefined;
 	this.needToMoveMouse = false;
 }
 
-DoorState.prototype.mouseMove = function(event) {
+ExitState.prototype.mouseMove = function(event) {
 	var pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, event.pageY - stateManager.currentFloor.globals.canvas.y));
 	//show hover color if near anything
 	//Snapping to a point takes precedence over snapping to a line
@@ -28,18 +26,18 @@ DoorState.prototype.mouseMove = function(event) {
 	this.stateManager.redraw();
 }
 
-DoorState.prototype.click = function(event) {
+ExitState.prototype.click = function(event) {
 	var pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, event.pageY - stateManager.currentFloor.globals.canvas.y));
 	var snapLine = this.stateManager.aboutToSnapToLine(pointAtCursor);
 	if (snapLine !== null) {
-		snapLine.isDoor = !snapLine.isDoor;
-		if (snapLine.isExit) snapLine.isExit = false;
+		snapLine.isExit = !snapLine.isExit;
+		if (snapLine.isDoor) snapLine.isDoor = false;
 		this.needToMoveMouse = true;
 	}
 	this.stateManager.redraw();
 }
 
-DoorState.prototype.draw = function() {
+ExitState.prototype.draw = function() {
 	if (this.hoverDoor !== undefined) {
 		var color = "orange";
 		this.hoverDoor.draw(color);

@@ -10,7 +10,8 @@ var StateManager = function(building, canvas) {
 		"Landmark": new LandmarkState(this),
 		"Door": new DoorState(this),
 		"Stair": new StairState(this),
-		"Classify": new ClassifyState(this)
+		"Classify": new ClassifyState(this),
+		"Exit": new ExitState(this)
 	};
 	
 	if (building !== undefined) {

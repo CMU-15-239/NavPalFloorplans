@@ -30,7 +30,8 @@ var Sector = require('./sector.js');
 // Set up express server.
 var app = express();
 var child;
-var flowDB;
+GLOBAL.flowDB;
+
 
 /**
  * Summary: Initiazes the express server
@@ -79,43 +80,42 @@ function configureExpress(app) {
     });
 }
 
-// =========== ROUTES ==========
+//-----------
+// API Routes
+//-----------
 
-// creates three text files required by navPal android app
-app.post('/text', function (request, response) {
-    var map = request.body.map;
-    var room = request.body.room;
-    var id = request.body.id;
-    if (map !== undefined && map !== null) {
-        fs.writeFile('../www/text/' + id + '_map.txt', map);
-    }
-    if (room !== undefined && room !== null) {
-        fs.writeFile('../www/text/' + id + '_room.txt', room);
-    }
-    if (sector !== undefined && sector !== null) {
-        fs.writeFile('./www/text/' + id + '_sector.txt', sector);
-    }
-    return response.send('sucess!'); 
+/**
+ * Summary: Public API to get the published building references.
+ * Request: undefined
+ * Response: buildingRefs: [{name: String, id: String}]
+ * httpCode: undefined
+**/
+app.get('/allBuildingRefs', function(request, response) {
+  response.send({buildingRefs: flowDB.getPublicBuildingRefs()});
 });
 
-// creates json of graph representation of floorplan
-app.post('/graph', function (request, response) {
-    var graph = request.body.graph;
-    var width = request.body.width;
-    var height = request.body.height;
-    var id = request.body.id;
-    if (graph !== undefined && graph !== null) {
-		console.log("************************");
-		console.log(graph.spaceNodes.length);
-        fs.writeFile('../www/text/'+ id + '_graph.txt', JSON.stringify(graph));
-      if(width !== undefined && width !== null && height !== undefined && height !== null
-        && graph.spaceNodes !== undefined && graph.spaceNodes !== null) {
-        
-        var sector = Sector.generateSectorStr(graph.spaceNodes, width, height);
-        fs.writeFile('../www/text/' + id + '_sector.txt', sector);
+/**
+ * Summary: Public API to get a published building graph by the building id.
+ * Request: buildingId: String
+ * Response: buildingGraph: Object
+ * httpCode: success 200, building graph not found 404, bad request 400
+**/
+app.get('/buildingGraph', function(request, response) {
+  var buildingId = response.query.buildingId;
+  if(Util.exists(buildingId)) {
+    flowDB.getBuildingGraphById(buildingId, function(buildingGraph) {
+      if(!Util.exists(buildingGraph)) {
+        response.status(404);
+        response.send("Building Graph Not Found");
+      } else {
+        response.status(200);
+        response.send({buildingGraph: buildingGraph});
       }
-    }
-    return response.send('sucess!');
+    });
+  } else {
+    response.status(400);
+    response.send("Illegal request, send a buildingId");
+  }
 });
 
 //-------------------------------
@@ -340,14 +340,12 @@ app.get('/image', function(request, response) {
             id is undefined if this is a new building
  * response: {errorCode : Number, buildingId : String}
              buildingId is null if there is an error
- * errorCode: success 0, invalid data 1, failed to save 2, failedToExport 3, unauthorized 401
- * httpCode: success 200, invalid data 400, failed to save 500, failed to export 500, unauthorized 401
+ * errorCode: success 0, invalid data 1, failed to save 2, failed to publish 3, unauthorized 401
+ * httpCode: success 200, invalid data 400, failed to save 500, failed to publish 500, unauthorized 401
 **/
 app.post('/savePublish', function(request, response) {
   //var buildingData = JSON.parse(request.body.building);
   var buildingData = request.body.building;
-  //console.log("---savePublish---");
-  //console.log(request.body.building);
   flowDB.getUserById(request.session.userId, function(user) {      
     if(Util.exists(user)) {
       if(Util.exists(buildingData) 
@@ -358,7 +356,7 @@ app.post('/savePublish', function(request, response) {
         user.saveBuilding(buildingData, function(buildingObj) {
           if(Util.exists(buildingObj)) {
             if(request.body.publishData === true) {
-              console.log("----PUBLISHING----");
+              flowDB.publishBuilding(buildingObj);
             }                     
             response.status(200);
             return response.send({
@@ -370,6 +368,76 @@ app.post('/savePublish', function(request, response) {
             return response.send({errorCode: 2, buildingId: null});
           }
         });
+      } else {
+        response.status(400);
+        return response.send({errorCode: 1, buildingId: null});
+      }
+    } else {
+       response.status(401);
+       return response.send({errorCode: 401, buildingId: null});
+    }
+  });
+});
+
+/**
+ * Summary: Route to unpublish building graph.
+ * request: buildingId : String
+ * response: {errorCode : Number}
+ * errorCode: success 0, invalid data 1, unauthorized 401
+ * httpCode: success 200, invalid data 400, unauthorized 401
+**/
+app.get('/unpublishBuilding', function(request, response) {
+  var buildingId = request.query.buildingId;
+  flowDB.getUserById(request.session.userId, function(user) {      
+    if(Util.exists(user)) {
+      if(Util.exists(buildingId)) {
+        if(user.hasBuilding(buildingId)) {
+          flowDB.unpublishBuilding(buildingId);
+          response.status(200);
+          return response.send({errorCode: 0});
+        } else {
+          response.status(401);
+          return response.send({errorCode: 401});
+        }
+      } else {
+        response.status(400);
+        return response.send({errorCode: 1});
+      }
+    } else {
+       response.status(401);
+       return response.send({errorCode: 401});
+    }
+  });
+});
+
+/**
+ * Summary: Route to delete a building.
+ * request: buildingId : String
+ * response: {errorCode : Number}
+ * errorCode: success 0, invalid data 1, unauthorized 401, building not found 404
+ * httpCode: success 200, invalid data 400, unauthorized 401, building not found 404
+**/
+app.get('/deleteBuilding', function(request, response) {
+  var buildingId = request.query.buildingId;
+  flowDB.getUserById(request.session.userId, function(user) {      
+    if(Util.exists(user)) {
+      if(Util.exists(buildingId)) {
+        if(user.hasBuilding(buildingId)) {
+          flowDB.unpublishBuilding(buildingId);
+          user.deleteBuilding(buildingId, function(errorCode) {
+            if(errorCode === 0) {
+              response.status(200);
+              return response.send({errorCode: 0});
+            } else {
+              response.status(404);
+              return response.send({errorCode: 404});
+            }
+          });
+          
+        } else {
+          response.status(401);
+          return response.send({errorCode: 401});
+        }
       } else {
         response.status(400);
         return response.send({errorCode: 1, buildingId: null});
@@ -412,6 +480,26 @@ app.get('/building', function(request, response) {
    });
 });
 
+/**
+ * Summary: Route to get the buildingRefs.
+ * request: void
+ * response: buildings :  [{name: String, id: String}]
+ * errorCode: success 0, unauthorized 401
+ * httpCode: success 200, unauthorized 401
+**/
+app.get('/buildingsRefs', function(request, response) {
+  flowDB.getUserById(request.session.userId, function(user) {
+    if(Util.exists(user)) {
+      response.status(200);
+      return response.send({
+         buildings: user.getBuildingRefs()
+      });
+    } else {
+       response.status(401);
+       return response.send({errorCode: 401});
+    }
+  });
+});
 
 // =========== PREPROCESSOR ==========
 /**
@@ -500,5 +588,5 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
 }
 
 // Launch server
-app.listen(8080);
+app.listen(8081);
 console.log("Express server listening on port 8080");

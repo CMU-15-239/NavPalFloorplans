@@ -118,6 +118,7 @@ Point.prototype.distance = function(p) {
 	return Math.sqrt(dx*dx + dy*dy);
 }
 
+//TODO this isnt doing anything
 function distance(point) {
 	var dx = Math.abs(this.x - point.x);
 	var dy = Math.abs(this.y - point.y);
