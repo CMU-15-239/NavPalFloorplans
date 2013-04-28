@@ -40,7 +40,7 @@ GLOBAL.flowDB;
 **/
 function init(){
     configureExpress(app);
-    
+    // CODE REVIEW
    flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
    //flowDB.clearData();
    
@@ -61,6 +61,7 @@ function configureExpress(app) {
     	app.use(express.bodyParser());
     	app.use(express.methodOverride());
         
+        // CODE REVIEW weird indentation
         app.use(passport.initialize());
         app.use(passport.session());
         
@@ -169,6 +170,7 @@ app.post('/register', function(request, response) {
     flowDB.register(request.body.username, request.body.password, function(newUser) {
       if(Util.exists(newUser)) {
         var responseData = {errorCode: 0}
+        // CODE REVIEW
         //response.status(200);
         request.login(newUser, function(err) {
           if (err) {
@@ -179,11 +181,13 @@ app.post('/register', function(request, response) {
           return response.send(responseData);
         });
       } else {
+        // CODE REVIEW
         //response.status(400);
         return response.send({errorCode: 2});
       }
    });
   } else {
+    // CODE REVIEW
     //response.status(400);
     return response.send({errorCode: 1});
   }
@@ -203,25 +207,30 @@ app.post('/register', function(request, response) {
 app.post('/changePassword', function(request, response) {
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
+      // CODE REVIEW
       //console.log("---user exists");
       if(Util.isValidPassword(request.body.newPassword)) {
         console.log("---valid new password");
         user.changePassword(request.body.newPassword, function(user) {
            if(Util.exists(user)) {
               response.status(200);
+              // CODE REVIEW
               return response.send({errorCode: 0});
            } else {
               response.status(500);
+              // CODE REVIEW
               return response.send({errorCode: 2});
            }
         });
       } else {
         response.status(400);
+        // CODE REVIEW
         return response.send({errorCode: 1});
       }
     } else {
        console.log("---unable to find user");
        response.status(401);
+       // CODE REVIEW
        return response.send({errorCode: 401});
     }
   });
@@ -242,11 +251,13 @@ app.post('/preprocess', function (request, response) {
       var imageData = request.body.image;       
       if(Util.exists(imageData)) {
         var imageDir = './temp/';
+        // CODE REVIEW
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
         var oldImagePath = imageDir + 'oldImage'+randFileNum+'.png';
         var newImagePath = imageDir + 'newImage'+randFileNum+'.png';
         var dataPath = imageDir + 'data'+randFileNum+'.json';
          
+         // CODE REVIEW
         var index = imageData.indexOf('base64,') + 'base64,'.length;
         var base64Data = imageData.substring(index, imageData.length);
         var base64DataBuffer = new Buffer(base64Data, "base64");
@@ -267,6 +278,7 @@ app.post('/preprocess', function (request, response) {
                   if(Util.exists(imageObj)) {
                     console.log("sucessful");
                     preprocessData.result.imageId = imageObj.imageId;
+                    // CODE REVIEW
                     //preprocessData.result.image = imageObj.image;                    
                     return response.send(preprocessData.result);
                   } else {
@@ -526,11 +538,12 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
       }
     });
     
+    // CODE REVIEW
     var readOtherFile = false;
     var returned = false;
     var data;
     var base64ImageStr;
-    
+    // CODE REVIEW
     fs.exists(newImagePath, function (exists) {
       if(exists) {
         fs.readFile(newImagePath, function(err, imageStr) {
@@ -538,13 +551,14 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
             console.log("failed to read processed image: "+err);
             if(Util.exists(callback)) {return callback(null)}
           } else {
+            // CODE REVIEW
             fs.unlink(newImagePath);
             base64ImageStr = new Buffer(imageStr, 'base64').toString('base64');
             
             if(!returned && readOtherFile && Util.exists(callback)) {
               returned = true;
               return callback({result: data, image: base64ImageStr, dataURL: 'data:image/png;base64,'});
-            }
+            }// CODE REVIEW
             readOtherFile = true;
           }
         });
@@ -553,7 +567,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
         return callback(null);
       }
     });
-    
+    // CODE REVIEW
     fs.exists(dataPath, function(exists) {
       if(exists) {
         fs.readFile(dataPath, function read(err, dataStr) {
