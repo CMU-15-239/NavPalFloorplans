@@ -83,7 +83,7 @@ FlowDB.prototype.unpublishBuilding = function(buildingId) {
   * Returns: int, -1 if none found
 **/
 FlowDB.prototype.indexOfPublicBuildingRef = function(buildingId) {
-  for(var b = 0; b < this.publicBuildingRefs.length; b++) {
+  for(var b = 0; b < this.persistents.publicBuildingRefs.length; b++) {
     if(this.persistents.publicBuildingRefs[b].id === buildingId) {
       return b;
     }
