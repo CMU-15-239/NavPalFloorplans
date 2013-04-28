@@ -35,9 +35,11 @@ function populateUserBuildings(buildings) {
       var numberCell = $('<td></td>').text(i).addClass("number");
       var nameCell = $('<td></td>').text(building.name);
       var editButton = $('<div class="btn btn-info">Edit</div>').attr('id','edit'+building.id);
+      // allow user to edit building when they click edit button
       editButton.click(editBuilding.bind(building.id));
       var editCell = $('<td></td>').append(editButton)
       var removeButton = $('<div class="btn btn-danger">Remove</div>').attr('id','remove'+building.id);
+      // allow user to delete building when the press remove button
       removeButton.click(removeBuilding.bind(building.id))
       var removeCell = $('<td></td>').append(removeButton);
       tableRow.append(numberCell);
@@ -142,6 +144,8 @@ function changeUserPassword() {
 }
 
 $(document).ready(function() {
+  // Remove whatever building is currently in local storage
+  localStorage.setItem('building', '');
   // Initialize tabs and pills
   $('.note-tabs').tab();
   // Grabs list of a user's buildings from server
