@@ -1,3 +1,5 @@
+// TODO: Header
+
 //line.js
 
 function importLine(simpleLine) {
@@ -35,6 +37,12 @@ function Line(p1, p2, isDoor) {
 	this.isDoor = (isDoor === true);
 	this.definesRoom = false;
 	
+	// Line in form ax + by + c = 0
+	// sqrt(a*a + b*b) = distConst
+	this.a;
+	this.b;
+	this.c;
+	this.distConst;
 	this.calculateForm(p1, p2);
 }
 
