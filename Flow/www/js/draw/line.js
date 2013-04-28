@@ -148,9 +148,7 @@ Line.prototype.distanceToPoint = function(point) {
  * Parameters: point: The point to check, radius: The maximum distance allowed.
  * Returns: true iff the given point is within radius distance of the line.
 **/	
-Line.prototype.pointNearLine = function(point, radius) {
-	if(radius <= 0) {return this.pointOnLine(point);}
-	
+Line.prototype.pointNearLine = function(point, radius) {	
 	var close = (Math.abs(this.signPointToLine(point)) / this.distConst) <= radius;
 	//Make sure the point is actually within the endpoints of the line.
 	var onLine = ((this.p1.x >= point.x-radius && point.x+radius >= this.p2.x) ||
@@ -159,22 +157,6 @@ Line.prototype.pointNearLine = function(point, radius) {
 		 (this.p1.y <= point.y+radius && point.y-radius <= this.p2.y));
 		 
 	return close && onLine;
-};
-
-Line.prototype.pointOnLine = function(point) {
-  var minX = Math.min(this.p1.x, this.p2.x);
-  var maxX = Math.max(this.p1.x, this.p2.x);
-  var minY = Math.min(this.p1.y, this.p2.y);
-  var maxY = Math.max(this.p1.y, this.p2.y);
-  
-  if(minX <= point.x && point.x <= maxX && minY <= point.y && point.y <= maxY) {
-    var dist1 = this.p1.distance(point);
-    var dist2 = this.p2.distance(point);
-    
-    return (dist1 + dist2) === this.magnitude();
-  }
-  
-  return false;
 };
 
 /**

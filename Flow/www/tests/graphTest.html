@@ -111,9 +111,9 @@ lines1_2.push(new Line(new Point(10,5), new Point(10,10)));
 
 var doors1_2 = [new Line(new Point(10,1), new Point(10,5), true)];
 
-var s1_3 = newTestSpace([lines1_1[0], lines1_1[1], lines1_1[3], doors1_1[0], lines1_1[7], lines1_1[2]], doors1_1, "room", "s3");
+var s1_3 = newTestSpace([lines1_2[0], lines1_2[1], lines1_2[3], doors1_2[0], lines1_2[7], lines1_2[2]], doors1_2, "room", "s3");
 
-var s1_4 = newTestSpace([lines1_1[4], lines1_1[5], lines1_1[6], lines1_1[7], doors1_1[0], lines1_1[3]], doors1_1, "room", "s4");
+var s1_4 = newTestSpace([lines1_2[4], lines1_2[5], lines1_2[6], lines1_2[7], doors1_2[0], lines1_2[3]], doors1_2, "room", "s4");
 
 var floor1_2 = new Floor("2", "safdsa2", 30);
 floor1_2.spaces = [s1_3, s1_4];

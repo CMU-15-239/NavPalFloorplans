@@ -101,8 +101,6 @@ Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
     }
   }
   
-  console.log("y: " + y + " x: " + JSON.stringify(wallXs));
-  
   var inShape = false;
   if(wallXs.length % 2 !== 0) {
     wallXs.pop();
