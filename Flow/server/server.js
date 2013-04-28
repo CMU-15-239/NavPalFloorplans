@@ -588,5 +588,5 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
 }
 
 // Launch server
-app.listen(8080);
+app.listen(8081);
 console.log("Express server listening on port 8080");

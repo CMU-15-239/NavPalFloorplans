@@ -213,7 +213,7 @@ UserSchema.methods.addBuildingById = function(userBuildingId, callback) {
  * Returns: calls callback with errorCode: (success 0, building not found 1)
 **/
 UserSchema.methods.deleteBuilding = function(buildingId, callback) {
-  var user;
+  var user = this;
   if(this.hasBuilding(buildingId)) {
     BuildingController.findOne({userBuildingId: buildingId}, function(buildingObj) {
       if(Util.exists(buildingObj)) {
