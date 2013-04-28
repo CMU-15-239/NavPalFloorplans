@@ -33,6 +33,7 @@ function Line(p1, p2, isDoor) {
 	this.p2 = p2;
 	this.isSelected = false;
 	this.isDoor = (isDoor === true);
+	this.isExit = false;
 	this.definesRoom = false;
 	
 	this.calculateForm(p1, p2);
@@ -101,6 +102,9 @@ Line.prototype.draw = function (lineColor) {
 	stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(0,180,0,0.6)';
 	if (this.isDoor === true) {
 		stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(188,0,255,0.8)';
+	}
+	if (this.isExit === true) {
+		stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(100,100,100,0.8)';
 	}
 	if (this.isSelected === true) {
 		stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(0,132,240,1)'; // Yellow
