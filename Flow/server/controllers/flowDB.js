@@ -41,7 +41,7 @@ FlowDB.prototype.getAndIncImageCounter = function() {
 };
 
 FlowDB.prototype.getAndIncBuildingCounter = function() {
-  var imageCounter = this.persistents.buildingCounter;
+  var buildingCounter = this.persistents.buildingCounter;
   this.persistents.buildingCounter++
   
   if(this.persistents.buildingCounter % 10 === 0) {
