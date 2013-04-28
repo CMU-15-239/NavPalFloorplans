@@ -101,8 +101,9 @@ app.get('/allBuildingRefs', function(request, response) {
  * httpCode: success 200, building graph not found 404, bad request 400
 **/
 app.get('/buildingGraph', function(request, response) {
-  if(Util.exists(response.body.buildingId)) {
-    flowDB.getBuildingGraphById(response.body.buildingId, function(buildingGraph) {
+  var buildingId = response.query.buildingId;
+  if(Util.exists(buildingId)) {
+    flowDB.getBuildingGraphById(buildingId, function(buildingGraph) {
       if(!Util.exists(buildingGraph)) {
         response.status(404);
         response.send("Building Graph Not Found");
@@ -386,7 +387,7 @@ app.post('/savePublish', function(request, response) {
  * httpCode: success 200, invalid data 400, unauthorized 401
 **/
 app.get('/unpublishBuilding', function(request, response) {
-  var buildingId = request.body.buildingId;
+  var buildingId = request.query.buildingId;
   flowDB.getUserById(request.session.userId, function(user) {      
     if(Util.exists(user)) {
       if(Util.exists(buildingId)) {
@@ -417,7 +418,7 @@ app.get('/unpublishBuilding', function(request, response) {
  * httpCode: success 200, invalid data 400, unauthorized 401, building not found 404
 **/
 app.get('/deleteBuilding', function(request, response) {
-  var buildingId = request.body.buildingId;
+  var buildingId = request.query.buildingId;
   flowDB.getUserById(request.session.userId, function(user) {      
     if(Util.exists(user)) {
       if(Util.exists(buildingId)) {
