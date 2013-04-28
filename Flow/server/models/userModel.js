@@ -207,6 +207,31 @@ UserSchema.methods.addBuildingById = function(userBuildingId, callback) {
 };
 
 /**
+ * Summary: Deletes a building with the given id.
+ * Parameters: buildingId: String
+                callback: function
+ * Returns: calls callback with errorCode: (success 0, building not found 1)
+**/
+UserSchema.methods.deleteBuilding = function(buildingId, callback) {
+  var user;
+  if(this.hadBuilding(buildingId)) {
+    BuildingController.findOne({userBuildingId: buildingId}, function(buildingObj) {
+      if(Util.exists(buildingObj)) {
+        var idx = user.indexOfBuildingRef(buildingObj.getUserBuildingId());
+        user.buildingRefs.splice(idx, 1);
+        user.save();
+        buildingObj.remove();
+        return callback(0);
+      } else {
+        return callback(1);
+      }
+    });
+  } else {
+    return callback(1);
+  }
+};
+
+/**
  * Summary: Adds existing building to this User.
  * Parameters: buildingObj: Building object
                callback: function
@@ -255,7 +280,7 @@ UserSchema.methods.indexOfBuildingRef = function(userBuildingId) {
  * Returns: boolean
 **/
 UserSchema.methods.hasBuilding = function(userBuildingId) {
-   return Util.exists(userBuildingId) && this.indexOfBuildingRef(userBuildingId) !== -1;
+   return this.indexOfBuildingRef(userBuildingId) !== -1;
 };
 
 /**

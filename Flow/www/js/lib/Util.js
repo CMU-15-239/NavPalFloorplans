@@ -1,4 +1,4 @@
-window.util = function(){ }
+window.util = {}
 
 window.util.exists = function(obj){
     return obj !== undefined && obj !== null;
@@ -135,6 +135,8 @@ String.prototype.hashCode = function() {
         hash = ((hash<<5)-hash)+char;
         hash = hash & hash; // Convert to 32bit integer
     }
+    
+    //TODO: remove the 'h'
     return "h" + hash;
 };
 

@@ -1,5 +1,5 @@
 /**
- * Initializes layout of authoring tool page
+ * Authoring tool functionality made for testing purposes, does not require that a server is running
  * Written by: Daniel Muller
 */
 

@@ -5,7 +5,7 @@
 */
 
 /**
- * Summary: size of the thumbnails that we create
+ * Summary: globals for size of the dynamic floorplan thumbnails
  * Parameters: n/a-
  * Returns: n/a
 **/
@@ -115,13 +115,16 @@ function createThumb(file) {
         	var label = labelTemplate(file.name, id);
         	// directly holds image
         	var floorPlan = formatFloorPlan(floorPlanImg).addClass('loading').addClass(id);
+            // place image into its container
         	imgHolder.append(floorPlan);
+            // add label form into its container
         	caption.append(label);
+            // place image and caption into a single container
         	thumb.append(imgHolder);
-
         	thumb.append(caption);
+            // append into a list element
             li.append(thumb);
-
+            // finally place list element into the page
             $('#gallary').append(li);
         }
         floorPlanImg.src = event.target.result;
@@ -181,8 +184,10 @@ fileInput.change(
 	    		createThumb(files[i]);
 	    	}
 	    }
+        // timeout since DOM manipulation is async
 	    setTimeout(function() { 
-	    	processFiles(files); }, 100 * files.length);
+	    	processFiles(files);
+        }, 100 * files.length);
 });
 
 /**
@@ -209,9 +214,7 @@ function getFloorLabels(processedFloors) {
 		labelMap[label] = data;
 		labels.push(label);
 	};
-	console.log(labelMap);
 	labels.alphanumSort(true);
-	console.log(labels);
 	for (var i = 0; i < labels.length; i++) {
 		var floor = labelMap[labels[i]];
 		floors.push({'floor': floor});
@@ -307,6 +310,7 @@ function initializeBuilding(buildingName) {
 	})
 }
 
+// justin needs to add comments to this #code review failure
 function constructBuildingFromPreprocess(buildingName, buildingData) {
 	var buildingObject = new Building(buildingName);
 	for (var i = 0; i < buildingData.length; i++) {

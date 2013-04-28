@@ -52,7 +52,6 @@ $(document).ready(function () {
 function init() {
     var buildingJSON = localStorage.getItem('building');
     if (buildingJSON !== null) {
-        
         // grab building object from local storage and initialize
         building = $.parseJSON(buildingJSON);
         var floors = building.floors;

@@ -1,3 +1,6 @@
+<!-- Page for users to register and login in order to use the Authoring Tool -->
+<!-- Written by Daniel Muller -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -66,7 +69,7 @@
             <input id="loginPass" type="password" placeholder="Password">
             <div id="loginInfo" class="help-block hidden"></div>
           </div>
-            <button id="loginButton" class="btn btn-primary auth-btn">Login</button>
+            <button id="loginButton" class="btn btn-primary authentication-btn">Login</button>
         </div>
           
         <!-- Registration Form
@@ -74,16 +77,16 @@
         <div class="span4">   
           <h3>Sign up with email</h3>
           <div id="matchEmails" class="control-group">
-            <input id="regEmail" type="text" placeholder="Email" name="email" maxlength="75">
+            <input id="registrationEmail" type="text" placeholder="Email" name="email" maxlength="75">
             <input id="confirmEmail" type="text" placeholder="Confirm Email" name="email" maxlength="75">
-            <div id="regEmailInfo" class="help-block hidden"></div>
+            <div id="registrationEmailInfo" class="help-block hidden"></div>
           </div>
           <div id="matchPasswords" class="control-group">
-            <input id="regPass" type="password" placeholder="Password">
+            <input id="registrationPass" type="password" placeholder="Password">
             <input id="confirmPass" type="password" placeholder="Confirm Password">
-            <div id="regPasswordInfo" class="help-block hidden"></div>
+            <div id="registrationPasswordInfo" class="help-block hidden"></div>
           </div>
-          <div id="regButton" class="btn btn-primary auth-btn">Create account</div>
+          <div id="registrationButton" class="btn btn-primary authentication-btn">Create account</div>
         </div>
 
       </div>
@@ -94,6 +97,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./js/jquery.js" type="text/javascript" ></script>
     <script src="./js/bootstrap/bootstrap.min.js" type="text/javascript" ></script>
+    <script src="./js/lib/Util.js"></script>
     <script src="./js/authentication.js" type="text/javascript" ></script>
     <script src="./js/image/spin.min.js"></script>
     <script src="./js/image/jquery.spin.js"></script>
