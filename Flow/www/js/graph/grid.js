@@ -1,4 +1,7 @@
-//grid.js
+/*
+grid.js
+By Vansi Vallabhaneni
+*/
 
 function Grid(walls, width) {
   this.topLeftPt;
@@ -38,32 +41,43 @@ function Grid(walls, width) {
   }
 }
 
+/**
+  * Summary: Adds the edge to the physical layout.
+  * Paramters: otherNode: FloorNode
+  * Returns: undefined
+**/
 Grid.prototype.addEdge = function(otherNode) {
+  var pts = [];
   if(util.exists(otherNode.lineRep)) {
-    var pts = otherNode.lineRep.getPointsRep();
-    for(var p = 0; p < pts.length; p++) {
-      var pt = pts[p];
-      var y = pt.y - this.topLeftPt.y;
-      var x = pt.x - this.topLeftPt.x
-      
-      if(0 <= y && y < this.layout.length && util.exists(this.layout[y])
-          && 0 <= x && x < this.layout[y].length) {
-        
-        this.layout[y][x] = otherNode.id;
-      }
-    }
-    
+    pts = otherNode.lineRep.getPointsRep();
   } else if(util.exists(otherNode.pointRep)) {
-    var y = otherNode.pointRep.y - this.topLeftPt.y;
-    var x = otherNode.pointRep.x;
-    if(x >= 0 && y >= 0) {
-      if(util.exists(this.layout[y]) && x < this.layout[y].length) {
-        this.layout[y][x] = otherNode.id;
-      }
+    var pts = [otherNode.pointRep];
+  }
+  
+  for(var p = 0; p < pts.length; p++) {
+    var pt = pts[p];
+    var y = pt.y - this.topLeftPt.y;
+    var x = pt.x - this.topLeftPt.x
+    
+    if(0 <= y && y < this.layout.length && util.exists(this.layout[y])
+        && 0 <= x && x < this.layout[y].length) {
+      
+      this.layout[y][x] = otherNode.id;
     }
   }
 };
 
+/**
+  * Summary: Fills the given 'layout' with 'inSign' at the given 'at' based off the walls' 'y'
+      using ray casting with a max search width of 'width' and the rest is filled with 'outSign'
+  * Parameters: y: int
+                layout: [[String]], 2d array of Strings
+                at: int
+                width: int
+                inSign: String
+                outSign: String
+  * Returns: undefined
+**/
 Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
   var inShape = false;
   var filled = false;
@@ -90,6 +104,12 @@ Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
   return filled;
 };
 
+/**
+  * Summary: Determines if the 'line' is different from the 'lines' are "different" based off our metric.
+  * Parameters: line: Line
+                lines: [Line], array of Lines
+  * Returns: boolean
+**/
 Grid.prototype.isDifferentLine = function(line, lines) {
   if(line.isParallelToOne(lines)) {return false;}
   
@@ -105,6 +125,13 @@ Grid.prototype.isDifferentLine = function(line, lines) {
   return true;
 };
 
+/**
+  * Summary: Finds the number of 'lines' with in the 'radius' of the 'point'.
+  * Parameters: lines: [Line], array of Lines
+                point: Point
+                radius: int
+  * Returns: int
+**/
 Grid.prototype.pointNearLines = function(lines, point, radius) {
   var nearLines = [];
   if(util.exists(lines)) {
@@ -122,6 +149,11 @@ Grid.prototype.pointNearLines = function(lines, point, radius) {
 	return nearLines.length;
 };
 
+/**
+  * Summary: Constructs a JSON object reperesenting the grid.
+  * Parameters: undefined
+  * Returns: Object
+**/
 Grid.prototype.toOutput = function() {
   return {
     topLeftPt: this.topLeftPt.toOutput(),
@@ -129,7 +161,9 @@ Grid.prototype.toOutput = function() {
   };
 };
 
-//for debugging
+/**
+  * Summary: Draws the grid for debugging.
+**/
 Grid.prototype.draw = function($out) {
   for(var y = 0; y < this.layout.length; y++) {
     $out.append('<br>');

@@ -1,5 +1,5 @@
 /*
-BuildingGraph.js
+buildingGraph.js
 By Vansi Vallabhaneni
 */
 
