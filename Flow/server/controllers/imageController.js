@@ -14,7 +14,7 @@ var ImageController = {
 		var imageId = this.generateImageId();
 		console.log("imageController line10: "+imageId);
     
-		this.findOne({_creatorId: creatorId, imageId: imageId}, function(imageObj) {
+		this.findOne({imageId: imageId}, function(imageObj) {
 			if(!Util.exists(imageObj)) {
             imageObj = new Image({
                _creatorId: creatorId,
@@ -36,18 +36,14 @@ var ImageController = {
 			}
 		});
 	},
-   
-   idCounter: 0,
 
-   /**
-    * Summary: Generates an id based off counter.
-    * Parameters: undefined
-    * Returns: String
-   **/
+  /**
+  * Summary: Generates an id based off counter.
+  * Parameters: undefined
+  * Returns: String
+  **/
 	generateImageId: function() {
-      var id = 'image_' + this.idCounter;
-      this.idCounter++;
-      return id;
+    return 'image_' + GLOBAL.flowDB.getAndIncImageCounter();
 	},
 	
    /**

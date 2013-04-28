@@ -14,10 +14,10 @@ var BuildingController = {
    **/   
 	newBuilding: function(creatorId, userBuildingName, graph, authoData, callback) {
 		var BC = this; //the building controller
-		var userBuildingId = this.generateBuildingId();
+		var userBuildingId = this.generateBuildingId(creatorId);
 		console.log("buildingController line10: "+userBuildingId);
     
-		this.findOne({_creatorId: creatorId, userBuildingId: userBuildingId}, function(buildingObj) {
+		this.findOne({userBuildingId: userBuildingId}, function(buildingObj) {
 			if(!Util.exists(buildingObj)) {
             buildingObj = new Building({
                _creatorId: creatorId,
@@ -40,18 +40,14 @@ var BuildingController = {
 			}
 		});
 	},
-   
-   idCounter: 0,
 
    /**
     * Summary: Generates an id based off counter.
     * Parameters: undefined
     * Returns: String
    **/
-	generateBuildingId: function() {
-      var id = 'building_' + this.idCounter;
-      this.idCounter++;
-      return id;
+	generateBuildingId: function(creatorId) {
+    return 'building_' + GLOBAL.flowDB.getAndIncBuildingCounter();
 	},
 	
    /**
@@ -75,7 +71,7 @@ var BuildingController = {
     * Returns: undefined. Calls callback with found Building or null if none found.
    **/
 	findOne: function(searchJSON, callback) {
-		console.log('BuildingController.js line78 :'+JSON.stringify(searchJSON));
+		//console.log('BuildingController.js line78 :'+JSON.stringify(searchJSON));
 		Building.findOne(searchJSON, function(err, buildingObj) {
 			//console.log("BC findone: "+JSON.stringify(buildingObj));
 			if(err) {
