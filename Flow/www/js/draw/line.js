@@ -1,4 +1,12 @@
-//line.js
+/**
+	line.js
+	Written by Justin Greet and Paul Davis.
+	justin.greet11@gmail.com
+	Spring 2013
+	
+	The data structure that represents a line in the canvas.
+	
+*/
 
 function importLine(simpleLine) {
   
@@ -324,7 +332,11 @@ Line.prototype.magnitutde = function() { //TODO: fix spelling
 
 Line.prototype.magnitude = Line.prototype.magnitutde;
 
-
+/**
+  * Summary: Check if line and this intersect.
+  * Parameters: line: the line to check for intersection.
+  * Returns: The point of intersection, if it exists. Null otherwise.
+**/
 Line.prototype.pointOfLineIntersection = function(line) {
 	//If they have a common endpoint, they don't intersect in any meaningful way.
 	if (this.p1.equals(line.p1) || this.p1.equals(line.p2) || this.p2.equals(line.p1) || this.p2.equals(line.p2)){
@@ -365,11 +377,20 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	return null;
 };
 
+/**
+  * Summary: Split up this along each of the points in setOfPoints.
+  * Parameters: setOfPoints: The points at which we should split up this.
+  * Returns: undefined
+**/
 Line.prototype.splitUpLine = function(setOfPoints) {
+	//First sort the points, starting at this.p1
 	var sortedPoints = this.sortPoints(setOfPoints);
+	//The lines that result from splitting this up.
 	var newLineSegments = [];
 	var lineToSplit = this;
+	//Go through each of the points and split up segments.
 	for (var i = 0; i < sortedPoints.length; i++) {
+		//Split what remains of this up.
 		var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
 		if (newSegs !== undefined) {
 			//Since we sorted starting at p1, we want to split the segment that includes p2
@@ -392,11 +413,17 @@ Line.prototype.splitUpLine = function(setOfPoints) {
 	return newLineSegments;
 };
 
+/**
+  * Summary: Sort a set of points that lie on this, starting at this.p1
+  * Parameters: points: The unsorted set of points that lie along this.
+  * Returns: A sorted set of the points that lie along this.
+**/
 Line.prototype.sortPoints = function(points) {
 	//First find the closest point to p1 (could be p2 just as well) and put it at the front,
 	//because it will act as our starting point for sorting
 	var closestDistance = 100000000000;
 	var startingPointIndex;
+	//Get the index of the point that's closest to this.p1
 	for (var i = 0; i < points.length; i++) {
 		var pointToCheck = points[i];
 		var distanceTop1 = pointToCheck.distance(this.p1);
@@ -405,22 +432,27 @@ Line.prototype.sortPoints = function(points) {
 			closestDistance = distanceTop1;
 		}
 	}
-	//Now remove it and put it at the front. Splice returns an array.
+	//Now remove that point and put it at the front. Splice returns an array.
 	var startingPoint = points.splice(startingPointIndex, 1); 
 	startingPoint = startingPoint[0];
+	//Unshift inserts into the front of an array.
 	points.unshift(startingPoint);
 	
 	//Now go through each remaining point and sort it, stopping when all the points are sorted.
 	var closestPoint;
 	var numSorted = 1;
 	var sortedPoints = [];
+	//We know the starting point is the first sorted point.
 	sortedPoints.push(startingPoint);
 	closestDistance = 100000000000;
 	while (numSorted < points.length) {
 		//We want to find the closest point to the most recent one that we've sorted.
 		var pointToCheck = sortedPoints[numSorted - 1];
+		//Go through the remaining points to find the closest one.
 		for (var j = 0; j < points.length; j++) {
 			var curPoint = points[j];
+			//Make sure we skip any points that have already been sorted. 
+			//Also skip the point that's equal to curPoint.
 			if (!curPoint.equals(pointToCheck) &&
 				!this.containsPoint(sortedPoints, curPoint) && 
 				(pointToCheck.distance(curPoint) < closestDistance)) {
@@ -435,6 +467,12 @@ Line.prototype.sortPoints = function(points) {
 	return sortedPoints;
 };
 
+/**
+  * Summary: Check if pointList contains point.
+  * Parameters: pointList: A set of points
+  *		point: The point to check for
+  * Returns: true iff there exists a point in pointList that equals point.
+**/
 Line.prototype.containsPoint = function(pointList, point) {
 	for (var i = 0; i < pointList.length; i++) {
 		if (pointList[i].equals(point)) return true;
