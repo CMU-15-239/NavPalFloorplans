@@ -5,9 +5,12 @@
 	Spring 2013
 	
 	This file takes a list of lines and determines which areas constitute
-	different rooms. The basic algorithm uses depth first search 
-	
-	NEED TO FINISH WRITING...
+	different rooms. The basic algorithm uses depth first search to traverse
+	adjacent lines in a clockwise or counter clockwise order. It checks if 
+	the route found from the traversal was the internal path along a closed 
+	room. It returns a list of all rooms that is cross referenced with 
+	previously existing rooms. Previously existing, unmodified rooms are
+	kept, modified rooms are deleted, and new rooms are added.
 	
 */
 
@@ -343,12 +346,7 @@ function getEdgeNeighbors(point, includedLine) {
  * Returns: A list of sorted edges
 **/
 function sortEdges(counterClock, edges, point, line) {
-	/*
-	for (var count = 0; count < edges.length; count++) {
-		console.log("Edges enter: " + edges[count].toString() + counterClock);
-	}
-	*/
-	
+
 	// Selection sort, put closest edges to line 
 	for (var count = 0; count < edges.length; count++) {
 		var closestLine = edges[count];
@@ -368,12 +366,6 @@ function sortEdges(counterClock, edges, point, line) {
 		edges[lowIndex] = edges[count];
 		edges[count] = temp;	
 	}
-	
-	/*
-	for (var count = 0; count < edges.length; count++) {
-		console.log("Edges exit: " + edges[count].toString() + counterClock);
-	}
-	*/
 	
 	return edges;
 }
@@ -508,7 +500,12 @@ function toDegree(angle) {
 	return angle * 180.0 / Math.PI;
 }
 
-
+/**
+ * Summary: Equals function for floats
+ * Parameters:  a: first value
+				b: second value
+ * Returns: Returns if the two values are almost equal
+**/
 function almostEqual(a,b) {
 	return Math.abs(a - b) < 0.001;
 }

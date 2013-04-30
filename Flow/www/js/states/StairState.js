@@ -1,17 +1,40 @@
+/**
+	StairState.js
+	Written by Paul Davis
+	pjbdavis@gmail.com
+	Spring 2013
+
+	This file is responsible for the stair state. It specifies the behavior
+	when the user clicks to place a stair, and when the user hits the submit
+	or cancel button on the stair box. It allows the user to create, remove,
+	and edit stairs.
+	
+*/
+
 var StairState = function(stateMan) {
 	this.stateManager = stateMan;
 	this.pointAtCursor; 
 }
 
+/**
+ * Summary: This function is called when the user presses the sumbit
+			button on the stair box. It created a new interfloor connection based
+			on the information submitted.
+ * Parameters: n/a
+ * Returns: n/a
+**/
 $("#saveStair").click(function(event) {
 
+	// Don't reload the whole page
 	event.preventDefault();
+	
+	// Hide the stair box, clear the fields in the box
 	$("#stair_pop").toggleClass("hidden", true);
 	var newStair = $("#newStair").val();
 	var existingStair = $("#selectmultiple").val();
 	
 	
-	// Use an existing stair
+	// Use an existing stair name
 	if (newStair === "") {
 		// Nothing choosen
 		if (existingStair === null) {
@@ -27,54 +50,32 @@ $("#saveStair").click(function(event) {
 		stateManager.currentFloor.floorConnections.push(connection);
 	}
 	
+	// Reset field
 	$("#newStair").val("")
-	//var description = $("#description").val();
 	stateManager.redraw();
-/*
-	console.log("Added new landmark! name:" + name + ", description " + description + stateManager.currentState.pointAtCursor.toString());
-	stateManager.currentFloor.landmarks.push(landmark);
-	stateManager.redraw();
-	
-	// Clear values for next time
-	$("#name").val("");
-	$("#description").val("");
-	*/
-/*
-		event.preventDefault();
-		BLOCK_CHANGE_ROOM = false;
-		var label = $("#label").val();
-		ACTIVE_ROOM.label = label;
-		var type = $('input[name=type]:checked', '#classification_pop').val().toLowerCase();
-		ACTIVE_ROOM.type = type;
-		ACTIVE_ROOM = undefined;
-		$("#classification_pop").css("display", "none");
-		if (allSpacesClassified()) $("#done").removeAttr("disabled");
-		*/
 });
 
-	
+/**
+ * Summary: This function is called when the user presses the cancel
+			button on the stair box. It closes the stair box and
+			resets the fields inside the box.
+ * Parameters: n/a
+ * Returns: n/a
+**/	
 $("#cancelStair").click(function(event) {
 	event.preventDefault();
 	$("#stair_pop").toggleClass("hidden", true);
+	$("#newStair").val("")
 });
 
-//NEED TO HAVE
-StairState.prototype = new BaseState();
 
-//NEED TO HAVE
-StairState.prototype.enter = function() {
-}
-
-//NEED TO HAVE
-StairState.prototype.exit = function() {
-	$("#stair_pop").toggleClass("hidden", true);
-}
-
-
-StairState.prototype.mouseMove = function(event) {
-	
-}
-
+/**
+ * Summary: Checks if a given element is in a list.
+ * Parameters: list: The list
+			   element: The target element
+ * Returns: True if 'element' is in 'list'
+			False otherwise
+**/	
 StairState.prototype.inList = function(list, element) {
 	for (var i = 0; i < list.length; i ++) {
 		if (list[i] == element) {
@@ -84,6 +85,12 @@ StairState.prototype.inList = function(list, element) {
 	return false;
 }
 
+/**
+ * Summary: Looks at all interfloor connections that are stairs
+			to generate a list of unique stair names.
+ * Parameters: n/a
+ * Returns: A unique list of the names of all stairs
+**/	
 StairState.prototype.getExistingStairs = function() {
 	var stairs = [];
 	for (var i = 0; i < stateManager.building.floors.length; i ++) {
@@ -104,10 +111,17 @@ StairState.prototype.getExistingStairs = function() {
 	return uniqueStairs;
 }
 
+/**
+ * Summary:	When the user clicks, open a stair box and populate possible stair case names.
+ * Parameters: n/a
+ * Returns: n/a
+**/	
 StairState.prototype.click = function(event) {
-	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
-						 event.pageY - stateManager.currentFloor.globals.canvas.y));
-						 
+	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(
+		new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
+		event.pageY - stateManager.currentFloor.globals.canvas.y));
+	
+	// Populate a list of existing stair names
 	var stairList = $('#selectmultiple');
 	stairList.empty();
 	var existingStairs = this.getExistingStairs();
@@ -115,6 +129,7 @@ StairState.prototype.click = function(event) {
 		stairList.append("<option>" + existingStairs[i] + "</option>");
 	}
 	
+	// Required after modifiying the list of stair names
 	setTimeout(function() {
 		$("#stair_pop").css({
 			top: event.pageY + "px",
@@ -125,6 +140,20 @@ StairState.prototype.click = function(event) {
 	}, 0)
 }
 
-StairState.prototype.draw = function() {
+//NEED TO HAVE
+StairState.prototype = new BaseState();
 
+//NEED TO HAVE
+StairState.prototype.enter = function() {
+}
+
+//NEED TO HAVE
+StairState.prototype.exit = function() {
+	$("#stair_pop").toggleClass("hidden", true);
+}
+
+StairState.prototype.mouseMove = function(event) {	
+}
+
+StairState.prototype.draw = function() {
 }

@@ -47,11 +47,14 @@ function Line(p1, p2, isDoor) {
 	this.calculateForm(p1, p2);
 }
 
+/**
+  * Constructs a JSON object from this.
+**/
 Line.prototype.toOutput = function() {
 	return {
 		p1: this.p1.toOutput(),
 		p2: this.p2.toOutput(),
-    isDoor: this.isDoor
+		isDoor: this.isDoor
 	};
 };
 
