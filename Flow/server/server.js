@@ -40,7 +40,7 @@ GLOBAL.flowDB;
 **/
 function init(){
     configureExpress(app);
-    
+    // CODE REVIEW
    flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
    //flowDB.clearData();
    
@@ -61,6 +61,7 @@ function configureExpress(app) {
     	app.use(express.bodyParser());
     	app.use(express.methodOverride());
         
+        // CODE REVIEW weird indentation
         app.use(passport.initialize());
         app.use(passport.session());
         
@@ -161,6 +162,7 @@ app.post('/logout', function(request, response) {
  * response: {errorCode : Number}
  * errorCode: success 0, invalid data 1, user already exists 2, failed to auto login 3
  * httpCode: success 200, invalid data 400, user already exists 400, failed to auto login 200
+ * httpCodes (ie response.status) have been removed since client side can't see the errorCode when there is a non 2xx status
 **/
 app.post('/register', function(request, response) {
   if(Util.exists(request) && Util.isValidUsername(request.body.username) 
@@ -170,10 +172,11 @@ app.post('/register', function(request, response) {
       if(Util.exists(newUser)) {
         var responseData = {errorCode: 0}
         //response.status(200);
+        
         request.login(newUser, function(err) {
           if (err) {
-          console.log("server.js register: failed to login");
-          responseData.errorCode = 3;
+            console.log("server.js register: failed to login");
+            responseData.errorCode = 3;
           }
           request.session.userId = newUser._id;
           return response.send(responseData);
@@ -189,6 +192,7 @@ app.post('/register', function(request, response) {
   }
 });
 
+
 //-------------------
 // Application Routes
 //-------------------
@@ -203,9 +207,7 @@ app.post('/register', function(request, response) {
 app.post('/changePassword', function(request, response) {
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
-      //console.log("---user exists");
       if(Util.isValidPassword(request.body.newPassword)) {
-        console.log("---valid new password");
         user.changePassword(request.body.newPassword, function(user) {
            if(Util.exists(user)) {
               response.status(200);
@@ -220,7 +222,6 @@ app.post('/changePassword', function(request, response) {
         return response.send({errorCode: 1});
       }
     } else {
-       console.log("---unable to find user");
        response.status(401);
        return response.send({errorCode: 401});
     }
@@ -231,7 +232,7 @@ app.post('/changePassword', function(request, response) {
 /**
  * Summary: Route to preprocess an image.
  * request: {image : String}
- * response: {errorCode : Number, lines : [], ????}
+ * response: {errorCode : Number, lines : [], imageId: String}
  * errorCode: success 0, invalid data 1, preprocessing failed 2, unauthorized 401
  * httpCode: success 200, invalid data 400, preprocessing failed 500, unauthorized 401
 **/
@@ -242,42 +243,44 @@ app.post('/preprocess', function (request, response) {
       var imageData = request.body.image;       
       if(Util.exists(imageData)) {
         var imageDir = './temp/';
+        
+        // Generate random file names
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
         var oldImagePath = imageDir + 'oldImage'+randFileNum+'.png';
         var newImagePath = imageDir + 'newImage'+randFileNum+'.png';
         var dataPath = imageDir + 'data'+randFileNum+'.json';
          
+        // Extract the base64 incoded image string and create a buffer.
         var index = imageData.indexOf('base64,') + 'base64,'.length;
         var base64Data = imageData.substring(index, imageData.length);
         var base64DataBuffer = new Buffer(base64Data, "base64");
+        
         fs.writeFile(oldImagePath, base64DataBuffer, function(err) {
           if(Util.exists(err)) {
-            console.log("failed to write inital image: "+err);
+            console.log("Server.preprocessor: failed to write inital image: "+err);
             response.status(500);
             return response.send({errorCode: 2});
           } else {
+            // Call the preprocessor.
             preprocessor(oldImagePath, newImagePath, dataPath, function(preprocessData) {
               if(Util.exists(preprocessData)) {
-                preprocessData.result.errorCode = 0;
-                preprocessData.result.imageId = null;
-                response.status(200);
-                
-                console.log("Going to save image...");
+              
+                // Save the image.
                 user.saveImage(null, preprocessData.image, preprocessData.dataURL, function(imageObj) {
                   if(Util.exists(imageObj)) {
-                    console.log("sucessful");
+                    preprocessData.result.errorCode = 0;
                     preprocessData.result.imageId = imageObj.imageId;
-                    //preprocessData.result.image = imageObj.image;                    
+                    
+                    response.status(200);          
                     return response.send(preprocessData.result);
                   } else {
-                    console.log("unable to save image");
                     response.status(500);
                     return response.send({errorCode: 2});
                   }
                 });
                   
               } else {
-                console.log("unable to preprocess data");
+                console.log("Server.preprocess: unable to preprocess data");
                 response.status(500);
                 return response.send({errorCode: 2});
               }
@@ -285,12 +288,10 @@ app.post('/preprocess', function (request, response) {
           }
         });
       } else {
-        console.log("bad request");
         response.status(400);
        return response.send({errorCode: 1});
       }
     } else {
-      console.log("unauthorized");
       response.status(401);
       return response.send({errorCode: 401});
     }
@@ -305,14 +306,13 @@ app.post('/preprocess', function (request, response) {
  * httpCode: success 200, invalid data 400, image not found 404, unauthorized 401
 **/
 app.get('/image', function(request, response) {
-  console.log("\n***Get Image***");
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
       if(Util.exists(request.query.imageId)) {
         user.getImage(request.query.imageId, function(imageObj) {
           if(Util.exists(imageObj)) {
             response.status(200);
-            var responseData = imageObj.toOutput();
+            var responseData = imageObj.toOutput(); // = {image: String, imageId: String}
             responseData.errorCode = 0;
             return response.send(responseData);
           } else {
@@ -344,7 +344,6 @@ app.get('/image', function(request, response) {
  * httpCode: success 200, invalid data 400, failed to save 500, failed to publish 500, unauthorized 401
 **/
 app.post('/savePublish', function(request, response) {
-  //var buildingData = JSON.parse(request.body.building);
   var buildingData = request.body.building;
   flowDB.getUserById(request.session.userId, function(user) {      
     if(Util.exists(user)) {
@@ -526,11 +525,15 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
       }
     });
     
+    /* Since Node is asynchronous, we do not have control of the order in which the image and data files need to be read,
+      so we just call the preprocessor's callback when the last fileIO read's callback gets called
+     these booleans are used to help determine within the callback if it is the last one or not. */
     var readOtherFile = false;
     var returned = false;
     var data;
     var base64ImageStr;
     
+    // Read the thresholded image.
     fs.exists(newImagePath, function (exists) {
       if(exists) {
         fs.readFile(newImagePath, function(err, imageStr) {
@@ -554,6 +557,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
       }
     });
     
+    // Read the extracted data.
     fs.exists(dataPath, function(exists) {
       if(exists) {
         fs.readFile(dataPath, function read(err, dataStr) {
@@ -588,5 +592,6 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
 }
 
 // Launch server
-app.listen(8081);
-console.log("Express server listening on port 8080");
+var port = 8081;
+app.listen(port);
+console.log("Express server listening on port " + port);
