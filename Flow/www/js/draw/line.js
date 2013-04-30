@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
 	line.js
 	Written by Justin Greet and Paul Davis.
@@ -8,11 +7,7 @@
 	The data structure that represents a line in the canvas.
 	
 */
-=======
-// TODO: Header
 
-//line.js
->>>>>>> 2b11f7d734f2de3ba4d967ddc03436f5bbe561f6
 
 function importLine(simpleLine) {
   
