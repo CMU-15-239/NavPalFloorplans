@@ -232,7 +232,7 @@ app.post('/changePassword', function(request, response) {
 /**
  * Summary: Route to preprocess an image.
  * request: {image : String}
- * response: {errorCode : Number, lines : [], imageId: String}
+ * response: {errorCode : Number, lines : [], ????}
  * errorCode: success 0, invalid data 1, preprocessing failed 2, unauthorized 401
  * httpCode: success 200, invalid data 400, preprocessing failed 500, unauthorized 401
 **/
@@ -265,28 +265,22 @@ app.post('/preprocess', function (request, response) {
             preprocessor(oldImagePath, newImagePath, dataPath, function(preprocessData) {
               if(Util.exists(preprocessData)) {
               
-                // Save the thresholded image from preprocessing.
+                // Save the image.
                 user.saveImage(null, preprocessData.image, preprocessData.dataURL, function(imageObj) {
                   if(Util.exists(imageObj)) {
                     preprocessData.result.errorCode = 0;
-                    response.status(200);
                     preprocessData.result.imageId = imageObj.imageId;
-                    return response.send({
-                      errorCode: 0,
-                      lines: preprocessorData.result.lines,
-                      imageId: imageObj.imageId
-                    });
-                    //return response.send(preprocessData.result);
                     
+                    response.status(200);          
+                    return response.send(preprocessData.result);
                   } else {
-                    console.log("unable to save image");
                     response.status(500);
                     return response.send({errorCode: 2});
                   }
                 });
                   
               } else {
-                console.log("unable to preprocess data");
+                console.log("Server.preprocess: unable to preprocess data");
                 response.status(500);
                 return response.send({errorCode: 2});
               }
