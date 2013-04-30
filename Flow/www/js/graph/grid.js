@@ -15,7 +15,9 @@ function Grid(spaceNode, width) {
   if(util.exists(spaceNode) && util.exists(spaceNode.walls) && spaceNode.walls.length > 0) {
     this.walls = spaceNode.walls;
     var startingPt = this.walls[0].p1;
+    
     if(util.exists(startingPt)) {
+      // This does flood fills moving up and then down from the starting point.
       var tempLayout = [];
       var topLen = -1;
       var bottomLen = 1;
@@ -89,7 +91,7 @@ Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
   var row = 11;
   layout[at] = [];
   
-  var wallXs = []; //points of the walls at y
+  var wallXs = []; //points intersection of the walls at the given y coordinate
   
   //generate wallXs
   for(var xr = 0; xr < width; xr++) {
@@ -107,7 +109,7 @@ Grid.prototype.fill = function(y, layout, at, width, inSign, outSign) {
     wallXs.pop();
   }
   
-  //Fill between the pts in wallXs
+  // Fill between the pts in wallXs.
   var compareIdx = 0;
   for(var xr = 0; xr < width; xr++) {
     if(xr === wallXs[compareIdx]) {
