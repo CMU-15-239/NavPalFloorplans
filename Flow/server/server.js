@@ -232,7 +232,7 @@ app.post('/changePassword', function(request, response) {
 /**
  * Summary: Route to preprocess an image.
  * request: {image : String}
- * response: {errorCode : Number, lines : [], ????}
+ * response: {errorCode : Number, lines : [], imageId: String}
  * errorCode: success 0, invalid data 1, preprocessing failed 2, unauthorized 401
  * httpCode: success 200, invalid data 400, preprocessing failed 500, unauthorized 401
 **/
@@ -288,12 +288,10 @@ app.post('/preprocess', function (request, response) {
           }
         });
       } else {
-        console.log("bad request");
         response.status(400);
        return response.send({errorCode: 1});
       }
     } else {
-      console.log("unauthorized");
       response.status(401);
       return response.send({errorCode: 401});
     }
@@ -308,14 +306,13 @@ app.post('/preprocess', function (request, response) {
  * httpCode: success 200, invalid data 400, image not found 404, unauthorized 401
 **/
 app.get('/image', function(request, response) {
-  console.log("\n***Get Image***");
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
       if(Util.exists(request.query.imageId)) {
         user.getImage(request.query.imageId, function(imageObj) {
           if(Util.exists(imageObj)) {
             response.status(200);
-            var responseData = imageObj.toOutput();
+            var responseData = imageObj.toOutput(); // = {image: String, imageId: String}
             responseData.errorCode = 0;
             return response.send(responseData);
           } else {
@@ -347,7 +344,6 @@ app.get('/image', function(request, response) {
  * httpCode: success 200, invalid data 400, failed to save 500, failed to publish 500, unauthorized 401
 **/
 app.post('/savePublish', function(request, response) {
-  //var buildingData = JSON.parse(request.body.building);
   var buildingData = request.body.building;
   flowDB.getUserById(request.session.userId, function(user) {      
     if(Util.exists(user)) {
@@ -529,12 +525,15 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
       }
     });
     
-    // CODE REVIEW
+    /* Since Node is asynchronous, we do not have control of the order in which the image and data files need to be read,
+      so we just call the preprocessor's callback when the last fileIO read's callback gets called
+     these booleans are used to help determine within the callback if it is the last one or not. */
     var readOtherFile = false;
     var returned = false;
     var data;
     var base64ImageStr;
-    // CODE REVIEW
+    
+    // Read the thresholded image.
     fs.exists(newImagePath, function (exists) {
       if(exists) {
         fs.readFile(newImagePath, function(err, imageStr) {
@@ -542,14 +541,13 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
             console.log("failed to read processed image: "+err);
             if(Util.exists(callback)) {return callback(null)}
           } else {
-            // CODE REVIEW
             fs.unlink(newImagePath);
             base64ImageStr = new Buffer(imageStr, 'base64').toString('base64');
             
             if(!returned && readOtherFile && Util.exists(callback)) {
               returned = true;
               return callback({result: data, image: base64ImageStr, dataURL: 'data:image/png;base64,'});
-            }// CODE REVIEW
+            }
             readOtherFile = true;
           }
         });
@@ -558,7 +556,8 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
         return callback(null);
       }
     });
-    // CODE REVIEW
+    
+    // Read the extracted data.
     fs.exists(dataPath, function(exists) {
       if(exists) {
         fs.readFile(dataPath, function read(err, dataStr) {
@@ -593,5 +592,6 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
 }
 
 // Launch server
-app.listen(8081);
-console.log("Express server listening on port 8080");
+var port = 8081;
+app.listen(port);
+console.log("Express server listening on port " + port);
