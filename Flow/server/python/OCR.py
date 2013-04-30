@@ -112,7 +112,8 @@ def OCR(img, imageDir,destpath):
             patch=cv2.resize(patch, (int(w*resize), int(h*resize)))
             #extract texts
             text,conf=getText(patch)
-            #filter certain text extractions based on the confidence level
+            #filter certain text
+            #extractions based on the confidence level
             i=text.find("\n")
             if (conf>confidenceLevel and 
                     validCharStart< ord(text[0])<validCharEnd):

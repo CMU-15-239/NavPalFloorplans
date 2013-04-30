@@ -31,7 +31,7 @@ def templateMatching(img):
         #obtain dimension of templates
         trows,tcols = template.shape[:2] # template rows and cols
         bboxes+=match(1,img,template,img2,tcols,trows)
-    #cv2.imwrite('result.png',img2)
+    cv2.imwrite('result.png',img2)
     return bboxes
 
 #Summary: Template matching implementation

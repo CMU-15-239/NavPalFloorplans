@@ -207,6 +207,7 @@ def extractDoors(img,hLines,vLines,doorRects,destpath):
         cx=x+w/2 #cx: center x coordinate 
         cy=y+h/2 #cy: center y coordinate
         counts=[0,0,0,0]
+
         #Opencv2 refers pixel in cartesian notation, i.e x=col, y=row 
         temp=cx
         cx=cy
@@ -221,28 +222,28 @@ def extractDoors(img,hLines,vLines,doorRects,destpath):
     
         if counts[0]==0:
             line=newLine(y,x,y,x+w)
-            #cv2.line(img,(x,y),(x+w,y),255,2)
+            cv2.line(img,(x,y),(x+w,y),255,2)
             fd.write('%s\n {\"door\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}'%\
                         (s,y,x,y+h,x))
             addcomma=True
             hLines.append(line)
         elif counts[1]==0:
             line=newLine(y,x+w,y+h,x+w)
-            #cv2.line(img,(x+w,y),(x+w,y+h),255,2)
+            cv2.line(img,(x+w,y),(x+w,y+h),255,2)
             fd.write('%s\n {\"door\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}'%\
                         (s,y+h,x,y+h,x+w))
             addcomma=True
             vLines.append(line)
         elif counts[2]==0:
             line=newLine(y+h,x,y+h,x+w)
-            #cv2.line(img,(x,y+h),(x+w,y+h),255,2)
+            cv2.line(img,(x,y+h),(x+w,y+h),255,2)
             fd.write('%s \n {\"door\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}'%\
                         (s,y,x+w,y+h,x+w))
             hLines.append(line)
             addcomma=True
         elif counts[3]==0:
             line=newLine(y,x,y+h,x)
-            #cv2.line(img,(x,y),(x,y+h),255,2)
+            cv2.line(img,(x,y),(x,y+h),255,2)
             fd.write('%s \n{\"door\":[{\"p1\":[%d,%d]},{\"p2\":[%d,%d]}]}'%\
                         (s,y,x,y,x+w))
             vLines.append(line)
@@ -252,7 +253,6 @@ def extractDoors(img,hLines,vLines,doorRects,destpath):
     fd.write("]\n")
     fd.close()
     #for visualization purpose
-    #cv2.imshow("img",img)
     #cv2.waitKey(0) 
 
 
