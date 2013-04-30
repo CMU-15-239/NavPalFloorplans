@@ -105,9 +105,13 @@ function removeBuilding() {
       alert('An error occurred, please try again.')
     }.bind(this)
   })
-  
 }
 
+/**
+ * Summary: Changes a user's password
+ * Parameters: n/a
+ * Returns: server request to change password iff passwords match
+**/
 function changeUserPassword() {
   var inputs = $(".newPasswordForm").removeClass('error').removeClass('success');
   var newPassword = $('#newPassword').val();
@@ -143,6 +147,11 @@ function changeUserPassword() {
   }
 }
 
+/**
+ * Summary: Instantiates account page
+ * Parameters: n/a
+ * Returns: emptied local storage, instantiated tabs, table of user buildings
+**/
 $(document).ready(function() {
   // Remove whatever building is currently in local storage
   localStorage.setItem('building', '');

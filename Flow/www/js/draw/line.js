@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
 	line.js
 	Written by Justin Greet and Paul Davis.
@@ -7,6 +8,11 @@
 	The data structure that represents a line in the canvas.
 	
 */
+=======
+// TODO: Header
+
+//line.js
+>>>>>>> 2b11f7d734f2de3ba4d967ddc03436f5bbe561f6
 
 function importLine(simpleLine) {
   
@@ -44,14 +50,23 @@ function Line(p1, p2, isDoor) {
 	this.isExit = false;
 	this.definesRoom = false;
 	
+	// Line in form ax + by + c = 0
+	// sqrt(a*a + b*b) = distConst
+	this.a;
+	this.b;
+	this.c;
+	this.distConst;
 	this.calculateForm(p1, p2);
 }
 
+/**
+  * Constructs a JSON object from this.
+**/
 Line.prototype.toOutput = function() {
 	return {
 		p1: this.p1.toOutput(),
 		p2: this.p2.toOutput(),
-    isDoor: this.isDoor
+		isDoor: this.isDoor
 	};
 };
 
