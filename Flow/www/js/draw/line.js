@@ -1,4 +1,13 @@
-//line.js
+/**
+	line.js
+	Written by Justin Greet and Paul Davis.
+	justin.greet11@gmail.com
+	Spring 2013
+	
+	The data structure that represents a line in the canvas.
+	
+*/
+
 
 function importLine(simpleLine) {
   
@@ -33,16 +42,26 @@ function Line(p1, p2, isDoor) {
 	this.p2 = p2;
 	this.isSelected = false;
 	this.isDoor = (isDoor === true);
+	this.isExit = false;
 	this.definesRoom = false;
 	
+	// Line in form ax + by + c = 0
+	// sqrt(a*a + b*b) = distConst
+	this.a;
+	this.b;
+	this.c;
+	this.distConst;
 	this.calculateForm(p1, p2);
 }
 
+/**
+  * Constructs a JSON object from this.
+**/
 Line.prototype.toOutput = function() {
 	return {
 		p1: this.p1.toOutput(),
 		p2: this.p2.toOutput(),
-    isDoor: this.isDoor
+		isDoor: this.isDoor
 	};
 };
 
@@ -102,6 +121,9 @@ Line.prototype.draw = function (lineColor) {
 	if (this.isDoor === true) {
 		stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(188,0,255,0.8)';
 	}
+	if (this.isExit === true) {
+		stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(100,100,100,0.8)';
+	}
 	if (this.isSelected === true) {
 		stateManager.currentFloor.globals.canvas.strokeStyle = 'rgba(0,132,240,1)'; // Yellow
 	}
@@ -148,9 +170,7 @@ Line.prototype.distanceToPoint = function(point) {
  * Parameters: point: The point to check, radius: The maximum distance allowed.
  * Returns: true iff the given point is within radius distance of the line.
 **/	
-Line.prototype.pointNearLine = function(point, radius) {
-	//if(radius <= 0) {return this.pointOnLine(point);} //why doesnt this work?
-	
+Line.prototype.pointNearLine = function(point, radius) {	
 	var close = (Math.abs(this.signPointToLine(point)) / this.distConst) <= radius;
 	//Make sure the point is actually within the endpoints of the line.
 	var onLine = ((this.p1.x >= point.x-radius && point.x+radius >= this.p2.x) ||
@@ -209,7 +229,7 @@ Line.prototype.breakIntoTwo = function(p) {
 };
 
 /**
- * Summary: Get the slop of the line.
+ * Summary: Get the slope of the line. (approximates vertical lines to large numbers)
  * Parameters: this
  * Returns: The slope of the line.
 **/	
@@ -220,6 +240,22 @@ Line.prototype.getSlope = function() {
 	
 	var b = epsilon
 	return -1.0 * this.a / b;
+};
+
+/**
+  * Summary: Get the slope of the line.
+  * Parameters: void
+  * Returns: int (Infinity if it is a vertical line).
+**/
+Line.prototype.getSlope2 = function() {
+  var leftPt = this.p1;
+  var rightPt = this.p2;
+  if(leftPt.x > rightPt.x) {
+    leftPt = this.p2;
+    rightPt = this.p1;
+  }
+  
+  return (rightPt.y - leftPt.y)/(rightPt.x - leftPt.x);
 };
 
 /**
@@ -236,18 +272,81 @@ Line.prototype.otherPoint = function(point) {
 	}
 };
 
+/**
+  * Summary: Creates a sampleing of the line at regular intervals.
+  * Parameters: void
+  * Returns: [Point], Array of Points
+**/
+Line.prototype.getPointsRep = function() {
+  var pts = [];
+  
+  if(this.getSlope2() === Infinity) {
+    //is a vertical line
+    var minY = this.p1.y;
+    var maxY = this.p2.y;
+    if(maxY < minY) {
+      minY = this.p2.y;
+      maxY = this.p1.y;
+    }
+    
+    for(var yr = minY + 1; yr < maxY; yr++) {
+      pts.push(new Point(this.p1.x, yr));
+    }
+  } else {
+    var xr = Math.min(this.p1.x, this.p2.x);
+    var pt;
+    while((pt = this.getYAtX(xr)) !== null) {
+      pts.push(pt);
+      xr++;
+    }
+  }
+  
+  return pts;
+};
+
+/**
+  * Summary: Finds the y values for the given x values.
+        If it is a vertical line returns the top point.
+  * Parameters: xr : int
+  * Returns: Point
+**/
+Line.prototype.getYAtX = function(xr) {
+  var minPt = this.p1;
+  var maxPt = this.p2;
+  if(maxPt.x < minPt.x) {
+    minPt = this.p2;
+    maxPt = this.p1;
+  }
+  
+  if(minPt.x <= xr && xr <= maxPt.x) {
+    var slope = this.getSlope();
+    var dx = xr - minPt.x;
+    var dy = slope * dx;
+    return new Point(xr, minPt.y + dy);
+  }
+  
+  return null;
+};
+
 
 /**
  * Summary: Get the magnitude of the line (i.e. its length).
  * Parameters: this
  * Returns: The magnitude of the line.
 **/	
-Line.prototype.magnitutde = function() {
+Line.prototype.magnitutde = function() { //TODO: fix spelling
 	var dx = Math.abs(this.p1.x - this.p2.x);
 	var dy = Math.abs(this.p1.y - this.p2.y);
 	return Math.sqrt(dx * dx + dy * dy);
 };
 
+Line.prototype.magnitude = Line.prototype.magnitutde;
+
+/**
+  * Summary: Check if line and this intersect.
+  * Parameters: line: the line to check for intersection.
+  * Returns: The point of intersection, if it exists. Null otherwise.
+**/
 Line.prototype.pointOfLineIntersection = function(line) {
 	//If they have a common endpoint, they don't intersect in any meaningful way.
 	if (this.p1.equals(line.p1) || this.p1.equals(line.p2) || this.p2.equals(line.p1) || this.p2.equals(line.p2)){
@@ -288,11 +387,20 @@ Line.prototype.pointOfLineIntersection = function(line) {
 	return null;
 };
 
+/**
+  * Summary: Split up this along each of the points in setOfPoints.
+  * Parameters: setOfPoints: The points at which we should split up this.
+  * Returns: undefined
+**/
 Line.prototype.splitUpLine = function(setOfPoints) {
+	//First sort the points, starting at this.p1
 	var sortedPoints = this.sortPoints(setOfPoints);
+	//The lines that result from splitting this up.
 	var newLineSegments = [];
 	var lineToSplit = this;
+	//Go through each of the points and split up segments.
 	for (var i = 0; i < sortedPoints.length; i++) {
+		//Split what remains of this up.
 		var newSegs = lineToSplit.breakIntoTwo(sortedPoints[i]);
 		if (newSegs !== undefined) {
 			//Since we sorted starting at p1, we want to split the segment that includes p2
@@ -315,11 +423,17 @@ Line.prototype.splitUpLine = function(setOfPoints) {
 	return newLineSegments;
 };
 
+/**
+  * Summary: Sort a set of points that lie on this, starting at this.p1
+  * Parameters: points: The unsorted set of points that lie along this.
+  * Returns: A sorted set of the points that lie along this.
+**/
 Line.prototype.sortPoints = function(points) {
 	//First find the closest point to p1 (could be p2 just as well) and put it at the front,
 	//because it will act as our starting point for sorting
 	var closestDistance = 100000000000;
 	var startingPointIndex;
+	//Get the index of the point that's closest to this.p1
 	for (var i = 0; i < points.length; i++) {
 		var pointToCheck = points[i];
 		var distanceTop1 = pointToCheck.distance(this.p1);
@@ -328,22 +442,27 @@ Line.prototype.sortPoints = function(points) {
 			closestDistance = distanceTop1;
 		}
 	}
-	//Now remove it and put it at the front. Splice returns an array.
+	//Now remove that point and put it at the front. Splice returns an array.
 	var startingPoint = points.splice(startingPointIndex, 1); 
 	startingPoint = startingPoint[0];
+	//Unshift inserts into the front of an array.
 	points.unshift(startingPoint);
 	
 	//Now go through each remaining point and sort it, stopping when all the points are sorted.
 	var closestPoint;
 	var numSorted = 1;
 	var sortedPoints = [];
+	//We know the starting point is the first sorted point.
 	sortedPoints.push(startingPoint);
 	closestDistance = 100000000000;
 	while (numSorted < points.length) {
 		//We want to find the closest point to the most recent one that we've sorted.
 		var pointToCheck = sortedPoints[numSorted - 1];
+		//Go through the remaining points to find the closest one.
 		for (var j = 0; j < points.length; j++) {
 			var curPoint = points[j];
+			//Make sure we skip any points that have already been sorted. 
+			//Also skip the point that's equal to curPoint.
 			if (!curPoint.equals(pointToCheck) &&
 				!this.containsPoint(sortedPoints, curPoint) && 
 				(pointToCheck.distance(curPoint) < closestDistance)) {
@@ -358,10 +477,40 @@ Line.prototype.sortPoints = function(points) {
 	return sortedPoints;
 };
 
+/**
+  * Summary: Check if pointList contains point.
+  * Parameters: pointList: A set of points
+  *		point: The point to check for
+  * Returns: true iff there exists a point in pointList that equals point.
+**/
 Line.prototype.containsPoint = function(pointList, point) {
 	for (var i = 0; i < pointList.length; i++) {
 		if (pointList[i].equals(point)) return true;
 	}
 	return false;
 };
+
+/**
+  * Summary: Determines if this is parallel to the given line.
+  * Parameters: otherLine: Line
+  * Returns: boolean
+**/
+Line.prototype.isParallelTo = function(otherLine) {
+  return this.getSlope2() === otherLine.getSlope2();
+};
+
+/**
+  * Summary: Determines if this is parallel to one of the given lines.
+  * Parameters: otherLines: [Line], Array of Lines
+  * Returns: boolean
+**/
+Line.prototype.isParallelToOne = function(otherLines) {
+  for(var l = 0; l < otherLines.length; l++) {
+    if(this.isParallelTo(otherLines[l])) {
+      return true;
+    }
+  }
+  
+  return false;
+}
 

@@ -46,6 +46,7 @@
 <script src="../js/graph/edgeWeight.js"></script>
 <script src="../js/graph/edgeWeights.js"></script>
 <script src="../js/graph/floorNode.js"></script>
+<script src="../js/graph/grid.js"></script>
 <script src="../js/graph/spaceNode.js"></script>
 <script src="../js/graph/pswNode.js"></script>
 <script src="../js/graph/floorConnectionNodeRef.js"></script>
@@ -75,8 +76,8 @@ lines1_1.push(new Line(new Point(0,10), new Point(10,10)));
 lines1_1.push(new Line(new Point(0,0), new Point(10,0)));
 lines1_1.push(new Line(new Point(10,0), new Point(10,1)));
 lines1_1.push(new Line(new Point(10,0), new Point(20,0)));
-lines1_1.push(new Line(new Point(20,0), new Point(20,25)));
-lines1_1.push(new Line(new Point(10,10), new Point(20,25)));
+lines1_1.push(new Line(new Point(20,0), new Point(20,12)));
+lines1_1.push(new Line(new Point(10,10), new Point(20,12)));
 
 lines1_1.push(new Line(new Point(10,5), new Point(10,10)));
 
@@ -103,16 +104,16 @@ lines1_2.push(new Line(new Point(0,10), new Point(10,10)));
 lines1_2.push(new Line(new Point(0,0), new Point(10,0)));
 lines1_2.push(new Line(new Point(10,0), new Point(10,1)));
 lines1_2.push(new Line(new Point(10,0), new Point(20,0)));
-lines1_2.push(new Line(new Point(20,0), new Point(20,25)));
-lines1_2.push(new Line(new Point(10,10), new Point(20,25)));
+lines1_2.push(new Line(new Point(20,0), new Point(20,50)));
+lines1_2.push(new Line(new Point(10,10), new Point(20,50)));
 
 lines1_2.push(new Line(new Point(10,5), new Point(10,10)));
 
 var doors1_2 = [new Line(new Point(10,1), new Point(10,5), true)];
 
-var s1_3 = newTestSpace([lines1_1[0], lines1_1[1], lines1_1[3], doors1_1[0], lines1_1[7], lines1_1[2]], doors1_1, "room", "s3");
+var s1_3 = newTestSpace([lines1_2[0], lines1_2[1], lines1_2[3], doors1_2[0], lines1_2[7], lines1_2[2]], doors1_2, "room", "s3");
 
-var s1_4 = newTestSpace([lines1_1[4], lines1_1[5], lines1_1[6], lines1_1[7], doors1_1[0], lines1_1[3]], doors1_1, "room", "s4");
+var s1_4 = newTestSpace([lines1_2[4], lines1_2[5], lines1_2[6], lines1_2[7], doors1_2[0], lines1_2[3]], doors1_2, "room", "s4");
 
 var floor1_2 = new Floor("2", "safdsa2", 30);
 floor1_2.spaces = [s1_3, s1_4];
@@ -132,6 +133,18 @@ building1.floors.push(floor1_2);
 building1.floorConnections = [fc1_1, fc1_2, fc1_3, fc1_4];
 
 var g1 = new BuildingGraph(building1);
+
+var $out = $("#testOutput");
+
+for(var f = 0; f < g1.floors.length; f++) {
+  $out.append('<br><br><h2>Floor: ' + f + '</h2>');
+  var spaces = g1.floors[f].spaces;
+  for(var s = 0; s < spaces.length; s++) {
+    var space = spaces[s];
+    $out.append('<br><h3>Space: ' + space.id +'</h3>');
+    space.grid.draw($out);
+  }
+}
 
 
 
@@ -220,7 +233,7 @@ var l1 = new Landmark("candyman", "Asdfafa", new Point(3,3));
 var l2 = new Landmark("42", "1as", new Point(20,25));
 floor2.landmarks = [l1, l2];
 
-var g2 = new FloorGraph(floor2);
+//var g2 = new FloorGraph(floor2);
 /*var s2 = Sector.generateSector(spaces1, 31, 41);
 for (var row=0; row<s2.length; row++) {
 	var text = "";

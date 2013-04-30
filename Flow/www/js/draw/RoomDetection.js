@@ -5,9 +5,12 @@
 	Spring 2013
 	
 	This file takes a list of lines and determines which areas constitute
-	different rooms. The basic algorithm uses depth first search 
-	
-	NEED TO FINISH WRITING...
+	different rooms. The basic algorithm uses depth first search to traverse
+	adjacent lines in a clockwise or counter clockwise order. It checks if 
+	the route found from the traversal was the internal path along a closed 
+	room. It returns a list of all rooms that is cross referenced with 
+	previously existing rooms. Previously existing, unmodified rooms are
+	kept, modified rooms are deleted, and new rooms are added.
 	
 */
 
@@ -136,8 +139,7 @@ function searchRoom(line, rooms) {
 		var angles = sumAngles(route, true);
 		var expectedInternalAngle = sumInternalAngle(route.length);
 		
-		// Must take other route, this is not valid, 
-		// path did not take innermost angles
+		// Cannot take counterclockwise route, it is not a closed room
 		if (!almostEqual(expectedInternalAngle, angles)) {
 			validRoute = false;
 		}
@@ -153,7 +155,6 @@ function searchRoom(line, rooms) {
 		if (followWalls(false, line.p1, line, revRoute)) { // DFS
 			revRoute.push(line);
 			validRevRoute = true;
-			//route = revRoute;
 			
 			var angles = sumAngles(revRoute, false);
 			var expectedInternalAngle = sumInternalAngle(revRoute.length);
@@ -169,12 +170,10 @@ function searchRoom(line, rooms) {
 	
 	// If a valid room was found
 	if (validRoute) {
-		//console.log(route);
 		addRouteAsRoom(route, rooms);
 	}
 	
 	if (validRevRoute) {
-		//console.log(revRoute);
 		addRouteAsRoom(revRoute, rooms);
 	}
 	
@@ -194,13 +193,12 @@ function addRouteAsRoom(route, rooms) {
 	if (!found) {
 		rooms.push(newRoom);
 	}
-	
 }
 
-
 /**
- * Summary: A simple DFS that prioritizes ccw (or cw) traversal through
-			neighboring edges
+ * Summary: Searches to find a list of walls that create a closed off room 
+			using a simple depth first search that prioritizes ccw (or cw) 
+			traversal through neighboring edges
  * Parameters: counterClock: true for ccw traversal
 			   point: the current point we are at
 			   line: the last line traveled
@@ -211,8 +209,7 @@ function followWalls(counterClock, point, line, route) {
 
 	visitedPoints[point.toString()] = true;
 
-	if (point == false) {
-		// Why would this ever happen?
+	if (point === false) {
 		//alert() 
 	}
 	
@@ -268,9 +265,6 @@ function followWalls(counterClock, point, line, route) {
  * Returns: The angle between the lines, in radians
 **/
 function angleBetween(counterClock, point, line0, line1) {
-	//console.log("ENTER ANGLE BETWEEN ------------------");
-	//console.log("line 0 " + line0.toString());
-	//console.log("line 1 " + line1.toString());
 	
 	var pc = point;
 	var p0 = line0.otherPoint(point);
@@ -290,9 +284,6 @@ function angleBetween(counterClock, point, line0, line1) {
 	var theta0 = Math.atan(1.0 * vec0Y / vec0X);
 	var theta1 = Math.atan(1.0 * vec1Y / vec1X);
 	
-	//console.log("theta0 original: " + toDegree(theta0));
-	//console.log("theta1 original: " + toDegree(theta1));
-	
 	if (q0 == 2 || q0 == 3) {
 		theta0 += Math.PI;
 	}
@@ -300,18 +291,12 @@ function angleBetween(counterClock, point, line0, line1) {
 		theta1 += Math.PI;
 	}
 	
-	//console.log("theta0 quad: " + toDegree(theta0));
-	//console.log("theta1 quad: " + toDegree(theta1));
-	
 	if (theta0 < 0) {
 		theta0 += 2 * Math.PI;
 	}
 	if (theta1 < 0) {
 		theta1 += 2 * Math.PI;
 	}
-	
-	//console.log("theta0 relative: " + toDegree(theta0));
-	//console.log("theta1 relative: " + toDegree(theta1));
 
 	var angle = 0;
 
@@ -331,7 +316,7 @@ function angleBetween(counterClock, point, line0, line1) {
 
 
 /**
- * Summary: Find all the edges along the given point, excluded the given line
+ * Summary: Find all the edges connected to the given point, excluding the given line
  * Parameters: point: the current point
  *			   includedLine: don't include this line
  * Returns: A list of neighbors of the point
@@ -361,12 +346,7 @@ function getEdgeNeighbors(point, includedLine) {
  * Returns: A list of sorted edges
 **/
 function sortEdges(counterClock, edges, point, line) {
-	/*
-	for (var count = 0; count < edges.length; count++) {
-		console.log("Edges enter: " + edges[count].toString() + counterClock);
-	}
-	*/
-	
+
 	// Selection sort, put closest edges to line 
 	for (var count = 0; count < edges.length; count++) {
 		var closestLine = edges[count];
@@ -387,18 +367,13 @@ function sortEdges(counterClock, edges, point, line) {
 		edges[count] = temp;	
 	}
 	
-	/*
-	for (var count = 0; count < edges.length; count++) {
-		console.log("Edges exit: " + edges[count].toString() + counterClock);
-	}
-	*/
-	
 	return edges;
 }
 
 /**
  * Summary: Compares two lines to see which is closer to a reference line
  *			moving in a ccw (or cw) direction.
+			This is the comparison function for sorting edges.
  * Parameters:  counterClock: true if ccw direction
  *				point: shared point between the lines
  *				line: the reference line
@@ -525,7 +500,12 @@ function toDegree(angle) {
 	return angle * 180.0 / Math.PI;
 }
 
-
+/**
+ * Summary: Equals function for floats
+ * Parameters:  a: first value
+				b: second value
+ * Returns: Returns if the two values are almost equal
+**/
 function almostEqual(a,b) {
 	return Math.abs(a - b) < 0.001;
 }

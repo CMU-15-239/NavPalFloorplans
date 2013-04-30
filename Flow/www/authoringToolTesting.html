@@ -1,3 +1,6 @@
+<!-- Testing page for authoring tool-->
+<!-- Written by Daniel Muller -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -74,10 +77,6 @@
               <div id="Pan" class="toolIcon tool right" style="background-image: url(img/handIcon.svg)" data-toggle="tooltip" title="Pan Tool: Click anywhere on the canvas and drag the mouse to move the canvas around."></div>
             </div>
             <div class="row-fluid toolrow">
-              <div class="toolIcon tool left" style="background-image: url(img/undoIcon.svg)" data-toggle="tooltip" title="Undo Tool: Click here to undo the last action performed."></div>
-              <div class="toolIcon tool right" style="background-image: url(img/redoIcon.svg)" data-toggle="tooltip" title="Redo Tool: Click here to redo the last undone action."></div>
-            </div>
-            <div class="row-fluid toolrow">
               <div id="ZoomIn" class="toolIcon tool left" style="background-image: url(img/zoominIcon.svg)" data-toggle="tooltip" title="Zoom-in Tool: Click on the canvas to zoom in on the point you clicked."></div>
               <div id="ZoomOut" class="toolIcon tool right" style="background-image: url(img/zoomoutIcon.svg)" data-toggle="tooltip" title="Zoom-out Tool: Click on the canvas to zoom out on the point you clicked."></div>
             </div>      
@@ -96,6 +95,9 @@
             <div class="row-fluid toolrow">
               <div id="Stair" class="toolIcon tool left" style="background-image: url(img/stairIcon.svg)" data-toggle="tooltip" title="Stair Tool: Click on the location of a stairway. Give your staircase a name or select stair as a part of a staircase you previously created."></div>
               <div id="Elevator" class="toolIcon tool right" style="background-image: url(img/elevatorIcon.svg)" data-toggle="tooltip" title="Elevator Tool: Click on the location of an elevator. Give your elevator a name or select stair as a part of an elevator you previously created."></div>
+            </div>
+            <div class="row-fluid toolrow">
+              <div id="Exit" class="toolIcon tool left" style="background-image: url(img/exitIcon.svg)" data-toggle="tooltip" title="Exit Tool: Click on a point which visitors can exit your building."></div>
             </div>
           </div>
           <div id="saveExport" class="row-fluid toolrow">
@@ -219,6 +221,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
 
+    <!--Libraries-->
     <script src="./js/jquery.js"></script>
     <script src="./js/image/spin.min.js"></script>
     <script src="./js/image/jquery.spin.js"></script>
@@ -226,8 +229,17 @@
     <script src="./js/keyboard/mousetrap.min.js"></script>
     <script src="./js/keyboard/mousetrap-bind.min.js"></script>
     <script src="./js/carousel/jquery.jcarousel.js"></script>
-    <script src="./js/authoringToolTesting.js"></script>
+    <script src="./js/lib/Util.js"></script>
+    
+    <!--Authoring Tool-->
+    <script>
+      // this is a test building used in place of pulling one down from the server
+      localStorage.setItem('building', '{"name":"buiding1","floors":[{"name":"1","imageId":"safdsa","width":30,"imageScale":1,"spaces":[{"doors":[{"p1":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":true,"definesRoom":false,"a":-4,"b":0,"c":40,"distConst":4}],"walls":[{"p1":{"x":0,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":0,"y":10,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-10,"b":0,"c":0,"distConst":10},{"p1":{"x":0,"y":10,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":0,"b":10,"c":-100,"distConst":10},{"p1":{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-1,"b":0,"c":10,"distConst":1},{"p1":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":true,"definesRoom":false,"a":-4,"b":0,"c":40,"distConst":4},{"p1":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-5,"b":0,"c":50,"distConst":5},{"p1":{"x":0,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":0,"b":10,"c":0,"distConst":10}],"points":[],"type":"room","label":"s1","isClosed":false,"selectPoly":{"points":[{"x":0,"y":10,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},{"x":0,"y":0,"isSnap":false,"isSelected":false,"degree":0}]},"drawPoly":false},{"doors":[{"p1":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":true,"definesRoom":false,"a":-4,"b":0,"c":40,"distConst":4}],"walls":[{"p1":{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":20,"y":0,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":0,"b":10,"c":0,"distConst":10},{"p1":{"x":20,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":20,"y":25,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-25,"b":0,"c":500,"distConst":25},{"p1":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":20,"y":25,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-15,"b":10,"c":50,"distConst":18.027756377319946},{"p1":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-5,"b":0,"c":50,"distConst":5},{"p1":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":true,"definesRoom":false,"a":-4,"b":0,"c":40,"distConst":4},{"p1":{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-1,"b":0,"c":10,"distConst":1}],"points":[],"type":"room","label":"s2","isClosed":false,"selectPoly":{"points":[{"x":20,"y":0,"isSnap":false,"isSelected":false,"degree":0},{"x":20,"y":25,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0}]},"drawPoly":false}],"obstacles":[],"landmarks":[{"label":"candyman","description":"Asdfafa","pointRep":{"x":3,"y":3,"isSnap":false,"isSelected":false,"degree":0}},{"label":"42","description":"1as","pointRep":{"x":20,"y":25,"isSnap":false,"isSelected":false,"degree":0}}],"floorConnections":[{"label":"evil stairs","pointRep":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"floorConnectionType":"stairs"},{"label":"good stairs","pointRep":{"x":20,"y":20,"isSnap":false,"isSelected":false,"degree":0},"floorConnectionType":"stairs"}],"globals":{"canvas":null,"walls":[],"points":[],"view":null,"preprocessedText":[],"snapRadius":15}},{"name":"2","imageId":"safdsa2","width":30,"imageScale":1,"spaces":[{"doors":[{"p1":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":true,"definesRoom":false,"a":-4,"b":0,"c":40,"distConst":4}],"walls":[{"p1":{"x":0,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":0,"y":10,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-10,"b":0,"c":0,"distConst":10},{"p1":{"x":0,"y":10,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":0,"b":10,"c":-100,"distConst":10},{"p1":{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-1,"b":0,"c":10,"distConst":1},{"p1":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":true,"definesRoom":false,"a":-4,"b":0,"c":40,"distConst":4},{"p1":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-5,"b":0,"c":50,"distConst":5},{"p1":{"x":0,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":0,"b":10,"c":0,"distConst":10}],"points":[],"type":"room","label":"s3","isClosed":false,"selectPoly":{"points":[{"x":0,"y":10,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},{"x":0,"y":0,"isSnap":false,"isSelected":false,"degree":0}]},"drawPoly":false},{"doors":[{"p1":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":true,"definesRoom":false,"a":-4,"b":0,"c":40,"distConst":4}],"walls":[{"p1":{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":20,"y":0,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":0,"b":10,"c":0,"distConst":10},{"p1":{"x":20,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":20,"y":25,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-25,"b":0,"c":500,"distConst":25},{"p1":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":20,"y":25,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-15,"b":10,"c":50,"distConst":18.027756377319946},{"p1":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-5,"b":0,"c":50,"distConst":5},{"p1":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":true,"definesRoom":false,"a":-4,"b":0,"c":40,"distConst":4},{"p1":{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0},"p2":{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},"isSelected":false,"isDoor":false,"definesRoom":false,"a":-1,"b":0,"c":10,"distConst":1}],"points":[],"type":"room","label":"s4","isClosed":false,"selectPoly":{"points":[{"x":20,"y":0,"isSnap":false,"isSelected":false,"degree":0},{"x":20,"y":25,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":5,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":1,"isSnap":false,"isSelected":false,"degree":0},{"x":10,"y":0,"isSnap":false,"isSelected":false,"degree":0}]},"drawPoly":false}],"obstacles":[],"landmarks":[{"label":"candyman","description":"Asdfafa","pointRep":{"x":3,"y":3,"isSnap":false,"isSelected":false,"degree":0}},{"label":"42","description":"1as","pointRep":{"x":20,"y":25,"isSnap":false,"isSelected":false,"degree":0}}],"floorConnections":[{"label":"evil stairs","pointRep":{"x":10,"y":15,"isSnap":false,"isSelected":false,"degree":0},"floorConnectionType":"stairs"},{"label":"good stairs","pointRep":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"floorConnectionType":"stairs"}],"globals":{"canvas":null,"walls":[],"points":[],"view":null,"preprocessedText":[],"snapRadius":15}}],"floorConnections":[{"label":"evil stairs","pointRep":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"floorConnectionType":"stairs"},{"label":"good stairs","pointRep":{"x":20,"y":20,"isSnap":false,"isSelected":false,"degree":0},"floorConnectionType":"stairs"},{"label":"evil stairs","pointRep":{"x":10,"y":15,"isSnap":false,"isSelected":false,"degree":0},"floorConnectionType":"stairs"},{"label":"good stairs","pointRep":{"x":10,"y":10,"isSnap":false,"isSelected":false,"degree":0},"floorConnectionType":"stairs"}]}'
+    );
+    </script>
+    <script src="./js/authoringTool.js"></script>
     <script src="./js/floorUploads.js"></script>
+    
     <script src="./js/StateManager.js"></script>
     <script src="./js/states/BaseState.js"></script>
     <script src="./js/states/PreprocessState.js"></script>
@@ -241,7 +253,7 @@
     <script src="./js/states/DoorState.js"></script>
     <script src="./js/states/StairState.js"></script>
     <script src="./js/states/LandmarkState.js"></script>
-    <script src="./js/lib/Util.js"></script>
+    
     <script src="./js/lib/globals.js"></script>
     <script src="./js/lib/GlobalsContainer.js"></script>
     <script src="./js/draw/ManipulationAreaView.js"></script>
@@ -254,8 +266,12 @@
     <script src="./js/draw/floor.js"></script>
     <script src="./js/draw/building.js"></script>
     <script src="./js/states/ClassifyState.js"></script>
+	<script src="./js/states/ExitState.js"></script>
     <script src="./js/draw/RoomDetection.js"></script>
     <script src="./js/draw/RoomSelect.js"></script>
+    
+    <!--Graph JS-->
+    <script src="./js/graph/grid.js"></script>
     <script src="./js/graph/edgeWeight.js"></script>
     <script src="./js/graph/edgeWeights.js"></script>
     <script src="./js/graph/floorNode.js"></script>
@@ -266,6 +282,7 @@
     <script src="./js/graph/landmarkNode.js"></script>
     <script src="./js/graph/floorGraph.js"></script>
     <script src="./js/graph/buildingGraph.js"></script>
+    
     <script src="./js/main2.js"></script>
     
 

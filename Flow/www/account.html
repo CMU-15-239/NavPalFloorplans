@@ -1,3 +1,6 @@
+<!-- Page listing a user's buildings and a change password form -->
+<!-- Written by Daniel Muller -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -51,22 +54,62 @@
 
     <div class="container" style="position: relative; top: 40px;">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#buildings" data-toggle="tab">Buildings</a></li>
-        <li><a href="#password" data-toggle="tab">Change Password</a></li>
-        <li><a href="#deleteAccount" data-toggle="tab">Delete Account</a></li>
+        <li class="active"><a href="#buildingsTab" data-toggle="tab">Buildings</a></li>
+        <li><a href="#passwordTab" data-toggle="tab">Change Password</a></li>
       </ul>
-      <div class="tab-content">
-        <div id="buildings" class="tab-pane active">
-          <div class="subhead"><h2>Your Buildings</h2></div>
-          <p>aljsdfasldfj</p>
-        </div>
-        <div id="password" class="tab-pane">
-          <div class="subhead"><h2>Change Your Password</h2></div>
-          <p>inputs here</p>
-        </div>
-        <div id="deleteAccount" class="tab-pane">
-          <div class="subhead"><h2>Delete Account</h2></div>
-          <p>inputs here</p>        
+
+      <!-- User buildings tab
+        ================================================= -->
+      <div class="tab-content container">
+        <div id="buildingsTab" class="tab-pane active row">
+          <div class="span12">
+          <a href="floorUploads.html">
+            <button href="floorUploads.html" class="btn btn-large btn-block" type="button">
+            Create New Building
+            </button>
+          </a><br>
+          <div class="subhead"><h2>Your Buildings</h2></div><br>
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr> <th>#</th> <th>Building Name</th> <th>Edit</th> <th>Delete</th> </tr>
+            </thead>
+            <tbody id="buildings">
+
+            </tbody>
+          </table>
+        </div></div>
+
+        <!-- Change password tab
+        ================================================= -->
+        <div id="passwordTab" class="tab-pane">
+          <div class="subhead"><h2>Change Your Password</h2></div></br></br>
+          <form class="form-horizontal"><fieldset>
+          <!-- Form Name -->
+              <!-- Password input-->
+              <div class="control-group newPasswordForm">
+                <label class="control-label">New Password</label>
+                <div class="controls">
+                  <input id="newPassword" name="newPassword" type="password" placeholder="" class="input-xlarge" required="">
+                </div>
+              </div>
+              <!-- Confirm Password input-->
+              <div class="control-group newPasswordForm">
+                <label class="control-label">Confirm Password</label>
+                <div class="controls">
+                  <input id="confirmPassword" name="confirmPassword" type="password" placeholder="" class="input-xlarge" required="">
+                  <div id="passwordInfo" class="help-block hidden"></div>
+                </div>
+              </div>
+              <!-- Submit -->
+              <div class="control-group">
+                <label class="control-label"></label>
+                <div class="controls">
+                  <div id="submitChange" name="submitChange" class="btn input-xlarge">Submit</div>
+                </div>
+              </div>
+
+          </fieldset></form>
+
         </div>
       </div>
     </div><!-- /.tabbable -->
@@ -76,16 +119,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./js/jquery.js"></script>
     <script src="./js/bootstrap/bootstrap.min.js"></script>
-    <script>
-    $(document).ready(function() {
-        // Initialize tabs and pills
-        $('.note-tabs').tab();
-        $.ajax({
-          type: "GET",
-          url: '/buildings',
-          
-            });
-    </script>
+    <script src="./js/image/spin.min.js"></script>
+    <script src="./js/image/jquery.spin.js"></script>
+    <script src="./js/lib/Util.js"></script>
+    <script src="./js/account.js"></script>
 
   </body>
 </html>

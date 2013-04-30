@@ -18,7 +18,7 @@ $("#loginButton").click(function() {
 	// grab elements to change in case of error, reset errors
 	var loginForm = $("#loginForm").attr('class', 'control-group');
 	var loginInfo = $("#loginInfo");
-	// send post request to server
+	// send post request to server with username and password
 	$.ajax({
 		type: "POST",
 		url: '/login',
@@ -27,10 +27,11 @@ $("#loginButton").click(function() {
 			password: logPass
 		},
 		success: function() {
-			console.log(window.location)
-			window.location = "/floorUploads.html";
+			// redirect to account page upon successful login
+			window.location = "/account.html";
 		},
 		error: function() {
+			// if an error occurs alert user to login failure
 			$("#loginButton").spin(false).removeClass('disabled');
 			loginForm.addClass('error');
 			loginInfo.removeClass('hidden').text('Login failed, please try again');
@@ -46,28 +47,27 @@ $("#loginButton").click(function() {
  * Returns: rect if successful orelse error message
 **/
 function handleRegistration(response) {
-	console.log(response);
-	$("#regButton").spin(false).removeClass('disabled');
+	$("#registrationButton").spin(false).removeClass('disabled');
 	var matchMails = $('#matchEmails');
-	console.log(response);
 	var matchEmails = $('#matchEmails').attr('class', 'control-group');
-	var regEmailInfo = $('#regEmailInfo');
+	var registrationEmailInfo = $('#registrationEmailInfo');
 	// deal with server response
 	switch (response.errorCode) {
+		// succssful registration redirects to building creation page
 		case 0:
 			window.location = '/floorUploads.html';
 			break;
 		case 1:
 			matchEmails.addClass('error');
-			regEmailInfo.removeClass('hidden').text('Invalid Email');
+			registrationEmailInfo.removeClass('hidden').text('Invalid Email');
 			break
 		case 2:
 			matchEmails.addClass('info');
-			regEmailInfo.removeClass('hidden').text('Email already registered');
+			registrationEmailInfo.removeClass('hidden').text('Email already registered');
 			break
 		case 3:
 			matchEmails.addClass('success');
-			regEmailInfo.removeClass('hidden').text('Account created! Please login.');
+			registrationEmailInfo.removeClass('hidden').text('Account created! Please login.');
 			break
 	}
 }
@@ -77,38 +77,42 @@ function handleRegistration(response) {
  * Parameters: valid email and password combo
  * Returns: ajax request if data is valid orelse error message
 **/
-$("#regButton").click(function() {
+$("#registrationButton").click(function() {
 	// make all error messages hidden
 	$(".help-block").addClass('hidden');
 	// grab email and password input
-	var regEmail = $("#regEmail").val();
+	var registrationEmail = $("#registrationEmail").val();
 	var conEmail = $("#confirmEmail").val();
-	var regPass = $("#regPass").val();
+	var registrationPass = $("#registrationPass").val();
 	var confirmPass = $("#confirmPass").val();
 	// grab elements to change in case of error, reset errors
 	var matchEmails = $('#matchEmails').attr('class', 'control-group');
 	var matchPasswords = $('#matchPasswords').attr('class', 'control-group');
-	var regEmailInfo = $('#regEmailInfo');
-	var regPasswordInfo = $('#regPasswordInfo');
+	var registrationEmailInfo = $('#registrationEmailInfo');
+	var registrationPasswordInfo = $('#registrationPasswordInfo');
 	// check if emails match
-	if (regEmail !== conEmail) {
+	if (registrationEmail !== conEmail) {
 		matchEmails.addClass('error');
-		regEmailInfo.removeClass('hidden').text('Emails do not match.');
+		registrationEmailInfo.removeClass('hidden').text('Emails do not match.');
 	}
 	// check if passwords match
-	else if (regPass !== confirmPass) {
+	else if (registrationPass !== confirmPass) {
 		matchPasswords.addClass('error');
-		regPasswordInfo.removeClass('hidden').text('Passwords do not match');
+		registrationPasswordInfo.removeClass('hidden').text('Passwords do not match');
 	}
-	// send post request to server
+	else if (!util.isValidInput(registrationPass)) {
+		matchPasswords.addClass('error');
+		registrationPasswordInfo.removeClass('hidden').text('Not a valid password.');
+	}
+	// send post request to server with username and password
 	else {
 		$(this).spin('small').addClass('disabled');
 		$.ajax({
 			type: "POST",
 			url: '/register',
 			data: {
-				username: regEmail,
-				password: regPass
+				username: registrationEmail,
+				password: registrationPass
 			},
 		}).done(handleRegistration);
 	}
