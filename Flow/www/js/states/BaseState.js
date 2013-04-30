@@ -1,3 +1,15 @@
+/**
+	BaseState.js
+	Written by Justin Greet
+	justin.greet11@gmail.com
+	Spring 2013
+	
+	The base state that all other states inherit. It provides all the
+	avaliable mouse and keyboard events. Each state that inherits from it
+	only needs to define functionality for the events that it cares about.
+	
+*/
+
 var BaseState = function() {
 }
 

@@ -1,26 +1,50 @@
+/**
+	DrawState.js
+	Written by Justin Greet
+	justin.greet11@gmail.com
+	Spring 2013
+	
+	The state that takes care of drawing new lines and points.
+	
+*/
+
 var DrawState = function(stateMan) {
 	this.stateManager = stateMan;
-	
+	//The location of the cursor.
 	this.pointAtCursor;
+	//Points added between the times this state is entered and exited.
 	this.pointsAddedInSession = [];
-	this.actionStack = [];
-	this.redoStack = [];
 }
 
-//NEED TO HAVE
+//Inherit from base state.
 DrawState.prototype = new BaseState();
 
-//NEED TO HAVE
+/**
+ * Summary: Called when the draw state it entered. This functionality
+ *		is required, even if it does nothing.
+ * Parameters: none.
+ * Returns: undefined.
+**/
 DrawState.prototype.enter = function() {
 }
 
-//NEED TO HAVE
+/**
+ * Summary: When we exit the state, reset any temporary variables.
+ * Parameters: none.
+ * Returns: undefined.
+**/
 DrawState.prototype.exit = function() {
 	this.pointAtCursor = undefined;
 	this.pointsAddedInSession = [];
 }
 
+/**
+ * Summary: When the mouse moves, snap the new point if necessary.
+ * Parameters: event: the event that encapsulates the mouse movement
+ * Returns: undefined.
+**/
 DrawState.prototype.mouseMove = function(event) {
+	//Get the location of the cursor in absolute coordinates.
 	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(new Point(event.pageX - stateManager.canvas.x, event.pageY - stateManager.canvas.y));
 	//Snapping to a point takes precedence over snapping to a line
 	var snapPoint = this.stateManager.aboutToSnapToPoint(this.pointAtCursor, this.pointsAddedInSession);
@@ -35,56 +59,74 @@ DrawState.prototype.mouseMove = function(event) {
 	this.stateManager.redraw();
 }
 
+/**
+ * Summary: On mouse click, add a new point/line if necessary.
+ * Parameters: event: the event that encapsulates the click
+ * Returns: undefined.
+**/
 DrawState.prototype.click = function(event) {
+	//The number of points added since this state's been entered.
 	var numPoints = this.pointsAddedInSession.length;
 	var recentPoint = undefined;
+	//Get the most recently drawn point in this session, if it exists.
 	if (numPoints > 0) recentPoint = this.pointsAddedInSession[numPoints - 1];
 	
 	if (recentPoint !== undefined) {
-		//Prevent the user from adding the same point multiple times.
+		//First, check that the user isn't adding a point where one already exists.
 		if (!recentPoint.equals(this.pointAtCursor)) {
-			var newWall = new Line(this.pointAtCursor, recentPoint);
-			this.mergeIntersectingLines(newWall);
+			//Make a new line from the recent point to where the user clicked.
+			var newLine = new Line(this.pointAtCursor, recentPoint);
+			//If the new line intersects any others, add new points and split up the lines.
+			this.mergeIntersectingLines(newLine);
 		}
-	}
-	//if (!stateManager.currentFloor.globals.pointExists(this.pointAtCursor)) 
+	} 
+	//Add a point where the user clicked.
 	this.addPoint(this.pointAtCursor);
-	//console.log("Number of points: " + stateManager.currentFloor.globals.points.length);
-	//console.log(stateManager.currentFloor.globals.walls.length);
 	this.stateManager.redraw();
 }
 
+/**
+ * Summary: Split up any lines that line intersects, and add new points as needed.
+ * Parameters: line: the line to check for intersections
+ * Returns: undefined.
+**/
 DrawState.prototype.mergeIntersectingLines = function(line) {
+	//The points of intersection between line and other lines.
 	var intersectionPoints = [];
+	//New lines that are added 
 	var newLines = [];
+	//Lines that are split up
 	var deletedLines = [];
 	var i = 0;
+	//Iterate through the existing walls, and check if they intersect with line
 	while (i < stateManager.currentFloor.globals.walls.length) {
 		curWall = stateManager.currentFloor.globals.walls[i];
+		//Point of intersection between curWall and line
 		var pointOfIntersect = curWall.pointOfLineIntersection(line);
-		//if (pointOfIntersect !== null) console.log(stateManager.currentFloor.globals.pointExists(pointOfIntersect));
+		//Means there's a valid point of intersection.
 		if (pointOfIntersect !== null) {
 			//We now know that the point should be added to the canvas
 			this.addPoint(pointOfIntersect);
 			intersectionPoints.push(pointOfIntersect);
+			//Split the curWall up along the point of intersection.
 			var twoNewLines = curWall.breakIntoTwo(pointOfIntersect);
 			newLines.push(twoNewLines.l1);
 			newLines.push(twoNewLines.l2);
 			deletedLines.push(curWall);
+			//Delete the old, unified wall that's been split up.
 			stateManager.currentFloor.globals.removeWall(curWall, false);
-			//console.log("Number of new lines: " + newLines.length);
 		}
+		//If the lines don't intersect, keep traversing
 		else {
 			i += 1;
 		}
 	}
-	//this.stateManager.redraw();
-	//console.log(stateManager.currentFloor.globals.walls);
+	//If line doesn't intersect anything, we can safely add the wall it created.
 	if (intersectionPoints.length === 0) {
 		this.addWall(line);
 	}
 	else {
-		//Now split up the line we just drew
+		//Now split up the parameter line
 		var splitUpLineSegs = line.splitUpLine(intersectionPoints);
 		for (var i = 0; i < splitUpLineSegs.length; i++) {
 			newLines.push(splitUpLineSegs[i]);
@@ -100,26 +142,34 @@ DrawState.prototype.mergeIntersectingLines = function(line) {
 	for (var k = 0; k < newLines.length; k++) {
 		this.addWall(newLines[k]);
 	}
-	
-	//if (newLines.length === 0) this.addActionSetToStack({newlyAddedLines: new Array(line), deletedLines: deletedLines, newlyAddedPoints: newPoints});
-	//else this.addActionSetToStack({newlyAddedLines: newLines, deletedLines: deletedLines, newlyAddedPoints: newPoints});
 }
 
-DrawState.prototype.addActionSetToStack = function(recentAction) {
-	this.actionStack[this.actionStack.length] = recentAction;
-	//this.actionStack.push(recentlyAddedWalls);
-}
-
+/**
+ * Summary: Add a new point to the canvas.
+ * Parameters: pointToAdd: the point to add
+ * Returns: undefined.
+**/
 DrawState.prototype.addPoint = function(pointToAdd) {
+	//Register that this point was drawn in the current session.
 	this.pointsAddedInSession.push(pointToAdd);
 	stateManager.currentFloor.globals.addPoint(pointToAdd);
 }
 
+/**
+ * Summary: Add a new wall to the canvas.
+ * Parameters: wallToAdd: the wall to add
+ * Returns: undefined.
+**/
 DrawState.prototype.addWall = function(wallToAdd) {
 	stateManager.currentFloor.globals.addWall(wallToAdd);
 }
 
-//NEED TO HAVE
+/**
+ * Summary: Draw a point to track the user's cursor, and draw a line attached
+ *		to it if necessart,
+ * Parameters: none
+ * Returns: undefined.
+**/
 DrawState.prototype.draw = function() {
 	//Draw the line that goes from the most recently drawn point to the user's cursor
 	if (this.pointAtCursor !== undefined && this.pointBeenDrawnInSession()) {
@@ -135,80 +185,35 @@ DrawState.prototype.draw = function() {
 	}
 }
 
+/**
+ * Summary: If the user hits space, disengage the drawing tool.
+ * Parameters: event: The event that encapsulates the key press.
+ * Returns: undefined.
+**/
 DrawState.prototype.keyDown = function(event) {
 	var keyCode = event.keyCode;
 	//space
 	if (keyCode === 32) {
 		this.disengage();
 	}
-	//b
-	else if (keyCode === 66) {
-		this.undo();
-	}
-	//n
-	else if (keyCode === 78) {
-		this.redo();
-	}
 }
 
-DrawState.prototype.pointBeenDrawnInSession = function() {
-	return (this.pointsAddedInSession.length != 0);
-}
-
+/**
+ * Summary: Disengage the drawing tool.
+ * Parameters: none
+ * Returns: undefined.
+**/
 DrawState.prototype.disengage = function() {
+	//Reset the points drawn in this session.
 	this.pointsAddedInSession = [];
 	this.stateManager.redraw();
 }
 
-DrawState.prototype.undo = function() {
-	if (this.actionStack.length <= 0) return undefined;
-	var actionToUndo = this.actionStack[this.actionStack.length - 1];
-	this.actionStack = this.actionStack.splice(0, this.actionStack.length - 1);
-	this.redoStack.push(actionToUndo);
-	var numLinesRemoved = 0;
-	while (numLinesRemoved < actionToUndo.newlyAddedLines.length) {
-		var wallToRemove = actionToUndo.newlyAddedLines[numLinesRemoved];
-		stateManager.currentFloor.globals.removeWall(wallToRemove, true);
-		numLinesRemoved += 1;
-	}
-	var numPointsRemoved = 0;
-	while (numPointsRemoved < actionToUndo.newlyAddedPoints.length) {
-		var pointToRemove = actionToUndo.newlyAddedPoints[numPointsRemoved];
-		stateManager.currentFloor.globals.removePoint(pointToRemove);
-		numPointsRemoved += 1;
-	}
-	var numAddedBack = 0;
-	while (numAddedBack < actionToUndo.deletedLines.length) {
-		this.addWall(actionToUndo.deletedLines[numAddedBack]);
-		numAddedBack += 1;
-	}
-	
-	this.stateManager.redraw();
-}
-
-DrawState.prototype.redo = function() {
-	if (this.redoStack.length <= 0) return undefined;
-	var actionToRedo = this.redoStack[this.redoStack.length - 1];
-	this.redoStack = this.redoStack.splice(0, this.redoStack.length - 1);
-	this.actionStack.push(actionToRedo);
-	var numLinesAdded = 0;
-	while (numLinesAdded < actionToRedo.newlyAddedLines.length) {
-		var wallToAdd = actionToRedo.newlyAddedLines[numLinesAdded];
-		this.addWall(wallToAdd);
-		numLinesAdded += 1;
-	}
-	/*var numPoints = 0;
-	while (numPointsRemoved < actionToUndo.newlyAddedPoints.length) {
-		var pointToRemove = actionToUndo.newlyAddedPoints[numPointsRemoved];
-		stateManager.currentFloor.globals.removePoint(pointToRemove);
-		numPointsRemoved += 1;
-	}*/
-	var numLinesRemoved = 0;
-	while (numLinesRemoved < actionToRedo.deletedLines.length) {
-		var wallToRemove = actionToRedo.deletedLines[numLinesRemoved];
-		stateManager.currentFloor.globals.removeWall(wallToRemove, true);
-		numLinesRemoved += 1;
-	}
-	
-	this.stateManager.redraw();
+/**
+ * Summary: Check if any points have been added in this session.
+ * Parameters: none
+ * Returns: true iff at least one point has been added in this session.
+**/
+DrawState.prototype.pointBeenDrawnInSession = function() {
+	return (this.pointsAddedInSession.length != 0);
 }
