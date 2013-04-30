@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var UserController = require('./userController.js');
 var User = require('../models/userModel.js');
+var Imave = require('../models/imageModel.js');
 var Building = require('../models/buildingModel.js');
 var BuildingController = require('./buildingController.js');
 var FlowDBPersistents = require('../models/flowDBPersistentsModel.js');
@@ -143,6 +144,8 @@ FlowDB.prototype.getUserById = function(id, callback) {
 FlowDB.prototype.clearData = function() {
 	User.find({}).remove();
 	Building.find({}).remove();
+  Image.find({}).remove();
+  FlowDBPersistents.find({}).remove();
 };
 
 /**

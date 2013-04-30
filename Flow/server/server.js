@@ -29,6 +29,7 @@ var Sector = require('./sector.js');
 
 // Set up express server.
 var app = express();
+var port;
 var child;
 GLOBAL.flowDB;
 
@@ -39,11 +40,10 @@ GLOBAL.flowDB;
  * Returns: undefined
 **/
 function init(){
-    configureExpress(app);
-    // CODE REVIEW
-   flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
-   //flowDB.clearData();
-   
+  configureExpress(app);
+  
+  port = 8080
+  flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
 }
 init();
 
@@ -54,31 +54,31 @@ init();
  * Returns: undefined
 **/
 function configureExpress(app) {
-    app.configure(function() {
+  app.configure(function() {
 
-    	app.use(express.logger());
-    	app.use(express.cookieParser());
-    	app.use(express.bodyParser());
-    	app.use(express.methodOverride());
-        
-        // CODE REVIEW weird indentation
-        app.use(passport.initialize());
-        app.use(passport.session());
-        
-    	app.use(express.session({userId: "", secret:"keyboard cat"}));
-    	app.use(express.static(path.join(__dirname, '../www')));
+    app.use(express.logger());
+    app.use(express.cookieParser());
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    
+    app.use(passport.initialize());
+    app.use(passport.session());
+      
+    // TODO: generate random string for secret
+    app.use(express.session({userId: "", secret:"keyboard cat"}));
+    app.use(express.static(path.join(__dirname, '../www')));
 
-        app.use(function(request, response, next) {
-            response.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-            response.header('Access-Control-Allow-Methods', 'PUT,GET,POST,DELETE,OPTIONS');
-            response.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
+    app.use(function(request, response, next) {
+      response.header('Access-Control-Allow-Origin', '*');
+      response.header('Access-Control-Allow-Methods', 'PUT,GET,POST,DELETE,OPTIONS');
+      response.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
 
-            next();
-        });
-
-        app.use(app.router);
-        app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+      next();
     });
+
+    app.use(app.router);
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+  });
 }
 
 //-----------
@@ -175,7 +175,7 @@ app.post('/register', function(request, response) {
         
         request.login(newUser, function(err) {
           if (err) {
-            console.log("server.js register: failed to login");
+            console.log("Server.Register: failed to login");
             responseData.errorCode = 3;
           }
           request.session.userId = newUser._id;
@@ -237,14 +237,13 @@ app.post('/changePassword', function(request, response) {
  * httpCode: success 200, invalid data 400, preprocessing failed 500, unauthorized 401
 **/
 app.post('/preprocess', function (request, response) {
-  console.log("\n***Preprocessing***");
   flowDB.getUserById(request.session.userId, function(user) {
     if(Util.exists(user)) {
       var imageData = request.body.image;       
       if(Util.exists(imageData)) {
         var imageDir = './temp/';
         
-        // Generate random file names
+        // Generate random file names. - TODO: make a hash code, check on seed of .random
         var randFileNum = Math.floor(Math.random() * 90000) + 10000;
         var oldImagePath = imageDir + 'oldImage'+randFileNum+'.png';
         var newImagePath = imageDir + 'newImage'+randFileNum+'.png';
@@ -509,15 +508,14 @@ app.get('/buildingsRefs', function(request, response) {
  * Returns: calls callback with preprocessed data and image
 **/
 function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
-  console.log("\n+++Running Preprocess+++");
   //dataPath = 'json.txt';
   var child = exec('python ./python/preprocessing.py ' + oldImagePath + ' ' 
                     + newImagePath + ' ' + dataPath, function (err, stdout, stderr) {
-    console.log("+++Preprocess errors+++");
+    console.log("+++Preprocess Error Log+++");
     console.log("err: " + err);
     console.log("stdout: " + stdout);
     console.log("stderr: " + stderr);
-    console.log("+++Preprocess logging complete+++\n");
+    console.log("+++Preprocess Logging Complete+++\n");
     
     fs.exists(oldImagePath, function(exists) {
       if(exists) {
@@ -538,7 +536,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
       if(exists) {
         fs.readFile(newImagePath, function(err, imageStr) {
           if(err) {
-            console.log("failed to read processed image: "+err);
+            console.log("Server.preprocessor: failed to read processed image: "+err);
             if(Util.exists(callback)) {return callback(null)}
           } else {
             fs.unlink(newImagePath);
@@ -562,7 +560,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
       if(exists) {
         fs.readFile(dataPath, function read(err, dataStr) {
           if (err) {
-            console.log("failed to preprocess: "+err);
+            console.log("Server.preprocessor: failed to read data: "+err);
             if(Util.exists(callback)) {return callback(null)}
           } else {
             var dataStrUTF8 = dataStr.toString('utf8');
@@ -592,6 +590,5 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
 }
 
 // Launch server
-var port = 8081;
 app.listen(port);
 console.log("Express server listening on port " + port);
