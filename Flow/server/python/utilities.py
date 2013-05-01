@@ -162,8 +162,8 @@ def visualizeLines(IMG,vLines,hLines):
 #Input: image object, source image path
 #Output: list of positions of bounding boxes
 def ExtractDoors(img, sourcepath):
-    bwImg=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY) 
-    bwImg=cv2.threshold(bwImg,5,255,cv2.THRESH_BINARY)[1]
+   # bwImg=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY) 
+    bwImg=cv2.threshold(img,5,255,cv2.THRESH_BINARY)[1]
     rgbImage=cv2.cvtColor(bwImg,cv2.COLOR_GRAY2BGR)
     #find all the connected components in the floorplan
     contours,hierarchy=cv2.findContours(bwImg,cv2.RETR_TREE,\
