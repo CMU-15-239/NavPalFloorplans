@@ -367,3 +367,7 @@ footer a.class {
   }
 
 }
+
+.hidden {
+  display: none;
+}
