@@ -28,6 +28,9 @@ INSTALLATION:
 		python setup.py clean
 		python setup.py build
 		sudo python setup.py install --user  
+    
+  Mongo Database -- for data storage
+    http://docs.mongodb.org/manual/installation/ is the best guide and the installation process varies per distribution of linux.
 
 	Node.js -- for the server
 		Download node from http://nodejs.org/
@@ -46,9 +49,13 @@ DATABASE:
 
 HOW TO RUN:
 	Server
+    Start the mongo database
+      http://docs.mongodb.org/manual/installation/, this depends on your installation process.
+    
 		Start within the cloned directory NavPalFloorplans/
-		cd Flow/server/
-		node server.js
+      cd Flow/server/
+      node server.js
+  
 	Website
 		After the server is running, you can see the website at <ip address>:<port>/home.html
     The port can be set Flow/server/server.js, but is currently set to 8080.

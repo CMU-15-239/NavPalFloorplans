@@ -43,7 +43,8 @@ function init(){
   configureExpress(app);
   
   port = 8080
-  flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
+  // server grove connection string: 'mongodb://test:test@69.195.199.181:27017/flow'
+  flowDB = new FlowDB('mongodb://localhost/flow'); //change this
 }
 init();
 
