@@ -13,6 +13,7 @@
     <!-- Le styles -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/global-styles.css" rel="stylesheet">
+    <link href="./css/home.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -32,7 +33,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="./home.html">NavPal</a>
+          <a class="brand" href="http://www.cs.cmu.edu/~navpal/">NavPal</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="./home.html">Home</a></li>
@@ -48,50 +49,171 @@
     <div class="jumbotron masthead">
       <div class="container">
         <h1>NavPal Floorplan Creator</h1>
-        <p>Help the visually impaired navigate your building</p>
+        <p>Floorplan conversion system that makes it possible for blind users to navigate indoors using smartphones.</p>
         <p id="uploadFloorPlan"><a href="authentication.html" class="btn btn-primary btn-large">Take the first step</a></p>
       </div>
     </div>
 
-    <!-- Instructions of how to use the tool
-    ================================================== -->
-    <div class="container instructions marketing">
-      <h2>The process is simple</h2>
-      <div class="row instructions">
-        <div class="span4">
-          <h3 class="instruct-step">Upload a Floorplan</h3>
-          <object data="img/upload.svg" class="icon"></object>
-          <h5>Upload floor plans of public spaces that you have the rights to</h5>
+    <div class="marketing">
+      <div class="container">
+      <section id="preprocessing">
+      <hr class="soften">
+      <h1>Preprocessing</h1>
+      <p class="marketing-byline">Lessen the work load on the user.</p>
+        <div class="row">
+          <div class="span4">
+            <img class="marketing-img" src="./img/lineExtraction.png">
+            <h2>Line Extraction</h2>
+            <p>We start by extracting all straight edges in teh floor plan image. Afterwards, we merge lines that are close proximity to one another. The result is what a human looking at the floor plan would concider to be walls.</p>
+          </div>
+          <div class="span4">
+            <img class="marketing-img" src="./img/doors.png">
+            <h2>Door Identification</h2>
+            <p>After line identification, we identify potential square areas that a door might be located. Then, using feature detection, we isolate the image of door and use feature detection to identify the rest of the doors in the image. </p>
+          </div>
+          <div class="span4">
+            <img class="marketing-img" src="./img/OCR.png">
+            <h2>Text Recognition</h2>
+            <p>The current text detection algorithm's performance is effective when texts are the only observable object in the image. We first isolate the text by identifying conjoined lines. We then use Tessearct to perform OCR on the isolated text.</p>
+          </div>
         </div>
-        <div class="span4">
-          <h3 class="instruct-step">Define Boundaries</h3>
-          <object data="img/wall.svg" class="icon"></object>
-          <h5>Close off all rooms, hallways, staircases and other features</h5>
+      </section>
+
+      <section id="userInput">
+        <hr class="soften">
+        <h1>User Input</h1>
+        <p class="marketing-byline">What we need from building owners.</p>
+          <div class="row instructions">
+            <div class="span4">
+              <h3 class="instruct-step">Upload a Floorplan</h3>
+              <object data="./img/upload.svg" class="icon"></object>
+              <p>Upload floor plans of public spaces that you have the rights to</p>
+            </div>
+            <div class="span4">
+              <h3 class="instruct-step">Define Boundaries</h3>
+              <object data="./img/wall.svg" class="icon"></object>
+              <p>Close off all rooms, hallways, staircases and other features</p>
+            </div>
+            <div class="span4">
+              <h3 class="instruct-step">Mark Entranceways</h3>
+                <object data="./img/entrance.svg" class="icon"></object>
+                <p>Select the portions of walls that are doorways, entrances or exits</p>
+            </div>
+          </div>
+          <div class="row instructions">
+            <div class="span4">
+              <h3 class="instruct-step">Label Spaces</h3>
+              <object data="./img/feature.svg" class="icon"></object>
+              <p>Label closed off areas as either room, hallway, staircase or elevator.</p>
+            </div>
+            <div class="span4">
+              <h3 class="instruct-step">Pin Landmarks</h3>
+              <object data="./img/pin.svg" class="icon"></object>
+              <p>Pin points of interest such as bathrooms, drinking fountains, etc.</p>
+            </div>
+            <div class="span4">
+              <h3 class="instruct-step">Connect Floors</h3>
+              <object data="./img/stairs.svg" class="icon"></object>
+              <p>Connect the floors of your building with staircases and elevators</p>
+            </div>
+          </div>
         </div>
-        <div class="span4">
-          <h3 class="instruct-step">Mark Entranceways</h3>
-            <object data="img/entrance.svg" class="icon"></object>
-            <h5>Select the portions of walls that are doorways, entrances or exits</h5>
+      </section>
+      <section id="building">
+        <hr class="soften">
+        <h1>Data Harvesting</h1>
+        <p class="marketing-byline">Construction a graph from user input.</p>
+        <div class="container">
+          <div class="row">
+            <div class="span7">
+              <img id="graph" src="./img/graph.jpg">
+            </div>
+            <div class="span5" id="graphText">
+              <p>The graph consists of three levels: at the top is floor connections,
+              next is the floor graph and at the lowest level is the grid view. 
+              The first level represents how floors connect to each other. 
+              The second level consists of the floor graph which represents how rooms, 
+              passageways, hallways, stairs, and elevators connect to each other. 
+              The first two levels are used for high level path planning, which 
+              calculates the path of nodes between the source and destination. 
+              The third level is key in low level planning, which constructs a 
+              detailed path to aid the visually impaired avoid obstacles and find passageways.</p>
+            </div>
+          </div>
         </div>
-        
-      </div>
-      <div class="row instructions">
-      <div class="span4">
-          <h3 class="instruct-step">Label Spaces</h3>
-          <object data="img/feature.svg" class="icon"></object>
-          <h5>Select an open space and label as a room, hallway, staircase or elevator and give it a name</h5>
+      </section>
+
+      <section id="team">
+        <hr class="soften">
+        <h1>The Team</h1>
+        <p class="marketing-byline">Making the world more accessable.</p>
+        <div class="container">
+          <div class="row">
+            <div class="span8 offset3">
+              <ul class="media-list">
+              <li class="media">
+                <a class="pull-left" href="#">
+                  <img class="media-object teamThumb" src="./img/Dan.jpg">
+                </a>
+                <div class="media-body">
+                  <div class="profile">
+                    <h4 class="media-heading">Daniel Muller</h4>
+                    <p>Cognitive Science + HCI major: UI/UX design</p>
+                  </div>
+                  <div class="media">
+                    <a class="pull-left" href="#">
+                      <img class="media-object teamThumb" src="./img/Vansi.jpg">
+                    </a>
+                    <div class="media-body">
+                      <div class="profile">
+                        <h4 class="media-heading">Vansi Vallabhaneni</h4>
+                        <p>CS Major: Back-end and Graph Creation</p>
+                      </div>
+                      <div class="media">
+                        <a class="pull-left" href="#">
+                          <img class="media-object teamThumb" src="./img/Wang.jpg">
+                        </a>
+                        <div class="media-body">
+                          <div class="profile">
+                            <h4 class="media-heading">Zhiyu Wang</h4>
+                            <p>Math + CS major: Floorplan Preprocessor</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Nested media object -->
+                  <div class="media">
+                    <a class="pull-left" href="#">
+                      <img class="media-object teamThumb" src="./img/Paul.png">
+                    </a>
+                    <div class="media-body">
+                      <div class="profile">
+                        <h4 class="media-heading">Paul Davis</h4>
+                        <p>CS Major: Authoring Tool Functionality</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="media">
+                <a class="pull-left" href="#">
+                  <img class="media-object teamThumb" src="./img/Justin.jpg">
+                </a>
+                <div class="media-body">
+                  <div class="profile">
+                    <h4 class="media-heading">Justin Greet</h4>
+                    <p>CS Major: Authoring Tool Architecture</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            </div>
+          </div>
         </div>
-        <div class="span4">
-          <h3 class="instruct-step">Pin Landmarks</h3>
-          <object data="img/pin.svg" class="icon"></object>
-          <h5>Pin points of interest such as bathrooms, drinking fountains, etc.</h5>
-        </div>
-        <div class="span4">
-          <h3 class="instruct-step">Connect Floors</h3>
-          <object data="img/stairs.svg" class="icon"></object>
-          <h5>Connect the floors of your building with staircases and elevators</h5>
-        </div>
-      </div>
+      </section>
+
+      <br><br>
     </div>
 
     <!-- Icon dedications

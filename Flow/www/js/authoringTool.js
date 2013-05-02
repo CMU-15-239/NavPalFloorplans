@@ -192,7 +192,6 @@ function getFloorImage(floor) {
         }.bind(floor.name),
         error: function() {
             if (--activeAJAX == 0) {
-                addFloorImages();
             }
         }
     });
