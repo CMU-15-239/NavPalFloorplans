@@ -166,7 +166,8 @@ function initKeyboardShortcuts() {
         'c': function() { $('#Classify').click(); },
         'l': function() { $('#Landmark').click(); },
         's': function() { $('#Stair').click(); },
-        'e': function() { $('#Elevator').click(); }
+        'e': function() { $('#Elevator').click(); },
+        'x': function() { $('#Exit').click(); }
     });
 }
 
@@ -192,7 +193,6 @@ function getFloorImage(floor) {
         }.bind(floor.name),
         error: function() {
             if (--activeAJAX == 0) {
-                addFloorImages();
             }
         }
     });

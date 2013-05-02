@@ -69,37 +69,43 @@
 
       <!-- Toolbar
       ================================================== -->
-      <div class="row" id="toolRow">
+      <div class="row" id="toolbarRow">
         <div id="toolHolder">
           <div class="toolGrouping">
             <div class="row-fluid toolrow">
-              <div id="Select" class="toolIcon tool left" style="background-image: url(img/cursorIcon.svg)" data-toggle="tooltip" title="Selection Tool: Click on a feature to select or move it. Click on nothing and drag to select multiple items. Delete selected items by pressing delete."></div>
-              <div id="Pan" class="toolIcon tool right" style="background-image: url(img/handIcon.svg)" data-toggle="tooltip" title="Pan Tool: Click anywhere on the canvas and drag the mouse to move the canvas around."></div>
+              <!-- Select and Pan tools -->
+              <div id="Select" class="toolIcon tool left" style="background-image: url(img/cursorIcon.svg)" data-toggle="tooltip" title="Selection Tool: Click on a feature to select or move it. Click on nothing and drag to select multiple items. Delete selected items by pressing delete. (V)"></div>
+              <div id="Pan" class="toolIcon tool right" style="background-image: url(img/handIcon.svg)" data-toggle="tooltip" title="Pan Tool: Click anywhere on the canvas and drag the mouse to move the canvas around. (H)"></div>
             </div>
+            <!-- Zoom in and out tools -->
             <div class="row-fluid toolrow">
-              <div id="ZoomIn" class="toolIcon tool left" style="background-image: url(img/zoominIcon.svg)" data-toggle="tooltip" title="Zoom-in Tool: Click on the canvas to zoom in on the point you clicked."></div>
-              <div id="ZoomOut" class="toolIcon tool right" style="background-image: url(img/zoomoutIcon.svg)" data-toggle="tooltip" title="Zoom-out Tool: Click on the canvas to zoom out on the point you clicked."></div>
+              <div id="ZoomIn" class="toolIcon tool left" style="background-image: url(img/zoominIcon.svg)" data-toggle="tooltip" title="Zoom-in Tool: Click on the canvas to zoom in on the point you clicked. (MouseWheel)"></div>
+              <div id="ZoomOut" class="toolIcon tool right" style="background-image: url(img/zoomoutIcon.svg)" data-toggle="tooltip" title="Zoom-out Tool: Click on the canvas to zoom out on the point you clicked. (MouseWheel)"></div>
             </div>      
           </div>
           <div class="toolGrouping">
+            <!-- Draw line and door tools -->
             <div class="row-fluid toolrow">
-              <div id="Draw" class="active toolIcon tool left" style="background-image: url(img/wallIcon.svg)" data-toggle="tooltip" title="Wall Tool: Click to select the starting point of a wall. Move the mouse to the end of the wall and click to create. Press the space bar to release the tool."></div>
-              <div id="Door" class="toolIcon tool right" style="background-image: url(img/doorIcon.svg)" data-toggle="tooltip" title="Door Tool: Click to select the starting point of a door. Move the mouse to the end of the door and click to create."></div>
+              <div id="Draw" class="active toolIcon tool left" style="background-image: url(img/wallIcon.svg)" data-toggle="tooltip" title="Wall Tool: Click to select the starting point of a wall. Move the mouse to the end of the wall and click to create. Press the space bar to release the tool. (/)"></div>
+              <div id="Door" class="toolIcon tool right" style="background-image: url(img/doorIcon.svg)" data-toggle="tooltip" title="Door Tool: Click to select the starting point of a door. Move the mouse to the end of the door and click to create. (D)"></div>
             </div>
+            <!-- Classification and landmark tools -->
             <div class="row-fluid toolrow">
-              <div id="Classify" class="toolIcon tool left" style="background-image: url(img/labelIcon.svg)" data-toggle="tooltip" title="Classify Tool: Click on an area with closed walls to classify. Give the area a label and classification."></div>
-              <div id="Landmark" class="toolIcon tool right" style="background-image: url(img/nailIcon.svg)" data-toggle="tooltip" title="Landmark Tool: Click on a point of interest. Give your POI a short description."></div>
+              <div id="Classify" class="toolIcon tool left" style="background-image: url(img/labelIcon.svg)" data-toggle="tooltip" title="Classify Tool: Click on an area with closed walls to classify. Give the area a label and classification. (C)"></div>
+              <div id="Landmark" class="toolIcon tool right" style="background-image: url(img/nailIcon.svg)" data-toggle="tooltip" title="Landmark Tool: Click on a point of interest. Give your POI a short description. (L)"></div>
             </div>
           </div>
           <div class="toolGrouping">
+            <!-- Stair and Elevator tools -->
             <div class="row-fluid toolrow">
-              <div id="Stair" class="toolIcon tool left" style="background-image: url(img/stairIcon.svg)" data-toggle="tooltip" title="Stair Tool: Click on the location of a stairway. Give your staircase a name or select stair as a part of a staircase you previously created."></div>
-              <div id="Elevator" class="toolIcon tool right" style="background-image: url(img/elevatorIcon.svg)" data-toggle="tooltip" title="Elevator Tool: Click on the location of an elevator. Give your elevator a name or select stair as a part of an elevator you previously created."></div>
+              <div id="Stair" class="toolIcon tool left" style="background-image: url(img/stairIcon.svg)" data-toggle="tooltip" title="Stair Tool: Click on the location of a stairway. Give your staircase a name or select stair as a part of a staircase you previously created. (S)"></div>
+              <div id="Elevator" class="toolIcon tool right" style="background-image: url(img/elevatorIcon.svg)" data-toggle="tooltip" title="Elevator Tool: Click on the location of an elevator. Give your elevator a name or select stair as a part of an elevator you previously created. (E)"></div>
             </div>
             <div class="row-fluid toolrow">
-              <div id="Exit" class="toolIcon tool left" style="background-image: url(img/exitIcon.svg)" data-toggle="tooltip" title="Exit Tool: Click on a point which visitors can exit your building."></div>
+              <div id="Exit" class="toolIcon tool left" style="background-image: url(img/exitIcon.svg)" data-toggle="tooltip" title="Exit Tool: Click on a point which visitors can exit your building. (X)"></div>
             </div>
           </div>
+          <!-- Save and export buttons -->
           <div id="saveExport" class="row-fluid toolrow">
             <div id="save" class="btn btn-saveExport">Save</div>
             <div id="publish" class="btn btn-saveExport">Publish</div>
@@ -266,7 +272,7 @@
     <script src="./js/draw/floor.js"></script>
     <script src="./js/draw/building.js"></script>
     <script src="./js/states/ClassifyState.js"></script>
-	<script src="./js/states/ExitState.js"></script>
+    <script src="./js/states/ExitState.js"></script>
     <script src="./js/draw/RoomDetection.js"></script>
     <script src="./js/draw/RoomSelect.js"></script>
     

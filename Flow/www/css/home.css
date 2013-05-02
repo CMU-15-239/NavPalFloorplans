@@ -1,0 +1,58 @@
+/*
+  Global styles for navpal sites
+  Adapted from Boostrap example css
+  Written by Daniel Muller
+*/
+
+#graph {
+  max-height: 400px;
+  margin-bottom: 20px;
+}
+
+.instructions {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+  .instructions h2 {
+    font-size: 40px;
+    margin: 40px 0px;
+  }
+
+  .instructions h5 {
+    font-size: 16px;
+  }
+
+.icon {
+  margin: 20px;
+}
+
+.teamThumb {
+  width: 100px;
+  height: 100px;
+}
+
+.profile {
+  padding-top: 15px;
+  height: 85px;
+}
+
+.instructions {
+  margin-bottom: 0px;
+}
+
+/* Landscape phones
+------------------------- */
+@media (max-width: 480px) {
+
+  /* center profile pics */
+  .media-object {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .profile {
+    padding-top: 5px;
+    height: 60px;
+  }
+}
