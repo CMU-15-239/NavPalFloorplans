@@ -250,9 +250,8 @@ function followWalls(counterClock, point, line, route) {
 	}
 	
 	// If we make it back to the start, no path to target
-	if (route.length == 0) {
-		return false;
-	}
+	return false;
+	
 	
 }
 
