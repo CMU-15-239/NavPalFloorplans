@@ -26,7 +26,7 @@ def processImage(sourcepath,destpath, datapath):
     img=saveRemoveLines(sourcepath,IMG,vLines,hLines)    
     #Identify the bounding rectangles of doors in the floorplan
     #Detect position of doors and extract them
-    doorRects=obtainRects(img)
+    doorRects=ExtractDoors(img,sourcepath)
     extractDoors(bwImg,hLines,vLines,doorRects,datapath)
     #merge lines in close proximity    
     mergeHlines(hLines)
