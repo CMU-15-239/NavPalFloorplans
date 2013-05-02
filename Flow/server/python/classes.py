@@ -1,4 +1,10 @@
+#WANG ZHIYU
+#NavPal FloorPlan
+#############################################################
+#Class structure definitions
+#############################################################
 
+#Point: used in denoting endpoints of lines in the floorplan
 class Point(object):
     def __init__(self,row=-1,col=-1):
         self.row=row
@@ -9,6 +15,7 @@ class Point(object):
         if other==None: return False
         return (self.row==other.row) and (self.col==other.col)
 
+#Line: used in denoting line segments in the floorplan
 class Line(object):
     def __init__(self,start=None,end=None):
         if start == None:
@@ -21,11 +28,13 @@ class Line(object):
     def __eq__(self,other):
         return (self.start==other.start) and (self.end==other.end)
 
-#Image Object 
+#Image Object: used in denoting image objects 
 class FImage(object):
     def __init__(self, width=0,height=0):
         self.width=width
         self.height=height
-        self.rgbs=[]
+        self.rgb=[]
         self.ImgSize=width*height
-        self.maximum=0
+
+
+

@@ -1,9 +1,3 @@
-/*
-  Global styles for navpal sites
-  Adapted from Boostrap example css
-  Written by Daniel Muller
-*/
-
 /* Body and structure
 -------------------------------------------------- */
 html {
@@ -30,17 +24,81 @@ h1, h2, h3, h4, h5, h6 {
   text-rendering: optimizelegibility;
 }
 
+h1 {
+  font-size: 32px;
+  font-weight: 900;
+}
+
+h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 4px;
+  margin-top: 2px;
+}
+
+h4 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+h5 {
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
+
+h6 {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
 .navbar.navbar-fixed-top {
   position: fixed;
   margin: 0px;
   padding:0px;
   top: 0px;
   right:0px;
+  width: 100%;
+  background-color: rgba(0,0,0,0.0);;
+  background: none;
+  position: fixed;
+  color: #fff;
+  z-index: 100;
+  height: 40px;
 }
 
-.hidden {
-  display: none;
+.navbar .nav > li > a {
+  float: none;
+  padding: 10px 15px 10px;
+  color: #888;
+  text-decoration: none;
+  text-shadow: none;
 }
+
+.navbar .nav > li > a:focus, .navbar .nav > li > a:hover {
+  background-color: transparent;
+   background: rgba(0,0,0,0.6);
+  color: #aaa;
+  text-decoration: none;
+  -webkit-transition: all .2s linear;
+  -moz-transition: all .2s linear;
+  transition: all .2s linear;
+}
+
+#navbar-inner {
+    background: rgba(0,0,0,0.85);
+    height: inherit;
+}
+
 
 
 /* Tweak navbar brand link to be super sleek
@@ -68,6 +126,11 @@ body > .navbar .brand:hover {
   text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.4);
 }
 
+footer a.class {
+  position: relative;
+  top: 15px;
+}
+
 /* Jumbotrons
 -------------------------------------------------- */
 
@@ -91,13 +154,11 @@ body > .navbar .brand:hover {
      -moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
           box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
 }
-
 .jumbotron h1 {
   font-size: 80px;
   font-weight: bold;
   margin-bottom: 10px;
 }
-
 .jumbotron p {
   font-size: 24px;
   line-height: 1.5;
@@ -115,25 +176,6 @@ body > .navbar .brand:hover {
 .jumbotron a:hover {
   color: #fff;
   text-shadow: 0 0 10px rgba(255,255,255,.25);
-}
-
-/* tells user's how to use the tool */
-.instructions {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.instructions h2 {
-  font-size: 40px;
-  margin: 40px 0px;
-}
-
-.instructions h5 {
-  font-size: 16px;
-}
-
-.icon {
-  margin: 20px;
 }
 
 
@@ -198,6 +240,72 @@ body > .navbar .brand:hover {
   font-size: 60px;
 }
 
+/* Marketing for home page */
+.marketing {
+        text-align: center;
+        color: #5a5a5a;
+}
+
+.marketing h1 {
+  margin: 60px 0 10px;
+  font-size: 60px;
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.marketing h2 {
+  font-weight: 200;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+.marketing p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.marketing .marketing-byline {
+  margin-bottom: 40px;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.25;
+  color: #999;
+}
+
+.marketing-img {
+  display: block;
+  margin: 0 auto 30px;
+  max-height: 145px;
+}
+
+@media (max-width: 979px) {
+  .navbar .nav > li > a {
+    background: rgba(0,0,0,0.8);
+  }
+
+  .marketing {
+    padding: 0px 25px;
+  }  
+
+  .nav-collapse {
+    position: relative;
+    top: 10px;
+  }
+  .marketing h1 {
+    font-size: 45px;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+  .marketing .marketing-byline {
+    font-size: 20px;
+  }
+  .marketing p {
+    font-size: 14px;
+  }
+
+}
+
 /* Tablet
 ------------------------- */
 @media (max-width: 767px) {
@@ -206,40 +314,26 @@ body > .navbar .brand:hover {
     padding-top: 0;
   }
 
-  .container {
-        padding: 10px 10px 0px 10px;
-  }
-
   /* Widen masthead and social buttons to fill body padding */
   .jumbotron {
-    padding: 40px 0px 30px 0px;
+    padding: 40px 20px;
   }
   .masthead h1 {
-    font-size: 70px;
+    font-size: 90px;
   }
   .masthead p,
   .masthead .btn {
     font-size: 24px;
   }
-  .instructions .span4 {
+  .marketing .span4 {
     margin-bottom: 40px;
-  }
-
-  .masthead .btn {
-    padding: 15px;
-  }
-
-  p, .masthead .btn {
-    font-size: 18px;
   }
 }
 
 /* Landscape phones
 ------------------------- */
 @media (max-width: 480px) {
-  .masthead .btn {
-    padding: 10px 16px;
-  }
+
   /* Change up some type stuff */
   h2 small {
     display: block;
@@ -254,7 +348,8 @@ body > .navbar .brand:hover {
     font-size: 18px;
   }
   .jumbotron .btn {
-    margin: 5px auto 0px auto;
+    display: block;
+    margin: 0 auto;
   }
 
   /* center align subhead text like the masthead */
@@ -263,13 +358,12 @@ body > .navbar .brand:hover {
     text-align: center;
   }
 
-  /* instructions on home */
-  .instructions h1 {
+  /* Marketing on home */
+  .marketing h1 {
     font-size: 30px;
   }
-  .instructions-byline {
+  .marketing-byline {
     font-size: 18px;
   }
-
 
 }

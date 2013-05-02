@@ -1,178 +1,218 @@
+#WANG ZHIYU
+####################################
+#Line merging functions
+####################################
+
 import sys
 from classes import *
 from extractLine import*
-#epsilon is the minimum line segment cutoff
-epsilon=8
+from constant import *
 
-#check whether two line segments intersect
-def intersect(hline,vline): 
-    a = (vline.start.row <= hline.start.row <=vline.end.row)
-    b = (hline.start.col <=vline.start.col <= hline.end.col)
-    return a and b
+#Summary:check whether two line segments intersect
+#Input: list of horizontal lines, list of vertical lines
+#Output: Boolean value
+def intersect(hLine,vLine): 
+    hIntersect = (vLine.start.row <= hLine.start.row <=vLine.end.row)
+    vIntersect = (hLine.start.col <=vLine.start.col <= hLine.end.col)
+    return hIntersect and vIntersect
 
-#create a new line segment
-def newLine(startrow,startcol, endrow,endcol):
-    startp=Point(startrow,startcol)
-    endp=Point(endrow,endcol)
-    newline=Line(startp,endp)
-    return newline
+#Summary: create a new line segment
+#Input: startrow, startcol, endrow, endcol
+#Output: a line object
+def newLine(startRow,startCol, endRow,endCol):
+    startPoint=Point(startRow,startCol)
+    endPoint=Point(endRow,endCol)
+    newLine=Line(startPoint,endPoint)
+    return newLine
 
-#mergeVertex function idenfies intersections that are supposed to be corners in the original image and make them corners by removing short line segments that gobeyond the intersection.
-def mergeVertex(hlines,vlines):
-    h=0
-    v=0
-    newHlines=[]
-    newVlines=[]
-    while h<len(hlines):
-        v=0
-        while v<len(vlines):
-            hl=hlines[h]
-            vl=vlines[v]
+#Summary: mergeVertex function idenfies intersections that are 
+#supposed to be corners in the original image and make them corners by 
+#removing short line segments that gobeyond the intersection.
+#Input: list of horizontal lines, list of vertical lines
+#Output: None
+
+def mergeVertex(hLines,vLines):
+    hIndex=0 #index used in traversing list of horizontal lines
+    vIndex=0 #index used in traversing list of vertical lines
+    newhLines=[] # new horizontal lines
+    newvLines=[] # new vertical lines
+    while  hIndex < len(hLines):
+        vIndex=0
+        while vIndex < len(vLines):
+            #for ease of refEndrence: 
+            #hl=horizontal line; vl=vertical lines
+            hl=hLines[hIndex]
+            vl=vLines[vIndex]
             if intersect(hl,vl):
                 #isp denotes the intersection point
                 isp=Point(hl.start.row, vl.start.col)
+                
                 #two line segments intersecting will give us four line segments,
                 #we check whether each of the line segments satisfy minimum 
                 #length cutoff, if they do not, we delete them from our
                 #line segment lists
                 #we name the four line segments, upline, downline,leftline
-                #and right line
+                #and rightline
 
                 #case1: check upline 
+                #check whether the newly generated upline satisfies minlength
                 if vl.start.col-hl.start.col> minlen:
                     line1=Line(hl.start,isp)
-                    newHlines.append(line1)
+                    newhLines.append(line1)
                 #case2: check leftline
+                #check whether the newly generated leftline satisfies minlength
                 if isp.row-vl.start.row > minlen:
                     line2=Line(vl.start,isp)
-                    newVlines.append(line2)
+                    newvLines.append(line2)
                 
                 #case3:check rightline 
+                #rightline is the original horizontal line segment
                 if hl.end.col-isp.col > minlen:
-                    hlines[h].start=isp
+                    hLines[hIndex].start=isp
                 else:
-                    hlines.pop(h)
-                    h-=1
+                    #case when original horizontal line shorter than minlength
+                    #we then delete it from our list
+                    hLines.pop(hIndex)
+                    hIndex-=1
                 #case4: check downline
+                #downline is the original vertical line segment
                 if vl.end.row-isp.row>minlen:
-                    vlines[v].start=isp
+                    vLines[vIndex].start=isp
                 else:
-                    vlines.pop(v)
-                    v-=1
-            #increase vline list index, and check for the same horizontal line  
+                    #case when original vertical line shorter than minlength
+                    #we then delete it from our list
+                    vLines.pop(vIndex)
+                    vIndex-=1
+            #increase vLine list index, and check for the same horizontal line  
             #intersection again
-            v+=1
-       #increase hline index     
-        h+=1
-    hlines+=newHlines
-    vlines+=newVlines
+            vIndex+=1
+        #increase hLine index     
+        hIndex+=1
+    hLines+=newhLines
+    vLines+=newvLines
 
-
+#Summary: check distances between two horizontal lines
+#Input: first line object, second line object
+#Output: distance
 def hDistance(line1,line2):
-    fs=line1.start
-    fe=line1.end
-    ss=line2.start
-    se=line2.end
+    fStart=line1.start
+    fEnd=line1.end
+    sStart=line2.start
+    sEnd=line2.end
+    #compute distance in horizontal axis
 	#case where two lines overlap horizontally
-    if ((ss.col <= fe.col <= se.col) or \
-			(ss.col<= fs.col<= se.col)or\
-            (fs.col <= ss.col and se.col<= fe.col)):
-        hd=0
+    if ((sStart.col <= fEnd.col <= sEnd.col) or \
+			(sStart.col<= fStart.col<= sEnd.col)or\
+            (fStart.col <= sStart.col and sEnd.col<= fEnd.col)):
+        hd=0 #distance in horizontal coordinate
+
     #case where two lines not overlap but really close
     else:
-        hd=min(abs(fs.col-se.col),abs(fe.col-ss.col))
-   	#vd denotes the distance of two lines in vertical direction 
+        hd=min(abs(fStart.col-sEnd.col),abs(fEnd.col-sStart.col))
+   	
+    #computer distance in vertical axis
     vd=abs(line1.start.row-line2.start.row)
     return max(hd,vd)
 
+#Summary: check distances between two horizontal lines
+#Input: first line object, second line object
+#Output: distance
 def vDistance(line1,line2):
-    fs=line1.start
-    fe=line1.end
-    ss=line2.start
-    se=line2.end
+    fStart=line1.start
+    fEnd=line1.end
+    sStart=line2.start
+    sEnd=line2.end
+    #compute distance in vertical axis
     #case where two lines overlap vertically
-    if ((ss.row <= fs.row <= se.row) \
-	    or (ss.row <= fe.row <=se.row)\
-	    or (fs.row<=ss.row and se.row<=fe.row)):
+    if ((sStart.row <= fStart.row <= sEnd.row) 
+	    or (sStart.row <= fEnd.row <=sEnd.row)
+	    or (fStart.row<=sStart.row and sEnd.row<=fEnd.row)):
         vd=0
 	#case where two lines not overlap but close
     else:
-        vd=min(abs(fs.row-se.row),abs(fe.row-ss.row))
+        vd=min(abs(fStart.row-sEnd.row),abs(fEnd.row-sStart.row))
+    
+    #compute distance in horizontal axis
     hd = abs(line1.start.col-line2.start.col)
     return max(hd,vd)
 
-#merge two horizontal lines by 
-#averaging the row numbers
-#taking the starting point min and ending point max
-
+#Summary:merge two horizontal lines by averaging the row numbers and 
+#        taking the starting point min and ending point max
+#Input: line1, line2
+#Output: None
 def hMerge(line1,line2):
     row1=line1.start.row
     row2=line2.start.row
 	#average the row indices
-    mrow=(row1+row2)/2
+    mRow=(row1+row2)/2
 	#take min of starting points col as merged starting col
-    fcol=min(line1.start.col,line2.start.col)
+    fCol=min(line1.start.col,line2.start.col)
 	#take max of ending points col as merged ending col
-    scol=max(line1.end.col,line2.end.col)
-    line1.start.row=mrow
-    line1.end.row=mrow
-    line1.start.col=fcol
-    line1.end.col=scol
+    sCol=max(line1.end.col,line2.end.col)
+    line1.start.row=mRow
+    line1.end.row=mRow
+    line1.start.col=fCol
+    line1.end.col=sCol
 
-#merge two vertical lines by 
-#averaging the col numbers
-#taking the starting point min and ending point max
-
+#Summary: merge two vertical lines by averaging the col numbers and
+#         taking the starting point min and ending point max
+#Input: line1,line2
+#Output: None
 def vMerge(line1,line2):
     col1=line1.start.col
     col2=line2.start.col
 	#average the col indices
-    mcol=(col1+col2)/2
+    mCol = col1
+    #mcol=(col1+col2)/2
 	#take min of starting points row as merged starting row
-    frow=min(line1.start.row,line2.start.row)
+    fRow=min(line1.start.row,line2.start.row)
 	#take max of ending points row as merged ending row
-    srow=max(line2.end.row,line2.end.row)
-    line1.start.row=frow
-    line1.end.row=srow
-    line1.start.col=mcol
-    line1.end.col=mcol
+    sRow=max(line2.end.row,line2.end.row)
+    line1.start.row=fRow
+    line1.end.row=sRow
+    line1.start.col=mCol
+    line1.end.col=mCol
 
-#check pairwise distances of lines segments in the list
-def mergeHlines(h_lines):
-    index=0
-    after=1
-    while index < len(h_lines):
-        after=index+1
-        while after< len(h_lines):
-            current=h_lines[index]
-            nextl=h_lines[after]
-            #merge if distance between current line and
+#Summary:merge horizontal lines in close proximity
+#Input: list of horizontal lines
+#Output: None
+def mergeHlines(hLines):
+    fIndex=0
+    sIndex=1
+    while fIndex < len(hLines):
+        sIndex=fIndex+1
+        while sIndex< len(hLines):
+            currentLine=hLines[fIndex]
+            nextLine=hLines[sIndex]
+            #merge if distance between currentLine line and
 			#next line is smaller than the pre-set value
-            if hDistance(current,nextl)<epsilon:
-                hMerge(current,nextl)
-                h_lines.pop(after)
+            if hDistance(currentLine,nextLine)<epsilon:
+                hMerge(currentLine,nextLine)
+                hLines.pop(sIndex)
            		#rechecking the resulting merged line
-                index-=1
+                fIndex-=1
                 break
-            after+=1
-        index+=1
+            sIndex+=1
+        fIndex+=1
 
-def mergeVlines(v_lines):
-    index=0
-    after=1
-    while index < len(v_lines):
-        after=index+1
-        while after< len(v_lines):
-            current=v_lines[index]
-            nextl=v_lines[after]
-			#merge if distance between current line and
+#Summary:merge vertical lines in close proximity
+#Input: list of vertical lines
+#Output: None
+def mergeVlines(vLines):
+    fIndex=0
+    sIndex=1
+    while fIndex < len(vLines):
+        sIndex=fIndex+1
+        while sIndex< len(vLines):
+            currentLine=vLines[fIndex]
+            nextLine=vLines[sIndex]
+			#merge if distance between currentLine line and
 			#next line is smaller than the pre-set value
-            if vDistance(current,nextl)<epsilon:
-                vMerge(current,nextl)
-                v_lines.remove(nextl)
+            if vDistance(currentLine,nextLine)<epsilon:
+                vMerge(currentLine,nextLine)
+                vLines.remove(nextLine)
                 #recheck the resulting merged line
-                index-=1
+                fIndex-=1
                 break
-            after+=1
-        index+=1
-
+            sIndex+=1
+        fIndex+=1
