@@ -102,7 +102,7 @@ StateManager.prototype.redraw = function() {
 	//First, delete everything from the canvas.
     this.currentFloor.globals.canvas.clearRect(0, 0, this.currentFloor.globals.canvas.width, this.currentFloor.globals.canvas.height);
 	
-	//TODO PAUL COMMENT
+	// Draw the floorplan in the background
 	var sx = this.currentFloor.globals.view.offsetX;
 	var sy = this.currentFloor.globals.view.offsetY;
 	var dx = 0;
@@ -121,10 +121,10 @@ StateManager.prototype.redraw = function() {
 
 	if (util.exists(this.currentFloor.globals.canvas.image)) {
 		this.currentFloor.globals.canvas.drawImage(this.currentFloor.globals.canvas.image,
-		sx, sy,
-		this.currentFloor.globals.canvas.image.width - sx, this.currentFloor.globals.canvas.image.height - sy,
-		dx * zoom,dy * zoom,
-		zoom * (this.currentFloor.globals.canvas.image.width -  sx), zoom * (this.currentFloor.globals.canvas.image.height -  sy));
+			sx, sy,
+			this.currentFloor.globals.canvas.image.width - sx, this.currentFloor.globals.canvas.image.height - sy,
+			dx * zoom,dy * zoom,
+			zoom * (this.currentFloor.globals.canvas.image.width -  sx), zoom * (this.currentFloor.globals.canvas.image.height -  sy));
 	}
 	
 	//Finally, draw all the components that are persistent across state.
