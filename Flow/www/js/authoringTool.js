@@ -166,7 +166,8 @@ function initKeyboardShortcuts() {
         'c': function() { $('#Classify').click(); },
         'l': function() { $('#Landmark').click(); },
         's': function() { $('#Stair').click(); },
-        'e': function() { $('#Elevator').click(); }
+        'e': function() { $('#Elevator').click(); },
+        'x': function() { $('#Exit').click(); }
     });
 }
 
