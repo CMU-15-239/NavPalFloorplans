@@ -34,7 +34,7 @@ $("#saveElevator").click(function(event) {
 	// Hide the elevator box, clear the fields in the box
 	$("#elevator_pop").toggleClass("hidden", true);
 	var newElevator = $("#newElevator").val();
-	var existingElevator = $("#selectmultiple").val();
+	var existingElevator = $("#selectmultipleelevator").val();
 	
 	
 	// Use an existing elevator name
