@@ -40,6 +40,11 @@ FloorConnection.prototype.draw = function() {
 		0, 0, stateManager.stairImage.width, stateManager.stairImage.height,
 		canvasPoint.x - imgSize/2, canvasPoint.y - imgSize/2, imgSize, imgSize);
 	}
+	else if (this.floorConnectionType == FloorConnection.ELEVATOR) {
+		stateManager.currentFloor.globals.canvas.drawImage(stateManager.elevatorImage, 
+		0, 0, stateManager.elevatorImage.width, stateManager.elevatorImage.height,
+		canvasPoint.x - imgSize/2, canvasPoint.y - imgSize/2, imgSize, imgSize);
+	}
 	
 	
 }

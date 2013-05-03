@@ -27,6 +27,7 @@ var StateManager = function(building, canvas) {
 		"Landmark": new LandmarkState(this),
 		"Door": new DoorState(this),
 		"Stair": new StairState(this),
+		"Elevator": new ElevatorState(this),
 		"Classify": new ClassifyState(this),
 		"Exit": new ExitState(this)
 	};
@@ -49,10 +50,13 @@ var StateManager = function(building, canvas) {
 	// Global images
 	this.landmarkImage = new Image();
 	this.landmarkImage.src = "./img/landmark.png";
+	this.landmarkImageBlue = new Image();
+	this.landmarkImageBlue.src = "./img/landmarkBlue.png";
 	
 	this.stairImage = new Image();
 	this.stairImage.src = "./img/stairs.png";
 	this.elevatorImage = new Image();
+	this.elevatorImage.src = "./img/elevator.png";
 }
 
 /**

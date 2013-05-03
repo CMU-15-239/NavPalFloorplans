@@ -108,6 +108,7 @@ function initCanvasEventHandlers(stateManager) {
 	$("#canvas").attr("tabindex", "0");
 
 	$("#canvas").click(function(event) {
+		console.log(stateManager.currentState);
 		stateManager.currentState.click(event);
 	});
 	

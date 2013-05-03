@@ -15,6 +15,7 @@ function Landmark(label, description, pointRep) {
    this.label = label; //string
    this.description = description; //string
    this.pointRep = pointRep; //point
+   this.edit = false;
 }
 
 Landmark.prototype.toOutput = function() {
@@ -30,7 +31,12 @@ Landmark.prototype.draw = function() {
 	
 	canvasPoint = stateManager.currentFloor.globals.view.toCanvasWorld(this.pointRep);
 	imgSize = 50;
-    stateManager.currentFloor.globals.canvas.drawImage(stateManager.landmarkImage, 
+	var image = stateManager.landmarkImage;
+	
+	if (this.edit) {
+		image = stateManager.landmarkImageBlue;
+	}
+    stateManager.currentFloor.globals.canvas.drawImage(image, 
 	0, 0, stateManager.landmarkImage.width, stateManager.landmarkImage.height - 30,
 	canvasPoint.x - imgSize/2, canvasPoint.y - imgSize, imgSize, imgSize);
 /*

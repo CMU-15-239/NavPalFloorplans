@@ -145,6 +145,28 @@
           </fieldset>
         </form>
 
+		<!-- Landmark Update form
+        ================================================== -->
+		<form class="form-horizontal pop hidden" id="landmark_update_pop">
+		  <fieldset><legend>Landmark Update</legend>
+			<!-- Text input-->
+			<div class="control-group"><label class="control-label">Label</label>
+			  <div class="controls"><input id="nameUpdateLandmark" name="name" type="text" placeholder="What is this?" class="input"> </div>
+			</div>
+			<!-- Text input-->
+			<div class="control-group"><label class="control-label">Description</label>
+			  <div class="controls"><input id="descriptionUpdateLandmark" name="description" type="text" placeholder="Tell me about it" class="input"></div>
+			</div>
+			<!-- Button (Double) -->
+			<div class="control-group">
+			  <div class="controls">
+				<button id="landmark_update" name="landmark_submit" class="btn btn-info">Update Landmark</button>
+				<button id="landmark_delete" name="landmark_cancel" class="btn btn-danger">Delete Landmark</button>
+			  </div>
+			</div>
+		  </fieldset>
+		</form>
+		
         <!-- Classification form
         ================================================== -->
         <form class="form-horizontal pop hidden" id="classification_pop">
@@ -204,30 +226,30 @@
         <!-- Elevator form
         ================================================== -->
         <form class="form-horizontal pop hidden" id="elevator_pop">
-          <fieldset><legend>Elevator</legend>
-            <!-- Add new-->
-            <div class="control-group"><label class="control-label">New elevator</label>
-              <div class="controls">
-                <div class="input">
-                  <input id="newElevator" name="newElevator" placeholder="Add a new elevator" type="text">
-                </div>
-              </div>
-            </div>
-            <!-- Selection -->
-            <div class="control-group"><label class="control-label">Select an elevator</label>
-              <div class="controls">
-                <select id="selectmultiple" name="selectmultiple" class="input" multiple="multiple"></select>
-              </div>
-            </div>
-            <!-- Save and Cancel -->
-            <div class="control-group">
-              <div class="controls">
-                <button id="saveElevator" name="saveElevator" class="btn btn-info">Save</button>
-                <button id="cancelElevator" name="cancelElevator" class="btn btn-danger">Cancel</button>
-              </div>
-            </div>
-          </fieldset>
-        </form>
+		  <fieldset><legend>Elevator</legend>
+			<!-- Add new-->
+			<div class="control-group"><label class="control-label">New elevator</label>
+			  <div class="controls">
+				<div class="input">
+				  <input id="newElevator" name="newElevator" placeholder="Add a new elevator" type="text">
+				</div>
+			  </div>
+			</div>
+			<!-- Selection -->
+			<div class="control-group"><label class="control-label">Select an elevator</label>
+			  <div class="controls">
+				<select id="selectmultipleelevator" name="selectmultiple" class="input" multiple="multiple"></select>
+			  </div>
+			</div>
+			<!-- Save and Cancel -->
+			<div class="control-group">
+			  <div class="controls">
+				<button id="saveElevator" name="saveElevator" class="btn btn-info">Save</button>
+				<button id="cancelElevator" name="cancelElevator" class="btn btn-danger">Cancel</button>
+			  </div>
+			</div>
+		  </fieldset>
+		</form>
 
         <!-- Room label -->
         <h1 id="room_label"></h1>
@@ -262,6 +284,7 @@
     <script src="./js/states/PanState.js"></script>
     <script src="./js/states/DoorState.js"></script>
     <script src="./js/states/StairState.js"></script>
+	<script src="./js/states/ElevatorState.js"></script>
     <script src="./js/states/LandmarkState.js"></script>
        <script src="./js/states/ClassifyState.js"></script>
     <script src="./js/states/ExitState.js"></script>

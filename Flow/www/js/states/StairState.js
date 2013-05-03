@@ -16,6 +16,10 @@ var StairState = function(stateMan) {
 	this.pointAtCursor; 
 }
 
+//NEED TO HAVE
+StairState.prototype = new BaseState();
+
+
 /**
  * Summary: This function is called when the user presses the sumbit
 			button on the stair box. It created a new interfloor connection based
@@ -140,8 +144,6 @@ StairState.prototype.click = function(event) {
 	}, 0)
 }
 
-//NEED TO HAVE
-StairState.prototype = new BaseState();
 
 //NEED TO HAVE
 StairState.prototype.enter = function() {

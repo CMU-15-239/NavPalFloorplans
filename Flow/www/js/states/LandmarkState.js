@@ -14,7 +14,11 @@
 var LandmarkState = function(stateMan) {
 	this.stateManager = stateMan;
 	this.pointAtCursor; 
+	this.currentMarkIndex;
 }
+
+// Keep this at the top
+LandmarkState.prototype = new BaseState();
 
 /**
  * Summary: This function is called when the user presses the sumbit
@@ -63,6 +67,32 @@ $("#landmark_cancel").click(function(event) {
 	
 });
 
+$("#landmark_update").click(function(event) {
+	event.preventDefault();
+	$("#landmark_update_pop").toggleClass("hidden", true);
+	
+	var mark = stateManager.currentFloor.landmarks[stateManager.currentState.currentMarkIndex];
+	mark.label = $("#nameUpdateLandmark").val();
+	mark.description = $("#descriptionUpdateLandmark").val();
+	
+	stateManager.currentState.noLandmarkEdit();
+	
+	// Redraw everything
+	stateManager.redraw();
+});
+
+$("#landmark_delete").click(function(event) {
+	event.preventDefault();
+	$("#landmark_update_pop").toggleClass("hidden", true);
+	
+	stateManager.currentFloor.landmarks.splice(stateManager.currentState.currentMarkIndex, 1);
+	
+	stateManager.currentState.noLandmarkEdit();
+	
+	// Redraw everything
+	stateManager.redraw();
+});
+
 /**
  * Summary: This function is called when the user clicks the mouse.
 			It opens a landmark box and stores where the user clicked.
@@ -70,22 +100,65 @@ $("#landmark_cancel").click(function(event) {
  * Returns: undefined
 **/
 LandmarkState.prototype.click = function(event) {
-
-	$("#landmark_pop").css({
-		top: event.pageY + "px",
-		left: event.pageX + "px"					 
-	}).toggleClass("hidden", false);
-
+	$("#landmark_pop").toggleClass("hidden", true);
+	$("#landmark_update_pop").toggleClass("hidden", true);
+	
+	this.noLandmarkEdit();
+	
 	// Store where the user clicked to add a landmark
 	this.pointAtCursor = stateManager.currentFloor.globals.view.toRealWorld(
 		new Point(event.pageX - stateManager.currentFloor.globals.canvas.x, 
 		event.pageY - stateManager.currentFloor.globals.canvas.y));
-
-	this.stateManager.redraw();
+	
+	var nearIndex = this.isNearLandmark(this.pointAtCursor);
+	
+	if (nearIndex === -1) {
+		$("#landmark_pop").css({
+			top: event.pageY + "px",
+			left: event.pageX + "px"					 
+		}).toggleClass("hidden", false);
+		
+		this.stateManager.redraw();
+	}
+	// Clicked near another landmark
+	else {
+		var mark = stateManager.currentFloor.landmarks[nearIndex];
+		mark.edit = true;
+		this.currentMarkIndex = nearIndex;
+		$("#nameUpdateLandmark").val(mark.label);
+		$("#descriptionUpdateLandmark").val(mark.description);
+		
+		$("#landmark_update_pop").css({
+			top: event.pageY + "px",
+			left: event.pageX + "px"					 
+		}).toggleClass("hidden", false);
+	}
+	stateManager.redraw();
 }
 
-// Required by State 'interface'
-LandmarkState.prototype = new BaseState();
+LandmarkState.prototype.noLandmarkEdit = function() {
+	for (var i = 0; i < stateManager.currentFloor.landmarks.length; i ++) {
+		stateManager.currentFloor.landmarks[i].edit = false;
+	}
+}
+
+LandmarkState.prototype.isNearLandmark = function(point) {
+	var zoom = stateManager.currentFloor.globals.view.scale;
+	if (zoom == 0)  {
+		return -1;
+	}
+	var radius = 30 / zoom;
+	for (var i = 0; i < stateManager.currentFloor.landmarks.length; i ++) {
+		var mark = stateManager.currentFloor.landmarks[i];
+		console.log(mark.pointRep.distance(point));
+		console.log(radius + " rad");
+		if (mark.pointRep.distance(point) < radius) {
+			return i;
+		}
+	}
+	
+	return -1;
+}
 
 // Required by State 'interface'
 LandmarkState.prototype.enter = function() {
@@ -94,6 +167,7 @@ LandmarkState.prototype.enter = function() {
 // Required by State 'interface'
 LandmarkState.prototype.exit = function() {
 	$("#landmark_pop").toggleClass("hidden", true);
+	$("#landmark_update_pop").toggleClass("hidden", true);
 }
 
 // Required by State 'interface'

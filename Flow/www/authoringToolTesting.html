@@ -140,6 +140,26 @@
       </fieldset>
     </form>
 
+	<form class="form-horizontal pop hidden" id="landmark_update_pop">
+      <fieldset><legend>Landmark Update</legend>
+        <!-- Text input-->
+        <div class="control-group"><label class="control-label">Label</label>
+          <div class="controls"><input id="nameUpdateLandmark" name="name" type="text" placeholder="What is this?" class="input"> </div>
+        </div>
+        <!-- Text input-->
+        <div class="control-group"><label class="control-label">Description</label>
+          <div class="controls"><input id="descriptionUpdateLandmark" name="description" type="text" placeholder="Tell me about it" class="input"></div>
+        </div>
+        <!-- Button (Double) -->
+        <div class="control-group">
+          <div class="controls">
+            <button id="landmark_update" name="landmark_submit" class="btn btn-info">Update Landmark</button>
+            <button id="landmark_delete" name="landmark_cancel" class="btn btn-danger">Delete Landmark</button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+	
     <!-- Classification -->
     <form class="form-horizontal pop hidden" id="classification_pop">
       <fieldset><legend>Classify Space</legend>
@@ -210,7 +230,7 @@
         <!-- Selection -->
         <div class="control-group"><label class="control-label">Select an elevator</label>
           <div class="controls">
-            <select id="selectmultiple" name="selectmultiple" class="input" multiple="multiple"></select>
+            <select id="selectmultipleelevator" name="selectmultiple" class="input" multiple="multiple"></select>
           </div>
         </div>
         <!-- Save and Cancel -->
@@ -258,6 +278,7 @@
     <script src="./js/states/PanState.js"></script>
     <script src="./js/states/DoorState.js"></script>
     <script src="./js/states/StairState.js"></script>
+	<script src="./js/states/ElevatorState.js"></script>
     <script src="./js/states/LandmarkState.js"></script>
     
     <script src="./js/lib/globals.js"></script>
