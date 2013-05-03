@@ -51,6 +51,10 @@ HOW TO RUN:
 	Server
     Start the mongo database
       http://docs.mongodb.org/manual/installation/, this depends on your installation process.
+      
+      To connect to this mongo server open Flow/server/server.js and edit the connection string (e.g. 'mongodb://localhost:27017/flow') in new FlowDB(<connection string>) inside the init function.
+      
+      The format of the connection string is: mongodb://<ip address>:<port>/<database name>.
     
 		Start within the cloned directory NavPalFloorplans/
       cd Flow/server/
