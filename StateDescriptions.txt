@@ -1,0 +1,31 @@
+State Descriptions
+
+Select:
+	The select state allows the user to modify points and lines. There is the ability to click and drag points or lines. This state can also be used to delete points or lines. It is possible to select multiple points or lines at once, by dragging to create a selection area.
+	
+Pan:
+	The pan state allows the user to click and drag to pan the floor.
+	
+Zoom In:
+	The zoom in state allows the user to click to zoom in.
+	
+Zoom Out:
+	The zoom in state allows the user to click to zoom out.
+	
+Draw:
+	The draw tool allows the user to add new lines (walls) to the floor plan. The user clicks to add a point, and line are automatically created from the previous point. New points 'snap' to existing points and lines to make creating closed off areas easier. Any overlapping lines will automatically split existing lines into two lines and will add a point to the location of intersection.
+
+Door:
+	The door tool is used to mark that a wall represents a door, which a person can pass through to get to a different room. Every wall can be toggeled between a normal wall and a door by clicking on a wall in this state. If a user hovers over a wall, it will change color to indicate which wall will change upon clicking.	
+	
+Exit:
+	The exit tool is similar to the door tool, but it used to indicate exits or entrances on the floor that lead to outside the building.
+	
+Classification:
+	The classification tool is used to label rooms, hallways, or obstacles. The authoring tool automatically detects the smallest closed off areas, which it considers be to be rooms, hallways, or obstacles. While hovering in this state, a blue polygon appears to indicate the closed off area the user will select. Upon clicking, a box pops up for the user to enter the name of the room and a description. Any closed off areas that have been labeled become red.
+	
+Landmark:
+
+Stair:
+Elevator:
+
