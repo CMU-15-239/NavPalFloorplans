@@ -28,6 +28,15 @@ INSTALLATION:
 		python setup.py clean
 		python setup.py build
 		sudo python setup.py install --user  
+
+		check to see if this was successful:
+			python
+			import tesseract
+		if an error occurred when importing tesseract then run these commands from python-tesseract directory
+			sudo apt-get install cdbs dh-buildinfo devscripts python-stdeb
+			./buildDeb
+			Then in your file manager double click the deb file that was created to install via package manager
+
     
   Mongo Database -- for data storage
     http://docs.mongodb.org/manual/installation/ is the best guide and the installation process varies per distribution of linux.
@@ -98,3 +107,7 @@ FLOW OF EACH PAGE:
 		- The building object is read from local storage and the canvas is initialized from this object. The carousels are populated by the images of floorplans of the building. A seperate request is made to the server to get each floor plan. When all images are fetched adn canvas is initialized, the loading spinner is removed so that the user can use the authoring tool
 
 KNOWN BUGS: 
+	Firefox specific bugs:
+		mousewheel scrolling does not work
+		landmarks sometimes do not save properly
+		classifications do not save properly
