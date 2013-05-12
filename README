@@ -112,7 +112,7 @@ KNOWN BUGS:
 		There is a known bug in a certain case (very rare). The algorithm cannot handle if there is a room inside a room (like a dounut). If the walls of a room are completely contained within another room, the inner room cannot be completely isolated, otherwise, a user will not be able to select both the inner and outer rooms to label them.
 	
 	StairState.js:
-		The stair tool is incomplete. A user cannot click on an existing stair to edit it. For an example of how to fix this, see landmarkState.js, as it demonstrates how to edit features of a floor.
+		The stair tool is incomplete. A user cannot click on an existing stair to edit it. For an example of how to fix this, see landmarkState.js, as it demonstrates how to edit features of a floor. There interfloor connections are stored as a list within each floor object. A stair is represented by an floor connection object.
 		
 	ElevatorState.js:
 		Same as StairState.
