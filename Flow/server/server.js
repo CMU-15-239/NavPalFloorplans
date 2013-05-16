@@ -44,7 +44,7 @@ function init(){
   
   port = 8080
   // server grove connection string: 'mongodb://test:test@69.195.199.181:27017/flow'
-  flowDB = new FlowDB('mongodb://localhost/flow'); //change this
+  flowDB = new FlowDB('mongodb://test:test@69.195.199.181:27017/flow'); //change this
 }
 init();
 
@@ -509,7 +509,11 @@ app.get('/buildingsRefs', function(request, response) {
  * Returns: calls callback with preprocessed data and image
 **/
 function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
-  //dataPath = 'json.txt';
+  
+  // For debugging without image preprocessing
+  callback({result: {}, image: '', dataURL: 'data:image/png;base64,'});
+  return;
+  
   var child = exec('python ./python/preprocessing.py ' + oldImagePath + ' ' 
                     + newImagePath + ' ' + dataPath, function (err, stdout, stderr) {
     console.log("+++Preprocess Error Log+++");

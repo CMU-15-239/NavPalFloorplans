@@ -19,6 +19,7 @@ var BuildingController = {
     
 		this.findOne({userBuildingId: userBuildingId}, function(buildingObj) {
 			if(!Util.exists(buildingObj)) {
+            authoData.id = userBuildingId;
             buildingObj = new Building({
                _creatorId: creatorId,
                userBuildingId: userBuildingId,
