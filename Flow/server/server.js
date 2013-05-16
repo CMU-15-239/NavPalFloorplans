@@ -64,9 +64,8 @@ function configureExpress(app) {
     
     app.use(passport.initialize());
     app.use(passport.session());
-      
-    // TODO: generate random string for secret
-    app.use(express.session({userId: "", secret:"keyboard cat"}));
+    
+    app.use(express.session({userId: "", secret: Util.generateConnKey(9)}));
     app.use(express.static(path.join(__dirname, '../www')));
 
     app.use(function(request, response, next) {
