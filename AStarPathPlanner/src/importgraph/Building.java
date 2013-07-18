@@ -13,7 +13,7 @@ public class Building
 	if(idx != -1) {
 	    return edgeWeights[idx];
 	}
-	
+
 	return null;
     }
     

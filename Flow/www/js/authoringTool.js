@@ -51,6 +51,7 @@ $(document).ready(function () {
 **/
 function init() {
     var buildingJSON = localStorage.getItem('building');
+    console.log("Gary Client: " + JSON.stringify(buildingJSON));
     if (buildingJSON !== null) {
         // grab building object from local storage and initialize
         building = $.parseJSON(buildingJSON);
@@ -198,7 +199,7 @@ function getFloorImage(floor) {
     });
 }
 
-/**
+/**I amup fro wht
  * Summary: Adds fetched floor images to preview pane and navigation carousel
  * Parameters:  n/a
  * Globals: floorNames: list of names, floorImages: mapping of names to images

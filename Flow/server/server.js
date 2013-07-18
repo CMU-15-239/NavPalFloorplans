@@ -342,8 +342,12 @@ app.get('/image', function(request, response) {
  * errorCode: success 0, invalid data 1, failed to save 2, failed to publish 3, unauthorized 401
  * httpCode: success 200, invalid data 400, failed to save 500, failed to publish 500, unauthorized 401
 **/
+
+// NOTE: Gary, it might be a good idea to call the routines to generate the three text files right here.
+
 app.post('/savePublish', function(request, response) {
   var buildingData = request.body.building;
+  console.log("GARY:" + JSON.stringify(buildingData));
   flowDB.getUserById(request.session.userId, function(user) {      
     if(Util.exists(user)) {
       if(Util.exists(buildingData) 
@@ -461,6 +465,9 @@ app.get('/building', function(request, response) {
           user.getBuilding(request.query.buildingId, function(buildingObj) {
             if(Util.exists(buildingObj)) {
               response.status(200);
+	      
+	      console.log("Gary/building" + JSON.stringify(buildingObj.toOutput()));
+	      
               return response.send({building: buildingObj.toOutput(), errorCode: 0});
             } else {
               response.status(404);
@@ -508,11 +515,13 @@ app.get('/buildingsRefs', function(request, response) {
  * Returns: calls callback with preprocessed data and image
 **/
 function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
-  
+
   // For debugging without image preprocessing
   callback({result: {}, image: '', dataURL: 'data:image/png;base64,'});
-  return;
-  
+  //return;
+
+  //dataPath = 'json.txt';
+
   var child = exec('python ./python/preprocessing.py ' + oldImagePath + ' ' 
                     + newImagePath + ' ' + dataPath, function (err, stdout, stderr) {
     console.log("+++Preprocess Error Log+++");

@@ -27,6 +27,9 @@ public class NavPalSparseGraph extends SparseGraph
     public static SparseGraph importGraph(Building b)
     {
         SparseGraph graph = new SparseGraph(true);
+        
+        
+        
         Floor f = b.floors[0];
 
         //
@@ -234,7 +237,7 @@ public class NavPalSparseGraph extends SparseGraph
                 			edgeCounter++;
                 		    }
                 		}
-            
+
                 		nodeCounter++;
                     }
                     System.out.println("\tGenerated Landmarks " + nodeCounter + ", " + edgeCounter + ".");

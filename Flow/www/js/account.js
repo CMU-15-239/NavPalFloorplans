@@ -68,6 +68,7 @@ function editBuilding() {
       //save in local storage and redirect
       localStorage.setItem('building', JSON.stringify(building.authoData));
       window.location = "/authoringTool.html";
+      console.log("Gary Client: " + JSON.stringify(building.authoData));
     },
     error: function() {
       $("#"+'edit'+this).spin(false);

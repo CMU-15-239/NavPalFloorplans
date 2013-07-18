@@ -1,22 +1,11 @@
 package Graph;
 
-import importgraph.Building;
-import importgraph.EdgeWeight;
-import importgraph.Floor;
-import importgraph.FloorConnection;
-import importgraph.Landmark;
-import importgraph.Point;
-import importgraph.Psw;
-import importgraph.Space;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import Common.Vector2D;
 
 public class SparseGraph
 {
@@ -42,158 +31,6 @@ public class SparseGraph
 	_mNextFreeNodeIndex = 0;
 	_mDigraph = digraph; //undirected graph
 	_numActiveNodes = 0;
-    }
-    
-    public static SparseGraph importGraph(Building b) {
-	SparseGraph graph = new SparseGraph(true);
-	Floor f = b.floors[0];
-	HashMap<Integer, Space> sparseIdToSpaces = new HashMap<Integer, Space>();
-	HashMap<Integer, Psw> sparseIdToPsws = new HashMap<Integer, Psw>();
-	HashMap<Integer, FloorConnection> sparseIdToFloorConnections =  new HashMap<Integer, FloorConnection>();
-	HashMap<Integer, Landmark> sparseIdToLandmark = new HashMap<Integer, Landmark>();
-	HashMap<String, Integer> nodeIdToSparseId = new HashMap<String, Integer>();
-	
-	int nodeCounter = 0;
-	int edgeCounter = 0;
-	
-	System.out.println("Generating Spaces...");
-	for(int s = 0; s < f.spaces.length; s++) {
-	    Space space = f.spaces[s];
-	    if(space != null) {
-		int x = 0;
-		int y = 0;
-		if(space.walls.length > 0) {
-		    Point p1 = space.walls[0].p1;
-		    x = p1.x;
-		    y = p1.y;
-		}
-
-		NavGraphNode n = new NavGraphNode(nodeCounter, new Vector2D(x,y));
-		graph.AddNode(n);
-		sparseIdToSpaces.put(nodeCounter, space);
-		nodeIdToSparseId.put(space.id, nodeCounter);
-		
-		for(int e = 0; e < space.edges.length; e++) {
-		    String n2Id = space.edges[e];
-		    Integer s2 = nodeIdToSparseId.get(n2Id);
-		    //System.out.println((nodeCounter) + " -> " + s2);
-		    if(s2 != null) {
-			EdgeWeight edge = b.getEdge(space.id, n2Id);
-			NavGraphEdge graphEdge = new NavGraphEdge(nodeCounter, s2, edge.weight, 0, edgeCounter);
-			graph.AddEdge(graphEdge);
-			edgeCounter++;
-		    }
-		}
-
-		nodeCounter++;
-	    }
-	}
-	System.out.println("Generated Spaces " + nodeCounter + ", " + edgeCounter + ".");
-	
-	System.out.println("Generating Psws...");
-	for(int p = 0; p < f.psws.length; p++) {
-	    Psw psw = f.psws[p];
-	    if(psw != null) {
-		int x = 0;
-		int y = 0;
-		if(psw.lineRep != null) {
-		    Point p1 = psw.lineRep.p1;
-		    x = p1.x;
-		    y = p1.y;
-		}
-
-		NavGraphNode n = new NavGraphNode(nodeCounter, new Vector2D(x,y));
-		graph.AddNode(n);
-		sparseIdToPsws.put(nodeCounter, psw);
-		nodeIdToSparseId.put(psw.id, nodeCounter);
-		
-		for(int e = 0; e < psw.edges.length; e++) {
-		    String n2Id = psw.edges[e];
-		    Integer p2 = nodeIdToSparseId.get(n2Id);
-		    //System.out.print(nodeCounter + "/" + psw.id + " -> " + p2 + "/" + n2Id);
-		    if(p2 != null) {
-			EdgeWeight edge = b.getEdge(psw.id, n2Id);
-			//System.out.print(": " + edge.weight);
-			NavGraphEdge graphEdge = new NavGraphEdge(nodeCounter, p2, edge.weight, 0, edgeCounter);
-			graph.AddEdge(graphEdge);
-			edgeCounter++;
-		    }
-		    //System.out.println();
-		}
-
-		nodeCounter++;
-	    }
-	}
-	System.out.println("Generated Psws " + nodeCounter + ", " + edgeCounter + ".");
-	
-	System.out.println("Generating FloorConnections...");
-	for(int fc = 0; fc < f.floorConnections.length; fc++) {
-	    FloorConnection floorConnection = f.floorConnections[fc];
-	    if(floorConnection != null) {
-		int x = 0;
-		int y = 0;
-		if(floorConnection.pointRep != null) {
-		    Point pointRep = floorConnection.pointRep;
-		    x = pointRep.x;
-		    y = pointRep.y;
-		}
-		
-		NavGraphNode n = new NavGraphNode(nodeCounter, new Vector2D(x, y));
-		graph.AddNode(n);
-		sparseIdToFloorConnections.put(nodeCounter, floorConnection);
-		nodeIdToSparseId.put(floorConnection.id, nodeCounter);
-		
-		for(int e = 0; e < floorConnection.edges.length; e++) {
-		    String n2Id = floorConnection.edges[e];
-		    Integer fc2 = nodeIdToSparseId.get(n2Id);
-		    if(fc2 != null) {
-			EdgeWeight edge = b.getEdge(floorConnection.id, n2Id);
-			NavGraphEdge graphEdge = new NavGraphEdge(nodeCounter, fc2, edge.weight, 0, edgeCounter);
-			graph.AddEdge(graphEdge);
-			edgeCounter++;
-		    }
-		}
-
-		nodeCounter++;
-	    }
-	}
-	System.out.println("Generated FloorConnections " + nodeCounter + ", " + edgeCounter + ".");
-	
-	System.out.println("Generating Landmarks...");
-	for(int l = 0; l < f.floorConnections.length; l++) {
-	    Landmark landmark = f.landmarks[l];
-	    if(landmark != null) {
-		int x = 0;
-		int y = 0;
-		if(landmark.pointRep != null) {
-		    Point pointRep = landmark.pointRep;
-		    x = pointRep.x;
-		    y = pointRep.y;
-		}
-		
-		NavGraphNode n = new NavGraphNode(nodeCounter, new Vector2D(x, y));
-		graph.AddNode(n);
-		sparseIdToLandmark.put(nodeCounter, landmark);
-		nodeIdToSparseId.put(landmark.id, nodeCounter);
-		
-		for(int e = 0; e < landmark.edges.length; e++) {
-		    String n2Id = landmark.edges[e];
-		    Integer l2 = nodeIdToSparseId.get(n2Id);
-		    if(l2 != null) {
-			EdgeWeight edge = b.getEdge(landmark.id, n2Id);
-			NavGraphEdge graphEdge = new NavGraphEdge(nodeCounter, l2, edge.weight, 0, edgeCounter);
-			graph.AddEdge(graphEdge);
-			edgeCounter++;
-		    }
-		}
-
-		nodeCounter++;
-	    }
-	}
-	System.out.println("Generated Landmarks " + nodeCounter + ", " + edgeCounter + ".");
-	
-	
-	return graph;
     }
 
     // /////////////////////////////////////////////////////////////////////////

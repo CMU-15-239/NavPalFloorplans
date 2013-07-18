@@ -127,7 +127,7 @@ UserSchema.methods.getImage = function(imageId, callback) {
 UserSchema.methods.saveBuilding = function(buildingData, callback) {
    if(Util.exists(buildingData) && Util.exists(buildingData.name)
       && Util.exists(buildingData.graph) && Util.exists(buildingData.authoData)) {
-      
+		       
       if(!Util.exists(buildingData.id) || !this.hasBuilding(buildingData.id)) {
          return this.createNewBuilding(buildingData.name, buildingData.graph, buildingData.authoData, callback);
       } else {
