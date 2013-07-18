@@ -106,7 +106,7 @@ public class Sandbox2
     {
 	// Testing Data
 	String buildingName = "GarysBuilding";	// Initial test building 
-	boolean useOriginalTestDataset = false;  // set to true to use original hard coded example, false to read building from DB 
+	boolean useOriginalTestDataset = true;  // set to true to use original hard coded example, false to read building from DB 
 	boolean escapeJSONString = false;
 
 	/*
