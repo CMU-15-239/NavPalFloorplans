@@ -1,24 +1,31 @@
 //space.js
 //Object for categorizing an open space (rooms and hallways)
 
-function importSpace(simpleSpace, globalsContainer) {
+function importSpace(simpleSpace, globalsContainer)
+{
   var newSpace = null;
-  if(util.exists(simpleSpace)) {
+  if(util.exists(simpleSpace))
+  {
     newSpace = new Space();
     newSpace.type = simpleSpace.type;
     newSpace.label = simpleSpace.label;
     
-    if(util.exists(simpleSpace.walls)) {
-      for(var w = 0; w < simpleSpace.walls.length; w++) {
+    if(util.exists(simpleSpace.walls))
+    {
+      for(var w = 0; w < simpleSpace.walls.length; w++)
+      {
         var wall = simpleSpace.walls[w];
         var isDoor = wall.isDoor;
         var wall = globalsContainer.importWall(wall);
-        //console.log(wall);
-        //console.log("isDoor: "+isDoor);
         
-        if(util.exists(wall)) {
+        //console.log(wall);
+        //console.log("isDoor: " + isDoor);
+        
+        if(util.exists(wall))
+        {
           wall = newSpace.addWall(wall);
-          if(wall.isDoor) {
+          if(wall.isDoor)
+          {
             newSpace.doors.push(wall);
           }
         }
@@ -37,24 +44,39 @@ function importSpace(simpleSpace, globalsContainer) {
  * Parameters: walls: The walls that define the space.
  * Returns: undefined.
 **/
-function Space(walls) {
+function Space(walls)
+{
+	// TODO: The following array are not being populated
+	//
+	// 		- doors
+	//		- points
+	//		- 
+	//
+	
 	//The doors in the space (if any)
 	this.doors = [];
+
 	//The walls that define the space
 	this.walls = $.extend([], walls);
+
 	this.points = [];
+
 	//The classification of the space ("room", "hallway", "obstacle", etc.)
 	this.type = "";
+
 	//The space's room number (if any)
 	this.label = "";
+
 	//Is the space closed?
 	this.isClosed = false;
-	
+
 	//A polygon that appears when the user selects the space.
-  this.selectPoly = null;
-  if(util.exists(walls)) {
-    this.selectPoly = new Polygon(walls);
-  }
+	this.selectPoly = null;
+
+	if(util.exists(walls))
+	{
+		this.selectPoly = new Polygon(walls);
+	}
   
 	this.drawPoly = false;
 };

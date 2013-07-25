@@ -14,6 +14,8 @@ var activeAJAX = 0;
 var buildingFloors = {};
 var floorImages = {};
 
+//var Sector = require('./text/sector2.js');
+
 /**
  * Summary: Initiailize icon tooltips and loading spinner while carousels load images
  * Parameters: n/a
@@ -250,6 +252,54 @@ function ArrayIndexOf(a, fnc) {
     return -1;
 }
 
+function findMaxXYComponentsforPoints(floors)
+{
+	var minX = Number.MAX_VALUE;
+	var minY = Number.MAX_VALUE;
+	var maxX = 0;
+	var maxY = 0;
+
+	// For each floor
+	for (var f=0; f < floors.length; f++)
+	{
+		var currentFloor = floors[f];
+		
+		for (var s=0; s < currentFloor.spaces.length; s++)
+		{
+			var currentSpace = currentFloor.spaces[s];
+			
+			for(var p=0; p < currentSpace.selectPoly.points.length; p++)
+			{
+				var currentPoint = currentSpace.selectPoly.points[p];
+				
+				// Find the max points
+				if (currentPoint.x > maxX)
+				{
+					maxX = currentPoint.x;
+				}
+				
+				if (currentPoint.y > maxY)
+				{
+					maxY = currentPoint.y;
+				}
+				
+				// Find the min points
+				if (currentPoint.x < minX)
+				{
+					minX = currentPoint.x;
+				}
+				
+				if (currentPoint.y < minY)
+				{
+					minY = currentPoint.y;
+				}
+			}
+		}
+	}
+	
+	return [minX, minY, maxX, maxY];
+}
+
 /**
  * Summary: Saves building to database and local storage
  * Parameters: none
@@ -259,6 +309,8 @@ $('#save').click(function() {
     $(this).spin('small', '#fff');
     var building = stateManager.building;
     var buildingOut = building.toOutput();
+    var canvasWidth = CANVAS_WIDTH;
+    var canvasHeight = CANVAS_HEIGHT;
     $.ajax({
         type: "POST",
         url: '/savePublish',
@@ -268,7 +320,9 @@ $('#save').click(function() {
                 authoData: buildingOut,
                 graph: null
             },
-            publishData: false
+            publishData: false,
+            width: canvasWidth,
+            height: canvasHeight,
         },
         success: function(response) {
             //save in local storage and redirect
@@ -288,12 +342,65 @@ $('#save').click(function() {
  * Parameters: none
  * Returns: none
 **/
-$('#publish').click(function() {
+$('#publish').click(function()
+{
     $(this).spin('small', '#fff');
     var building = stateManager.building;
     var buildingOut = building.toOutput();
     var graph = new BuildingGraph(building);
     var graphOut = graph.toOutput();
+
+	// Required for text file generation
+	var mapString = "";
+	var roomString = "";
+	var sectorString = "";
+	var floorName = "unidentified";
+
+	// Compute the buffer size for the current floor
+
+	// Given the spaces object, build the string representation of the map
+	// TODO: The floors should be in a loop when we move to multi floor planning
+	if (stateManager.floors[0].spaces != undefined)
+	{
+		floorName = building.name + "_" + stateManager.floors[0].name;
+		
+		var spaces = stateManager.floors[0].spaces;
+
+		// This function returns the following array [minX, minY, maxX, maxY]
+		var minMaxXYComponents = findMaxXYComponentsforPoints(stateManager.building.floors);
+		var deltaXFromOrigin = minMaxXYComponents[0];
+		var deltaYFromOrigin = minMaxXYComponents[1];
+		var canvasWidth      = minMaxXYComponents[2] + deltaXFromOrigin;
+		var canvasHeight     = minMaxXYComponents[3] + deltaYFromOrigin;
+
+		if (spaces.length > 0)
+		{
+			console.log("MAP GENERATION: Generating Map text file.");
+			var mapArray = generateMap(spaces, canvasWidth, canvasHeight);
+			mapString = convertMapArrayToString(mapArray);
+
+			console.log("ROOM GENERATION: Generating Room text file.");
+			roomString = generateRoom(spaces, '\n');
+
+			// Commented out until map text file generation is correct since sector generation can take up to several minutes
+			console.log("SECTOR GENERATION: Generating Sector text file.");
+
+			var startDate = Date.now();
+			sectorString = generateSectorStr(spaces, canvasWidth, canvasHeight);
+			var endDate = Date.now();
+			var totalTime = endDate - startDate;			
+			console.log("Sector generation took " + (totalTime/1000) + " seconds.");			
+		}
+		else
+		{
+			console.log("TEXT FILE GENERATION: There are no spaces defined in session scope");
+		}				
+	}
+	else
+	{
+		console.log("TEXT FILE GENERATION: stateManager.floors[0].spaces NOT defined in session scope");
+	}
+
     $.ajax({
         type: "POST",
         url: '/savePublish',
@@ -303,13 +410,20 @@ $('#publish').click(function() {
                 authoData: buildingOut,
                 graph: graphOut
             },
-            publishData: true
+            publishData: true,
+            width: canvasWidth,	   // Required for text file generaiton on server side
+            height: canvasHeight,  // Requried for text file generation on server side
+            map: mapString,
+            room: roomString,
+            sector: sectorString,
+            floorName: floorName,
         },
-        success: function(response) {
+        success: function(response)
+        {
             //save in local storage and redirect
             $('#publish').spin(false);
             localStorage.setItem('building', JSON.stringify(this));
-            alert('Building has been published successfully!')
+            alert('Building has been published successfully!');
         }.bind(buildingOut),
         error: function(response) {
             // remove loading spinner and alert user of error

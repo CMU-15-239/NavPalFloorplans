@@ -10,21 +10,22 @@ var graphGlobals = {
   edgeWeights: null
 };
 
-function BuildingGraph(building) {
+function BuildingGraph(building)
+{
   this.name = building.name;
   this.id;
   this.floors = [];
   this.floorConnectionRefs = [];
   this.edgeWeights = graphGlobals.edgeWeights = new EdgeWeights();
-  
-  
+
   this.typeforFloorConnectionNodeRef = "floorConnectionRef";
-  
-  for(var f = 0; f < building.floors.length; f++) {
-    this.addFloor(building.floors[f]);
+
+  for(var f = 0; f < building.floors.length; f++)
+  {
+	this.addFloor(building.floors[f]);
   }
   
-  this.id = "buildingGraph_"+JSON.stringify(this).hashCode();
+  this.id = "buildingGraph_" + JSON.stringify(this).hashCode();
 };
 
 /**

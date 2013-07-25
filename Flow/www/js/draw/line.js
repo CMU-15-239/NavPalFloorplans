@@ -9,9 +9,11 @@
 */
 
 
-function importLine(simpleLine) {
+function importLine(simpleLine)
+{
   
-  if(util.exists(simpleLine)) {
+  if(util.exists(simpleLine))
+  {
     var p1 = importPoint(simpleLine.p1);
     var p2 = importPoint(simpleLine.p2);
     
@@ -21,8 +23,10 @@ function importLine(simpleLine) {
   return null;
 }
 
-function importLineFromPoints(p1, p2, isDoor) {
-  if(util.exists(p1) && util.exists(p2)) {
+function importLineFromPoints(p1, p2, isDoor)
+{
+  if(util.exists(p1) && util.exists(p2))
+  {
     var line = new Line(p1, p2, isDoor);
     return line;
   }
@@ -37,7 +41,8 @@ function importLineFromPoints(p1, p2, isDoor) {
  * Parameters: p1, p2: The points that comprise the start and end of the line.
  * Returns: undefined.
 **/
-function Line(p1, p2, isDoor) {
+function Line(p1, p2, isDoor)
+{
 	this.p1 = p1;
 	this.p2 = p2;
 	this.isSelected = false;

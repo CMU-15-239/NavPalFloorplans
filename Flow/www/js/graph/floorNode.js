@@ -18,10 +18,17 @@ function importFloorNode(simpleFloorNode) {
 				idPrefix: String, prefix for id
  * Returns: undefined
 **/
-function FloorNode(type, edges, idPrefix) {
+function FloorNode(type, edges, idPrefix)
+{
 	this.type = type;
-	if(util.exists(edges)) {this.edges = edges;}
-	else {this.edges = [];}
+	if(util.exists(edges))
+	{
+		this.edges = edges;
+	}
+	else
+	{
+		this.edges = [];
+	}
 	this.id;
 	this.newId(idPrefix);
 }

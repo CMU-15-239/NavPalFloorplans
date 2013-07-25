@@ -20,65 +20,78 @@ function importFloorGraph(simpleFloorGraph) {
         floorGraph.psws.push(importPswNode(simpleFloorGraph.psws[p])); 
       }
     }
-    
+
     return floorGraph;
   }
-  
+
   return null;
 }
 
 /**
  * Summary: Constructor for the FloorGraph object.
  * Parameters: spaces: The list of space objects created in the drawing tool,
-				callback: Function to callback after the constructor executes. 
-				(To notify something when the floorGraph has been created (e.g load wheel))
-				callbackVars: Inputs for callback.
+			   callback: Function to callback after the constructor executes. 
+			   (To notify something when the floorGraph has been created (e.g load wheel))
+			   callbackVars: Inputs for callback.
  * Returns: undefined
 **/
-function FloorGraph(floor, callback, callbackVars) {
+function FloorGraph(floor, callback, callbackVars)
+{
+	console.log("GARY: FloorGraph Called");
 	this.name;
-  this.imageId;
-  this.imageScale;
-  this.width;
-  
-  this.spaces = [];
+	this.imageId;
+	this.imageScale;
+	this.width;
+
+	this.spaces = [];
 	this.psws = [];
 	this.floorConnections = [];
-  this.landmarks = [];
-  
-  this.tempObstacles = [];
-  
-  this.typeForSpaceNode = "space";
-  this.typeForPswNode = "psw";
-  this.typeforFloorConnectionNode = "floorConnection";
-  this.typeforLandmarkNode = "landmark";
-	
-  if(util.exists(floor)) {
-    this.name = floor.name;
-    this.imageId = floor.imageId;
-    this.imageScale = floor.imageScale;
-    this.width = floor.width;
-    
-    if(util.exists(floor.spaces)) {
-      for(var s = 0; s < floor.spaces.length; s++) {
-        //console.log("Adding space " + s + "...");
-        this.addSpaceNode(floor.spaces[s]);
-      }
-    }
-    
-    if(util.exists(floor.landmarks)) {
-      for(var l = 0; l < floor.landmarks.length; l++) {
-        //console.log("Adding landmark " + l + "...");
-        this.addLandmarkNode(floor.landmarks[l]);
-      }
-    }
-  }
-	
-  console.log
-  this.id = "floorGraph_"+JSON.stringify(this).hashCode();
-	if(util.exists(callback)) {callback.apply(callbackVars);}
-}
+	this.landmarks = [];
 
+	this.tempObstacles = [];
+
+	this.typeForSpaceNode = "space";
+	this.typeForPswNode = "psw";
+	this.typeforFloorConnectionNode = "floorConnection";
+	this.typeforLandmarkNode = "landmark";
+
+	if(util.exists(floor))
+	{
+		console.log("GARY: FloorGraph floor " + floor.name + " is defined.");
+		this.name = floor.name;
+		this.imageId = floor.imageId;
+		this.imageScale = floor.imageScale;
+		this.width = floor.width;
+
+		if(util.exists(floor.spaces))
+		{
+			for(var s = 0; s < floor.spaces.length; s++)
+			{
+				//console.log("Adding space " + s + "...");
+				this.addSpaceNode(floor.spaces[s]);
+			}
+		}
+
+		if(util.exists(floor.landmarks))
+		{
+			for(var l = 0; l < floor.landmarks.length; l++)
+			{
+				//console.log("Adding landmark " + l + "...");
+				this.addLandmarkNode(floor.landmarks[l]);
+			}
+		}
+	}
+
+	this.id = "floorGraph_" + JSON.stringify(this).hashCode();
+	if(util.exists(callback))
+	{
+		callback.apply(callbackVars);
+	}
+	else
+	{
+		console.log("GARY: FloorGraph no callback function specified.");
+	}
+}
 
 /**
  * Summary: Converts the FloorGraph object to a simple JSON object (for export)
@@ -137,13 +150,17 @@ FloorGraph.prototype.getPswNodeByLine = function(line) {
  * Parameters: space: Space object.
  * Returns: undefined
 **/
-FloorGraph.prototype.addSpaceNode = function(space) {
-  if(space.type === "room" || space.type === "hallway") {
+FloorGraph.prototype.addSpaceNode = function(space)
+{
+  if(space.type === "room" || space.type === "hallway")
+  {
     var spaceNode = new SpaceNode(this.typeForSpaceNode, space.type, space.label, [], space.walls, this.width);
-    for(var d = 0; d < space.doors.length; d++) {
+    for(var d = 0; d < space.doors.length; d++)
+    {
       var lineRep = space.doors[d];
       var door = this.getPswNodeByLine(lineRep);
-      if(!util.exists(door)) {
+      if(!util.exists(door))
+      {
         //TODO: check and make sure the newId function returns in time for adding to pswIds
         door = new PswNode(this.typeForPswNode, "door", null, lineRep);
         this.psws.push(door);
@@ -153,7 +170,9 @@ FloorGraph.prototype.addSpaceNode = function(space) {
     }
     
     this.spaces.push(spaceNode);
-  } else if(space.type === "obstacle") {
+  }
+  else if(space.type === "obstacle")
+  {
     
   }
 };

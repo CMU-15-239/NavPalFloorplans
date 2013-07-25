@@ -1,7 +1,9 @@
 // PswNode.js
 
-function importPswNode(simplePswNode) {
-  if(util.exists(simplePswNode)) {
+function importPswNode(simplePswNode)
+{
+  if(util.exists(simplePswNode))
+  {
     var pswNode = new PswNode(simplePswNode.type, simplePswNode.pswType,
                     simplePswNode.edges, importLine(simplePswNode.lineRep, true));
     pswNode.id = simplePswNode.id;
@@ -19,7 +21,8 @@ function importPswNode(simplePswNode) {
 				lineRep: Line object, 2d line represenation of passageway
  * Returns: undefined
 **/
-function PswNode(type, pswType, edges, lineRep) {
+function PswNode(type, pswType, edges, lineRep)
+{
 	this.pswType = pswType;
 	this.lineRep = lineRep;
 
@@ -34,7 +37,8 @@ PswNode.prototype.constructor = PswNode;
  * Parameters: undefined
  * Returns: Simple JSON object.
 **/
-PswNode.prototype.toOutput = function() {
+PswNode.prototype.toOutput = function()
+{
 	return {
 		type: this.type,
 		edges: this.edges,

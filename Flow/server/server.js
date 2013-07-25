@@ -17,6 +17,7 @@ var util = require('util');
 var exec = require('child_process').exec;
 var fs = require('fs');
 fs.exists = fs.exists || path.exists;
+
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -24,15 +25,11 @@ var LocalStrategy = require('passport-local').Strategy;
 var Util = require('./util.js');
 var FlowDB = require('./controllers/flowDB.js');
 
-var Sector = require('./sector.js');
-
-
 // Set up express server.
 var app = express();
 var port;
 var child;
 GLOBAL.flowDB;
-
 
 /**
  * Summary: Initiazes the express server
@@ -345,38 +342,115 @@ app.get('/image', function(request, response) {
 
 // NOTE: Gary, it might be a good idea to call the routines to generate the three text files right here.
 
-app.post('/savePublish', function(request, response) {
+app.post('/savePublish', function(request, response)
+{
+  var textFileGenerationEnabled = true;
   var buildingData = request.body.building;
-  console.log("GARY:" + JSON.stringify(buildingData));
-  flowDB.getUserById(request.session.userId, function(user) {      
-    if(Util.exists(user)) {
-      if(Util.exists(buildingData) 
-        && Util.exists(buildingData.name)
-        && Util.exists(buildingData.authoData) 
-        && Util.exists(buildingData.graph)) {
-        
-        user.saveBuilding(buildingData, function(buildingObj) {
-          if(Util.exists(buildingObj)) {
-            if(request.body.publishData === true) {
-              flowDB.publishBuilding(buildingObj);
-            }                     
-            response.status(200);
-            return response.send({
-              errorCode: 0, 
-              buildingId: buildingObj.getUserBuildingId()
-            });
-          } else {
-            response.status(500);
-            return response.send({errorCode: 2, buildingId: null});
-          }
-        });
-      } else {
-        response.status(400);
-        return response.send({errorCode: 1, buildingId: null});
-      }
-    } else {
-       response.status(401);
-       return response.send({errorCode: 401, buildingId: null});
+  var spaces = request.body.building.authoData.floors[0].spaces;
+
+  // Commented out and not currently used. If the text file generation is to be used on the server side, then these variables will be needed
+  //var width  = request.body.width;
+  //var height = request.body.height;
+  var mapString = request.body.map;
+  var roomString = request.body.room;
+  var sectorString = request.body.sector;
+  var floorName = request.body.floorName;
+
+  //console.log("--------------------------------------------");
+  //console.log("savePublish post method called.");
+  //console.log("Width: " + width + " Height: " + height);
+  //console.log("savePublish post method called.");
+  //console.log("--------------------------------------------");
+
+  //console.log("--------------------------------------------");
+  //console.log("Number of spaces: " + spaces.length);
+  //console.log("");
+  //console.log("spaces:" + JSON.stringify(spaces)); 
+  //console.log("--------------------------------------------");
+
+  console.log("request.body.publishData: " + request.body.publishData);
+
+  if (request.body.publishData == "true" && textFileGenerationEnabled)
+  {
+    console.log("===============================================");
+    console.log("MAP GENERATION: Generating Map text file.");
+
+	if (mapString != undefined && mapString != "")
+	{
+		writeTextFile(floorName + "_map.txt", mapString);
+	}
+
+	if (roomString != undefined && roomString != "")
+	{
+		writeTextFile(floorName + "_room.txt", roomString);
+	}
+
+	if (sectorString != undefined && sectorString != "")
+	{
+		writeTextFile(floorName + "_sector.txt", sectorString);
+	}
+
+	// Commented out since the text file generation is not taking place on the server side at this time. 
+	//var mapText = Map.generateMap(spaces, width, height);
+	//console.log("===============================================");
+	//console.log("ROOM GENERATION: Generating Room text file.");
+	//var roomText = Rooms.generateRoom(spaces, '\n');
+	console.log("===============================================");  
+  }
+  else
+  {
+    console.log("Textfile Generation turned off.");
+  }
+
+  flowDB.getUserById(request.session.userId, function(user)
+  {
+    console.log("Anonymous function in flowDB.getUserById() entered");
+	if(Util.exists(user))
+    {
+		console.log("Conditional Statement 'if (Util.exists(user))' Entered");
+		if(Util.exists(buildingData) && Util.exists(buildingData.name) && Util.exists(buildingData.authoData) && Util.exists(buildingData.graph))
+		{
+			console.log("Conditional Statement 'if (Util.exists(buildingData)) && (Util.exists(buildingData.name)) && (Util.exists(buildingData.authoData)) && (Util.exists(buildingData.graph))' Entered");
+			user.saveBuilding(buildingData, function(buildingObj)
+			{
+				console.log("Anonymous function in user.saveBuilding() entered");
+				if(Util.exists(buildingObj))
+				{
+					if(request.body.publishData === true)
+					{
+						console.log("Conditional Statement 'if (request.body.publishData == true)' Entered");
+						flowDB.publishBuilding(buildingObj);
+					} 
+					else
+					{
+						console.log("Conditional Statement 'if (request.body.publishData == true)' ELSE Clause entered");						
+					}                
+					response.status(200);
+					return response.send({
+						errorCode: 0, 
+						buildingId: buildingObj.getUserBuildingId()
+					});
+				}
+				else
+				{
+					console.log("Conditional Statement 'if(Util.exists(buildingObj))' ELSE Clause Entered");
+					response.status(500);
+					return response.send({errorCode: 2, buildingId: null});
+				}
+			});
+		}
+		else
+		{
+			console.log("Conditional Statement 'If (Util.exists(user))' ELSE Clause Entered");
+			response.status(400);
+			return response.send({errorCode: 1, buildingId: null});
+		}
+    }
+    else
+    {
+		console.log("Conditional Statement 'if (Util.exists(user))' ELSE Clause Entered");
+		response.status(401);
+		return response.send({errorCode: 401, buildingId: null});
     }
   });
 });
@@ -465,9 +539,9 @@ app.get('/building', function(request, response) {
           user.getBuilding(request.query.buildingId, function(buildingObj) {
             if(Util.exists(buildingObj)) {
               response.status(200);
-	      
-	      console.log("Gary/building" + JSON.stringify(buildingObj.toOutput()));
-	      
+
+			  //console.log("Gary/building" + JSON.stringify(buildingObj.toOutput()));
+
               return response.send({building: buildingObj.toOutput(), errorCode: 0});
             } else {
               response.status(404);
@@ -506,6 +580,26 @@ app.get('/buildingsRefs', function(request, response) {
   });
 });
 
+function writeTextFile(filename, txtString)
+{
+	console.log("writeTextFile() BEGIN");
+	var fs = require('fs');
+
+	fs.writeFile(filename, txtString, function (err)
+	{
+		if (err)
+		{
+			console.log(err);
+		}
+		else
+		{
+			console.log('File ' + filename + 'was saved.');
+		}
+	});
+	
+	console.log("writeTextFile() END");
+}
+
 // =========== PREPROCESSOR ==========
 /**
  * Summary: calls python script to extract lines from image and convert to gray scale
@@ -538,7 +632,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
     
     /* Since Node is asynchronous, we do not have control of the order in which the image and data files need to be read,
       so we just call the preprocessor's callback when the last fileIO read's callback gets called
-     these booleans are used to help determine within the callback if it is the last one or not. */
+      these booleans are used to help determine within the callback if it is the last one or not. */
     var readOtherFile = false;
     var returned = false;
     var data;
@@ -567,7 +661,7 @@ function preprocessor(oldImagePath, newImagePath, dataPath, callback) {
         return callback(null);
       }
     });
-    
+
     // Read the extracted data.
     fs.exists(dataPath, function(exists) {
       if(exists) {
