@@ -352,6 +352,7 @@ app.post('/savePublish', function(request, response)
   //var width  = request.body.width;
   //var height = request.body.height;
   var mapString = request.body.map;
+  var scaledMapString = request.body.scaledMap;
   var roomString = request.body.room;
   var sectorString = request.body.sector;
   var floorName = request.body.floorName;
@@ -378,6 +379,11 @@ app.post('/savePublish', function(request, response)
 	if (mapString != undefined && mapString != "")
 	{
 		writeTextFile(floorName + "_map.txt", mapString);
+	}
+
+	if (scaledMapString != undefined && scaledMapString != "")
+	{
+		writeTextFile(floorName + "_scaled_map.txt", scaledMapString);
 	}
 
 	if (roomString != undefined && roomString != "")
@@ -472,7 +478,7 @@ app.get('/unpublishBuilding', function(request, response) {
           response.status(200);
           return response.send({errorCode: 0});
         } else {
-          response.status(401);
+          response.status(401);scaledMapString
           return response.send({errorCode: 401});
         }
       } else {

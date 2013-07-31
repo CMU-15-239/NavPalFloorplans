@@ -26,14 +26,15 @@ function pointNearLine(line, point, radius)
 	//pointOnLines : function(lines, point, radius) {
 function pointOnLines(lines, point, radius)
 {
-		for(var l = 0; l < lines.length; l++) {
-			//if(this.pointNearLine(lines[l], point, radius))
-			if(pointNearLine(lines[l], point, radius))
-			{
-				return lines[l];
-			}
+	for(var l = 0; l < lines.length; l++)
+	{
+		//if(this.pointNearLine(lines[l], point, radius))
+		if(pointNearLine(lines[l], point, radius))
+		{
+			return lines[l];
 		}
-		return null;
+	}
+	return null;
 }
 
 /********************************************************************************/
@@ -102,7 +103,8 @@ function pointInSpace(space, point, width, includeLine)
 	//findFillVal : function(spaces, point, width, emptyVal) {
 function findFillVal (spaces, point, width, emptyVal) 
 {
-		for(var s = 0; s < spaces.length; s++) {
+		for(var s = 0; s < spaces.length; s++)
+		{
 			//if(this.pointInSpace(spaces[s], point, width, true))
 			if(pointInSpace(spaces[s], point, width, true))
 			{
@@ -121,7 +123,8 @@ function generateSector(spaces, width, height)
 	var emptyVal = '-1';
 	//x = col, y = row
 	
-	for(var row = 0; row < height; row++) {
+	for(var row = 0; row < height; row++)
+	{
 		var sectorRow = [];
 		for(var col = 0; col < width; col++)
 		{
@@ -133,15 +136,47 @@ function generateSector(spaces, width, height)
 	
 	return sector;
 }
+
+/********************************************************************************/
+
+/*
+ * 
+ * name: unknown
+ * @param
+ * @return
+ * 
+ */
+function scaleSpace(spaces, scaleFactor)
+{
+	var scaledSpaces = jQuery.extend(scaledSpaces, spaces);
+
+	// Loop through each space and scale down the lines segments representing a wall
+	for(var s = 0; s < spaces.length; s++)
+	{
+		var currentSpace = spaces[s];
+
+		for(var w = 0; w < currentSpace.walls.length; w++)
+		{
+			var currentWall = currentSpace.walls[w];
+
+			// Call function to scale the line since 
+		}
+	}
+	
+	return 
+}
 	
 /********************************************************************************/
 	
 	//generateSectorStr : function(spaces, width, heigth) {
-function generateSectorStr(spaces, width, height)
+function generateSectorStr(spaces, width, height, scale, res)
 {
 	//var sector = this.generateSector(spaces, width, height);
 	var sector = generateSector(spaces, width, height);
 	var sectorStr = ""
+	
+	sectorStr += height + " " + width + " " + scale + " " + res + "\n";
+	
 	for(var y = 0; y < height; y++)
 	{
 		for(var x = 0; x < width; x++)

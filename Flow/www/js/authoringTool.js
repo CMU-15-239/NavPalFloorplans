@@ -252,6 +252,37 @@ function ArrayIndexOf(a, fnc) {
     return -1;
 }
 
+/********************************************************************************/
+
+/*
+ * 
+ * name: unknown
+ * @param
+ * @return
+ * 
+ */
+function scaleSpace(spaces, scaleFactor)
+{
+	var scaledSpaces = jQuery.extend(scaledSpaces, spaces);
+
+	// Loop through each space and scale down the lines segments representing a wall
+	for(var s = 0; s < spaces.length; s++)
+	{
+		var currentSpace = spaces[s];
+
+		for(var w = 0; w < currentSpace.walls.length; w++)
+		{
+			var currentWall = currentSpace.walls[w];
+
+			// Call function to scale the line since 
+		}
+	}
+	
+	return scaledSpaces;
+}
+
+/********************************************************************************/
+
 function findMaxXYComponentsforPoints(floors)
 {
 	var minX = Number.MAX_VALUE;
@@ -296,8 +327,14 @@ function findMaxXYComponentsforPoints(floors)
 			}
 		}
 	}
-	
-	return [minX, minY, maxX, maxY];
+
+	pointLimits=new Object();
+	pointLimits.minX = minX;
+	pointLimits.minY = minY;
+	pointLimits.maxX = maxX;
+	pointLimits.maxY = maxY;
+ 
+	return pointLimits;
 }
 
 /**
@@ -351,7 +388,8 @@ $('#publish').click(function()
     var graphOut = graph.toOutput();
 
 	// Required for text file generation
-	var mapString = "";
+	var originalMapString = "";
+	var scaledMapString = "";
 	var roomString = "";
 	var sectorString = "";
 	var floorName = "unidentified";
@@ -362,39 +400,58 @@ $('#publish').click(function()
 	// TODO: The floors should be in a loop when we move to multi floor planning
 	if (stateManager.floors[0].spaces != undefined)
 	{
+		// Build the floor name that will be used to name the text files
 		floorName = building.name + "_" + stateManager.floors[0].name;
-		
+
 		var spaces = stateManager.floors[0].spaces;
 
 		// This function returns the following array [minX, minY, maxX, maxY]
-		var minMaxXYComponents = findMaxXYComponentsforPoints(stateManager.building.floors);
-		var deltaXFromOrigin = minMaxXYComponents[0];
-		var deltaYFromOrigin = minMaxXYComponents[1];
-		var canvasWidth      = minMaxXYComponents[2] + deltaXFromOrigin;
-		var canvasHeight     = minMaxXYComponents[3] + deltaYFromOrigin;
+		// Get the dimensions of the actual image.
+		var canvasHeight = stateManager.floors[0].globals.canvas.image.height;
+		var canvasWidth  = stateManager.floors[0].globals.canvas.image.width;
+		var pointLimits = findMaxXYComponentsforPoints(stateManager.building.floors);
+
+		// Perform sanity check to make sure no points exist outside of the bounded image area
+		if ((pointLimits.minX < 0) || (pointLimits.minY < 0) || (pointLimits.maxX > canvasWidth) || (pointLimits.maxY > canvasHeight))
+		{
+			alert("Some points are outside of the image bounds of [" + canvasWidth + " by " + canvasHeight + "]");
+			return;
+		}
 
 		if (spaces.length > 0)
 		{
+			// TODO: I may need to add the ability to scale down the array given the image dimensions and the defined res below.
+			// 		 The current array that is produced is full size when compared to the image. Code exists to scale down this array
+			//		 as defined in the file image convert lines 515 to 551. I need to use this same code in this function to scale down
+			//		 both the maps and the sector arrays.
+
+			var imageScaleForDisplay = 13;	// Value defined in the Android app regarding the 
+			var mapScale 			 = 6;	// Values defined in the Android app
+
 			console.log("MAP GENERATION: Generating Map text file.");
-			var mapArray = generateMap(spaces, canvasWidth, canvasHeight);
-			mapString = convertMapArrayToString(mapArray);
+			var mapArray = generateMap(spaces, canvasWidth, canvasHeight, true, mapScale);	// "true" indicates to make a scale representation of the map
+
+			originalMapString = convertMapArrayToString(mapArray.originalSizeMap, canvasWidth, canvasHeight, imageScaleForDisplay, mapScale);
+			scaledMapString = convertMapArrayToString(mapArray.scaledSizeMap, canvasWidth/mapScale, canvasHeight/mapScale, imageScaleForDisplay, mapScale);
 
 			console.log("ROOM GENERATION: Generating Room text file.");
 			roomString = generateRoom(spaces, '\n');
 
-			// Commented out until map text file generation is correct since sector generation can take up to several minutes
-			console.log("SECTOR GENERATION: Generating Sector text file.");
+			var scaledSpaces = scaleSpace(spaces, mapScale);
 
-			var startDate = Date.now();
-			sectorString = generateSectorStr(spaces, canvasWidth, canvasHeight);
-			var endDate = Date.now();
-			var totalTime = endDate - startDate;			
-			console.log("Sector generation took " + (totalTime/1000) + " seconds.");			
+			// Commented out until map text file generation is correct since sector generation can take up to several minutes
+			//console.log("SECTOR GENERATION: Generating Sector text file.");
+
+			//var startDate = Date.now();
+			//sectorString = generateSectorStr(spaces, canvasWidth, canvasHeight, imageScaleForDisplay, mapScale);
+			//var endDate = Date.now();
+			//var totalTime = endDate - startDate;			
+			//console.log("Sector generation took " + (totalTime/1000) + " seconds.");			
 		}
 		else
 		{
 			console.log("TEXT FILE GENERATION: There are no spaces defined in session scope");
-		}				
+		}			
 	}
 	else
 	{
@@ -413,7 +470,8 @@ $('#publish').click(function()
             publishData: true,
             width: canvasWidth,	   // Required for text file generaiton on server side
             height: canvasHeight,  // Requried for text file generation on server side
-            map: mapString,
+            map: originalMapString,
+            scaledMap: scaledMapString,
             room: roomString,
             sector: sectorString,
             floorName: floorName,
