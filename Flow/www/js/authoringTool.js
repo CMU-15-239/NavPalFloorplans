@@ -256,9 +256,12 @@ function ArrayIndexOf(a, fnc) {
 
 /*
  * 
- * name: unknown
- * @param
- * @return
+ * name: scaleSpace
+ * @param spaces - List of current spaces defined for the current floor plan
+ * 		  scaleFactor - The scale by which to reduce the lines and points that make up the space
+ * @return scaledSpaces - A scaled down version of the spaces
+ * 
+ * Note: This function uses jquery to clone the spaces object
  * 
  */
 function scaleSpace(spaces, scaleFactor)

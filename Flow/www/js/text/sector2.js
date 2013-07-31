@@ -138,35 +138,6 @@ function generateSector(spaces, width, height)
 }
 
 /********************************************************************************/
-
-/*
- * 
- * name: unknown
- * @param
- * @return
- * 
- */
-function scaleSpace(spaces, scaleFactor)
-{
-	var scaledSpaces = jQuery.extend(scaledSpaces, spaces);
-
-	// Loop through each space and scale down the lines segments representing a wall
-	for(var s = 0; s < spaces.length; s++)
-	{
-		var currentSpace = spaces[s];
-
-		for(var w = 0; w < currentSpace.walls.length; w++)
-		{
-			var currentWall = currentSpace.walls[w];
-
-			// Call function to scale the line since 
-		}
-	}
-	
-	return 
-}
-	
-/********************************************************************************/
 	
 	//generateSectorStr : function(spaces, width, heigth) {
 function generateSectorStr(spaces, width, height, scale, res)
