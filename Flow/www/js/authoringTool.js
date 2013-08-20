@@ -424,30 +424,27 @@ $('#publish').click(function()
 
 		if (spaces.length > 0)
 		{
-			// TODO: I may need to add the ability to scale down the array given the image dimensions and the defined res below.
-			// 		 The current array that is produced is full size when compared to the image. Code exists to scale down this array
-			//		 as defined in the file image convert lines 515 to 551. I need to use this same code in this function to scale down
-			//		 both the maps and the sector arrays.
-
 			var zoomScaleForDisplay = 13;	// Value defined in the Android app regarding the scaling for the zoom operation
 			var mapScale 			 = 6;	// Values defined in the Android app that actually scales the map
 
-			// Compute scaled values and remove any decimals.
+			// Compute scaled spaces and values for the map dimensions.
+			var scaledSpaces = scaleSpace(spaces, mapScale);
 			scaledHeight = canvasHeight/mapScale;
 			scaledWidth = canvasWidth/mapScale;
 			scaledHeight = Math.ceil(scaledHeight);
 			scaledWidth = Math.ceil(scaledWidth);
 
-			console.log("MAP GENERATION: Generating Map text file.");
-			var mapArray = generateMap(spaces, canvasWidth, canvasHeight, true, mapScale);	// "true" indicates to make a scale representation of the map
-
-			originalMapString = convertMapArrayToString(mapArray.originalSizeMap, canvasWidth, canvasHeight, zoomScaleForDisplay, mapScale);
-			scaledMapString = convertMapArrayToString(mapArray.scaledSizeMap, scaledWidth, scaledHeight, zoomScaleForDisplay, mapScale);
+			console.log("MAP GENERATION: Generating full size Map text file.");
+			var originalSizeMap = generateMap(spaces, canvasWidth, canvasHeight);
+			originalMapString = convertMapArrayToString(originalSizeMap, canvasWidth, canvasHeight, zoomScaleForDisplay, mapScale);
+			
+			console.log("MAP GENERATION: Generating scaled down Map text file.");
+			var scaledSizeMap = generateMap(scaledSpaces, scaledWidth, scaledHeight);
+			scaledMapString = convertMapArrayToString(scaledSizeMap, scaledWidth, scaledHeight, zoomScaleForDisplay, mapScale);
 
 			console.log("ROOM GENERATION: Generating Room text file.");
+			// TODO: Does the rooms file need to be scaled?
 			roomString = generateRoom(spaces, '\n');
-
-			var scaledSpaces = scaleSpace(spaces, mapScale);
 
 			console.log("SECTOR GENERATION: Generating Sector text file.");
 
@@ -462,6 +459,7 @@ $('#publish').click(function()
 			endDate = Date.now();
 			totalTime = endDate - startDate;
 			console.log("Sector generation took " + (totalTime/1000) + " seconds.");
+
 		}
 		else
 		{

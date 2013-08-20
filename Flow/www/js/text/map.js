@@ -329,53 +329,21 @@ function convertMapArrayToString(map, width, height, scale, res)
 				height: Number
  * Returns: map (2d array of strings)
 **/
-function generateMap(spaces, width, height, generateScaledDownVersionOfMap, scaleFactor)
+function generateMap(spaces, width, height)
 {
 	var doorChar = '0';
 	var wallChar = 'X';
 
-	var maps = new Object();
+	console.log("map::generateMap - Generating Map!");
 
 	var map = initializeMapArray(width, height, doorChar);
-	
-	// Compute scaled values and remove any decimals.
-	// This is already being computed in the authoring tool's publish method. What I need to do is refactor this
-	// method so that the same method is used to generate the full size map and the scaled map and simply call it
-	// twice, once for the full size map and respective parameters and one for the scaled parameters. I am
-	// commiting th versions for now so they we have at least something working in the mean time.
-	var scaledHeight = height/scaleFactor;
-	var scaledWidth = width/scaleFactor;
-	scaledHeight = Math.ceil(scaledHeight);
-	scaledWidth = Math.ceil(scaledWidth);
-			
-	var scaledMap = initializeMapArray(scaledWidth, scaledHeight, doorChar);
-
-	console.log("map::generateMap - Number of Spaces" + spaces.length);
-	console.log();
-	console.log("Originl Map Dimensions: Rows: " + map.length + " Cols: " + map[0].length);
-	console.log("Scaled Map Dimensions: Rows: " + scaledMap.length + " Cols: " + scaledMap[0].length);
-	console.log();
-	console.log("Generating Full Size Map");
 
 	for(var s = 0; s < spaces.length; s++)
 	{
 		addLines(spaces[s], map, wallChar);
 	}
 
-	maps.originalSizeMap = map;
-
-	if (generateScaledDownVersionOfMap)
-	{
-		console.log("Generating Scaled Map");
-		for(var s = 0; s < spaces.length; s++)
-		{
-			addScaledLines(spaces[s], scaledMap, wallChar, scaleFactor);
-		}
-		
-		maps.scaledSizeMap   = scaledMap;
-	}
-
 	console.log("map::generateMap - Done!");
 
-	return maps;
+	return map;
 }
