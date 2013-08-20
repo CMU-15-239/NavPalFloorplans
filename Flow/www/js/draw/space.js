@@ -110,6 +110,40 @@ Space.prototype.toOutput = function() {
    }
 };
 
+Space.prototype.cloneScaledSpace = function(scaleFactor)
+{
+	var clonedSpace = new Space();
+
+	// Clone the walls object, which is an array of lines
+	clonedSpace.walls = new Array();
+	for(var w=0; w<this.walls.length; w++)
+	{
+		var currentWall = this.walls[w];
+		clonedSpace.walls[w] = currentWall.cloneLineAndScale(scaleFactor);
+	}
+
+	// The classification of the space ("room", "hallway", "obstacle", etc.)
+	clonedSpace.type = this.type;
+
+	// The space's room number (if any)
+	clonedSpace.label = this.label;
+
+	// Is the space closed?
+	clonedSpace.isClosed = this.isClosed;
+
+	// A polygon that appears when the user selects the space.
+	clonedSpace.selectPoly = this.selectPoly;
+
+	if(util.exists(clonedSpace.walls))
+	{
+		clonedSpace.selectPoly = new Polygon(clonedSpace.walls);
+	}
+ 
+	clonedSpace.drawPoly = this.drawPoly;
+	
+	return clonedSpace;
+};
+
 /**
  * Summary: Return whether the classification of the space is "room"
  * Parameters: this

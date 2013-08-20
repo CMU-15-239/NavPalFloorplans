@@ -21,11 +21,68 @@ function Point(x, y) {
 	this.degree = 0;
 }
 
-/**
- * Summary: Checks whether the given Point is equal to the current object.
- * Parameters: p: The Point to check against.
- * Returns: true iff p and this have the same x and y coordinates.
-**/
+/*
+ * Added by Gary Giger
+ * 
+ * Returns a copy of the point by creating a new instance of the point object.  
+ * 
+ * Note that I named the function clonePoint instead of clone because I did not 
+ * want to override any clone object that is implicitly inherited and may break
+ * other logic. I don't know Javascript that well and did not want to risk
+ * breaking other logic.
+ * 
+ * name: clonePoint
+ * @param (none)
+ * @return A new instance of this point
+ * 
+ */
+Point.prototype.clonePoint = function()
+{
+	var p = new Point(this.x, this.y);
+	
+	p.isSnap = this.isSnap;
+	p.isSelected = this.isSelected;
+	p.degree = this.degree;
+	
+	return p;
+}
+
+/*
+ * Added by Gary Giger
+ * 
+ * Returns a copy of the point by creating a new instance of the point object.  
+ * 
+ * Note that I named the function clonePoint instead of clone because I did not 
+ * want to override any clone object that is implicitly inherited and may break
+ * other logic. I don't know Javascript that well and did not want to risk
+ * breaking other logic.
+ * 
+ * name: clonePoint
+ * @param (none)
+ * @return A new instance of this point
+ * 
+ */
+Point.prototype.clonePointAndScale = function(scaleFactor)
+{
+	if (scaleFactor <= 0)
+	{
+		scaleFactor = 1;
+	}
+
+	var scaledX = Math.round(this.x/scaleFactor);
+	var scaledY = Math.round(this.y/scaleFactor);
+
+	console.log("Original Pt (" + this.x + ", " + this.y + ") Scaled Pt (" + scaledX + ", " + scaledY + ")");
+
+	var p = new Point(scaledX, scaledY);
+
+	p.isSnap = this.isSnap;
+	p.isSelected = this.isSelected;
+	p.degree = this.degree;
+	
+	return p;
+}
+
 Point.prototype.toOutput = function() {
 	return {x: this.x, y: this.y};
 }

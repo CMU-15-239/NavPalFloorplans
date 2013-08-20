@@ -355,6 +355,7 @@ app.post('/savePublish', function(request, response)
   var scaledMapString = request.body.scaledMap;
   var roomString = request.body.room;
   var sectorString = request.body.sector;
+  var scaledSectorString = request.body.scaledSector;
   var floorName = request.body.floorName;
 
   //console.log("--------------------------------------------");
@@ -394,6 +395,11 @@ app.post('/savePublish', function(request, response)
 	if (sectorString != undefined && sectorString != "")
 	{
 		writeTextFile(floorName + "_sector.txt", sectorString);
+	}
+
+	if (scaledSectorString != undefined && scaledSectorString != "")
+	{
+		writeTextFile(floorName + "scaled_sector.txt", scaledSectorString);
 	}
 
 	// Commented out since the text file generation is not taking place on the server side at this time. 

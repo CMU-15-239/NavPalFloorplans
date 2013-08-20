@@ -34,8 +34,6 @@ function importLineFromPoints(p1, p2, isDoor)
   return null;
 }
 
-
-
 /**
  * Summary: Constructor for the Line object.
  * Parameters: p1, p2: The points that comprise the start and end of the line.
@@ -59,16 +57,60 @@ function Line(p1, p2, isDoor)
 	this.calculateForm(p1, p2);
 }
 
+/*
+ * Added by Gary Giger
+ * 
+ * Returns a copy of the line by creating a new instance of the Line object.  
+ * 
+ * Note that I named the function cloneLine instead of clone because I did not 
+ * want to override any clone object that is implicitly inherited and may break
+ * other logic. I don't know Javascript that well and did not want to risk
+ * breaking other logic.
+ * 
+ * name: cloneLine
+ * @param (none)
+ * @return A new instance of this Line
+ * 
+ */
+Line.prototype.cloneLine = function()
+{
+	var clonedLine = new Line(this.p1.clonePoint(), this.p2.clonePoint(), this.isDoor);
+
+	clonedLine.isSelected = this.isSelected;
+	clonedLine.isExit = this.isExit;
+	clonedLine.definesRoom = this.definesRoom;	
+
+	return clonedLine; 
+};
+
+Line.prototype.cloneLineAndScale = function(scaleFactor)
+{
+	// Clone and scale the points
+	var p1Scaled = this.p1.clonePointAndScale(scaleFactor);
+	var p2Scaled = this.p2.clonePointAndScale(scaleFactor);
+
+	// Create a new Line instance with the scaled points
+	var clonedLine = new Line(p1Scaled, p2Scaled, this.isDoor);
+	clonedLine.isSelected = this.isSelected;
+	clonedLine.isExit = this.isExit;
+	clonedLine.definesRoom = this.definesRoom;
+	
+	return clonedLine;
+};
+
 /**
   * Constructs a JSON object from this.
-**/
-Line.prototype.toOutput = function() {
+  **/
+Line.prototype.toOutput = function() 
+{
 	return {
 		p1: this.p1.toOutput(),
 		p2: this.p2.toOutput(),
 		isDoor: this.isDoor
 	};
 };
+
+/******************************************************************************/
 
 /**
  * Summary: Put the line in standard form (ax + by = c)

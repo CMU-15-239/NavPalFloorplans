@@ -8,9 +8,9 @@ function pointNearLine(line, point, radius)
 	var b = line.p2.x - line.p1.x;
 	var c = line.p1.x * (line.p2.y - line.p1.y) - line.p1.y * (line.p2.x - line.p1.x);
 	var distConst = Math.sqrt(a*a + b*b);
-	
+
 	var signPointToLine = a * point.x + b * point.y + c;
-	
+
 	var close = (Math.abs(signPointToLine) / distConst) <= radius;
 	//Make sure the point is actually within the endpoints of the line.
 	var onLine = ((line.p1.x >= point.x && point.x >= line.p2.x) ||
@@ -118,11 +118,11 @@ function findFillVal (spaces, point, width, emptyVal)
 
 	//generateSector : function(spaces, width, height) {
 function generateSector(spaces, width, height)
-{		
+{
 	var sector = [];
-	var emptyVal = '-1';
+	var emptyVal = '-1'; // Was a -1 but is a space ' ' for now until debugging is done.
 	//x = col, y = row
-	
+
 	for(var row = 0; row < height; row++)
 	{
 		var sectorRow = [];
@@ -140,14 +140,14 @@ function generateSector(spaces, width, height)
 /********************************************************************************/
 	
 	//generateSectorStr : function(spaces, width, heigth) {
-function generateSectorStr(spaces, width, height, scale, res)
+function generateSectorStr(spaces, width, height, zoomScale, mapScale)
 {
 	//var sector = this.generateSector(spaces, width, height);
 	var sector = generateSector(spaces, width, height);
-	var sectorStr = ""
-	
-	sectorStr += height + " " + width + " " + scale + " " + res + "\n";
-	
+	var sectorStr = "";
+	//sectorStr += height.toFixed(0) + " " + width.toFixed(0) + " " + zoomScale + " " + mapScale + "\n";
+	sectorStr += height + " " + width + " " + zoomScale + " " + mapScale + "\n";
+
 	for(var y = 0; y < height; y++)
 	{
 		for(var x = 0; x < width; x++)

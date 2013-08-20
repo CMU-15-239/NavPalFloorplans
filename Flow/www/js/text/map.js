@@ -1,8 +1,6 @@
 /**
  * Summary: Computes the scaled form of a line/wall given the points that defined the wall.
  *			This function is used when 
- * 
- * 
  **/
 function calculateScaledForm(p1, p2, scale)
 {
@@ -74,7 +72,7 @@ function initializeMapArray(width, height, doorChar)
  * 
  * NOTE: Gary, I added try catch blocks to this function since it was accessing elements that were ot of bounds for the map array
  * NOTE: Gary, I also added functionality to skip the drawing of any lines if they are labeled as doors.
- * 
+ * arguments
 **/
 function addScaledLines(space, map, wallChar, scaleFactor)
 {
@@ -192,7 +190,6 @@ function addScaledLines(space, map, wallChar, scaleFactor)
 
 function addLines(space, map, wallChar)
 {
-	// console.log(map);
 	for (var w=0; w<space.walls.length; w++)
 	{
 		var wall = space.walls[w];
@@ -298,7 +295,7 @@ function convertMapArrayToString(map, width, height, scale, res)
 {
 	var mapOutputString = "";
 
-	mapOutputString += height.toFixed(0) + " " + width.toFixed(0) + " " + scale + " " + res + "\n";
+	mapOutputString += height + " " + width + " " + scale + " " + res + "\n";
 
 	for (var row=0; row<map.length; row++)
 	{
@@ -310,7 +307,7 @@ function convertMapArrayToString(map, width, height, scale, res)
 			
 			if (value != undefined)
 			{
-				mapOutputString += map[row][col];
+				mapOutputString += map[row][col] + " ";
 			}
 			else
 			{
@@ -334,13 +331,24 @@ function convertMapArrayToString(map, width, height, scale, res)
 **/
 function generateMap(spaces, width, height, generateScaledDownVersionOfMap, scaleFactor)
 {
-	var doorChar = ' '; // Was an 'O', but let as space for now to debug
+	var doorChar = '0';
 	var wallChar = 'X';
 
 	var maps = new Object();
 
 	var map = initializeMapArray(width, height, doorChar);
-	var scaledMap = initializeMapArray(width/scaleFactor, height/scaleFactor, doorChar);
+	
+	// Compute scaled values and remove any decimals.
+	// This is already being computed in the authoring tool's publish method. What I need to do is refactor this
+	// method so that the same method is used to generate the full size map and the scaled map and simply call it
+	// twice, once for the full size map and respective parameters and one for the scaled parameters. I am
+	// commiting th versions for now so they we have at least something working in the mean time.
+	var scaledHeight = height/scaleFactor;
+	var scaledWidth = width/scaleFactor;
+	scaledHeight = Math.ceil(scaledHeight);
+	scaledWidth = Math.ceil(scaledWidth);
+			
+	var scaledMap = initializeMapArray(scaledWidth, scaledHeight, doorChar);
 
 	console.log("map::generateMap - Number of Spaces" + spaces.length);
 	console.log();

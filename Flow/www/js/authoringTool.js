@@ -266,21 +266,19 @@ function ArrayIndexOf(a, fnc) {
  */
 function scaleSpace(spaces, scaleFactor)
 {
-	var scaledSpaces = jQuery.extend(scaledSpaces, spaces);
+	if (scaleFactor <= 0)
+	{
+		scaleFactor = 1;
+	}
 
 	// Loop through each space and scale down the lines segments representing a wall
+	var scaledSpaces = new Array();
 	for(var s = 0; s < spaces.length; s++)
 	{
 		var currentSpace = spaces[s];
-
-		for(var w = 0; w < currentSpace.walls.length; w++)
-		{
-			var currentWall = currentSpace.walls[w];
-
-			// Call function to scale the line since 
-		}
+		scaledSpaces[s] = currentSpace.cloneScaledSpace(scaleFactor);
 	}
-	
+
 	return scaledSpaces;
 }
 
@@ -395,7 +393,10 @@ $('#publish').click(function()
 	var scaledMapString = "";
 	var roomString = "";
 	var sectorString = "";
+	var scaledSectorString = "";
 	var floorName = "unidentified";
+	var scaledHeight = -1;
+	var scaledWidth = -1;
 
 	// Compute the buffer size for the current floor
 
@@ -428,28 +429,39 @@ $('#publish').click(function()
 			//		 as defined in the file image convert lines 515 to 551. I need to use this same code in this function to scale down
 			//		 both the maps and the sector arrays.
 
-			var imageScaleForDisplay = 13;	// Value defined in the Android app regarding the 
-			var mapScale 			 = 6;	// Values defined in the Android app
+			var zoomScaleForDisplay = 13;	// Value defined in the Android app regarding the scaling for the zoom operation
+			var mapScale 			 = 6;	// Values defined in the Android app that actually scales the map
+
+			// Compute scaled values and remove any decimals.
+			scaledHeight = canvasHeight/mapScale;
+			scaledWidth = canvasWidth/mapScale;
+			scaledHeight = Math.ceil(scaledHeight);
+			scaledWidth = Math.ceil(scaledWidth);
 
 			console.log("MAP GENERATION: Generating Map text file.");
 			var mapArray = generateMap(spaces, canvasWidth, canvasHeight, true, mapScale);	// "true" indicates to make a scale representation of the map
 
-			originalMapString = convertMapArrayToString(mapArray.originalSizeMap, canvasWidth, canvasHeight, imageScaleForDisplay, mapScale);
-			scaledMapString = convertMapArrayToString(mapArray.scaledSizeMap, canvasWidth/mapScale, canvasHeight/mapScale, imageScaleForDisplay, mapScale);
+			originalMapString = convertMapArrayToString(mapArray.originalSizeMap, canvasWidth, canvasHeight, zoomScaleForDisplay, mapScale);
+			scaledMapString = convertMapArrayToString(mapArray.scaledSizeMap, scaledWidth, scaledHeight, zoomScaleForDisplay, mapScale);
 
 			console.log("ROOM GENERATION: Generating Room text file.");
 			roomString = generateRoom(spaces, '\n');
 
 			var scaledSpaces = scaleSpace(spaces, mapScale);
 
-			// Commented out until map text file generation is correct since sector generation can take up to several minutes
-			//console.log("SECTOR GENERATION: Generating Sector text file.");
+			console.log("SECTOR GENERATION: Generating Sector text file.");
 
-			//var startDate = Date.now();
-			//sectorString = generateSectorStr(spaces, canvasWidth, canvasHeight, imageScaleForDisplay, mapScale);
-			//var endDate = Date.now();
-			//var totalTime = endDate - startDate;			
-			//console.log("Sector generation took " + (totalTime/1000) + " seconds.");			
+			var startDate = Date.now();
+			scaledSectorString = generateSectorStr(scaledSpaces, scaledWidth, scaledHeight, zoomScaleForDisplay, mapScale);
+			var endDate = Date.now();
+			var totalTime = endDate - startDate;
+			console.log("Scaled Sector generation took " + (totalTime/1000) + " seconds.");
+
+			startDate = Date.now();
+			sectorString = generateSectorStr(spaces, canvasWidth, canvasHeight, zoomScaleForDisplay, mapScale);
+			endDate = Date.now();
+			totalTime = endDate - startDate;
+			console.log("Sector generation took " + (totalTime/1000) + " seconds.");
 		}
 		else
 		{
@@ -477,6 +489,7 @@ $('#publish').click(function()
             scaledMap: scaledMapString,
             room: roomString,
             sector: sectorString,
+            scaledSector: scaledSectorString,
             floorName: floorName,
         },
         success: function(response)
